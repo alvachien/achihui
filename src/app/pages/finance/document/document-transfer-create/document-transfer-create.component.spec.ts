@@ -519,7 +519,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
@@ -556,7 +556,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
@@ -595,7 +595,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
@@ -637,7 +637,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header form')
@@ -687,7 +687,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       expect(component.headerFormGroup.get('headerControl')?.valid, 'Expect a valid header').toBeTruthy();
@@ -731,7 +731,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
@@ -777,7 +777,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
@@ -912,7 +912,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);
@@ -991,7 +991,7 @@ describe('DocumentTransferCreateComponent', () => {
       const curdoc: Document = new Document();
       curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
       curdoc.Desp = 'test';
-      // curdoc.TranDate = moment();
+      // curdoc.TranDate = new Date();
       component.headerFormGroup.get('headerControl')?.setValue(curdoc);
       component.headerFormGroup.get('headerControl')?.updateValueAndValidity();
       component.headerFormGroup.get('amountControl')?.setValue(100);

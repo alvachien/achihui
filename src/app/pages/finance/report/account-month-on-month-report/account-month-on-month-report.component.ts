@@ -3,7 +3,7 @@ import { ReplaySubject, forkJoin, takeUntil } from 'rxjs';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
-import moment from 'moment';
+import { format, subMonths } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from '@services/index';
@@ -124,13 +124,13 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
         if (this.selectedPeriod === financePeriodLast12Months) {
           // Last 12 months
           for (let imonth = 11; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           for (let imonth = 11; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            const validx = val.findIndex((p) => p.Month === monthinuse.month() + 1);
+            const monthinuse = subMonths(new Date(), imonth);
+            const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
             if (validx !== -1) {
               arIn.push(val[validx].DebitBalance);
               arOut.push(val[validx].CreditBalance);
@@ -144,13 +144,13 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
         } else if (this.selectedPeriod === financePeriodLast6Months) {
           // Last 6 months
           for (let imonth = 5; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           for (let imonth = 5; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            const validx = val.findIndex((p) => p.Month === monthinuse.month() + 1);
+            const monthinuse = subMonths(new Date(), imonth);
+            const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
             if (validx !== -1) {
               arIn.push(val[validx].DebitBalance);
               arOut.push(val[validx].CreditBalance);
@@ -164,13 +164,13 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
         } else if (this.selectedPeriod === financePeriodLast3Months) {
           // Last 3 months
           for (let imonth = 2; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            arAxis.push(monthinuse.format('YYYY.MM'));
+            const monthinuse = subMonths(new Date(), imonth);
+            arAxis.push(format(monthinuse, 'yyyy.MM'));
           }
 
           for (let imonth = 2; imonth >= 0; imonth--) {
-            const monthinuse = moment().subtract(imonth, 'month');
-            const validx = val.findIndex((p) => p.Month === monthinuse.month() + 1);
+            const monthinuse = subMonths(new Date(), imonth);
+            const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
             if (validx !== -1) {
               arIn.push(val[validx].DebitBalance);
               arOut.push(val[validx].CreditBalance);

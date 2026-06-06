@@ -1,7 +1,7 @@
 import { Component, inject, Input, NgZone, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -66,7 +66,7 @@ export class DocumentChangeDateDialogComponent implements OnInit {
     this.isSubmitting = true;
 
     this.odataService
-      .changeDocumentDateViaPatch(this.documentid ?? 0, moment(this.headerFormGroup.get('dateControl')?.value))
+      .changeDocumentDateViaPatch(this.documentid ?? 0, this.headerFormGroup.get('dateControl')?.value)
       .subscribe({
         next: () => {
           this.modal.destroy();

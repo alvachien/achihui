@@ -21,7 +21,7 @@ import {
   FinanceReportByAccount,
   ModelUtility,
   ConsoleLogTypeEnum,
-  momentDateFormat,
+  dateFormat,
   Account,
   AccountCategory,
   FinanceReportByControlCenter,
@@ -34,7 +34,7 @@ import {
   GeneralFilterValueType,
 } from '../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../services';
-import moment from 'moment';
+import { format, startOfMonth, endOfMonth, subMonths, addMonths } from 'date-fns';
 import { NumberUtility } from 'actslib';
 import { DocumentItemViewComponent } from '../document/document-item-view';
 import { SafeAny } from '@common/any';
@@ -165,18 +165,17 @@ export class ReportComponent implements OnInit, OnDestroy {
 
   private buildData(): void {
     this.isLoadingResults = true;
-    const today = moment();
+    const today = new Date();
     this.reportByMostIncomeInCurrentMonth = [];
     this.totalOutgoInCurrentMonth = 0;
     this.reportByMostOutgoInCurrentMonth = [];
     this.totalIncomeInCurrentMonth = 0;
 
     // Current month
-    const dateInLastMonth = today.clone();
-    dateInLastMonth.subtract(1, 'month');
+    const dateInLastMonth = subMonths(today, 1);
     forkJoin([
-      this.odataService.fetchReportByTransactionType(today.year(), today.month() + 1),
-      this.odataService.fetchReportByTransactionType(dateInLastMonth.year(), dateInLastMonth.month() + 1),
+      this.odataService.fetchReportByTransactionType(today.getFullYear(), today.getMonth() + 1),
+      this.odataService.fetchReportByTransactionType(dateInLastMonth.getFullYear(), dateInLastMonth.getMonth() + 1),
     ])
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -271,21 +270,18 @@ export class ReportComponent implements OnInit, OnDestroy {
   onShowDetail(ttid: number, monthDiff: number, isexp: boolean) {
     let bgn = '';
     let end = '';
+    const today = new Date();
     if (monthDiff === 0) {
-      bgn = moment().startOf('M').format(momentDateFormat);
-      end = moment().endOf('M').format(momentDateFormat);
+      bgn = format(startOfMonth(today), dateFormat);
+      end = format(endOfMonth(today), dateFormat);
     } else if (monthDiff < 0) {
-      bgn = moment()
-        .subtract(-1 * monthDiff, 'M')
-        .startOf('M')
-        .format(momentDateFormat);
-      end = moment()
-        .subtract(-1 * monthDiff, 'M')
-        .endOf('M')
-        .format(momentDateFormat);
+      const adjustedDate = subMonths(today, -1 * monthDiff);
+      bgn = format(startOfMonth(adjustedDate), dateFormat);
+      end = format(endOfMonth(adjustedDate), dateFormat);
     } else if (monthDiff > 0) {
-      bgn = moment().add(monthDiff, 'M').startOf('M').format(momentDateFormat);
-      end = moment().add(monthDiff, 'M').endOf('M').format(momentDateFormat);
+      const adjustedDate = addMonths(today, monthDiff);
+      bgn = format(startOfMonth(adjustedDate), dateFormat);
+      end = format(endOfMonth(adjustedDate), dateFormat);
     }
 
     this.onDisplayDocItem(bgn, end, ttid, isexp);

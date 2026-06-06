@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError, forkJoin } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 
 import { environment } from '../../environments/environment';
 import {
@@ -17,7 +17,7 @@ import {
   Order,
   Document,
   Account,
-  momentDateFormat,
+  dateFormat,
   BaseListModel,
   RepeatedDatesWithAmountAPIInput,
   RepeatedDatesWithAmountAPIOutput,
@@ -874,7 +874,7 @@ export class FinanceOdataService {
    */
   public settleAccount(
     accountId: number,
-    settledDate: moment.Moment,
+    settledDate: Date,
     amount: number,
     ccid: number
   ): Observable<SafeAny> {
@@ -886,7 +886,7 @@ export class FinanceOdataService {
     const jdata = {
       HomeID: this.homeService.ChosedHome?.ID,
       AccountID: accountId,
-      SettledDate: settledDate.format(momentDateFormat),
+      SettledDate: format(settledDate, dateFormat),
       InitialAmount: amount,
       ControlCenterID: ccid,
       Currency: this.homeService.ChosedHome?.BaseCurrency,
@@ -1577,7 +1577,7 @@ export class FinanceOdataService {
 
           this.isPlanListLoaded = false;
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error.toString() + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error?.toString() ?? error.message) + '; ' + error.message));
         })
       );
     } else {
@@ -1617,7 +1617,7 @@ export class FinanceOdataService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error.toString() + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error?.toString() ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -1794,8 +1794,8 @@ export class FinanceOdataService {
     const filterstrs: string[] = [];
     filterstrs.push(`HomeID eq ${hid}`);
     if (filter.TransactionDateBegin && filter.TransactionDateEnd) {
-      const dtbgnfmt = filter.TransactionDateBegin.format(momentDateFormat);
-      const dtendfmt = filter.TransactionDateEnd.format(momentDateFormat);
+      const dtbgnfmt = format(filter.TransactionDateBegin, dateFormat);
+      const dtendfmt = format(filter.TransactionDateEnd, dateFormat);
       filterstrs.push(`TransactionDate ge ${dtbgnfmt}`);
       filterstrs.push(`TransactionDate le ${dtendfmt}`);
     }
@@ -1907,8 +1907,8 @@ export class FinanceOdataService {
     const filterstrs: string[] = [];
     filterstrs.push(`HomeID eq ${hid}`);
     if (filter.TransactionDateBegin && filter.TransactionDateEnd) {
-      const dtbgnfmt = filter.TransactionDateBegin.format(momentDateFormat);
-      const dtendfmt = filter.TransactionDateEnd.format(momentDateFormat);
+      const dtbgnfmt = format(filter.TransactionDateBegin, dateFormat);
+      const dtendfmt = format(filter.TransactionDateEnd, dateFormat);
       filterstrs.push(`TransactionDate ge ${dtbgnfmt}`);
       filterstrs.push(`TransactionDate le ${dtendfmt}`);
     }
@@ -2473,7 +2473,7 @@ export class FinanceOdataService {
   /**
    * Change document's date
    */
-  public changeDocumentDateViaPatch(docid: number, docdate: moment.Moment): Observable<Document> {
+  public changeDocumentDateViaPatch(docid: number, docdate: Date): Observable<Document> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
       .append('Content-Type', 'application/json')
@@ -2482,7 +2482,7 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     const objcontent = {
-      TranDate: docdate.format(momentDateFormat),
+      TranDate: format(docdate, dateFormat),
     };
     return this.http
       .patch(`${this.documentAPIUrl}/${docid}`, objcontent, {
@@ -3000,7 +3000,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const today = moment();
+    const today = new Date();
 
     const jdata = {
       HomeID: this.homeService.ChosedHome?.ID,
@@ -3052,7 +3052,7 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-    const today = moment();
+    const today = new Date();
 
     const jdata = {
       HomeID: this.homeService.ChosedHome?.ID,
@@ -3076,7 +3076,7 @@ export class FinanceOdataService {
           if (rjs instanceof Array && rjs.length > 0) {
             rjs.forEach((data: SafeAny) => {
               listrst.push({
-                currentMonth: moment(data.BalanceDate).format(momentDateFormat),
+                currentMonth: format(parse(data.BalanceDate, dateFormat, new Date()), dateFormat),
                 actualAmount: data.Balance,
               });
             });
@@ -3105,12 +3105,12 @@ export class FinanceOdataService {
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
-      const today = moment();
+      const today = new Date();
 
       const jdata = {
         HomeID: this.homeService.ChosedHome?.ID,
-        Year: today.year(),
-        Month: today.month() + 1,
+        Year: today.getFullYear(),
+        Month: today.getMonth() + 1,
         ExcludeTransfer: excludeTransfer,
       };
 
@@ -3142,7 +3142,7 @@ export class FinanceOdataService {
               ConsoleLogTypeEnum.error
             );
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error.toString() + '; ' + error.message));
+            return throwError(() => new Error(error.statusText + '; ' + (error.error?.toString() ?? error.message) + '; ' + error.message));
           })
         );
     } else {
@@ -3556,9 +3556,9 @@ export class FinanceOdataService {
 
     const apiurl: string = environment.ApiUrl + '/GetRepeatedDatesWithAmount';
     const jobject: SafeAny = {
-      StartDate: datainput.StartDate.format(momentDateFormat),
+      StartDate: format(datainput.StartDate, dateFormat),
       TotalAmount: datainput.TotalAmount,
-      EndDate: datainput.EndDate.format(momentDateFormat),
+      EndDate: format(datainput.EndDate, dateFormat),
       RepeatType: RepeatFrequencyEnum[datainput.RepeatType],
       Desp: datainput.Desp,
     };
@@ -3582,7 +3582,7 @@ export class FinanceOdataService {
           if (repdata && repdata.value instanceof Array && repdata.value.length > 0) {
             for (const tt of repdata.value) {
               const rst: RepeatedDatesWithAmountAPIOutput = {
-                TranDate: moment(tt.TranDate, momentDateFormat),
+                TranDate: parse(tt.TranDate, dateFormat, new Date()),
                 TranAmount: tt.TranAmount,
                 Desp: tt.Desp,
               };
@@ -3623,7 +3623,7 @@ export class FinanceOdataService {
       //   Month: datainput.StartDate.month() + 1,
       //   Day: datainput.StartDate.date(),
       // },
-      StartDate: datainput.StartDate.format(momentDateFormat),
+      StartDate: format(datainput.StartDate, dateFormat),
       TotalAmount: datainput.TotalAmount,
       TotalMonths: datainput.TotalMonths,
     };
@@ -3633,10 +3633,10 @@ export class FinanceOdataService {
       //   Month: datainput.EndDate.month() + 1,
       //   Day: datainput.EndDate.date(),
       // };
-      jobject.EndDate = datainput.EndDate.format(momentDateFormat);
+      jobject.EndDate = format(datainput.EndDate, dateFormat);
     }
     if (datainput.FirstRepayDate) {
-      jobject.FirstRepayDate = datainput.FirstRepayDate.format(momentDateFormat);
+      jobject.FirstRepayDate = format(datainput.FirstRepayDate, dateFormat);
     }
     if (datainput.RepayDayInMonth) {
       jobject.RepayDayInMonth = +datainput.RepayDayInMonth;
@@ -3660,7 +3660,7 @@ export class FinanceOdataService {
           if (repdata && repdata.value instanceof Array && repdata.value.length > 0) {
             for (const tt of repdata.value) {
               const rst: RepeatDatesWithAmountAndInterestAPIOutput = {
-                TranDate: moment(tt.TranDate, momentDateFormat),
+                TranDate: parse(tt.TranDate, dateFormat, new Date()),
                 TranAmount: tt.TranAmount,
                 InterestAmount: tt.InterestAmount,
               };
@@ -3691,8 +3691,8 @@ export class FinanceOdataService {
 
     const apiurl: string = environment.ApiUrl + '/GetRepeatedDates';
     const jobject: SafeAny = {
-      StartDate: datainput.StartDate.format(momentDateFormat),
-      EndDate: datainput.EndDate.format(momentDateFormat),
+      StartDate: format(datainput.StartDate, dateFormat),
+      EndDate: format(datainput.EndDate, dateFormat),
       RepeatType: RepeatFrequencyEnum[+datainput.RepeatType],
     };
     const jdata: string = JSON && JSON.stringify(jobject);
@@ -3714,8 +3714,8 @@ export class FinanceOdataService {
           if (y && y.value && y.value instanceof Array && y.value.length > 0) {
             for (const tt of y.value) {
               const rst: RepeatedDatesAPIOutput = {
-                StartDate: moment(tt.StartDate, momentDateFormat),
-                EndDate: moment(tt.EndDate, momentDateFormat),
+                StartDate: parse(tt.StartDate, dateFormat, new Date()),
+                EndDate: parse(tt.EndDate, dateFormat, new Date()),
               };
 
               results.push(rst);
@@ -3747,8 +3747,8 @@ export class FinanceOdataService {
     acntid: number,
     top?: number,
     skip?: number,
-    dtbgn?: moment.Moment,
-    dtend?: moment.Moment
+    dtbgn?: Date,
+    dtend?: Date
   ): Observable<BaseListModel<DocumentItemView>> {
     const filters: GeneralFilterItem[] = [];
     filters.push({
@@ -3762,15 +3762,15 @@ export class FinanceOdataService {
       filters.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: dtbgn.format(momentDateFormat),
+        lowValue: format(dtbgn, dateFormat),
         valueType: GeneralFilterValueType.date,
-        highValue: dtend.format(momentDateFormat),
+        highValue: format(dtend, dateFormat),
       });
     } else if (dtbgn && !dtend) {
       filters.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.LargerEqual,
-        lowValue: dtbgn.format(momentDateFormat),
+        lowValue: format(dtbgn, dateFormat),
         valueType: GeneralFilterValueType.date,
         highValue: '',
       });
@@ -3780,7 +3780,7 @@ export class FinanceOdataService {
         operator: GeneralFilterOperatorEnum.LessEqual,
         lowValue: '',
         valueType: GeneralFilterValueType.date,
-        highValue: dtend.format(momentDateFormat),
+        highValue: format(dtend, dateFormat),
       });
     }
     return this.searchDocItem(filters, top, skip);
@@ -3799,8 +3799,8 @@ export class FinanceOdataService {
     ccid: number,
     top?: number,
     skip?: number,
-    dtbgn?: moment.Moment,
-    dtend?: moment.Moment
+    dtbgn?: Date,
+    dtend?: Date
   ): Observable<BaseListModel<DocumentItemView>> {
     const filters: GeneralFilterItem[] = [];
     filters.push({
@@ -3814,15 +3814,15 @@ export class FinanceOdataService {
       filters.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: dtbgn.format(momentDateFormat),
+        lowValue: format(dtbgn, dateFormat),
         valueType: GeneralFilterValueType.date,
-        highValue: dtend.format(momentDateFormat),
+        highValue: format(dtend, dateFormat),
       });
     } else if (dtbgn && !dtend) {
       filters.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.LargerEqual,
-        lowValue: dtbgn.format(momentDateFormat),
+        lowValue: format(dtbgn, dateFormat),
         valueType: GeneralFilterValueType.date,
         highValue: '',
       });
@@ -3832,7 +3832,7 @@ export class FinanceOdataService {
         operator: GeneralFilterOperatorEnum.LessEqual,
         lowValue: '',
         valueType: GeneralFilterValueType.date,
-        highValue: dtend.format(momentDateFormat),
+        highValue: format(dtend, dateFormat),
       });
     }
     return this.searchDocItem(filters, top, skip);
@@ -3851,8 +3851,8 @@ export class FinanceOdataService {
     ordid: number,
     top?: number,
     skip?: number,
-    dtbgn?: moment.Moment,
-    dtend?: moment.Moment
+    dtbgn?: Date,
+    dtend?: Date
   ): Observable<BaseListModel<DocumentItemView>> {
     const filters: GeneralFilterItem[] = [];
     filters.push({
@@ -3866,15 +3866,15 @@ export class FinanceOdataService {
       filters.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.Between,
-        lowValue: dtbgn.format(momentDateFormat),
+        lowValue: format(dtbgn, dateFormat),
         valueType: GeneralFilterValueType.date,
-        highValue: dtend.format(momentDateFormat),
+        highValue: format(dtend, dateFormat),
       });
     } else if (dtbgn && !dtend) {
       filters.push({
         fieldName: 'TransactionDate',
         operator: GeneralFilterOperatorEnum.LargerEqual,
-        lowValue: dtbgn.format(momentDateFormat),
+        lowValue: format(dtbgn, dateFormat),
         valueType: GeneralFilterValueType.date,
         highValue: '',
       });
@@ -3884,7 +3884,7 @@ export class FinanceOdataService {
         operator: GeneralFilterOperatorEnum.LessEqual,
         lowValue: '',
         valueType: GeneralFilterValueType.date,
-        highValue: dtend.format(momentDateFormat),
+        highValue: format(dtend, dateFormat),
       });
     }
 

@@ -10,13 +10,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, momentDateFormat } from '../../../../model';
+import { UserAuthInfo } from '../../../../model';
 import { DocumentItemInsightComponent } from './document-item-insight.component';
 import { FinanceUIModule } from '../../finance-ui.module';
 import { SafeAny } from '@common/any';
 import { NzTransferModule } from 'ng-zorro-antd/transfer';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
-import moment from 'moment';
+import { format, addMonths, subYears } from 'date-fns';
+import { dateFormat } from '@model/index';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DocumentItemInsightComponent', () => {
@@ -107,7 +108,7 @@ describe('DocumentItemInsightComponent', () => {
 
       let uisrv = TestBed.inject(UIStatusService);
       uisrv.docInsightOption = {
-        SelectedDataRange: [moment(), moment().add(1, 'M')],
+        SelectedDataRange: [new Date(), addMonths(new Date(), 1)],
         TransactionDirection: true
       };
     });
@@ -145,7 +146,7 @@ describe('DocumentItemInsightComponent', () => {
           DocumentID: 1,
           ItemID: 1,
           HomeID: fakeData.chosedHome.ID,
-          TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
+          TransactionDate: format(subYears(new Date(), 1), dateFormat),
           DocumentDesp: 'test',
           AccountID: fakeData.finAccounts[0].Id,
           TransactionType: fakeData.finTranTypes[0].Id,
@@ -159,7 +160,7 @@ describe('DocumentItemInsightComponent', () => {
           DocumentID: 2,
           ItemID: 1,
           HomeID: fakeData.chosedHome.ID,
-          TransactionDate: moment().subtract(1, 'y').format(momentDateFormat),
+          TransactionDate: format(subYears(new Date(), 1), dateFormat),
           DocumentDesp: 'test',
           AccountID: fakeData.finAccounts[0].Id,
           TransactionType: fakeData.finTranTypes[0].Id,
@@ -174,7 +175,7 @@ describe('DocumentItemInsightComponent', () => {
 
       let uisrv = TestBed.inject(UIStatusService);
       uisrv.docInsightOption = {
-        SelectedDataRange: [moment(), moment().add(1, 'M')],
+        SelectedDataRange: [new Date(), addMonths(new Date(), 1)],
         TransactionDirection: true
       };
     });

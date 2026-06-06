@@ -2,12 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 
 import { environment } from '../../environments/environment';
 import {
   LogLevel,
-  momentDateFormat,
+  dateFormat,
   GeneralEvent,
   RecurEvent,
   EventHabit,
@@ -63,8 +63,8 @@ export class EventStorageService {
     skip?: number,
     orderby?: { field: string; order: string },
     skipfinished?: boolean,
-    dtbgn?: moment.Moment,
-    dtend?: moment.Moment
+    dtbgn?: Date,
+    dtend?: Date
   ): Observable<BaseListModel<GeneralEvent>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -89,10 +89,10 @@ export class EventStorageService {
       //   params = params.append('skipfinished', skipfinished.toString());
     }
     if (dtbgn) {
-      //   params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+      //   params = params.append('dtbgn', format(dtbgn, dateFormat));
     }
     if (dtend) {
-      //   params = params.append('dtend', dtend.format(momentDateFormat));
+      //   params = params.append('dtend', format(dtend, dateFormat));
     }
 
     return this._http.get<SafeAny>(this.generalEventUrl, { headers: headers, params: params }).pipe(
@@ -158,7 +158,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -200,7 +200,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -235,7 +235,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -397,7 +397,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -438,7 +438,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -477,7 +477,7 @@ export class EventStorageService {
             ConsoleLogTypeEnum.error
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -525,11 +525,11 @@ export class EventStorageService {
     );
   }
 
-  public fetchHabitDetailWithCheckIn(bgn: moment.Moment, end: moment.Moment): Observable<SafeAny> {
+  public fetchHabitDetailWithCheckIn(bgn: Date, end: Date): Observable<SafeAny> {
     const apiurl: string = environment.ApiUrl + '/HabitEventDetailWithCheckIn';
     const curhid: number = this._homeService.ChosedHome?.ID ?? 0;
-    const bgnstr: string = bgn.format(momentDateFormat);
-    const endstr: string = end.format(momentDateFormat);
+    const bgnstr: string = format(bgn, dateFormat);
+    const endstr: string = format(end, dateFormat);
     const requestUrl = `${apiurl}?hid=${curhid}&dtbgn=${bgnstr}&dtend=${endstr}`;
 
     let headers: HttpHeaders = new HttpHeaders();
@@ -575,7 +575,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService readHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -606,8 +606,8 @@ export class EventStorageService {
           if (val instanceof Array && val.length > 0) {
             for (const dtl of val) {
               const ndtl: EventHabitDetail = new EventHabitDetail();
-              ndtl.StartDate = moment(dtl.startTimePoint, momentDateFormat);
-              ndtl.EndDate = moment(dtl.endTimePoint, momentDateFormat);
+              ndtl.StartDate = parse(dtl.startTimePoint, dateFormat, new Date());
+              ndtl.EndDate = parse(dtl.endTimePoint, dateFormat, new Date());
               ndtl.Name = dtl.name;
               arDetail.push(ndtl);
             }
@@ -619,7 +619,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -654,7 +654,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }
@@ -690,7 +690,7 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
         })
       );
   }

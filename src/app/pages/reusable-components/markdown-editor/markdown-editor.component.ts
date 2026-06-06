@@ -20,7 +20,7 @@ import {
 import { KatexOptions, MarkdownModule } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
 
@@ -774,7 +774,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         cursels!.forEach((sel) => {
           arrst.push({
             range: sel,
-            text: curmodel.getValueInRange(sel) + moment().toString(),
+            text: curmodel.getValueInRange(sel) + format(new Date(), 'yyyy-MM-dd'),
           });
         });
         curmodel.pushEditOperations(cursels, arrst, () => null);

@@ -3,10 +3,9 @@ import { Injectable, EventEmitter, inject } from '@angular/core';
 import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import moment from 'moment';
 
 export interface DocInsightOption {
-  SelectedDataRange: moment.Moment[];
+  SelectedDataRange: Date[];
   SelectedAccount?: number;
   TransactionDirection?: boolean;
   TrnasactionType?: number;

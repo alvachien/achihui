@@ -8,7 +8,8 @@ import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import moment from 'moment';
+import { startOfMonth, endOfMonth, addMonths, addDays, addWeeks, format } from 'date-fns';
+import { dateFormat } from '../../../../model';
 
 import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
@@ -17,7 +18,7 @@ import {createSpyObj, getTranslocoModule,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView, momentDateFormat } from '../../../../model';
+import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
@@ -171,16 +172,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Repeated docs
       ardates = [];
       ardates.push({
-        StartDate: moment().startOf('month'),
-        EndDate: moment().endOf('month'),
+        StartDate: startOfMonth(new Date()),
+        EndDate: endOfMonth(new Date()),
       });
       ardates.push({
-        StartDate: moment().add(1, 'months').startOf('month'),
-        EndDate: moment().add(1, 'months').endOf('month'),
+        StartDate: startOfMonth(addMonths(new Date(), 1)),
+        EndDate: endOfMonth(addMonths(new Date(), 1)),
       });
       ardates.push({
-        StartDate: moment().add(2, 'months').startOf('month'),
-        EndDate: moment().add(2, 'months').endOf('month'),
+        StartDate: startOfMonth(addMonths(new Date(), 2)),
+        EndDate: endOfMonth(addMonths(new Date(), 2)),
       });
       getRepeatedDatesSpy.and.returnValue(asyncData(ardates));
 
@@ -190,7 +191,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
         DocumentID: 1,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().add(1, 'days').format(momentDateFormat),
+        TransactionDate: format(addDays(new Date(), 1), dateFormat),
         DocumentDesp: 'doc 1',
         AccountID: fakeData.finAccounts[0].Id,
         TransactionType: fakeData.finTranTypes[0].Id,
@@ -206,7 +207,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
         DocumentID: 2,
         ItemID: 1,
         HomeID: fakeData.chosedHome.ID,
-        TransactionDate: moment().add(1, 'weeks').format(momentDateFormat),
+        TransactionDate: format(addWeeks(new Date(), 1), dateFormat),
         DocumentDesp: 'doc 2',
         AccountID: fakeData.finAccounts[0].Id,
         TransactionType: fakeData.finTranTypes[0].Id,
@@ -429,7 +430,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeFalsy();
@@ -450,7 +451,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeFalsy();
@@ -474,7 +475,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -512,7 +513,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -548,7 +549,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -576,7 +577,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -610,7 +611,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -652,7 +653,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -694,7 +695,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -736,7 +737,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -778,7 +779,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -829,7 +830,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -878,7 +879,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -946,7 +947,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 0. Input search criteria
       component.searchFormGroup
         .get('dateRangeControl')
-        ?.setValue([moment().startOf('month').toDate(), moment().endOf('month').toDate()]);
+        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();

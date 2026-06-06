@@ -12,7 +12,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import moment from 'moment';
+import { format, parse, isBefore, isAfter } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -41,6 +41,7 @@ import {
   ModelUtility,
   ConsoleLogTypeEnum,
   DocumentItemView,
+  dateFormat,
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
@@ -412,12 +413,12 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       docitems.push(di);
     });
     docitems = docitems.sort((a, b) => {
-      let amoment = moment(a.TransactionDate);
-      let bmoment = moment(b.TransactionDate);
-      if (amoment.isBefore(bmoment)) {
+      let adate = parse(typeof a.TransactionDate === 'string' ? a.TransactionDate : '', dateFormat, new Date());
+      let bdate = parse(typeof b.TransactionDate === 'string' ? b.TransactionDate : '', dateFormat, new Date());
+      if (isBefore(adate, bdate)) {
         return -1;
       }
-      if (moment(amoment).isAfter(bmoment)) {
+      if (isAfter(adate, bdate)) {
         return 1;
       }
       return 0;
@@ -446,7 +447,9 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
     // Sorting
     this.existingDocItems = this.existingDocItems.sort((a: SafeAny, b: SafeAny) => {
-      return a.tranDate.localeCompare(b.tranDate);
+      const dateA = typeof a.tranDate === 'string' ? a.tranDate : (a.tranDate instanceof Date ? format(a.tranDate, dateFormat) : '');
+      const dateB = typeof b.tranDate === 'string' ? b.tranDate : (b.tranDate instanceof Date ? format(b.tranDate, dateFormat) : '');
+      return dateA.localeCompare(dateB);
     });
 
     let curbal = 0;

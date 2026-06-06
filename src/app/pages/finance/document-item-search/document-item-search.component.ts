@@ -3,7 +3,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzResultModule } from 'ng-zorro-antd/result';
@@ -30,7 +30,7 @@ import {
   DocumentItemView,
   ModelUtility,
   ConsoleLogTypeEnum,
-  momentDateFormat,
+  dateFormat,
 } from '../../../model';
 import { UITableColumnItem } from '../../../uimodel';
 import { HomeDefOdataService } from '@services/index';
@@ -168,9 +168,9 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           a
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .TransactionDate! //!.format(moment.HTML5_FMT.DATE)
+            .TransactionDate!
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .localeCompare(b.TransactionDate! ), // .format(moment.HTML5_FMT.DATE)),
+            .localeCompare(b.TransactionDate!),
       },
       {
         name: 'Finance.TransactionType',
@@ -311,9 +311,9 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         case GeneralFilterValueType.date: {
           val.fieldName = value.fieldName;
           val.operator = +value.operator;
-          val.lowValue = moment(value.lowValue).format(momentDateFormat);
+          val.lowValue = format(parse(value.lowValue, dateFormat, new Date()), dateFormat);
           if (value.operator === GeneralFilterOperatorEnum.Between) {
-            val.highValue = moment(value.highValue).format(momentDateFormat);
+            val.highValue = format(parse(value.highValue, dateFormat, new Date()), dateFormat);
           } else {
             val.highValue = '';
           }

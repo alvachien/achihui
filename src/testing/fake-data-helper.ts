@@ -40,7 +40,7 @@ import {
   FinanceAssetBuyinDocumentAPI,
   AccountExtraAsset,
   FinanceAssetSoldoutDocumentAPI,
-  momentDateFormat,
+  dateFormat,
   financeAccountCategoryAsset,
   FinanceAssetValChgDocumentAPI,
   financeAccountCategoryBorrowFrom,
@@ -59,7 +59,15 @@ import {
   PersonRole,
   OrganizationType,
 } from '../app/model';
-import moment from 'moment';
+import {
+  addMonths,
+  addYears,
+  subMonths,
+  subYears,
+  startOfDay,
+  format,
+  parse,
+} from 'date-fns';
 
 export class FakeDataHelper {
   /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -996,8 +1004,8 @@ export class FakeDataHelper {
     brwInfo.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
     brwInfo.TotalMonths = 12;
     brwInfo.annualRate = 0.0435;
-    brwInfo.startDate = moment().subtract(1, 'M').startOf('day');
-    brwInfo.endDate = brwInfo.startDate.add(1, 'y');
+    brwInfo.startDate = startOfDay(subMonths(new Date(), 1));
+    brwInfo.endDate = addYears(brwInfo.startDate, 1);
     brwInfo.loanTmpDocs = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -1006,7 +1014,7 @@ export class FakeDataHelper {
       tmpdoc.InterestAmount = 362.5;
       tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
-      tmpdoc.TranDate = brwInfo.startDate.add(i + 1, 'M');
+      tmpdoc.TranDate = addMonths(brwInfo.startDate, i + 1);
       tmpdoc.ControlCenterId = 1;
       tmpdoc.AccountId = 22;
       brwInfo.loanTmpDocs.push(tmpdoc);
@@ -1025,8 +1033,8 @@ export class FakeDataHelper {
     lendto.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
     lendto.TotalMonths = 12;
     lendto.annualRate = 0.0435;
-    lendto.startDate = moment().subtract(1, 'M').startOf('day');
-    lendto.endDate = brwInfo.startDate.add(1, 'y');
+    lendto.startDate = startOfDay(subMonths(new Date(), 1));
+    lendto.endDate = addYears(lendto.startDate, 1);
     for (let i = 0; i < 5; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
       tmpdoc.DocId = i + 1;
@@ -1034,7 +1042,7 @@ export class FakeDataHelper {
       tmpdoc.InterestAmount = 362.5;
       tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
-      tmpdoc.TranDate = lendto.startDate.add(i + 1, 'M');
+      tmpdoc.TranDate = addMonths(lendto.startDate, i + 1);
       tmpdoc.ControlCenterId = 1;
       tmpdoc.AccountId = 23;
       lendto.loanTmpDocs.push(tmpdoc);
@@ -1057,7 +1065,7 @@ export class FakeDataHelper {
       }
       item.DocId = i + 1;
       item.TranType = 2;
-      item.TranDate = moment().add(i + 1, 'M');
+      item.TranDate = addMonths(new Date(), i + 1);
       item.TranAmount = 20;
       item.Desp = `item ${i + 1}`;
       item.AccountId = 24;
@@ -1277,7 +1285,8 @@ export class FakeDataHelper {
       ctgy = new Order();
       ctgy.Id = i + 1;
       ctgy.HID = this._chosedHome ? this._chosedHome.ID : 0;
-      // ctgy.ValidFrom =
+      ctgy.ValidFrom = subYears(new Date(), 1);
+      ctgy.ValidTo = addYears(new Date(), 1);
       ctgy.Name = `Order ${i + 1}`;
       // S. rules
       if (i === 0) {
@@ -1311,8 +1320,8 @@ export class FakeDataHelper {
       obj = new Plan();
       obj.ID = i + 1;
       obj.HID = this._chosedHome ? this._chosedHome.ID : 0;
-      obj.StartDate = moment();
-      obj.TargetDate = moment().add(1, 'y');
+      obj.StartDate = new Date();
+      obj.TargetDate = addYears(new Date(), 1);
       obj.TargetBalance = 500;
       obj.TranCurrency = this._chosedHome ? this._chosedHome.BaseCurrency : '';
       obj.Description = `Desp ${i + 1}`;
@@ -1333,7 +1342,7 @@ export class FakeDataHelper {
     this._finADPDocumentForCreate.DocType = financeDocTypeAdvancePayment;
     this._finADPDocumentForCreate.Desp = 'Test';
     this._finADPDocumentForCreate.TranCurr = 'CNY';
-    this._finADPDocumentForCreate.TranDate = moment();
+    this._finADPDocumentForCreate.TranDate = new Date();
 
     const ditem: DocumentItem = new DocumentItem();
     ditem.ItemId = 1;
@@ -1355,7 +1364,7 @@ export class FakeDataHelper {
       }
       item.DocId = i + 1;
       item.TranType = 2;
-      item.TranDate = moment().add(i + 1, 'M');
+      item.TranDate = addMonths(new Date(), i + 1);
       item.TranAmount = 20;
       item.Desp = `item ${i + 1}`;
       item.AccountId = 24;
@@ -1365,7 +1374,7 @@ export class FakeDataHelper {
   public buildFinAssetBuyInDocumentForCreate(): FinanceAssetBuyinDocumentAPI {
     const apidetail: FinanceAssetBuyinDocumentAPI = new FinanceAssetBuyinDocumentAPI();
     apidetail.HID = this._chosedHome.ID;
-    apidetail.TranDate = moment().format(momentDateFormat);
+    apidetail.TranDate = format(new Date(), dateFormat);
     apidetail.TranCurr = this._chosedHome.BaseCurrency;
     apidetail.TranAmount = 100;
     apidetail.Desp = 'test';
@@ -1382,7 +1391,7 @@ export class FakeDataHelper {
   public buildFinAssetSoldoutDocumentForCreate(): FinanceAssetSoldoutDocumentAPI {
     const detail: FinanceAssetSoldoutDocumentAPI = new FinanceAssetSoldoutDocumentAPI();
     detail.HID = this._chosedHome.ID;
-    detail.TranDate = moment().format(momentDateFormat);
+    detail.TranDate = format(new Date(), dateFormat);
     detail.TranCurr = this._chosedHome.BaseCurrency;
     detail.TranAmount = 20;
     detail.Desp = 'test';
@@ -1394,7 +1403,7 @@ export class FakeDataHelper {
   public buildFinAssetValueChangeDocumentForCreate(): FinanceAssetValChgDocumentAPI {
     const detailObject: FinanceAssetValChgDocumentAPI = new FinanceAssetValChgDocumentAPI();
     detailObject.HID = this._chosedHome.ID;
-    detailObject.TranDate = moment().format(momentDateFormat);
+    detailObject.TranDate = format(new Date(), dateFormat);
     detailObject.TranCurr = this._chosedHome.BaseCurrency;
     detailObject.Desp = 'test';
     detailObject.AssetAccountID = 21;
@@ -1412,7 +1421,7 @@ export class FakeDataHelper {
     doc.DocType = financeDocTypeNormal;
     doc.Desp = 'Test';
     doc.TranCurr = this.chosedHome ? this.chosedHome.BaseCurrency : 'CNY';
-    doc.TranDate = moment();
+    doc.TranDate = new Date();
 
     const ditem: DocumentItem = new DocumentItem();
     ditem.ItemId = 1;

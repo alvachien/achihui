@@ -4,7 +4,8 @@ import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, Reactive
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, ReplaySubject, of } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import moment from 'moment';
+import { format, parse, startOfDay, isBefore } from 'date-fns';
+import { dateFormat } from '@model/index';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -222,9 +223,9 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
                   this.searchFormGroup.get('docIDControl')?.setValue(tmpdocid);
                   this.searchFormGroup.get('dateRangeControl')?.setValue([
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
+                    this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate! : undefined,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate!.toDate() : undefined,
+                    this.uiService.SelectedLoanTmp ? this.uiService.SelectedLoanTmp.TranDate! : undefined,
                   ]);
                   this.searchFormGroup
                     .get('accountControl')
@@ -343,8 +344,8 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     const docid = this.searchFormGroup.get('docIDControl')?.value;
     const ccid = this.searchFormGroup.get('ccControl')?.value;
     const orderid = this.searchFormGroup.get('orderControl')?.value;
-    const dtbgn: moment.Moment = moment(dtranges[0]);
-    const dtend: moment.Moment = moment(dtranges[1]);
+    const dtbgn: Date = new Date(dtranges[0]);
+    const dtend: Date = new Date(dtranges[1]);
 
     this.listOfLoanTmpDoc = [];
     this.selectedLoanTmpDoc = [];
@@ -566,7 +567,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     // Header
     this.confirmInfo.HID = this.homeService.ChosedHome?.ID ?? 0;
     this.confirmInfo.DocType = financeDocTypeRepay;
-    this.confirmInfo.TranDate = moment(this.headerFormGroup.get('dateControl')?.value as Date);
+    this.confirmInfo.TranDate = new Date(this.headerFormGroup.get('dateControl')?.value as Date);
     this.confirmInfo.TranCurr = this.homeService.ChosedHome?.BaseCurrency ?? '';
     if (this.legacyLoan) {
       this.confirmInfo.Desp = 'Repay';

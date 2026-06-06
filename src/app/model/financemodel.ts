@@ -1,5 +1,25 @@
 import * as hih from './common';
-import moment from 'moment';
+import {
+  format,
+  parse,
+  startOfDay,
+  startOfMonth,
+  startOfYear,
+  startOfQuarter,
+  endOfDay,
+  endOfMonth,
+  endOfYear,
+  endOfQuarter,
+  addMonths,
+  addYears,
+  addDays,
+  subMonths,
+  isBefore,
+  isAfter,
+  isWithinInterval,
+  getDate,
+  isValid as isValidDate,
+} from 'date-fns';
 import { SafeAny } from '@common/any';
 
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -762,8 +782,8 @@ export interface AccountExtraAdvancePaymentJSON extends AccountExtraBaseJson {
  * Extra info: Advance payment
  */
 export class AccountExtraAdvancePayment extends AccountExtra {
-  private _startDate: moment.Moment;
-  private _endDate: moment.Moment;
+  private _startDate: Date;
+  private _endDate: Date;
   private _refDocId: number | null = null;
   private _comment = '';
   public Direct = false;
@@ -771,16 +791,16 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public DeferredDays: number | null = null;
   public dpTmpDocs: TemplateDocADP[] = [];
 
-  get StartDate(): moment.Moment {
+  get StartDate(): Date {
     return this._startDate;
   }
-  set StartDate(sd: moment.Moment) {
+  set StartDate(sd: Date) {
     this._startDate = sd;
   }
-  get EndDate(): moment.Moment {
+  get EndDate(): Date {
     return this._endDate;
   }
-  set EndDate(ed: moment.Moment) {
+  set EndDate(ed: Date) {
     this._endDate = ed;
   }
   get RefDocId(): number | null {
@@ -799,15 +819,15 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   constructor() {
     super();
 
-    this._startDate = moment();
-    this._endDate = moment().add(1, 'y');
+    this._startDate = new Date();
+    this._endDate = addYears(new Date(), 1);
   }
 
   public override onInit(): void {
     super.onInit();
 
-    this._startDate = moment();
-    this._endDate = moment().add(1, 'y');
+    this._startDate = new Date();
+    this._endDate = addYears(new Date(), 1);
     this._comment = '';
     this.RepeatType = null;
     this.dpTmpDocs = [];
@@ -816,10 +836,10 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   }
 
   get isAccountValid(): boolean {
-    if (!this.StartDate || !this.EndDate || !this.StartDate.isValid || !this.EndDate.isValid) {
+    if (!this.StartDate || !this.EndDate || !isValidDate(this.StartDate) || !isValidDate(this.EndDate)) {
       return false;
     }
-    if (this.StartDate.isSameOrAfter(this.EndDate)) {
+    if (!isBefore(this.StartDate, this.EndDate)) {
       return false;
     }
     if (this.RepeatType === null || this.RepeatType === undefined) {
@@ -845,8 +865,8 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public clone(): AccountExtraAdvancePayment {
     const aobj: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
     aobj.Direct = this.Direct;
-    aobj.StartDate = this.StartDate.clone();
-    aobj.EndDate = this.EndDate.clone();
+    aobj.StartDate = new Date(this.StartDate.getTime());
+    aobj.EndDate = new Date(this.EndDate.getTime());
     aobj.RepeatType = this.RepeatType;
     aobj.RefDocId = this.RefDocId;
     aobj.DeferredDays = this.DeferredDays;
@@ -858,8 +878,8 @@ export class AccountExtraAdvancePayment extends AccountExtra {
   public override writeJSONObject(): SafeAny {
     const rstobj: SafeAny = super.writeJSONObject();
     rstobj.Direct = this.Direct;
-    rstobj.StartDate = this._startDate.format(hih.momentDateFormat);
-    rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
+    rstobj.StartDate = format(this._startDate, hih.dateFormat);
+    rstobj.EndDate = format(this._endDate, hih.dateFormat);
     rstobj.RepeatType = this.RepeatType;
     rstobj.ReferenceDocumentID = this.RefDocId;
     rstobj.DefrrDays = this.DeferredDays;
@@ -882,10 +902,10 @@ export class AccountExtraAdvancePayment extends AccountExtra {
       this.Direct = false;
     }
     if (data && data.StartDate) {
-      this._startDate = moment(data.StartDate, hih.momentDateFormat);
+      this._startDate = parse(data.StartDate, hih.dateFormat, new Date());
     }
     if (data && data.EndDate) {
-      this._endDate = moment(data.EndDate, hih.momentDateFormat);
+      this._endDate = parse(data.EndDate, hih.dateFormat, new Date());
     }
     if (data && data.RepeatType) {
       this.RepeatType = data.RepeatType;
@@ -933,8 +953,8 @@ export class AccountExtraAsset extends AccountExtra {
   private _name = '';
   private _comment = '';
   public CategoryID: number | null = null;
-  public BoughtDate: moment.Moment | null = null;
-  public ExpiredDate: moment.Moment | null = null;
+  public BoughtDate: Date | null = null;
+  public ExpiredDate: Date | null = null;
   public ResidualValue: number | null = null;
   public RefDocForBuy: number | null = null;
   public RefDocForSold: number | null = null;
@@ -987,10 +1007,10 @@ export class AccountExtraAsset extends AccountExtra {
     rstobj.Name = this.Name;
     rstobj.Comment = this.Comment;
     if (this.BoughtDate) {
-      rstobj.BoughtDate = this.BoughtDate.format(hih.momentDateFormat);
+      rstobj.BoughtDate = format(this.BoughtDate, hih.dateFormat);
     }
     if (this.ExpiredDate) {
-      rstobj.ExpiredDate = this.ExpiredDate.format(hih.momentDateFormat);
+      rstobj.ExpiredDate = format(this.ExpiredDate, hih.dateFormat);
     }
     if (this.ResidualValue) {
       rstobj.ResidualValue = this.ResidualValue;
@@ -1018,10 +1038,10 @@ export class AccountExtraAsset extends AccountExtra {
       this.Comment = data.Comment;
     }
     if (data && data.BoughtDate) {
-      this.BoughtDate = moment(data.BoughtDate);
+      this.BoughtDate = parse(data.BoughtDate, hih.dateFormat, new Date());
     }
     if (data && data.ExpiredDate) {
-      this.ExpiredDate = moment(data.ExpiredDate);
+      this.ExpiredDate = parse(data.ExpiredDate, hih.dateFormat, new Date());
     }
     if (data && data.ResidualValue) {
       this.ResidualValue = data.ResidualValue;
@@ -1057,41 +1077,41 @@ export interface AccountExtraLoanJson extends AccountExtraBaseJson {
  * Extra info: Loan
  */
 export class AccountExtraLoan extends AccountExtra {
-  private _startDate: moment.Moment | null = null;
-  private _endDate: moment.Moment | null = null;
+  private _startDate: Date | null = null;
+  private _endDate: Date | null = null;
   private _annualRate: number | null = null;
   private _payingAccount: number | null = null;
   private _partner: string | null = null;
   private _interestFree: boolean | null = null;
   private _totalMonths: number | null = null;
   private _comment = '';
-  private _firstRepayDate: moment.Moment | null = null;
+  private _firstRepayDate: Date | null = null;
   private _repayDayInMonth: number | null = null;
   public RepayMethod: RepaymentMethodEnum = RepaymentMethodEnum.DueRepayment;
   public RefDocId: number | null = null;
   public loanTmpDocs: TemplateDocLoan[] = [];
 
-  get startDate(): moment.Moment | null {
+  get startDate(): Date | null {
     return this._startDate;
   }
-  set startDate(sd: moment.Moment | null) {
+  set startDate(sd: Date | null) {
     this._startDate = sd;
   }
   get StartDateFormatString(): string | null {
     if (this._startDate !== null) {
-      return this._startDate.format(hih.momentDateFormat);
+      return format(this._startDate, hih.dateFormat);
     }
     return null;
   }
-  get endDate(): moment.Moment | null {
+  get endDate(): Date | null {
     return this._endDate;
   }
-  set endDate(ed: moment.Moment | null) {
+  set endDate(ed: Date | null) {
     this._endDate = ed;
   }
   get EndDateFormatString(): string | null {
     if (this._endDate !== null) {
-      return this._endDate.format(hih.momentDateFormat);
+      return format(this._endDate, hih.dateFormat);
     }
     return null;
   }
@@ -1131,10 +1151,10 @@ export class AccountExtraLoan extends AccountExtra {
   set Comment(cmt: string) {
     this._comment = cmt;
   }
-  get FirstRepayDate(): moment.Moment | null {
+  get FirstRepayDate(): Date | null {
     return this._firstRepayDate;
   }
-  set FirstRepayDate(firstdate: moment.Moment | null) {
+  set FirstRepayDate(firstdate: Date | null) {
     this._firstRepayDate = firstdate;
   }
   get RepayDayInMonth(): number | null {
@@ -1148,7 +1168,7 @@ export class AccountExtraLoan extends AccountExtra {
     if (this.startDate === undefined || this.startDate === null) {
       return false;
     }
-    if (this.endDate && this.endDate.isSameOrBefore(this.startDate)) {
+    if (this.endDate && !isAfter(this.endDate, this.startDate)) {
       return false;
     }
 
@@ -1177,7 +1197,7 @@ export class AccountExtraLoan extends AccountExtra {
       return false;
     }
     if (this.FirstRepayDate && this.RepayDayInMonth) {
-      if (this.FirstRepayDate.date() !== this.RepayDayInMonth) {
+      if (this.FirstRepayDate && getDate(this.FirstRepayDate) !== this.RepayDayInMonth) {
         return false;
       }
     }
@@ -1187,9 +1207,9 @@ export class AccountExtraLoan extends AccountExtra {
       }
     }
     if (this.FirstRepayDate) {
-      const bgndate = this.startDate.add(30, 'days');
-      const enddate = this.startDate.add(60, 'days');
-      if (!this.FirstRepayDate.isBetween(bgndate, enddate)) {
+      const bgndate = addDays(this.startDate, 30);
+      const enddate = addDays(this.startDate, 60);
+      if (!isWithinInterval(this.FirstRepayDate, { start: bgndate, end: enddate })) {
         return false;
       }
     }
@@ -1217,7 +1237,7 @@ export class AccountExtraLoan extends AccountExtra {
   public override onInit(): void {
     super.onInit();
 
-    this._startDate = moment();
+    this._startDate = new Date();
     this._firstRepayDate = null;
     this._repayDayInMonth = null;
   }
@@ -1242,9 +1262,9 @@ export class AccountExtraLoan extends AccountExtra {
 
   public override writeJSONObject(): AccountExtraLoanJson {
     const rstobj: AccountExtraLoanJson = super.writeJSONObject() as AccountExtraLoanJson;
-    rstobj.StartDate = this._startDate?.format(hih.momentDateFormat) ?? '';
+    rstobj.StartDate = this._startDate ? format(this._startDate, hih.dateFormat) : '';
     if (this._endDate) {
-      rstobj.EndDate = this._endDate.format(hih.momentDateFormat);
+      rstobj.EndDate = format(this._endDate, hih.dateFormat);
     }
     if (this.annualRate) {
       rstobj.AnnualRate = this.annualRate;
@@ -1272,7 +1292,7 @@ export class AccountExtraLoan extends AccountExtra {
       rstobj.LoanTmpDocs.push(tdocjson);
     }
     // if (this._firstRepayDate) {
-    //   rstobj. = this._firstRepayDate.format(hih.momentDateFormat);
+    //   rstobj. = format(this._firstRepayDate, hih.dateFormat);
     // }
     // if (this._repayDayInMonth) {
     //   rstobj.R = this._repayDayInMonth;
@@ -1285,10 +1305,10 @@ export class AccountExtraLoan extends AccountExtra {
     super.onSetData(data);
 
     if (data && data.StartDate) {
-      this._startDate = moment(data.StartDate, hih.momentDateFormat);
+      this._startDate = parse(data.StartDate, hih.dateFormat, new Date());
     }
     if (data && data.EndDate) {
-      this._endDate = moment(data.EndDate, hih.momentDateFormat);
+      this._endDate = parse(data.EndDate, hih.dateFormat, new Date());
     }
     if (data && data.AnnualRate) {
       this.annualRate = +data.AnnualRate;
@@ -1323,7 +1343,7 @@ export class AccountExtraLoan extends AccountExtra {
       }
     }
     // if (data && data.firstRepayDate) {
-    //   this._firstRepayDate = moment(data.firstRepayDate, hih.momentDateFormat);
+    //   this._firstRepayDate = parse(data.firstRepayDate, hih.dateFormat, new Date());
     // }
     // if (data && data.repayDayInMonth) {
     //   this._repayDayInMonth = data.repayDayInMonth;
@@ -1335,7 +1355,7 @@ export class AccountExtraLoan extends AccountExtra {
 export class AccountReconcileExpect {
   currentMonth: Date;
   get currentMonthStr(): string {
-    return moment(this.currentMonth).format(hih.momentDateFormat);
+    return format(this.currentMonth, hih.dateFormat);
   }
 
   expectedAmount: number;
@@ -1539,8 +1559,8 @@ export class Order extends hih.BaseModel {
   private _hid?: number;
   private _name = '';
   private _cmt = '';
-  private _validFrom?: moment.Moment;
-  private _validTo?: moment.Moment;
+  private _validFrom?: Date;
+  private _validTo?: Date;
 
   get Id(): number | undefined {
     return this._id;
@@ -1566,23 +1586,23 @@ export class Order extends hih.BaseModel {
   set Comment(cmt: string) {
     this._cmt = cmt;
   }
-  get ValidFrom(): moment.Moment | undefined {
+  get ValidFrom(): Date | undefined {
     return this._validFrom;
   }
-  set ValidFrom(vf: moment.Moment | undefined) {
+  set ValidFrom(vf: Date | undefined) {
     this._validFrom = vf;
   }
-  get ValidTo(): moment.Moment | undefined {
+  get ValidTo(): Date | undefined {
     return this._validTo;
   }
-  set ValidTo(vt: moment.Moment | undefined) {
+  set ValidTo(vt: Date | undefined) {
     this._validTo = vt;
   }
   get ValidFromFormatString(): string {
-    return this._validFrom ? this._validFrom.format(hih.momentDateFormat) : '';
+    return this._validFrom ? format(this._validFrom, hih.dateFormat) : '';
   }
   get ValidToFormatString(): string {
-    return this._validTo ? this._validTo.format(hih.momentDateFormat) : '';
+    return this._validTo ? format(this._validTo, hih.dateFormat) : '';
   }
 
   public SRules: SettlementRule[] = [];
@@ -1599,8 +1619,8 @@ export class Order extends hih.BaseModel {
     this._name = '';
     this._cmt = '';
 
-    this._validFrom = moment();
-    this._validTo = this._validFrom.clone().add(1, 'M');
+    this._validFrom = new Date();
+    this._validTo = addMonths(this._validFrom, 1);
     this.SRules = [];
   }
 
@@ -1637,7 +1657,7 @@ export class Order extends hih.BaseModel {
         chkrst = false;
       }
       // Valid to > valid from
-      if (this.ValidTo && this.ValidFrom && this.ValidTo.startOf('day').isAfter(this.ValidFrom.startOf('day'))) {
+      if (this.ValidTo && this.ValidFrom && isAfter(startOfDay(this.ValidTo), startOfDay(this.ValidFrom))) {
         // Allowed
       } else {
         this._addMessage(hih.MessageType.Error, 'Common.InvalidValidRange', 'Common.ValidToMustLaterThanValidFrom');
@@ -1705,8 +1725,8 @@ export class Order extends hih.BaseModel {
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
     rstObj.Name = this.Name;
-    rstObj.ValidFrom = this._validFrom?.format(hih.momentDateFormat);
-    rstObj.ValidTo = this._validTo?.format(hih.momentDateFormat);
+    rstObj.ValidFrom = this._validFrom ? format(this._validFrom, hih.dateFormat) : undefined;
+    rstObj.ValidTo = this._validTo ? format(this._validTo, hih.dateFormat) : undefined;
     rstObj.Comment = this.Comment;
     rstObj.SRule = [];
 
@@ -1735,10 +1755,10 @@ export class Order extends hih.BaseModel {
       this.Comment = data.Comment;
     }
     if (data && data.ValidFrom) {
-      this.ValidFrom = moment(data.ValidFrom, hih.momentDateFormat);
+      this.ValidFrom = parse(data.ValidFrom, hih.dateFormat, new Date());
     }
     if (data && data.ValidTo) {
-      this.ValidTo = moment(data.ValidTo, hih.momentDateFormat);
+      this.ValidTo = parse(data.ValidTo, hih.dateFormat, new Date());
     }
 
     this.SRules = [];
@@ -2053,7 +2073,7 @@ export interface DocumentJson {
  */
 export class Document extends hih.BaseModel {
   private _id?: number;
-  private _tranDate: moment.Moment = moment();
+  private _tranDate: Date = new Date();
   private _hid?: number;
   private _doctype?: number;
   private _trancurr = '';
@@ -2124,23 +2144,23 @@ export class Document extends hih.BaseModel {
   set ExgRate_Plan2(pl: boolean | undefined) {
     this._exgrate2Plan = pl;
   }
-  get TranDate(): moment.Moment {
+  get TranDate(): Date {
     return this._tranDate;
   }
-  set TranDate(td: moment.Moment) {
+  set TranDate(td: Date) {
     this._tranDate = td;
   }
 
   public Items: DocumentItem[] = [];
 
   get TranDateFormatString(): string {
-    return this._tranDate.format(hih.momentDateFormat);
+    return format(this._tranDate, hih.dateFormat);
   }
 
   constructor() {
     super();
 
-    this.TranDate = moment();
+    this.TranDate = new Date();
   }
 
   public override onInit(): void {
@@ -2321,7 +2341,7 @@ export class Document extends hih.BaseModel {
             if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
               const vordidx: number = context.Orders.findIndex((ord: Order) => {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return +fit.OrderId! === +ord!.Id! && this.TranDate.isBetween(ord.ValidFrom, ord.ValidTo);
+                return +fit.OrderId! === +ord!.Id! && ord.ValidFrom && ord.ValidTo && isWithinInterval(this.TranDate, { start: ord.ValidFrom, end: ord.ValidTo });
               });
 
               if (vordidx === -1) {
@@ -2356,7 +2376,7 @@ export class Document extends hih.BaseModel {
     rstObj.ID = this.Id;
     rstObj.HomeID = this.HID;
     rstObj.DocType = this.DocType;
-    rstObj.TranDate = this._tranDate.format(hih.momentDateFormat);
+    rstObj.TranDate = format(this._tranDate, hih.dateFormat);
     rstObj.TranCurr = this.TranCurr;
     if (this.TranCurr2) {
       rstObj.TranCurr2 = this.TranCurr2;
@@ -2397,7 +2417,7 @@ export class Document extends hih.BaseModel {
       this.DocType = +data.DocType;
     }
     if (data && data.TranDate) {
-      this.TranDate = moment(data.TranDate, hih.momentDateFormat);
+      this.TranDate = parse(data.TranDate, hih.dateFormat, new Date());
     }
     if (data && data.TranCurr) {
       this.TranCurr = data.TranCurr;
@@ -2785,7 +2805,7 @@ export class DocumentItem {
  * Tempalte docs base class
  */
 export abstract class TemplateDocBase extends hih.BaseModel {
-  protected _tranDate?: moment.Moment;
+  protected _tranDate?: Date;
   protected _totalAmount = 0;
   protected _tranAmount = 0;
   protected _tranType?: number;
@@ -2846,15 +2866,15 @@ export abstract class TemplateDocBase extends hih.BaseModel {
   set Desp(dsp: string) {
     this._desp = dsp;
   }
-  get TranDate(): moment.Moment | undefined {
+  get TranDate(): Date | undefined {
     return this._tranDate;
   }
-  set TranDate(td: moment.Moment | undefined) {
+  set TranDate(td: Date | undefined) {
     this._tranDate = td;
   }
   get TranDateFormatString(): string | null {
     if (this._tranDate) {
-      return this._tranDate.format(hih.momentDateFormat);
+      return format(this._tranDate, hih.dateFormat);
     }
     return null;
   }
@@ -2868,13 +2888,13 @@ export abstract class TemplateDocBase extends hih.BaseModel {
   constructor() {
     super();
 
-    this.TranDate = moment();
+    this.TranDate = new Date();
   }
 
   public override onInit(): void {
     super.onInit();
 
-    this.TranDate = moment();
+    this.TranDate = new Date();
   }
 
   public override onVerify(context?: SafeAny): boolean {
@@ -2894,7 +2914,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
     rstObj.HomeID = this.HID;
     rstObj.ReferenceDocumentID = this.RefDocId;
     rstObj.AccountID = this.AccountId;
-    rstObj.TransactionDate = this._tranDate?.format(hih.momentDateFormat) ?? '';
+    rstObj.TransactionDate = this._tranDate ? format(this._tranDate, hih.dateFormat) : '';
     rstObj.TransactionType = this.TranType;
     rstObj.TransactionAmount = this.TranAmount;
     rstObj.TranAmount = this.TranAmount;
@@ -2925,7 +2945,7 @@ export abstract class TemplateDocBase extends hih.BaseModel {
       this.AccountId = +data.AccountID;
     }
     if (data && data.TransactionDate) {
-      this.TranDate = moment(data.TransactionDate, hih.momentDateFormat);
+      this.TranDate = parse(data.TransactionDate, hih.dateFormat, new Date());
     }
     if (data && data.TransactionType) {
       this.TranType = +data.TransactionType;
@@ -3016,8 +3036,8 @@ export class Plan extends hih.BaseModel {
   private _accountCtgyID?: number;
   private _ccID?: number;
   private _tranTypeID?: number;
-  private _startDate?: moment.Moment;
-  private _targetDate?: moment.Moment;
+  private _startDate?: Date;
+  private _targetDate?: Date;
   private _tagetBalance = 0;
   private _tranCurr = '';
   private _description = '';
@@ -3064,23 +3084,23 @@ export class Plan extends hih.BaseModel {
   set TranTypeID(ttid: number | undefined) {
     this._tranTypeID = ttid;
   }
-  get StartDate(): moment.Moment | undefined {
+  get StartDate(): Date | undefined {
     return this._startDate;
   }
-  set StartDate(sd: moment.Moment | undefined) {
+  set StartDate(sd: Date | undefined) {
     this._startDate = sd;
   }
   get StartDateString(): string {
-    return this._startDate ? this._startDate.format(hih.momentDateFormat) : '';
+    return this._startDate ? format(this._startDate, hih.dateFormat) : '';
   }
-  get TargetDate(): moment.Moment | undefined {
+  get TargetDate(): Date | undefined {
     return this._targetDate;
   }
-  set TargetDate(td: moment.Moment | undefined) {
+  set TargetDate(td: Date | undefined) {
     this._targetDate = td;
   }
   get TargetDateString(): string {
-    return this._targetDate ? this._targetDate.format(hih.momentDateFormat) : '';
+    return this._targetDate ? format(this._targetDate, hih.dateFormat) : '';
   }
   get TargetBalance(): number {
     return this._tagetBalance;
@@ -3108,19 +3128,19 @@ export class Plan extends hih.BaseModel {
   public override onInit(): void {
     super.onInit();
 
-    this._startDate = moment().startOf('day');
-    this._targetDate = moment().add(1, 'y').startOf('day');
+    this._startDate = startOfDay(new Date());
+    this._targetDate = startOfDay(addYears(new Date(), 1));
   }
   public override onVerify(context?: SafeAny): boolean {
     let bsuccess = super.onVerify(context);
     if (bsuccess) {
       // Check dates
-      const today: moment.Moment = moment();
-      if (today.isAfter(this.TargetDate)) {
+      const today: Date = new Date();
+      if (this.TargetDate && isAfter(today, this.TargetDate)) {
         this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
         bsuccess = false;
       }
-      if (this.StartDate && this.StartDate.isSameOrAfter(this.TargetDate)) {
+      if (this.StartDate && this.TargetDate && !isBefore(this.StartDate, this.TargetDate)) {
         this._addMessage(hih.MessageType.Error, 'Common.InvalidDate', 'Common.InvalidDate');
         bsuccess = false;
       }
@@ -3151,8 +3171,8 @@ export class Plan extends hih.BaseModel {
       default:
         break;
     }
-    rstObj.StartDate = this.StartDate?.format(hih.momentDateFormat);
-    rstObj.TargetDate = this.TargetDate?.format(hih.momentDateFormat);
+    rstObj.StartDate = this.StartDate ? format(this.StartDate, hih.dateFormat) : undefined;
+    rstObj.TargetDate = this.TargetDate ? format(this.TargetDate, hih.dateFormat) : undefined;
     rstObj.TargetBalance = this.TargetBalance;
     rstObj.TranCurr = this.TranCurrency;
     rstObj.Description = this.Description;
@@ -3186,10 +3206,10 @@ export class Plan extends hih.BaseModel {
       this.ControlCenterID = data.ControlCenterID;
     }
     if (data && data.StartDate) {
-      this.StartDate = moment(data.StartDate, hih.momentDateFormat);
+      this.StartDate = parse(data.StartDate, hih.dateFormat, new Date());
     }
     if (data && data.TargetDate) {
-      this.TargetDate = moment(data.TargetDate, hih.momentDateFormat);
+      this.TargetDate = parse(data.TargetDate, hih.dateFormat, new Date());
     }
     if (data && data.TargetBalance) {
       this.TargetBalance = data.TargetBalance;
@@ -3454,7 +3474,7 @@ export class TranTypeReport {
     this._tranAmount = tamt;
   }
 
-  public TranDate?: moment.Moment;
+  public TranDate?: Date;
 
   public onSetData(data: SafeAny): void {
     if (data && data.tranType) {
@@ -3467,7 +3487,7 @@ export class TranTypeReport {
       this.ExpenseFlag = data.expenseFlag;
     }
     if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
+      this.TranDate = parse(data.tranDate, hih.dateFormat, new Date());
     }
     if (data && data.tranAmount) {
       this.TranAmount = +data.tranAmount;
@@ -3507,7 +3527,7 @@ export enum ReportTrendExTypeEnum {
 }
 
 export class ReportTrendExData {
-  tranDate?: moment.Moment;
+  tranDate?: Date;
   tranWeek?: number;
   tranMonth?: number;
   tranYear?: number;
@@ -3516,7 +3536,7 @@ export class ReportTrendExData {
 
   public onSetData(data: SafeAny): void {
     if (data && data.tranDate) {
-      this.tranDate = moment(data.tranDate, hih.momentDateFormat);
+      this.tranDate = parse(data.tranDate, hih.dateFormat, new Date());
     }
     if (data && data.tranWeek) {
       this.tranWeek = data.tranWeek;
@@ -3540,7 +3560,7 @@ export class ReportTrendExData {
  * Document item with balance
  */
 export class DocumentItemWithBalance {
-  private _tranDate: moment.Moment = moment();
+  private _tranDate: Date = new Date();
   public TranType_Exp = false;
   public TranCurr = '';
   public TranAmount = 0;
@@ -3561,14 +3581,14 @@ export class DocumentItemWithBalance {
   public TranTypeName = '';
   public ControlCenterName = '';
   public OrderName = '';
-  get TranDate(): moment.Moment {
+  get TranDate(): Date {
     return this._tranDate;
   }
-  set TranDate(td: moment.Moment) {
+  set TranDate(td: Date) {
     this._tranDate = td;
   }
   get TranDateFormatString(): string {
-    return this._tranDate.format(hih.momentDateFormat);
+    return format(this._tranDate, hih.dateFormat);
   }
 
   public onSetData(data: SafeAny): void {
@@ -3604,7 +3624,7 @@ export class DocumentItemWithBalance {
       this.OrderName = data.orderName;
     }
     if (data && data.tranDate) {
-      this.TranDate = moment(data.tranDate, hih.momentDateFormat);
+      this.TranDate = parse(data.tranDate, hih.dateFormat, new Date());
     }
     if (data && data.docDesp) {
       this.DocDesp = data.docDesp;
@@ -3643,9 +3663,9 @@ export class DocumentWithPlanExgRate {
   public HID?: number;
   public DocID?: number;
   public DocType?: number;
-  public TranDate: moment.Moment = moment();
+  public TranDate: Date = new Date();
   get TranDateDisplayString(): string {
-    return this.TranDate.format(hih.momentDateFormat);
+    return format(this.TranDate, hih.dateFormat);
   }
   public Desp = '';
   public TranCurr = '';
@@ -3667,7 +3687,7 @@ export class DocumentWithPlanExgRate {
       this.DocType = +jdata.docType;
     }
     if (jdata && jdata.tranDate) {
-      this.TranDate = moment(jdata.tranDate, hih.momentDateFormat);
+      this.TranDate = parse(jdata.tranDate, hih.dateFormat, new Date());
     }
     if (jdata && jdata.desp) {
       this.Desp = jdata.desp;
@@ -3816,7 +3836,7 @@ export class FinanceAssetValChgDocumentAPI extends FinanceAssetDocumentAPIBase {
 
 // Normal document Mass Create
 export class FinanceNormalDocItemMassCreate {
-  public tranDate: moment.Moment = moment();
+  public tranDate: Date = new Date();
   public accountID = 0;
   public tranType = 0;
   public tranAmount = 0;
@@ -3923,11 +3943,11 @@ export class FinanceReportEntryMoM extends FinanceReportEntry {
 }
 
 export class FinanceReportEntryPerDate extends FinanceReportEntry {
-  public transactionDate: moment.Moment = moment();
+  public transactionDate: Date = new Date();
   public override onSetData(val: SafeAny): void {
     super.onSetData(val);
     if (val && val.TransactionDate) {
-      this.transactionDate = moment(val.TransactionDate, hih.momentDateFormat);
+      this.transactionDate = parse(val.TransactionDate, hih.dateFormat, new Date());
     }
   }
 }
@@ -4039,8 +4059,8 @@ export class FinanceOverviewKeyfigure {
 
 // Filter for Tmp Doc.
 export interface FinanceTmpDPDocFilter {
-  TransactionDateBegin?: moment.Moment;
-  TransactionDateEnd?: moment.Moment;
+  TransactionDateBegin?: Date;
+  TransactionDateEnd?: Date;
   ReferenceDocumentID?: number;
   IsPosted?: boolean;
   AccountID?: number;
@@ -4048,8 +4068,8 @@ export interface FinanceTmpDPDocFilter {
 
 // Filter for Loan Doc.
 export interface FinanceTmpLoanDocFilter {
-  TransactionDateBegin?: moment.Moment;
-  TransactionDateEnd?: moment.Moment;
+  TransactionDateBegin?: Date;
+  TransactionDateEnd?: Date;
   ReferenceDocumentID?: number;
   IsPosted?: boolean;
   AccountID?: number;
@@ -4061,7 +4081,7 @@ export interface FinanceTmpLoanDocFilter {
 export interface FinanceAssetDepreicationResult {
   HID: number;
   AssetAccountID: number;
-  TranDate?: moment.Moment;
+  TranDate?: Date;
   TranAmount?: number;
   TranCurr?: string;
 }

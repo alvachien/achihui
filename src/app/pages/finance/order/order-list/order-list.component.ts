@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { isBefore, isAfter } from 'date-fns';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzResultModule } from 'ng-zorro-antd/result';
@@ -65,8 +65,8 @@ export class OrderListComponent implements OnInit, OnDestroy {
   }
   invalidOrder(ord: Order): boolean {
     if (ord) {
-      const cur: moment.Moment = moment();
-      if (ord.ValidFrom && ord.ValidFrom.isBefore(cur) && ord.ValidTo && ord.ValidTo.isAfter(cur)) {
+      const cur = new Date();
+      if (ord.ValidFrom && isBefore(ord.ValidFrom, cur) && ord.ValidTo && isAfter(ord.ValidTo, cur)) {
         return false;
       }
     }

@@ -9,7 +9,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import moment from 'moment';
+import { startOfMonth, endOfMonth, format } from 'date-fns';
 
 import {createSpyObj, getTranslocoModule,
   FakeDataHelper,
@@ -17,7 +17,7 @@ import {createSpyObj, getTranslocoModule,
   ElementClass_DialogContent,
   ElementClass_DialogCloseButton,} from '../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../services';
-import { UserAuthInfo, momentDateFormat, TemplateDocADP, TemplateDocLoan } from '../../model';
+import { UserAuthInfo, dateFormat, TemplateDocADP, TemplateDocLoan } from '../../model';
 import { FinanceComponent } from './finance.component';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -127,15 +127,15 @@ describe('FinanceComponent', () => {
     });
 
     it('Should work for DP and Loan docs', async () => {
-      const dat1 = moment().startOf('month');
-      const dat2 = moment().endOf('month');
+      const dat1 = startOfMonth(new Date());
+      const dat2 = endOfMonth(new Date());
       arLoanTmpDoc = [];
       arDPTmpDoc = [];
       const dp1: TemplateDocADP = new TemplateDocADP();
       dp1.DocId = 1;
       dp1.HID = fakeData.chosedHome.ID;
       dp1.TranAmount = 100;
-      dp1.TranDate = dat1.clone();
+      dp1.TranDate = dat1;
       dp1.AccountId = 1;
       dp1.Desp = 'test1';
       arDPTmpDoc.push(dp1);
@@ -143,14 +143,14 @@ describe('FinanceComponent', () => {
       dp2.HID = fakeData.chosedHome.ID;
       dp2.DocId = 2;
       dp2.TranAmount = 200;
-      dp2.TranDate = dat2.clone();
+      dp2.TranDate = new Date(dat2);
       dp2.AccountId = 1;
       dp2.Desp = 'test2';
       arDPTmpDoc.push(dp2);
       const loan1: TemplateDocLoan = new TemplateDocLoan();
       loan1.HID = fakeData.chosedHome.ID;
       loan1.Desp = 'Loan 1';
-      loan1.TranDate = dat2.clone();
+      loan1.TranDate = new Date(dat2);
       loan1.DocId = 3;
       loan1.AccountId = 1;
       loan1.TranAmount = 300;
@@ -159,7 +159,7 @@ describe('FinanceComponent', () => {
       fetchAllLoanTmpDocsSpy.and.returnValue(of(arLoanTmpDoc));
       createDocumentFromDPTemplateSpy.and.returnValue(
         of({
-          TranDate: dat1.clone(),
+          TranDate: new Date(dat1),
         })
       );
       fixture.detectChanges();
@@ -177,7 +177,7 @@ describe('FinanceComponent', () => {
       expect(createDocumentFromDPTemplateSpy).toHaveBeenCalled();
       expect(component.listDate.length).toEqual(1);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(component.listDate[0].CurrentDate!.format(momentDateFormat)).toEqual(dat2.format(momentDateFormat));
+      expect(format(component.listDate[0].CurrentDate!, dateFormat)).toEqual(format(dat2, dateFormat));
 
       // Post the Loan doc
       const routerstub = TestBed.inject(Router);

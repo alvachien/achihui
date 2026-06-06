@@ -5,7 +5,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { format, parse, isBefore, startOfDay, startOfMonth, startOfYear, endOfDay, endOfMonth, endOfYear, addMonths, getDate } from 'date-fns';
 
 import {
   ModelUtility,
@@ -18,7 +18,7 @@ import {
   FinanceAssetDepreciationCreationItem,
   Account,
   BuildupOrderForSelection,
-  momentDateFormat,
+  dateFormat,
 } from '../../model';
 import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '../../services';
 import { SafeAny } from '@common/any';
@@ -47,7 +47,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 
 class DateCellData {
-  public CurrentDate: moment.Moment | null = null;
+  public CurrentDate: Date | null = null;
   public DPDocs: TemplateDocADP[] = [];
   public LoanDocs: TemplateDocLoan[] = [];
 }
@@ -152,10 +152,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
   getDPDocsByDate(date: Date): TemplateDocADP[] {
     const dpdocs: TemplateDocADP[] = [];
 
-    const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (cell.CurrentDate!.isSame(mcell)) {
+      if (!isBefore(cell.CurrentDate!, date) && isBefore(cell.CurrentDate!, new Date(date.getTime() + 86400000))) {
         dpdocs.push(...cell.DPDocs);
       }
     });
@@ -165,10 +164,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
   getLoanDocsByDate(date: Date): TemplateDocLoan[] {
     const dpdocs: TemplateDocLoan[] = [];
 
-    const mcell = moment(date);
     this.listDate.forEach((cell: DateCellData) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (cell.CurrentDate!.isSame(mcell)) {
+      if (!isBefore(cell.CurrentDate!, date) && isBefore(cell.CurrentDate!, new Date(date.getTime() + 86400000))) {
         dpdocs.push(...cell.LoanDocs);
       }
     });
@@ -176,8 +174,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
     return dpdocs;
   }
   isLastDateInMonth(seledDate: Date): boolean {
-    const mdate = moment(seledDate);
-    return mdate.daysInMonth() === mdate.date();
+    const eom = endOfMonth(seledDate);
+    return getDate(seledDate) === getDate(eom);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -198,9 +196,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   onAssetDeprec(seldate: Date): void {
-    const ment = moment(seldate);
-    const year = ment.year();
-    const month = ment.month() + 1;
+    const year = seldate.getFullYear();
+    const month = seldate.getMonth() + 1;
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -222,7 +219,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
             TranAmount: rst.TranAmount!,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             TranCurr: rst.TranCurr!,
-            TranDate: moment(rst.TranDate).format(momentDateFormat),
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            TranDate: format(rst.TranDate!, dateFormat),
             HID: rst.HID,
             Desp: '',
           });
@@ -293,10 +291,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   fetchData(forceReload = false): void {
-    const dtbgn: moment.Moment = moment(this.selectedDate);
-    const dtend: moment.Moment = moment(this.selectedDate);
-    dtbgn.startOf('month');
-    dtend.endOf('month');
+    const dtbgn: Date = startOfMonth(this.selectedDate as Date);
+    const dtend: Date = endOfMonth(this.selectedDate as Date);
 
     this.isLoadingResults = true;
     forkJoin([
@@ -326,12 +322,12 @@ export class FinanceComponent implements OnInit, OnDestroy {
             rsts[0].forEach((val: TemplateDocADP) => {
               const idx = this.listDate.findIndex((cell) => {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
+                return !isBefore(startOfDay(cell.CurrentDate!), startOfDay(val.TranDate!));
               });
               if (idx === -1) {
                 const ncell = new DateCellData();
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                ncell.CurrentDate = val.TranDate!.clone();
+                ncell.CurrentDate = val.TranDate!;
                 ncell.DPDocs.push(val);
                 this.listDate.push(ncell);
               } else {
@@ -344,12 +340,12 @@ export class FinanceComponent implements OnInit, OnDestroy {
             rsts[1].forEach((val: TemplateDocLoan) => {
               const idx = this.listDate.findIndex((cell) => {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return cell.CurrentDate!.startOf('date').isSame(val.TranDate!.startOf('date'));
+                return !isBefore(startOfDay(cell.CurrentDate!), startOfDay(val.TranDate!));
               });
               if (idx === -1) {
                 const ncell = new DateCellData();
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                ncell.CurrentDate = val.TranDate!.clone();
+                ncell.CurrentDate = val.TranDate!;
                 ncell.LoanDocs.push(val);
                 this.listDate.push(ncell);
               } else {
@@ -385,7 +381,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
           // Remove the doc
           const idx = this.listDate.findIndex((cell) => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            return cell.CurrentDate!.startOf('date').isSame(val.TranDate.startOf('date'));
+            return !isBefore(startOfDay(cell.CurrentDate!), startOfDay(val.TranDate));
           });
           if (idx !== -1) {
             const secidx = this.listDate[idx].DPDocs.findIndex((doc) => {
@@ -414,13 +410,13 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
   // Open the insight
   onOpenInsight(ncell: number) {
-    const dtbgn: moment.Moment = moment(this.selectedDate);
-    const dtend: moment.Moment = moment(this.selectedDate);
+    let dtbgn: Date;
+    let dtend: Date;
 
     switch (ncell) {
       case 1:
-        dtbgn.startOf('month');
-        dtend.endOf('month');
+        dtbgn = startOfMonth(this.selectedDate as Date);
+        dtend = endOfMonth(this.selectedDate as Date);
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
           ExcludeTransfer: this.ExcludeTransfer,
@@ -428,8 +424,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
         };
         break;
       case 2:
-        dtbgn.startOf('month');
-        dtend.endOf('month');
+        dtbgn = startOfMonth(this.selectedDate as Date);
+        dtend = endOfMonth(this.selectedDate as Date);
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
           ExcludeTransfer: this.ExcludeTransfer,
@@ -437,8 +433,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
         };
         break;
       case 3:
-        dtbgn.startOf('year');
-        dtend.endOf('year');
+        dtbgn = startOfYear(this.selectedDate as Date);
+        dtend = endOfYear(this.selectedDate as Date);
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
           ExcludeTransfer: this.ExcludeTransfer,
@@ -446,8 +442,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
         };
         break;
       case 4:
-        dtbgn.startOf('year');
-        dtend.endOf('year');
+        dtbgn = startOfYear(this.selectedDate as Date);
+        dtend = endOfYear(this.selectedDate as Date);
         this.uiService.docInsightOption = {
           SelectedDataRange: [dtbgn, dtend],
           ExcludeTransfer: this.ExcludeTransfer,
@@ -461,9 +457,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   private _updateSelectedDate() {
-    const mt = moment(this.selectedDate);
-    this._selectedYear = mt.year();
-    this._selectedMonth = mt.month();
+    const mt = this.selectedDate as Date;
+    this._selectedYear = mt.getFullYear();
+    this._selectedMonth = mt.getMonth();
   }
 }
 

@@ -2,7 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 
 import {
   GeneralFilterOperatorEnum,
@@ -17,7 +17,7 @@ import {
   DocumentItemView,
   ModelUtility,
   ConsoleLogTypeEnum,
-  momentDateFormat,
+  dateFormat,
 } from '../../../../model';
 import { UITableColumnItem } from '../../../../uimodel';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -166,11 +166,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         filterMultiple: false,
         sortFn: (a: DocumentItemView, b: DocumentItemView) =>
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          a
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .TransactionDate! //!.format(moment.HTML5_FMT.DATE)
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .localeCompare(b.TransactionDate! ), // .format(moment.HTML5_FMT.DATE)),
+          (a.TransactionDate || '').localeCompare(b.TransactionDate || ''),
       },
       {
         name: 'Finance.TransactionType',
@@ -311,9 +307,9 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
         case GeneralFilterValueType.date: {
           val.fieldName = value.fieldName;
           val.operator = +value.operator;
-          val.lowValue = moment(value.lowValue).format(momentDateFormat);
+          val.lowValue = format(parse(value.lowValue, dateFormat, new Date()), dateFormat);
           if (value.operator === GeneralFilterOperatorEnum.Between) {
-            val.highValue = moment(value.highValue).format(momentDateFormat);
+            val.highValue = format(parse(value.highValue, dateFormat, new Date()), dateFormat);
           } else {
             val.highValue = '';
           }

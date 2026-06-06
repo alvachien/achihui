@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { parse } from 'date-fns';
 
 import { FinanceStorageService } from './finance-storage.service';
 import { AuthService } from './auth.service';
@@ -9,7 +10,6 @@ import { HomeDefOdataService } from './home-def-odata.service';
 import { DocumentWithPlanExgRateForUpdate } from '../model';
 import { environment } from '../../environments/environment';
 import { FakeDataHelper } from '../../testing';
-import moment from 'moment';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
@@ -135,8 +135,8 @@ describe('FinanceStorageService', () => {
     });
 
     it('should call API with date params', () => {
-      const mDtbgn = moment('2024-01-01');
-      const mDtend = moment('2024-12-31');
+      const mDtbgn = parse('2024-01-01', 'yyyy-MM-dd', new Date());
+      const mDtend = parse('2024-12-31', 'yyyy-MM-dd', new Date());
       service.getReportTranType(mDtbgn, mDtend).subscribe((data: any) => {
         expect(data).toBeTruthy();
       });
@@ -148,7 +148,7 @@ describe('FinanceStorageService', () => {
     });
 
     it('should call API with only start date', () => {
-      const mDtbgn = moment('2024-01-01');
+      const mDtbgn = parse('2024-01-01', 'yyyy-MM-dd', new Date());
       service.getReportTranType(mDtbgn).subscribe((data: any) => {
         expect(data).toBeTruthy();
       });

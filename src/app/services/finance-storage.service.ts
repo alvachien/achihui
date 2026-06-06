@@ -2,14 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 import { environment } from '../../environments/environment';
 import {
   LogLevel,
   Account,
   DocumentWithPlanExgRateForUpdate,
-  momentDateFormat,
+  dateFormat,
   TranTypeReport,
   UINameValuePair,
 } from '../model';
@@ -78,7 +78,7 @@ export class FinanceStorageService {
   /**
    * Get tran type report
    */
-  public getReportTranType(dtbgn?: moment.Moment, dtend?: moment.Moment): Observable<any> {
+  public getReportTranType(dtbgn?: Date, dtend?: Date): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
       .append('Content-Type', 'application/json')
@@ -89,10 +89,10 @@ export class FinanceStorageService {
     let params: HttpParams = new HttpParams();
     params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     if (dtbgn) {
-      params = params.append('dtbgn', dtbgn.format(momentDateFormat));
+      params = params.append('dtbgn', format(dtbgn, dateFormat));
     }
     if (dtend) {
-      params = params.append('dtend', dtend.format(momentDateFormat));
+      params = params.append('dtend', format(dtend, dateFormat));
     }
 
     return this._http

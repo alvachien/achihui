@@ -48,7 +48,7 @@ import {
   FinanceReportByAccount,
   BalanceSheetReport,
 } from './financemodel';
-import moment from 'moment';
+import { parse, format, addMonths, addYears, subMonths, startOfDay, isBefore } from 'date-fns';
 import * as hih from './common';
 import { FakeDataHelper } from '../../testing';
 
@@ -304,7 +304,7 @@ describe('AccountExtraAdvancePayment', () => {
   it('#1. default values', () => {
     expect(instance.StartDate).toBeTruthy();
     expect(instance.EndDate).toBeTruthy();
-    expect(instance.StartDate.isBefore(instance.EndDate)).toEqual(true);
+    expect(isBefore(instance.StartDate, instance.EndDate)).toEqual(true);
     expect(instance.Comment).toBeFalsy();
   });
 
@@ -313,7 +313,7 @@ describe('AccountExtraAdvancePayment', () => {
 
     expect(instance.StartDate).toBeTruthy();
     expect(instance.EndDate).toBeTruthy();
-    expect(instance.StartDate.isBefore(instance.EndDate)).toEqual(true);
+    expect(isBefore(instance.StartDate, instance.EndDate)).toEqual(true);
     expect(instance.Comment).toBeFalsy();
   });
 
@@ -336,7 +336,7 @@ describe('AccountExtraAdvancePayment', () => {
 
     instance.RepeatType = hih.RepeatFrequencyEnum.Month;
     instance.Comment = 'test';
-    instance.StartDate = instance.EndDate.add(1, 'y');
+    instance.StartDate = addYears(instance.EndDate, 1);
     expect(instance.isValid).toEqual(false);
   });
 
@@ -362,7 +362,7 @@ describe('AccountExtraAdvancePayment', () => {
       TranAmount: 100,
       ControlCenterId: 1,
       Desp: 'Test',
-      TranDate: moment(),
+      TranDate: new Date(),
     } as TemplateDocADP);
 
     expect(instance.isValid).toEqual(true);
@@ -377,8 +377,8 @@ describe('AccountExtraAdvancePayment', () => {
     const instance2: AccountExtraAdvancePayment = instance.clone();
     expect(instance2.Comment).toEqual(instance.Comment);
     expect(instance2.RepeatType).toEqual(instance.RepeatType);
-    expect(instance.StartDate.isSame(instance2.StartDate)).toBeTruthy();
-    expect(instance.EndDate.isSame(instance2.EndDate)).toBeTruthy();
+    expect(startOfDay(instance.StartDate).getTime()).toEqual(startOfDay(instance2.StartDate).getTime());
+    expect(startOfDay(instance.EndDate).getTime()).toEqual(startOfDay(instance2.EndDate).getTime());
   });
 
   it('#9. onSetData and writeObject shall work', () => {
@@ -393,8 +393,8 @@ describe('AccountExtraAdvancePayment', () => {
     instance2.onSetData(jdata);
     expect(instance2.Comment).toEqual(instance.Comment);
     expect(instance2.RepeatType).toEqual(instance.RepeatType);
-    expect(instance.StartDate.startOf('day').isSame(instance2.StartDate.startOf('day'))).toBeTruthy();
-    expect(instance.EndDate.startOf('day').isSame(instance2.EndDate.startOf('day'))).toBeTruthy();
+    expect(startOfDay(instance.StartDate).getTime()).toEqual(startOfDay(instance2.StartDate).getTime());
+    expect(startOfDay(instance.EndDate).getTime()).toEqual(startOfDay(instance2.EndDate).getTime());
   });
 });
 
@@ -474,10 +474,10 @@ describe('AccountExtraLoan', () => {
   it.skip('#5. isAccountValid', () => {
     expect(instance.isAccountValid).toBeFalsy();
     instance.InterestFree = true;
-    instance.startDate = moment();
-    instance.endDate = moment().subtract(1, 'd');
+    instance.startDate = new Date();
+    instance.endDate = subMonths(new Date(), 1);
     expect(instance.isAccountValid).toBeFalsy();
-    instance.endDate = moment().add(1, 'y');
+    instance.endDate = addYears(new Date(), 1);
     expect(instance.isAccountValid).toBeFalsy();
     instance.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
     expect(instance.isAccountValid).toBeFalsy();
@@ -600,7 +600,7 @@ describe('Order', () => {
   });
   it('#7. onVerify: valid from must earlier than valid to', () => {
     instance.Name = 'test';
-    instance.ValidTo = instance.ValidFrom?.subtract(1, 'M');
+    instance.ValidTo = subMonths(instance.ValidFrom ?? new Date(), 1);
     instance.SRules.push(new SettlementRule());
 
     const rst: boolean = instance.onVerify();
@@ -732,7 +732,7 @@ describe('Document', () => {
     instance.Id = 1;
     // instance.DocType = fakeData.finDocTypes[0].Id;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
@@ -755,7 +755,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = 233; // Invalid one
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
@@ -778,7 +778,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
@@ -801,7 +801,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     // instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
@@ -824,7 +824,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'testttttttttttttttttttttttttttttttttttttttttttttttttt';
 
     const rst: boolean = instance.onVerify({
@@ -847,7 +847,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     // instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
@@ -870,7 +870,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = 'DEM'; // Invalid currency
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
@@ -893,7 +893,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
 
     const rst: boolean = instance.onVerify({
@@ -917,7 +917,7 @@ describe('Document', () => {
     instance.Id = 1;
     instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
     instance.TranCurr = fakeData.chosedHome.BaseCurrency;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
     let di: DocumentItem = new DocumentItem();
     di.ItemId = 1;
@@ -959,7 +959,7 @@ describe('Document', () => {
     instance.TranCurr2 = 'USD';
     instance.ExgRate2 = 673.11;
     instance.ExgRate_Plan2 = false;
-    instance.TranDate = moment();
+    instance.TranDate = new Date();
     instance.Desp = 'test';
     let di: DocumentItem = new DocumentItem();
     di.ItemId = 1;

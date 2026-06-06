@@ -9,7 +9,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import moment from 'moment';
+import { addMonths, addYears, addDays } from 'date-fns';
 import { By } from '@angular/platform-browser';
 
 import { DocumentHeaderComponent } from '../document-header';
@@ -195,7 +195,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Update document header - missed desp
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       // dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -227,7 +227,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Update document header - missed desp
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -271,7 +271,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Update document header - missed desp
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -315,7 +315,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Update document header - missed desp
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -368,7 +368,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -414,7 +414,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -443,8 +443,8 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Update the correct extra info
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
-      extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.startDate = new Date();
+      extraLoan.endDate = addYears(new Date(), 1);
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
@@ -457,7 +457,7 @@ describe('DocumentLoanCreateComponent', () => {
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
         Desp: 'test',
-        TranDate: moment().add(1, 'd'),
+        TranDate: addDays(new Date(), 1),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
@@ -479,7 +479,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -504,8 +504,8 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
-      extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.startDate = new Date();
+      extraLoan.endDate = addYears(new Date(), 1);
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
@@ -518,7 +518,7 @@ describe('DocumentLoanCreateComponent', () => {
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
         Desp: 'test',
-        TranDate: moment().add(1, 'd'),
+        TranDate: addDays(new Date(), 1),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
@@ -549,7 +549,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -574,8 +574,8 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
-      extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.startDate = new Date();
+      extraLoan.endDate = addYears(new Date(), 1);
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
@@ -588,7 +588,7 @@ describe('DocumentLoanCreateComponent', () => {
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
         Desp: 'test',
-        TranDate: moment().add(1, 'd'),
+        TranDate: addDays(new Date(), 1),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
@@ -649,7 +649,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -674,8 +674,8 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
-      extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.startDate = new Date();
+      extraLoan.endDate = addYears(new Date(), 1);
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
@@ -688,7 +688,7 @@ describe('DocumentLoanCreateComponent', () => {
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
         Desp: 'test',
-        TranDate: moment().add(1, 'd'),
+        TranDate: addDays(new Date(), 1),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);
@@ -726,7 +726,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 0
       const dochead: Document = new Document();
-      dochead.TranDate = moment();
+      dochead.TranDate = new Date();
       dochead.TranCurr = fakeData.chosedHome.BaseCurrency;
       dochead.Desp = 'test';
       component.firstFormGroup.get('headerControl')?.setValue(dochead);
@@ -751,8 +751,8 @@ describe('DocumentLoanCreateComponent', () => {
 
       // Step 1.
       const extraLoan: AccountExtraLoan = new AccountExtraLoan();
-      extraLoan.startDate = moment();
-      extraLoan.endDate = moment().add(1, 'y');
+      extraLoan.startDate = new Date();
+      extraLoan.endDate = addYears(new Date(), 1);
       extraLoan.InterestFree = true;
       extraLoan.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
       extraLoan.TotalMonths = 12;
@@ -765,7 +765,7 @@ describe('DocumentLoanCreateComponent', () => {
         TranAmount: 100,
         ControlCenterId: fakeData.finControlCenters[0].Id,
         Desp: 'test',
-        TranDate: moment().add(1, 'd'),
+        TranDate: addDays(new Date(), 1),
       } as TemplateDocLoan);
       expect(extraLoan.isValid).toBeTruthy();
       component.extraFormGroup.get('loanAccountControl')?.setValue(extraLoan);

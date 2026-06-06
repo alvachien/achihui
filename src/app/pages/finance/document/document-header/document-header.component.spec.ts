@@ -246,9 +246,9 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.Desp).toEqual('test');
       expect(curDocument.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(curDocument.TranDate).toBeTruthy();
-      expect(curDocument.TranDate.year()).toEqual(2020);
-      expect(curDocument.TranDate.month()).toEqual(2);
-      expect(curDocument.TranDate.date()).toEqual(2);
+      expect(curDocument.TranDate.getFullYear()).toEqual(2020);
+      expect(curDocument.TranDate.getMonth()).toEqual(2);
+      expect(curDocument.TranDate.getDate()).toEqual(2);
     });
 
     it('it shall return correct Document object with foreign currency', async () => {
@@ -270,9 +270,9 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.Desp).toEqual('Test');
       expect(curDocument.TranCurr).toEqual('USD');
       expect(curDocument.TranDate).toBeTruthy();
-      expect(curDocument.TranDate.year()).toEqual(2020);
-      expect(curDocument.TranDate.month()).toEqual(2);
-      expect(curDocument.TranDate.date()).toEqual(2);
+      expect(curDocument.TranDate.getFullYear()).toEqual(2020);
+      expect(curDocument.TranDate.getMonth()).toEqual(2);
+      expect(curDocument.TranDate.getDate()).toEqual(2);
       expect(curDocument.ExgRate).toEqual(624.22);
       expect(curDocument.ExgRate_Plan).toBeFalsy();
     });
@@ -494,9 +494,9 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.Desp).toEqual('test');
       expect(curDocument.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
       expect(curDocument.TranDate).toBeTruthy();
-      expect(curDocument.TranDate.year()).toEqual(2020);
-      expect(curDocument.TranDate.month()).toEqual(2);
-      expect(curDocument.TranDate.date()).toEqual(2);
+      expect(curDocument.TranDate.getFullYear()).toEqual(2020);
+      expect(curDocument.TranDate.getMonth()).toEqual(2);
+      expect(curDocument.TranDate.getDate()).toEqual(2);
       expect(curDocument.TranCurr2).toEqual('USD');
       expect(curDocument.ExgRate2).toEqual(634.56);
     });
@@ -523,9 +523,9 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.Desp).toEqual('Test');
       expect(curDocument.TranCurr).toEqual('USD');
       expect(curDocument.TranDate).toBeTruthy();
-      expect(curDocument.TranDate.year()).toEqual(2020);
-      expect(curDocument.TranDate.month()).toEqual(2);
-      expect(curDocument.TranDate.date()).toEqual(2);
+      expect(curDocument.TranDate.getFullYear()).toEqual(2020);
+      expect(curDocument.TranDate.getMonth()).toEqual(2);
+      expect(curDocument.TranDate.getDate()).toEqual(2);
       expect(curDocument.ExgRate).toEqual(624.22);
       expect(curDocument.ExgRate_Plan).toBeFalsy();
       expect(curDocument.TranCurr2).toEqual('EUR');

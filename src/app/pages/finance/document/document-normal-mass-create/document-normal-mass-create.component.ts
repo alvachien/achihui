@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -25,7 +25,7 @@ import {
   BuildupAccountForSelection,
   BuildupOrderForSelection,
   FinanceNormalDocItemMassCreate,
-  momentDateFormat,
+  dateFormat,
 } from '../../../../model';
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
@@ -319,7 +319,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
       const docitem = new FinanceNormalDocItemMassCreate();
       if (control.dateControl) {
-        docitem.tranDate = moment(control.dateControl);
+        docitem.tranDate = new Date(control.dateControl);
       }
       if (control.accountControl) {
         docitem.accountID = control.accountControl;
@@ -349,7 +349,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
     this.arItems.forEach((item: FinanceNormalDocItemMassCreate) => {
       let docObj = this.confirmInfo.find((val) => {
-        return val.TranDateFormatString === item.tranDate.format(momentDateFormat);
+        return val.TranDateFormatString === format(item.tranDate, dateFormat);
       });
 
       if (docObj !== undefined) {
@@ -371,11 +371,11 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         docObj.Items.push(docitem);
       } else {
         docObj = new Document();
-        docObj.Desp = item.tranDate.format(momentDateFormat);
+        docObj.Desp = format(item.tranDate, dateFormat);
         docObj.DocType = financeDocTypeNormal;
         docObj.HID = this.homeService.ChosedHome?.ID ?? 0;
         docObj.TranCurr = this.baseCurrency;
-        docObj.TranDate = moment(item.tranDate);
+        docObj.TranDate = item.tranDate;
         const docitem = new DocumentItem();
         docitem.ItemId = 1;
         docitem.AccountId = item.accountID;

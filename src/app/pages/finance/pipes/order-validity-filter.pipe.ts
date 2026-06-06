@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import moment from 'moment';
+import { isBefore, isAfter } from 'date-fns';
 
 import { Order } from '../../../model';
 
@@ -8,17 +8,17 @@ import { Order } from '../../../model';
   standalone: true
 })
 export class OrderValidityFilterPipe implements PipeTransform {
-  transform(allOrders: Order[], args?: moment.Moment | boolean): Order[] {
+  transform(allOrders: Order[], args?: Date | boolean): Order[] {
     return allOrders
       ? allOrders.filter((value: Order) => {
           if (args !== undefined) {
-            if (moment.isMoment(args)) {
+            if (args instanceof Date) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              return value.ValidFrom!.isBefore(args) && value.ValidTo!.isAfter(args);
+              return isBefore(value.ValidFrom!, args) && isAfter(value.ValidTo!, args);
             } else if (args) {
-              const dt = moment();
+              const dt = new Date();
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              return value.ValidFrom!.isBefore(dt) && value.ValidTo!.isAfter(dt);
+              return isBefore(value.ValidFrom!, dt) && isAfter(value.ValidTo!, dt);
             }
           }
 

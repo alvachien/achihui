@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { addMonths, subMonths, addDays, subDays } from 'date-fns';
 
 import { OrderValidityFilterPipe } from './order-validity-filter.pipe';
 import { Order } from '../../../model';
@@ -13,14 +13,14 @@ describe('OrderValidityFilterPipe', () => {
       const ofs: Order = new Order();
       ofs.Id = i;
       if (i === 1) {
-        ofs.ValidFrom = moment().subtract(1, 'M');
-        ofs.ValidTo = moment().add(1, 'M');
+        ofs.ValidFrom = subMonths(new Date(), 1);
+        ofs.ValidTo = addMonths(new Date(), 1);
       } else if (i === 2) {
-        ofs.ValidFrom = moment().subtract(2, 'M');
-        ofs.ValidTo = moment().subtract(1, 'M');
+        ofs.ValidFrom = subMonths(new Date(), 2);
+        ofs.ValidTo = subMonths(new Date(), 1);
       } else if (i === 3) {
-        ofs.ValidFrom = moment().add(1, 'M');
-        ofs.ValidTo = moment().add(2, 'M');
+        ofs.ValidFrom = addMonths(new Date(), 1);
+        ofs.ValidTo = addMonths(new Date(), 2);
       }
       ofs.Name = 'LastMonth';
       arorders.push(ofs);
@@ -35,15 +35,15 @@ describe('OrderValidityFilterPipe', () => {
     expect(arrsts.length).toEqual(arorders.length);
   });
   it('3. Filter shall work for today', () => {
-    const arrsts: Order[] = pipe.transform(arorders, moment());
+    const arrsts: Order[] = pipe.transform(arorders, new Date());
     expect(arrsts.length).toEqual(1);
   });
   it('4. Filter shall work for 40 days later', () => {
-    const arrsts: Order[] = pipe.transform(arorders, moment().add(40, 'd'));
+    const arrsts: Order[] = pipe.transform(arorders, addDays(new Date(), 40));
     expect(arrsts.length).toEqual(1);
   });
   it('5. Filter shall work for 40 days earlier', () => {
-    const arrsts: Order[] = pipe.transform(arorders, moment().subtract(40, 'd'));
+    const arrsts: Order[] = pipe.transform(arorders, subDays(new Date(), 40));
     expect(arrsts.length).toEqual(1);
   });
 });

@@ -11,7 +11,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
-import moment from 'moment';
+import { addMonths, addYears } from 'date-fns';
 
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
 import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
@@ -134,7 +134,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     loan1.startDate = startdt;
     testcomponent.formGroup.get('extraControl')?.setValue(loan1);
     await new Promise<void>(r => setTimeout(r, 0));
@@ -146,7 +146,7 @@ describe('AccountExtraLoanComponent', () => {
 
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
-    expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
+    expect(loanval2.startDate?.getTime()).toEqual(startdt.getTime());
     expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
     await new Promise<void>(r => setTimeout(r, 0));
@@ -158,7 +158,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     loan1.startDate = startdt;
     loan1.TotalMonths = 24;
     testcomponent.formGroup.get('extraControl')?.setValue(loan1);
@@ -171,7 +171,7 @@ describe('AccountExtraLoanComponent', () => {
 
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
-    expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
+    expect(loanval2.startDate?.getTime()).toEqual(startdt.getTime());
     expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
     await new Promise<void>(r => setTimeout(r, 0));
@@ -183,7 +183,7 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     loan1.startDate = startdt;
     loan1.TotalMonths = 24;
     loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
@@ -197,7 +197,7 @@ describe('AccountExtraLoanComponent', () => {
 
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
-    expect(loanval2.startDate?.isSame(startdt)).toBeTruthy();
+    expect(loanval2.startDate?.getTime()).toEqual(startdt.getTime());
     expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
 
     await new Promise<void>(r => setTimeout(r, 0));
@@ -211,7 +211,7 @@ describe('AccountExtraLoanComponent', () => {
       tmpdoc.TranAmount = 8333.34;
       tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
-      tmpdoc.TranDate = moment().add(i + 1, 'M');
+      tmpdoc.TranDate = addMonths(new Date(), i + 1);
       tmpdoc.ControlCenterId = 1;
       tmpdoc.AccountId = 22;
       tmpdocs.push(tmpdoc);
@@ -223,8 +223,8 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
-    loan1.startDate = moment().add(1, 'M');
-    loan1.endDate = moment().add(2, 'years');
+    loan1.startDate = addMonths(new Date(), 1);
+    loan1.endDate = addYears(new Date(), 2);
     loan1.TotalMonths = 24;
     loan1.RepayMethod = RepaymentMethodEnum.DueRepayment;
     loan1.InterestFree = true;
@@ -262,7 +262,7 @@ describe('AccountExtraLoanComponent', () => {
       tmpdoc.InterestAmount = 362.5;
       tmpdoc.Desp = `test${i + 1}`;
       tmpdoc.TranType = 28;
-      tmpdoc.TranDate = moment().add(i + 1, 'M');
+      tmpdoc.TranDate = addMonths(new Date(), i + 1);
       tmpdoc.ControlCenterId = 1;
       tmpdoc.AccountId = 22;
       tmpdocs.push(tmpdoc);
@@ -274,8 +274,8 @@ describe('AccountExtraLoanComponent', () => {
     fixture.detectChanges();
 
     const loan1: AccountExtraLoan = new AccountExtraLoan();
-    loan1.startDate = moment().add(1, 'M');
-    loan1.endDate = moment().add(2, 'years');
+    loan1.startDate = addMonths(new Date(), 1);
+    loan1.endDate = addYears(new Date(), 2);
     loan1.TotalMonths = 24;
     loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
     loan1.InterestFree = false;
@@ -328,8 +328,8 @@ describe('AccountExtraLoanComponent', () => {
       fixture.detectChanges();
 
       const loan1: AccountExtraLoan = new AccountExtraLoan();
-      loan1.startDate = moment().add(1, 'M');
-      loan1.endDate = moment().add(2, 'years');
+      loan1.startDate = addMonths(new Date(), 1);
+      loan1.endDate = addYears(new Date(), 2);
       loan1.TotalMonths = 24;
       loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
       loan1.InterestFree = false;

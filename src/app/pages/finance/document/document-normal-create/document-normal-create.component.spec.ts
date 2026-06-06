@@ -8,7 +8,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import moment from 'moment';
+import { parse } from 'date-fns';
+import { dateFormat } from '../../../../model';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { DocumentHeaderComponent } from '../document-header';
@@ -16,7 +17,7 @@ import { DocumentItemsComponent } from '../document-items';
 import { DocumentNormalCreateComponent } from './document-normal-create.component';
 import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo, Document, DocumentItem, momentDateFormat } from '../../../../model';
+import { UserAuthInfo, Document, DocumentItem } from '../../../../model';
 import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -201,7 +202,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.nextButtonEnabled).toBe(false);
 
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -225,7 +226,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.nextButtonEnabled).toBe(false);
 
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = 'USD';
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -254,7 +255,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.nextButtonEnabled).toBe(false);
 
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -278,7 +279,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Step 0.
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -317,7 +318,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Step 0.
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -388,7 +389,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Header
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -444,7 +445,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Header
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -491,7 +492,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Header
       const docheader = new Document();
-      docheader.TranDate = moment('2020-02-02', momentDateFormat);
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
       docheader.Desp = 'Test on 2nd May, 2020';
       docheader.TranCurr = 'USD';
       component.headerForm.get('headerControl')?.setValue(docheader);

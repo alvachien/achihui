@@ -13,7 +13,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { SafeAny } from '@common/any';
 
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '@model/index';
@@ -91,11 +91,11 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
     }
     controlVal = this.assetInfoFormGroup.get('boughtDateControl')?.value;
     if (controlVal) {
-      insobj.BoughtDate = moment(controlVal);
+      insobj.BoughtDate = new Date(controlVal);
     }
     controlVal = this.assetInfoFormGroup.get('expiredDateControl')?.value;
     if (controlVal) {
-      insobj.ExpiredDate = moment(controlVal);
+      insobj.ExpiredDate = new Date(controlVal);
     }
     controlVal = this.assetInfoFormGroup.get('residualValueControl')?.value;
     if (controlVal) {
@@ -192,10 +192,10 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
       this.assetInfoFormGroup.get('nameControl')?.setValue(val.Name);
       this.assetInfoFormGroup.get('commentControl')?.setValue(val.Comment);
       if (val.BoughtDate) {
-        this.assetInfoFormGroup.get('boughtDateControl')?.setValue(val.BoughtDate.toDate());
+        this.assetInfoFormGroup.get('boughtDateControl')?.setValue(val.BoughtDate);
       }
       if (val.ExpiredDate) {
-        this.assetInfoFormGroup.get('expiredDateControl')?.setValue(val.ExpiredDate.toDate());
+        this.assetInfoFormGroup.get('expiredDateControl')?.setValue(val.ExpiredDate);
       }
       if (val.ResidualValue) {
         this.assetInfoFormGroup.get('residualValueControl')?.setValue(val.ResidualValue);

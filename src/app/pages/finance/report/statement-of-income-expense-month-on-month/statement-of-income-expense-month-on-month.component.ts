@@ -5,7 +5,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
-import moment from 'moment';
+import { format, subMonths, endOfMonth, parse } from 'date-fns';
 import { Router } from '@angular/router';
 
 import {
@@ -18,7 +18,7 @@ import {
   GeneralFilterOperatorEnum,
   GeneralFilterValueType,
   ModelUtility,
-  momentDateFormat,
+  dateFormat,
 } from '@model/index';
 import { FinanceOdataService, UIStatusService } from '@services/index';
 import { NumberUtility } from 'actslib';
@@ -147,13 +147,13 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     if (this.selectedPeriod === financePeriodLast12Months) {
       // Last 12 months
       for (let imonth = 11; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, 'month');
-        arAxis.push(monthinuse.format('YYYY.MM'));
+        const monthinuse = subMonths(new Date(), imonth);
+        arAxis.push(format(monthinuse, 'yyyy.MM'));
       }
 
       for (let imonth = 11; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, 'month');
-        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
+        const monthinuse = subMonths(new Date(), imonth);
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
@@ -167,13 +167,13 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     } else if (this.selectedPeriod === financePeriodLast6Months) {
       // Last 6 months
       for (let imonth = 5; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, 'month');
-        arAxis.push(monthinuse.format('YYYY.MM'));
+        const monthinuse = subMonths(new Date(), imonth);
+        arAxis.push(format(monthinuse, 'yyyy.MM'));
       }
 
       for (let imonth = 5; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, 'month');
-        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
+        const monthinuse = subMonths(new Date(), imonth);
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
@@ -187,13 +187,13 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     } else if (this.selectedPeriod === financePeriodLast3Months) {
       // Last 3 months
       for (let imonth = 2; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, 'month');
-        arAxis.push(monthinuse.format('YYYY.MM'));
+        const monthinuse = subMonths(new Date(), imonth);
+        arAxis.push(format(monthinuse, 'yyyy.MM'));
       }
 
       for (let imonth = 2; imonth >= 0; imonth--) {
-        const monthinuse = moment().subtract(imonth, 'month');
-        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.month() + 1);
+        const monthinuse = subMonths(new Date(), imonth);
+        const validx = this.reportData.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
         if (validx !== -1) {
           arIn.push(this.reportData[validx].InAmount);
           arOut.push(this.reportData[validx].OutAmount);
@@ -289,13 +289,13 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   }
 
   onChartClick(event: SafeAny) {
-    const dtmonth = moment((event.name + '.01').replace('.', '-'));
+    const dtmonth = parse((event.name + '.01').replace('.', '-'), 'yyyy-MM-dd', new Date());
     if (event.seriesId === 'in') {
-      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.endOf('M').format(momentDateFormat), false);
+      this.onDisplayDocItem(format(dtmonth, dateFormat), format(endOfMonth(dtmonth), dateFormat), false);
     } else if (event.seriesId === 'out') {
-      this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.endOf('M').format(momentDateFormat), true);
+      this.onDisplayDocItem(format(dtmonth, dateFormat), format(endOfMonth(dtmonth), dateFormat), true);
     } else if (event.seriesId === 'total') {
-      // this.onDisplayDocItem(dtmonth.format(momentDateFormat), dtmonth.add(1, 'M').format(momentDateFormat), true);
+      // this.onDisplayDocItem(format(dtmonth, dateFormat), format(addMonths(dtmonth, 1), dateFormat), true);
     } else {
       console.error(event.toString());
     }
@@ -303,8 +303,8 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
     this.uiStatusService.docInsightOption = {
       SelectedDataRange: [
-        moment(beginDate),
-        moment(endDate),
+        parse(beginDate, dateFormat, new Date()),
+        parse(endDate, dateFormat, new Date()),
       ],
       TransactionDirection: isexp ? false : true,
     };

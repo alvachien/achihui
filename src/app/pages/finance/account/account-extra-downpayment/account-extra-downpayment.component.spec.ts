@@ -10,7 +10,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, of } from 'rxjs';
 import { ViewChild, Component } from '@angular/core';
-import moment from 'moment';
+import { addMonths } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { AccountExtraDownpaymentComponent } from './account-extra-downpayment.component';
@@ -116,7 +116,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     dp1.StartDate = startdt;
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
     await new Promise<void>(r => setTimeout(r, 0));
@@ -128,7 +128,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
-    expect(dpval2.StartDate.isSame(startdt)).toBeTruthy();
+    expect(dpval2.StartDate.getTime()).toEqual(startdt.getTime());
     expect(dpval2.RepeatType).toBeFalsy();
     expect(dpval2.Comment).toBeFalsy();
     expect(dpval2.RefDocId).toBeFalsy();
@@ -145,7 +145,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     testcomponent.formGroup.get('extraControl')?.setValue(dp1);
@@ -159,7 +159,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
-    expect(dpval2.StartDate.isSame(startdt)).toBeTruthy();
+    expect(dpval2.StartDate.getTime()).toEqual(startdt.getTime());
     expect(dpval2.RepeatType).toEqual(dp1.RepeatType);
     expect(dpval2.Comment).toBeFalsy();
     expect(dpval2.RefDocId).toBeFalsy();
@@ -176,7 +176,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
@@ -191,7 +191,7 @@ describe('AccountExtraDownpaymentComponent', () => {
 
     const dpval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraAdvancePayment;
     expect(dpval2.StartDate).toBeTruthy();
-    expect(dpval2.StartDate.isSame(startdt)).toBeTruthy();
+    expect(dpval2.StartDate.getTime()).toEqual(startdt.getTime());
     expect(dpval2.RepeatType).toEqual(dp1.RepeatType);
     expect(dpval2.Comment).toEqual(dp1.Comment);
     expect(dpval2.RefDocId).toBeFalsy();
@@ -208,7 +208,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
@@ -232,7 +232,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
@@ -256,12 +256,12 @@ describe('AccountExtraDownpaymentComponent', () => {
     testcomponent.arTranTypes = fakeData.finTranTypes;
     const aroutput: RepeatedDatesWithAmountAPIOutput[] = [];
     aroutput.push({
-      TranDate: moment(),
+      TranDate: new Date(),
       TranAmount: 10,
       Desp: '1',
     } as RepeatedDatesWithAmountAPIOutput);
     aroutput.push({
-      TranDate: moment().add(1, 'M'),
+      TranDate: addMonths(new Date(), 1),
       TranAmount: 10,
       Desp: '2',
     } as RepeatedDatesWithAmountAPIOutput);
@@ -272,7 +272,7 @@ describe('AccountExtraDownpaymentComponent', () => {
     fixture.detectChanges();
 
     const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-    const startdt = moment().add(1, 'M');
+    const startdt = addMonths(new Date(), 1);
     dp1.StartDate = startdt;
     dp1.RepeatType = RepeatFrequencyEnum.Month;
     dp1.Comment = 'test';
@@ -350,7 +350,7 @@ describe('AccountExtraDownpaymentComponent', () => {
       fixture.detectChanges();
 
       const dp1: AccountExtraAdvancePayment = new AccountExtraAdvancePayment();
-      const startdt = moment().add(1, 'M');
+      const startdt = addMonths(new Date(), 1);
       dp1.StartDate = startdt;
       dp1.RepeatType = RepeatFrequencyEnum.Month;
       dp1.Comment = 'test';

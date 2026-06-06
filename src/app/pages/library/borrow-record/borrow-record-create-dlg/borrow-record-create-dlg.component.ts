@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import moment from 'moment';
+import { format } from 'date-fns';
+import { dateFormat } from '@model/index';
 import { NzModalRef, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
@@ -135,8 +136,8 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     record.Comment = this.detailFormGroup.get('cmtControl')?.value;
     // eslint-disable-next-line no-unsafe-optional-chaining
     const [startdt, enddt] = this.detailFormGroup.get('dateRangeControl')?.value;
-    record.FromDate = moment(startdt);
-    record.ToDate = moment(enddt);
+    record.FromDate = new Date(startdt);
+    record.ToDate = new Date(enddt);
     record.HasReturned = this.detailFormGroup.get('hasRtnedControl')?.value;
 
     this.storageService.createBookBorrowRecord(record).subscribe({

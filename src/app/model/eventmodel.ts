@@ -1,5 +1,5 @@
 import * as hih from './common';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { SafeAny } from '@common/any';
 
 /**
@@ -12,9 +12,9 @@ export class GeneralEvent extends hih.BaseModel {
   private _assignee?: string;
   private _name?: string;
   private _content?: string;
-  private _startTime?: moment.Moment;
-  private _endTime?: moment.Moment;
-  private _completeTime?: moment.Moment;
+  private _startTime?: Date;
+  private _endTime?: Date;
+  private _completeTime?: Date;
   private _ispublic?: boolean;
   private _refRecurID?: number;
 
@@ -48,41 +48,41 @@ export class GeneralEvent extends hih.BaseModel {
   set Content(cont: string | undefined) {
     this._content = cont;
   }
-  get StartDate(): moment.Moment | undefined {
+  get StartDate(): Date | undefined {
     return this._startTime;
   }
-  set StartDate(st: moment.Moment | undefined) {
+  set StartDate(st: Date | undefined) {
     this._startTime = st;
   }
   get StartDateDisplayString(): string | undefined {
     if (this._startTime) {
-      return this._startTime.format(hih.momentDateFormat);
+      return format(this._startTime, hih.dateFormat);
     }
 
     return '';
   }
-  get EndDate(): moment.Moment | undefined {
+  get EndDate(): Date | undefined {
     return this._endTime;
   }
-  set EndDate(et: moment.Moment | undefined) {
+  set EndDate(et: Date | undefined) {
     this._endTime = et;
   }
   get EndDateDisplayString(): string {
     if (this._endTime) {
-      return this._endTime.format(hih.momentDateFormat);
+      return format(this._endTime, hih.dateFormat);
     }
 
     return '';
   }
-  get CompleteDate(): moment.Moment | undefined {
+  get CompleteDate(): Date | undefined {
     return this._completeTime;
   }
-  set CompleteDate(ct: moment.Moment | undefined) {
+  set CompleteDate(ct: Date | undefined) {
     this._completeTime = ct;
   }
   get CompleteDateDisplayString(): string {
     if (this._completeTime) {
-      return this._completeTime.format(hih.momentDateFormat);
+      return format(this._completeTime, hih.dateFormat);
     }
 
     return '';
@@ -106,7 +106,7 @@ export class GeneralEvent extends hih.BaseModel {
   constructor() {
     super();
 
-    this._startTime = moment();
+    this._startTime = new Date();
     this._endTime = undefined;
     this._completeTime = undefined;
     this._ispublic = false;
@@ -139,13 +139,13 @@ export class GeneralEvent extends hih.BaseModel {
       this._content = data.Content;
     }
     if (data && data.StartDate) {
-      this._startTime = moment(data.StartDate, hih.momentDateFormat);
+      this._startTime = parse(data.StartDate, hih.dateFormat, new Date());
     }
     if (data && data.EndDate) {
-      this._endTime = moment(data.EndDate, hih.momentDateFormat);
+      this._endTime = parse(data.EndDate, hih.dateFormat, new Date());
     }
     if (data && data.CompleteDate) {
-      this._completeTime = moment(data.CompleteDate, hih.momentDateFormat);
+      this._completeTime = parse(data.CompleteDate, hih.dateFormat, new Date());
     }
     if (data && data.IsPublic) {
       this._ispublic = data.IsPublic;
@@ -164,12 +164,12 @@ export class GeneralEvent extends hih.BaseModel {
       robj.Assignee = this._assignee;
     }
     robj.Content = this._content;
-    robj.StartDate = this._startTime?.format(hih.momentDateFormat);
+    robj.StartDate = this._startTime ? format(this._startTime, hih.dateFormat) : undefined;
     if (this._endTime) {
-      robj.EndDate = this._endTime.format(hih.momentDateFormat);
+      robj.EndDate = format(this._endTime, hih.dateFormat);
     }
     if (this._completeTime) {
-      robj.CompleteDate = this._completeTime.format(hih.momentDateFormat);
+      robj.CompleteDate = format(this._completeTime, hih.dateFormat);
     }
     robj.IsPublic = this._ispublic;
     if (this._refRecurID) {
@@ -188,8 +188,8 @@ export class RecurEvent extends hih.BaseModel {
   private _assignee?: string;
   private _name?: string;
   private _content?: string;
-  private _startTime?: moment.Moment;
-  private _endTime?: moment.Moment;
+  private _startTime?: Date;
+  private _endTime?: Date;
   private _ispublic?: boolean;
   private _listEvents: GeneralEvent[] = [];
 
@@ -224,28 +224,28 @@ export class RecurEvent extends hih.BaseModel {
   set Content(content: string | undefined) {
     this._content = content;
   }
-  get StartDate(): moment.Moment | undefined {
+  get StartDate(): Date | undefined {
     return this._startTime;
   }
-  set StartDate(st: moment.Moment | undefined) {
+  set StartDate(st: Date | undefined) {
     this._startTime = st;
   }
   get StartDateDisplayString(): string {
     if (this._startTime) {
-      return this._startTime.format(hih.momentDateFormat);
+      return format(this._startTime, hih.dateFormat);
     }
 
     return '';
   }
-  get EndDate(): moment.Moment | undefined {
+  get EndDate(): Date | undefined {
     return this._endTime;
   }
-  set EndDate(et: moment.Moment | undefined) {
+  set EndDate(et: Date | undefined) {
     this._endTime = et;
   }
   get EndDateDisplayString(): string {
     if (this._endTime) {
-      return this._endTime.format(hih.momentDateFormat);
+      return format(this._endTime, hih.dateFormat);
     }
 
     return '';
@@ -263,7 +263,7 @@ export class RecurEvent extends hih.BaseModel {
   constructor() {
     super();
 
-    this._startTime = moment();
+    this._startTime = new Date();
     this._endTime = undefined;
     this._ispublic = false;
   }
@@ -287,10 +287,10 @@ export class RecurEvent extends hih.BaseModel {
       this._content = data.Content;
     }
     if (data && data.StartDate) {
-      this._startTime = moment(data.StartDate, hih.momentDateFormat);
+      this._startTime = parse(data.StartDate, hih.dateFormat, new Date());
     }
     if (data && data.EndDate) {
-      this._endTime = moment(data.EndDate, hih.momentDateFormat);
+      this._endTime = parse(data.EndDate, hih.dateFormat, new Date());
     }
     if (data && data.IsPublic) {
       this._ispublic = data.IsPublic;
@@ -319,9 +319,9 @@ export class RecurEvent extends hih.BaseModel {
       robj.Assignee = this._assignee;
     }
     robj.Content = this._content;
-    robj.StartDate = this._startTime?.format(hih.momentDateFormat);
+    robj.StartDate = this._startTime ? format(this._startTime, hih.dateFormat) : undefined;
     if (this._endTime) {
-      robj.EndDate = this._endTime.format(hih.momentDateFormat);
+      robj.EndDate = format(this._endTime, hih.dateFormat);
     }
     robj.IsPublic = this._ispublic;
     robj.RecurType = hih.RepeatFrequencyEnum[+this.repeatType];
@@ -336,8 +336,8 @@ export class EventHabit extends hih.BaseModel {
   private _id?: number;
   private _hid?: number;
   private _name?: string;
-  private _startDate?: moment.Moment;
-  private _endDate?: moment.Moment;
+  private _startDate?: Date;
+  private _endDate?: Date;
   public repeatType: hih.RepeatFrequencyEnum = hih.RepeatFrequencyEnum.Day;
   public content?: string;
   public count?: number;
@@ -364,27 +364,27 @@ export class EventHabit extends hih.BaseModel {
   set Name(name: string | undefined) {
     this._name = name;
   }
-  get StartDate(): moment.Moment | undefined {
+  get StartDate(): Date | undefined {
     return this._startDate;
   }
-  set StartDate(sd: moment.Moment | undefined) {
+  set StartDate(sd: Date | undefined) {
     this._startDate = sd;
   }
   get StartDateFormatString(): string {
     if (this._startDate !== undefined) {
-      return this._startDate.format(hih.momentDateFormat);
+      return format(this._startDate, hih.dateFormat);
     }
     return '';
   }
-  get EndDate(): moment.Moment | undefined {
+  get EndDate(): Date | undefined {
     return this._endDate;
   }
-  set EndDate(ed: moment.Moment | undefined) {
+  set EndDate(ed: Date | undefined) {
     this._endDate = ed;
   }
   get EndDateFormatString(): string {
     if (this._endDate !== undefined) {
-      return this._endDate.format(hih.momentDateFormat);
+      return format(this._endDate, hih.dateFormat);
     }
     return '';
   }
@@ -395,8 +395,8 @@ export class EventHabit extends hih.BaseModel {
   constructor() {
     super();
 
-    this._startDate = moment();
-    this._endDate = moment();
+    this._startDate = new Date();
+    this._endDate = new Date();
   }
 
   override onSetData(data: SafeAny): void {
@@ -421,10 +421,10 @@ export class EventHabit extends hih.BaseModel {
       this.count = data.count;
     }
     if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.momentDateFormat);
+      this._startDate = parse(data.startDate, hih.dateFormat, new Date());
     }
     if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.momentDateFormat);
+      this._endDate = parse(data.endDate, hih.dateFormat, new Date());
     }
     if (data && data.isPublic) {
       this.isPublic = data.isPublic;
@@ -481,8 +481,8 @@ export class EventHabit extends hih.BaseModel {
 export class EventHabitDetail {
   private _id?: number;
   private _habitID?: number;
-  private _startDate?: moment.Moment;
-  private _endDate?: moment.Moment;
+  private _startDate?: Date;
+  private _endDate?: Date;
   private _name?: string;
 
   get ID(): number | undefined {
@@ -497,27 +497,27 @@ export class EventHabitDetail {
   set HabitID(hid: number | undefined) {
     this._habitID = hid;
   }
-  get StartDate(): moment.Moment | undefined {
+  get StartDate(): Date | undefined {
     return this._startDate;
   }
-  set StartDate(sd: moment.Moment | undefined) {
+  set StartDate(sd: Date | undefined) {
     this._startDate = sd;
   }
   get StartDateFormatString(): string {
     if (this._startDate) {
-      return this._startDate.format(hih.momentDateFormat);
+      return format(this._startDate, hih.dateFormat);
     }
     return '';
   }
-  get EndDate(): moment.Moment | undefined {
+  get EndDate(): Date | undefined {
     return this._endDate;
   }
-  set EndDate(ed: moment.Moment | undefined) {
+  set EndDate(ed: Date | undefined) {
     this._endDate = ed;
   }
   get EndDateFormatString(): string {
     if (this._endDate) {
-      return this._endDate.format(hih.momentDateFormat);
+      return format(this._endDate, hih.dateFormat);
     }
     return '';
   }
@@ -539,10 +539,10 @@ export class EventHabitDetail {
       this._name = data.name;
     }
     if (data && data.startDate) {
-      this._startDate = moment(data.startDate, hih.momentDateFormat);
+      this._startDate = parse(data.startDate, hih.dateFormat, new Date());
     }
     if (data && data.endDate) {
-      this._endDate = moment(data.endDate, hih.momentDateFormat);
+      this._endDate = parse(data.endDate, hih.dateFormat, new Date());
     }
   }
 }
@@ -553,13 +553,13 @@ export class EventHabitDetail {
 export class EventHabitCheckin {
   public id?: number;
   public hid?: number;
-  public tranDate?: moment.Moment;
+  public tranDate?: Date;
   public habitID?: number;
   public score?: number;
   public comment?: string;
   get tranDateFormatString(): string {
     if (this.tranDate) {
-      return this.tranDate.format(hih.momentDateFormat);
+      return format(this.tranDate, hih.dateFormat);
     }
     return '';
   }
@@ -569,7 +569,7 @@ export class EventHabitCheckin {
       this.id = data.id;
     }
     if (data && data.tranDate) {
-      this.tranDate = moment(data.tranDate, hih.momentDateFormat);
+      this.tranDate = parse(data.tranDate, hih.dateFormat, new Date());
     }
     if (data && data.hid) {
       this.hid = data.hid;
@@ -592,7 +592,7 @@ export class EventHabitCheckin {
     }
     robj.hid = this.hid;
     robj.habitID = this.habitID;
-    robj.tranDate = this.tranDate?.format(hih.momentDateFormat);
+    robj.tranDate = this.tranDate ? format(this.tranDate, hih.dateFormat) : undefined;
     if (this.comment) {
       robj.comment = this.comment;
     }
@@ -608,22 +608,22 @@ export class HabitEventDetailWithCheckInStatistics {
   public expectAmount?: number;
   public checkInAmount?: number;
   public averageScore?: number;
-  public startDate?: moment.Moment;
-  public endDate?: moment.Moment;
+  public startDate?: Date;
+  public endDate?: Date;
   public name?: string;
   public assignee?: string;
   public isPublic?: boolean;
 
   get StartDateFormatString(): string {
     if (this.startDate) {
-      return this.startDate.format(hih.momentDateFormat);
+      return format(this.startDate, hih.dateFormat);
     }
 
     return '';
   }
   get EndDateFormatString(): string {
     if (this.endDate) {
-      return this.endDate.format(hih.momentDateFormat);
+      return format(this.endDate, hih.dateFormat);
     }
 
     return '';
@@ -646,10 +646,10 @@ export class HabitEventDetailWithCheckInStatistics {
       this.averageScore = data.averageScore;
     }
     if (data && data.startDate) {
-      this.startDate = moment(data.startDate, hih.momentDateFormat);
+      this.startDate = parse(data.startDate, hih.dateFormat, new Date());
     }
     if (data && data.endDate) {
-      this.endDate = moment(data.endDate, hih.momentDateFormat);
+      this.endDate = parse(data.endDate, hih.dateFormat, new Date());
     }
     if (data && data.name) {
       this.name = data.name;

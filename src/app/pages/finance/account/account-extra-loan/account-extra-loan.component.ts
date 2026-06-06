@@ -14,7 +14,8 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import moment from 'moment';
+import { addYears, format, parse } from 'date-fns';
+import { dateFormat } from '@model/index';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -101,8 +102,8 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     const objrst = new AccountExtraLoan();
     let controlVal = this.loanInfoForm.get('dateRangeControl')?.value;
     if (controlVal) {
-      objrst.startDate = moment((controlVal as SafeAny[])[0]);
-      objrst.endDate = moment((controlVal as SafeAny[])[1]);
+      objrst.startDate = new Date((controlVal as SafeAny[])[0]);
+      objrst.endDate = new Date((controlVal as SafeAny[])[1]);
     }
     controlVal = this.loanInfoForm.get('totalMonthControl')?.value;
     if (controlVal) {
@@ -114,7 +115,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
     controlVal = this.loanInfoForm.get('firstRepayDateControl')?.value;
     if (controlVal) {
-      objrst.FirstRepayDate = moment(controlVal as Date);
+      objrst.FirstRepayDate = new Date(controlVal as Date);
     }
     controlVal = this.loanInfoForm.get('interestFreeControl')?.value;
     if (controlVal) {
@@ -393,15 +394,15 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       InterestRate: val.annualRate! / 100,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      StartDate: val.startDate!.clone(),
+      StartDate: new Date(val.startDate!.getTime()),
       InterestFreeLoan: val.InterestFree ? true : false,
       RepaymentMethod: val.RepayMethod,
     };
     if (val.endDate) {
-      di.EndDate = val.endDate.clone();
+      di.EndDate = new Date(val.endDate.getTime());
     }
     if (val.FirstRepayDate) {
-      di.FirstRepayDate = val.FirstRepayDate.clone();
+      di.FirstRepayDate = new Date(val.FirstRepayDate.getTime());
     }
     if (val.RepayDayInMonth) {
       di.RepayDayInMonth = val.RepayDayInMonth;
@@ -460,14 +461,14 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
     if (val) {
       const dtrange = [
-        val.startDate ? val.startDate.toDate() : undefined,
-        val.endDate ? val.endDate.toDate() : undefined,
+        val.startDate ? val.startDate : undefined,
+        val.endDate ? val.endDate : undefined,
       ];
       this.loanInfoForm.get('dateRangeControl')?.setValue(dtrange);
       this.loanInfoForm.get('totalMonthControl')?.setValue(val.TotalMonths);
       this.loanInfoForm.get('repayDayControl')?.setValue(val.RepayDayInMonth);
       if (val.FirstRepayDate) {
-        this.loanInfoForm.get('firstRepayDateControl')?.setValue(val.FirstRepayDate.toDate());
+        this.loanInfoForm.get('firstRepayDateControl')?.setValue(val.FirstRepayDate);
       } else {
         this.loanInfoForm.get('firstRepayDateControl')?.setValue(undefined);
       }

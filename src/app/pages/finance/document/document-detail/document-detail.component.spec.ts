@@ -14,7 +14,7 @@ import { DocumentDetailComponent } from './document-detail.component';
 import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
-import moment from 'moment';
+import { subMonths, endOfMonth } from 'date-fns';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -145,7 +145,7 @@ describe('DocumentDetailComponent', () => {
       docobj.Desp = 'test';
       docobj.TranCurr = 'CNY';
       docobj.DocType = financeDocTypeNormal;
-      docobj.TranDate = moment();
+      docobj.TranDate = new Date();
       docobj.Items = [];
       const item1 = new DocumentItem();
       item1.ItemId = 1;

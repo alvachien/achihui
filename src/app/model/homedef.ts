@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import { SafeAny } from '@common/any';
 import * as hih from './common';
 
@@ -292,13 +292,13 @@ export class HomeMsg {
   private _usrtoDisplayAs = '';
   private _usrfrom = '';
   private _usrfromDisplayAs = '';
-  private _senddate: moment.Moment;
+  private _senddate: Date;
   private _readflag = false;
   private _title = '';
   private _content = '';
 
   constructor() {
-    this._senddate = moment();
+    this._senddate = new Date();
   }
 
   get HID(): number {
@@ -337,14 +337,14 @@ export class HomeMsg {
   set UserFromDisplayAs(uds: string) {
     this._usrfromDisplayAs = uds;
   }
-  get SendDate(): moment.Moment {
+  get SendDate(): Date {
     return this._senddate;
   }
-  set SendDate(sd: moment.Moment) {
+  set SendDate(sd: Date) {
     this._senddate = sd;
   }
   get SendDateFormatString(): string {
-    return this._senddate.format(hih.momentDateFormat);
+    return format(this._senddate, hih.dateFormat);
   }
   get Title(): string {
     return this._title;
@@ -385,7 +385,7 @@ export class HomeMsg {
       this._usrfromDisplayAs = data.userFrom_DisplayAs;
     }
     if (data && data.sendDate) {
-      this._senddate = moment(data.sendDate, hih.momentDateFormat);
+      this._senddate = parse(data.sendDate, hih.dateFormat, new Date());
     }
     if (data && data.title) {
       this._title = data.title;
@@ -403,7 +403,7 @@ export class HomeMsg {
       hid: this._hid,
       userFrom: this._usrfrom,
       userTo: this._usrto,
-      sendDate: this._senddate.format(hih.momentDateFormat),
+      sendDate: format(this._senddate, hih.dateFormat),
       title: this._title,
       content: this._content,
       readFlag: this._readflag,
