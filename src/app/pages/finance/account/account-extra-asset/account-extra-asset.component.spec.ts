@@ -35,9 +35,10 @@ describe('AccountExtraAssetComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
-        
+      // declarations moved to imports
+      imports: [
+        FormsModule,
+
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
@@ -48,9 +49,10 @@ describe('AccountExtraAssetComponent', () => {
         NzInputModule,
         NzInputNumberModule,
         NzDatePickerModule,
-        NzButtonModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+        NzButtonModule,
+      ],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -75,14 +77,14 @@ describe('AccountExtraAssetComponent', () => {
     testingComponent.arAssetCategories = fakeData.finAssetCategories.slice();
 
     fixture.detectChanges();
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     const ast1: AccountExtraAsset = new AccountExtraAsset();
     ast1.CategoryID = fakeData.finAssetCategories[0].ID;
     testingComponent.formGroup.get('infoControl')?.setValue(ast1);
-    await new Promise<void>(r => setTimeout(r, 0));
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testingComponent.formGroup.valid).toBe(false);
@@ -103,8 +105,8 @@ describe('AccountExtraAssetComponent', () => {
     ast1.CategoryID = fakeData.finAssetCategories[0].ID;
     ast1.Name = 'test';
     testingComponent.formGroup.get('infoControl')?.setValue(ast1);
-    await new Promise<void>(r => setTimeout(r, 0));
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testingComponent.formGroup.valid).toBeTruthy();
@@ -129,8 +131,8 @@ describe('AccountExtraAssetComponent', () => {
     ast1.RefDocForBuy = 123;
     ast1.RefDocForSold = 345;
     testingComponent.formGroup.get('infoControl')?.setValue(ast1);
-    await new Promise<void>(r => setTimeout(r, 0));
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testingComponent.formGroup.valid).toBeTruthy();
@@ -155,8 +157,8 @@ describe('AccountExtraAssetComponent', () => {
     expect(testingComponent.assetComponent?.isFieldChangable).toBeTruthy();
 
     testingComponent.formGroup.disable();
-    await new Promise<void>(r => setTimeout(r, 0));
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     expect(testingComponent.assetComponent?.isFieldChangable).toBeFalsy();
@@ -175,17 +177,13 @@ describe('AccountExtraAssetComponent', () => {
 });
 
 @Component({
-    template: `
+  template: `
     <form [formGroup]="formGroup">
       <hih-finance-account-extra-asset formControlName="infoControl" [arAssetCategories]="arAssetCategories">
       </hih-finance-account-extra-asset>
     </form>
   `,
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      AccountExtraAssetComponent,
-    ]
+  imports: [FormsModule, ReactiveFormsModule, AccountExtraAssetComponent],
 })
 export class FinanceAccountExtraAssetTestFormComponent {
   public formGroup: UntypedFormGroup;

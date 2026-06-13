@@ -1,6 +1,8 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+    >
     <nz-breadcrumb-item>{{ 'Finance.Accounts' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Account' | transloco }}</nz-page-header-title>
@@ -11,22 +13,21 @@
       nzMode="multiple"
       nzAllowClear
       [nzPlaceHolder]="'Common.Status' | transloco"
-      (ngModelChange)="onAccountStatusFilterChanged($event)">
-      @for(option of arrayStatus; track $index) {
-        <nz-option        
-          [nzValue]="option.value"
-          [nzLabel]="option.i18nterm | transloco"></nz-option>
+      (ngModelChange)="onAccountStatusFilterChanged($event)"
+    >
+      @for (option of arrayStatus; track $index) {
+        <nz-option [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
       }
     </nz-select>
     <nz-select [(ngModel)]="selectedScope" nzPlaceHolder="Scope" (ngModelChange)="onScopeChanged($event)">
-      @for(option of arrayScopes; track $index) {
-        <nz-option
-          [nzValue]="option.value"
-          [nzLabel]="option.i18nterm | transloco"></nz-option>
+      @for (option of arrayScopes; track $index) {
+        <nz-option [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
       }
     </nz-select>
     <nz-divider nzType="vertical"></nz-divider>
-    <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
+    <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{
+      'Common.Create' | transloco
+    }}</a>
     <a nz-button nzType="link" routerLink="/finance/account/list">{{ 'Common.ListView' | transloco }}</a>
   </nz-page-header-extra>
 </nz-page-header>
@@ -40,7 +41,8 @@
     [nzMinColumn]="3"
     [nzMaxColumn]="20"
     [nzGridColumnCount]="24"
-    [nzSpan]="col">
+    [nzSpan]="col"
+  >
     <nz-resize-handle nzDirection="right">
       <div class="right-wrap">
         <i class="right" nz-icon nzType="more" nzTheme="outline"></i>
@@ -53,21 +55,22 @@
           [nzData]="accountTreeNodes"
           (nzClick)="onNodeClick($event)"
           (nzDblClick)="onNodeClick($event)"
-          [nzTreeTemplate]="tmplAccountHierarchy">
+          [nzTreeTemplate]="tmplAccountHierarchy"
+        >
         </nz-tree>
         <ng-template #tmplAccountHierarchy let-node let-origin="origin">
           <span [style.text-decoration]="node.isDisabled ? 'line-through' : 'none'">
-            @if(!node.isLeaf) {
+            @if (!node.isLeaf) {
               <span (contextmenu)="onNodeContextMenu($event, treeMenu)">
                 <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"></i>
                 <span class="folder-name">{{ node.title }}</span>
-              </span>  
+              </span>
             }
-            @if(node.isLeaf) {
+            @if (node.isLeaf) {
               <span (contextmenu)="onNodeContextMenu($event, treeMenu)">
                 <i nz-icon nzType="account-book"></i>
                 <span class="file-name">{{ node.title }}</span>
-              </span>  
+              </span>
             }
           </span>
         </ng-template>
@@ -101,15 +104,18 @@
     </div>
   </div>
   <div nz-col [nzSpan]="24 - col">
-    @if(isAccountView) {
+    @if (isAccountView) {
       <div style="margin-left: 8px">
         <nz-descriptions
           [nzTitle]="'Finance.Balance' | transloco"
           nzBordered
-          [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
-          <nz-descriptions-item [nzTitle]="'Finance.Balance' | transloco">{{ currentAccountBalance | number : '1.2-2' }} <span>{{ baseCurrency }}</span></nz-descriptions-item>
+          [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }"
+        >
+          <nz-descriptions-item [nzTitle]="'Finance.Balance' | transloco"
+            >{{ currentAccountBalance | number: '1.2-2' }} <span>{{ baseCurrency }}</span></nz-descriptions-item
+          >
         </nz-descriptions>
-      </div>  
+      </div>
     }
     <div style="margin-left: 8px">
       <hih-fin-document-item-view [filterDocItem]="filterDocItem"></hih-fin-document-item-view>
@@ -121,7 +127,8 @@
     [nzTitle]="tmpAccountSettleDlgTitle"
     [nzContent]="tmpAccountSettleDlgContent"
     [nzFooter]="tmpAccountSettleDlgFooter"
-    (nzOnCancel)="handleDlgSettleAccountCancel()">
+    (nzOnCancel)="handleDlgSettleAccountCancel()"
+  >
     <ng-template #tmpAccountSettleDlgTitle>{{ 'Finance.SettleAccountWithInitialBalance' | transloco }}</ng-template>
 
     <ng-template #tmpAccountSettleDlgContent>
@@ -170,9 +177,9 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control>
           <nz-select [(ngModel)]="selectedAccountForSettle!.ControlCenterID">
-            @for(tt of arControlCenters; track tt.Id) {
+            @for (tt of arControlCenters; track tt.Id) {
               <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-            }            
+            }
           </nz-select>
         </nz-form-control>
       </nz-form-item>

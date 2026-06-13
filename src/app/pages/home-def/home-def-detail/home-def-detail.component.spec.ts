@@ -20,10 +20,15 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { HomeDefDetailComponent } from './home-def-detail.component';
-import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../testing';
+import {
+  createSpyObj,
+  getTranslocoModule,
+  FakeDataHelper,
+  ActivatedRouteUrlStub,
+  asyncData,
+} from '../../../../testing';
 import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
-import { MessageDialogComponent } from '../../message-dialog';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -57,8 +62,9 @@ describe('HomeDefDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
@@ -74,8 +80,9 @@ describe('HomeDefDetailComponent', () => {
         NzDividerModule,
         NzCheckboxModule,
         NzButtonModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: finService },
@@ -84,8 +91,8 @@ describe('HomeDefDetailComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -111,9 +118,9 @@ describe('HomeDefDetailComponent', () => {
 
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -121,7 +128,7 @@ describe('HomeDefDetailComponent', () => {
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.IsCreateMode).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -135,9 +142,9 @@ describe('HomeDefDetailComponent', () => {
 
     it('change mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -145,7 +152,7 @@ describe('HomeDefDetailComponent', () => {
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.IsCreateMode).toBeFalsy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -159,9 +166,9 @@ describe('HomeDefDetailComponent', () => {
 
     it('display mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -169,7 +176,7 @@ describe('HomeDefDetailComponent', () => {
       expect(component.isFieldChangable).toBeFalsy();
       expect(component.IsCreateMode).toBeFalsy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

@@ -16,21 +16,21 @@ import { FinanceOdataService, HomeDefOdataService } from '@services/index';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
 
 @Component({
-    selector: 'hih-control-center-list',
-    templateUrl: './control-center-list.component.html',
-    styleUrls: ['./control-center-list.component.less'],
-    imports: [
-      NzSpinModule,
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzButtonModule,
-      NzTableModule,
-      NzPopconfirmModule,
-      NzDividerModule,
-      TranslocoModule,
-      NzModalModule,
-      RouterModule,
-    ]
+  selector: 'hih-control-center-list',
+  templateUrl: './control-center-list.component.html',
+  styleUrls: ['./control-center-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzButtonModule,
+    NzTableModule,
+    NzPopconfirmModule,
+    NzDividerModule,
+    TranslocoModule,
+    NzModalModule,
+    RouterModule,
+  ],
 })
 export class ControlCenterListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -54,7 +54,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -64,13 +64,13 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
       .fetchAllControlCenters()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (value: ControlCenter[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.dataSet = value.slice();
@@ -78,7 +78,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering ControlCenterListComponent ngOnInit, fetchAllControlCenters failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -93,7 +93,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -105,7 +105,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   onDisplay(rid: number): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDisplay...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.router.navigate(['/finance/controlcenter/display/' + rid.toString()]);
   }
@@ -113,7 +113,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   onEdit(rid: number): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onEdit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.router.navigate(['/finance/controlcenter/edit/' + rid.toString()]);
   }
@@ -121,7 +121,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
   onDelete(rid: number) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDelete...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.odataService

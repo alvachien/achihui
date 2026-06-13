@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -39,7 +39,7 @@ import { DecimalPipe } from '@angular/common';
     NzButtonModule,
     DecimalPipe,
     TranslocoModule,
-  ]
+  ],
 })
 export class ControlCenterReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -50,16 +50,20 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   arControlCenter: ControlCenter[] = [];
   baseCurrency: string;
 
-  constructor(
-    public odataService: FinanceOdataService,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService,
-    private drawerService: NzDrawerService,
-    private router: Router
-  ) {
+  public readonly odataService = inject(FinanceOdataService);
+
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly drawerService = inject(NzDrawerService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -69,7 +73,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Load data
@@ -80,7 +84,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -222,14 +226,14 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   public onLoadData(forceReload?: true) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering ControlCenterReportComponent onLoadData(${forceReload})...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.isLoadingResults = true;
     forkJoin([this.odataService.fetchReportByControlCenter(forceReload), this.odataService.fetchAllControlCenters()])
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x) => {
@@ -241,7 +245,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering ControlCenterReportComponent ngOnInit forkJoin failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({

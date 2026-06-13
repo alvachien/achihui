@@ -4,23 +4,22 @@ import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { addMonths, addDays } from 'date-fns';
+import { addMonths } from 'date-fns';
 import { By } from '@angular/platform-browser';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { DocumentHeaderComponent } from '../document-header';
-import { DocumentItemsComponent } from '../document-items';
-import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
 import { DocumentDownpaymentCreateComponent } from './document-downpayment-create.component';
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   ActivatedRouteUrlStub,
   FakeDataHelper,
   asyncData,
-  asyncError,} from '../../../../../testing';
+  asyncError,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -29,7 +28,6 @@ import {
   RepeatFrequencyEnum,
   TemplateDocADP,
 } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -96,14 +94,9 @@ describe('DocumentDownpaymentCreateComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('createadp', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [RouterTestingModule,
-        FormsModule,
-        
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        getTranslocoModule()],
-    providers: [
+      // declarations moved to imports
+      imports: [RouterTestingModule, FormsModule, ReactiveFormsModule, NoopAnimationsModule, getTranslocoModule()],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -113,8 +106,8 @@ describe('DocumentDownpaymentCreateComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -140,26 +133,26 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
     beforeEach(() => {
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
+        asyncData(fakeData.finAccountCategories),
       );
       fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(
-        asyncData(fakeData.finAssetCategories)
+        asyncData(fakeData.finAssetCategories),
       );
       fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
-        asyncData(fakeData.finControlCenters)
+        asyncData(fakeData.finControlCenters),
       );
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -167,18 +160,18 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
     it('setp 0: initial status', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 0: document header is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -191,7 +184,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -200,17 +193,17 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 0: amount is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -223,7 +216,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -240,7 +233,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // Order
       component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       component.headerFormGroup.get('orderControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -248,17 +241,17 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // Add amount back
       component.headerFormGroup.get('amountControl')?.setValue(100.2);
       component.headerFormGroup.get('amountControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 0: account is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -271,7 +264,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -288,7 +281,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // Order
       component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       component.headerFormGroup.get('orderControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -296,17 +289,17 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // Correct missed fields
       component.headerFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.headerFormGroup.get('accountControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 0: tran. type is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -319,7 +312,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -336,7 +329,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // Order
       component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       component.headerFormGroup.get('orderControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -344,17 +337,17 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // Correct missed fields
       component.headerFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
       component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 0: costing object is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -367,7 +360,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -382,7 +375,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('tranTypeControl')?.markAsDirty();
       // Control center - empty
       // Order - empty
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -392,7 +385,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('ccControl')?.markAsDirty();
       component.headerFormGroup.get('orderControl')?.setValue(fakeData.finOrders[0].Id);
       component.headerFormGroup.get('orderControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
@@ -400,17 +393,17 @@ describe('DocumentDownpaymentCreateComponent', () => {
       // Now correct it - remove order
       component.headerFormGroup.get('orderControl')?.setValue(undefined);
       component.headerFormGroup.get('orderControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 0: shall go to step 1 in valid case', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -423,7 +416,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -440,7 +433,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -457,16 +450,16 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       // Go back to step 0
       component.pre();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 1: account extra info is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -479,7 +472,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -496,7 +489,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -519,7 +512,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-      TranDate: new Date(),
+        TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -528,12 +521,12 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 2: show go to step 2 in valid case', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -546,7 +539,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -563,7 +556,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -586,7 +579,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-      TranDate: new Date(),
+        TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -600,12 +593,12 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       expect(component.currentStep).toBe(2);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it.skip('setp 2: popup dialog if verification failed in generated object', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -618,7 +611,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -635,7 +628,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -658,7 +651,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-      TranDate: new Date(),
+        TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -678,20 +671,20 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('headerControl')?.markAsDirty();
       fixture.detectChanges();
       nextButtonNativeEl.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
       fixture.detectChanges();
@@ -699,21 +692,21 @@ describe('DocumentDownpaymentCreateComponent', () => {
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
       expect(component.currentStep).toBe(2);
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 3: show success result if document posted', async () => {
       createADPDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
-        } as Document)
+        } as Document),
       );
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -726,7 +719,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -743,7 +736,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -766,7 +759,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-      TranDate: new Date(),
+        TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -784,21 +777,21 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeTruthy();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createADPDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBe(1);
       expect(component.currentStep).toBe(3);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('setp 3: show error result if document failed to post', async () => {
       createADPDocumentSpy.and.returnValue(asyncError('error on document posting'));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(0);
@@ -811,7 +804,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dochead.Desp = 'test';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
       component.headerFormGroup.get('headerControl')?.markAsDirty();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.get('headerControl')?.valid).toBe(true);
       expect(component.headerFormGroup.valid).toBeFalsy();
@@ -828,7 +821,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       component.headerFormGroup.get('ccControl')?.setValue(fakeData.finControlCenters[0].Id);
       component.headerFormGroup.get('ccControl')?.markAsDirty();
       // Order - empty
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.headerFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
@@ -851,7 +844,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       dp1.Comment = 'test';
       dp1.dpTmpDocs.push({
         TranType: fakeData.finTranTypes[0].Id,
-      TranDate: new Date(),
+        TranDate: new Date(),
         TranAmount: 100,
         Desp: 'test',
       } as TemplateDocADP);
@@ -869,15 +862,15 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeTruthy();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createADPDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeUndefined();
       expect(component.currentStep).toBe(3);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -900,26 +893,26 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
     beforeEach(() => {
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
+        asyncData(fakeData.finAccountCategories),
       );
       fetchAllAssetCategoriesSpy = storageService.fetchAllAssetCategories.and.returnValue(
-        asyncData(fakeData.finAssetCategories)
+        asyncData(fakeData.finAssetCategories),
       );
       fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
-        asyncData(fakeData.finControlCenters)
+        asyncData(fakeData.finControlCenters),
       );
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -930,19 +923,19 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
@@ -952,19 +945,19 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
@@ -974,19 +967,19 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
@@ -996,19 +989,19 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
@@ -1018,19 +1011,19 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
@@ -1040,19 +1033,19 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
@@ -1062,19 +1055,19 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });

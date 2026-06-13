@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -44,7 +44,7 @@ import { DecimalPipe } from '@angular/common';
     NzButtonModule,
     DecimalPipe,
     TranslocoModule,
-  ]
+  ],
 })
 export class OrderReportComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -57,16 +57,20 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   // Filters
   validOrderOnly = false;
 
-  constructor(
-    public odataService: FinanceOdataService,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService,
-    private drawerService: NzDrawerService,
-    private router: Router
-  ) {
+  public readonly odataService = inject(FinanceOdataService);
+
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly drawerService = inject(NzDrawerService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderReportComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -76,7 +80,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderReportComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Load data
@@ -86,7 +90,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     forkJoin([this.odataService.fetchReportByOrder(), this.odataService.fetchAllOrders()])
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x) => {
@@ -98,7 +102,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering OrderReportComponent ngOnInit forkJoin failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -113,7 +117,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderReportComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -125,7 +129,7 @@ export class OrderReportComponent implements OnInit, OnDestroy {
   onOrderValidityChanged(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderReportComponent onOrderValidityChanged...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Valid order

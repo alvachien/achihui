@@ -31,7 +31,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { MarkdownEditorComponent } from '../../reusable-components/markdown-editor';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'hih-blog-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.less'],
@@ -48,7 +48,7 @@ import { MarkdownEditorComponent } from '../../reusable-components/markdown-edit
     NzRadioModule,
     MarkdownEditorComponent,
     TranslocoModule,
-  ]
+  ],
 })
 export class PostDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -73,7 +73,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PostDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -97,7 +97,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PostDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -105,7 +105,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering PostDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -136,7 +136,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (rtns) => {
@@ -174,7 +174,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering PostDetailComponent ngOnInit forkJoin failed: ${err}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
 
                 this.modalService.error({
@@ -195,7 +195,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (val) => {
@@ -206,7 +206,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering PostDetailComponent fetchAllCollections failed: ${err}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -223,7 +223,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PostDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -336,7 +336,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             error: (err) => {
               ModelUtility.writeConsoleLog(
                 `AC_HIH_UI [Error]: Entering PostDetailComponent onSave createPost failed: ${err}`,
-                ConsoleLogTypeEnum.error
+                ConsoleLogTypeEnum.error,
               );
               this.modalService.error({
                 nzTitle: translate('Common.Error'),
@@ -401,7 +401,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
             error: (err) => {
               ModelUtility.writeConsoleLog(
                 `AC_HIH_UI [Error]: Entering PostDetailComponent onSave changePost failed: ${err}`,
-                ConsoleLogTypeEnum.error
+                ConsoleLogTypeEnum.error,
               );
               this.modalService.error({
                 nzTitle: translate('Common.Error'),

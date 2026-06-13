@@ -12,7 +12,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -78,7 +78,7 @@ import { UIAccountCtgyFilterExPipe } from '../../pipes';
     RouterModule,
     NzModalModule,
     UIAccountCtgyFilterExPipe,
-  ]
+  ],
 })
 export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -128,7 +128,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent constructor',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.arMembersInChosedHome = this.homeService.ChosedHome?.Members.slice() ?? [];
@@ -143,20 +143,20 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         ccControl: new UntypedFormControl(''),
         orderControl: new UntypedFormControl(''),
       },
-      [costObjectValidator, this._headerAmountValidator]
+      [costObjectValidator, this._headerAmountValidator],
     );
     this.itemFormGroup = new UntypedFormGroup(
       {
         itemControl: new UntypedFormControl(),
       },
-      [this._itemAmountValidator]
+      [this._itemAmountValidator],
     );
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -177,7 +177,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         next: (rst) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit, forkJoin',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.arDocTypes = rst[2];
@@ -209,7 +209,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent ngOnInit forkJoin failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.create({
@@ -224,7 +224,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -286,7 +286,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent onSubmit',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Generate the doc, and verify it
@@ -336,14 +336,14 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.currentStep = 3;
           this.isDocPosting = false;
-        })
+        }),
       )
       .subscribe(
         (ndoc: Document) => {
           // New doc created with ID returned
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent createAssetSoldoutDocument',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.docIdCreated = ndoc.Id;
@@ -353,19 +353,19 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
           // Handle the error
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentAssetSoldoutCreateComponent, createAssetSoldoutDocument, failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.docIdCreated = undefined;
           this.docPostingFailed = err;
-        }
+        },
       );
   }
 
   private _updateConfirmInfo() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _updateConfirmInfo',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const doc: Document = this.firstFormGroup.get('headerControl')?.value;
@@ -377,7 +377,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.soldoutAssetAccountID = this.firstFormGroup.get('accountControl')?.value;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.confirmInfo.soldOutAssetAccountName = this.arAccounts.find(
-      (val) => val.Id === this.confirmInfo.soldoutAssetAccountID
+      (val) => val.Id === this.confirmInfo.soldoutAssetAccountID,
     )!.Name;
   }
 
@@ -395,7 +395,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   private _headerAmountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _headerAmountValidator',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const amt = group.get('amountControl')?.value;
@@ -408,7 +408,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   private _itemAmountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent _itemAmountValidator',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const amt = this.firstFormGroup.get('amountControl')?.value;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, inject } from '@angular/core';
 import { NgFor, CommonModule } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
@@ -26,15 +26,7 @@ import {
   templateUrl: './document-item-view.component.html',
   styleUrls: ['./document-item-view.component.less'],
   standalone: true,
-  imports: [
-    NzTableModule,
-    NzButtonModule,
-    NzGridModule,
-    TranslocoModule,
-    NgFor,
-    CommonModule,
-    RouterModule,
-  ],
+  imports: [NzTableModule, NzButtonModule, NzGridModule, TranslocoModule, NgFor, CommonModule, RouterModule],
 })
 export class DocumentItemViewComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -46,7 +38,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       `AC_HIH_UI [Debug]: Entering DocumentItemViewComponent filterDocItem setter: ${
         flters ? 'NOT NULL and length is ' + flters.length : 'NULL'
       }`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (flters && flters.length > 0) {
       this._filterDocItem = flters;
@@ -75,10 +67,16 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   incomeCurrency = '';
   outgoCurrency = '';
 
-  constructor(private odataService: FinanceOdataService, private modalService: NzModalService, private router: Router) {
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._destroyed$ === null) {
       this._destroyed$ = new ReplaySubject(1);
@@ -88,7 +86,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$ === null) {
@@ -99,7 +97,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$ !== null) {
@@ -137,7 +135,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
   onQueryParamsChange(params: NzTableQueryParams) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent onQueryParamsChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.filterDocItem.length > 0) {
@@ -190,14 +188,14 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
               field: fieldName,
               order: fieldOrder,
             }
-          : undefined
+          : undefined,
       );
     }
   }
   fetchDocItems(orderby?: { field: string; order: string }): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Not allow select all.
@@ -209,7 +207,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
         this.filterDocItem,
         this.pageSize,
         this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
-        orderby
+        orderby,
       ),
       this.odataService.fetchAllAccounts(),
       this.odataService.fetchAllTranTypes(),
@@ -219,13 +217,13 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => this.isLoadingDocItems = false)
+        finalize(() => (this.isLoadingDocItems = false)),
       )
       .subscribe({
         next: (revdata) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentItemViewComponent fetchDocItems succeed.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.arAccounts = revdata[1];
@@ -275,7 +273,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentItemViewComponent fetchDocItems failed ${err}...`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({

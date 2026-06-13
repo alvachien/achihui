@@ -8,11 +8,7 @@ import { SafeAny } from '@common/any';
   selector: 'hih-credits',
   templateUrl: './credits.component.html',
   styleUrls: ['./credits.component.less'],
-  imports: [
-    TranslocoModule,
-    NzListModule,
-    NzButtonModule,
-  ]
+  imports: [TranslocoModule, NzListModule, NzButtonModule],
 })
 export class CreditsComponent {
   creditApp: SafeAny[] = [

@@ -6,7 +6,6 @@ import { takeUntil } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
-import { format } from 'date-fns';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -54,7 +53,6 @@ import {
   BuildupOrderForSelection,
   financeTranTypeOpeningAsset,
   financeTranTypeOpeningLiability,
-  dateFormat,
 } from '@model/index';
 import { HomeDefOdataService, FinanceOdataService } from '@services/index';
 import { costObjectValidator } from '@uimodel/index';
@@ -86,8 +84,8 @@ import { AccountExtraAssetComponent } from '../account-extra-asset';
     AccountExtraDownpaymentComponent,
     AccountExtraLoanComponent,
     RouterModule,
-    NzModalModule
-  ]
+    NzModalModule,
+  ],
 })
 export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -179,7 +177,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountDetailComponent constructor`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.arStatusDisplayStrings = UIDisplayStringUtil.getAccountStatusStrings();
@@ -190,7 +188,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       nameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(30)]),
       ctgyControl: new UntypedFormControl(
         financeAccountCategoryCash,
-        [Validators.required] // this.categoryValidator],
+        [Validators.required], // this.categoryValidator],
       ),
       cmtControl: new UntypedFormControl('', Validators.maxLength(45)),
       statusControl: new UntypedFormControl(AccountStatusEnum.Normal),
@@ -203,7 +201,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         ccControl: new UntypedFormControl(),
         orderControl: new UntypedFormControl(),
       },
-      [costObjectValidator]
+      [costObjectValidator],
     );
 
     this.extraADPFormGroup = new UntypedFormGroup({
@@ -220,7 +218,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
     this.headerFormGroup.get('idControl')?.disable();
@@ -229,7 +227,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   ngAfterViewInit(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountDetailComponent ngAfterViewInit`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.activateRoute.url.subscribe((x) => {
@@ -350,7 +348,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${err}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
 
                 this.uiMode = UIMode.Invalid;
@@ -382,7 +380,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${err.toString()}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
 
                 this.modalService.error({
@@ -401,7 +399,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnDestroy`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {

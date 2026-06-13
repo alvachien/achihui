@@ -22,7 +22,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     NzSelectModule,
     NzInputNumberModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class DocumentNormalMassCreateItemComponent {
   @Input()

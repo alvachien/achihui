@@ -102,7 +102,7 @@ class DocItemWithBlance {
     NzModalModule,
     RouterModule,
     UIAccountCtgyFilterExPipe,
-  ]
+  ],
 })
 export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -156,7 +156,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent constructor',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.arMembersInChosedHome = this._homeService.ChosedHome?.Members.slice() ?? [];
@@ -170,14 +170,14 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         ccControl: new UntypedFormControl(''),
         orderControl: new UntypedFormControl(''),
       },
-      [costObjectValidator, this._amountValidator]
+      [costObjectValidator, this._amountValidator],
     );
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -197,7 +197,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         next: (rst) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.arDocTypes = rst[2];
@@ -225,7 +225,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentAssetValueChangeCreateComponent ngOnInit forkJoin, failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.create({
@@ -240,7 +240,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent ngOnDestroy',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -295,7 +295,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   onSubmit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Generate the doc, and verify it
@@ -338,14 +338,14 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         finalize(() => {
           this.currentStep = 2;
           this.isDocPosting = false;
-        })
+        }),
       )
       .subscribe({
         next: (ndoc: Document) => {
           // New doc created with ID returned
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent onSubmit',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.docIdCreated = ndoc.Id;
@@ -354,7 +354,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
         error: (err: string) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentAssetValChgCreateComponent onSubmit: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.docIdCreated = undefined;
@@ -366,7 +366,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   private _updateConfirmInfo(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent _updateConfirmInfo',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.confirmInfo.targetAssetAccountID = this.firstFormGroup.get('accountControl')?.value;
@@ -413,8 +413,8 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
       docitems.push(di);
     });
     docitems = docitems.sort((a, b) => {
-      let adate = parse(typeof a.TransactionDate === 'string' ? a.TransactionDate : '', dateFormat, new Date());
-      let bdate = parse(typeof b.TransactionDate === 'string' ? b.TransactionDate : '', dateFormat, new Date());
+      const adate = parse(typeof a.TransactionDate === 'string' ? a.TransactionDate : '', dateFormat, new Date());
+      const bdate = parse(typeof b.TransactionDate === 'string' ? b.TransactionDate : '', dateFormat, new Date());
       if (isBefore(adate, bdate)) {
         return -1;
       }
@@ -447,8 +447,10 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
 
     // Sorting
     this.existingDocItems = this.existingDocItems.sort((a: SafeAny, b: SafeAny) => {
-      const dateA = typeof a.tranDate === 'string' ? a.tranDate : (a.tranDate instanceof Date ? format(a.tranDate, dateFormat) : '');
-      const dateB = typeof b.tranDate === 'string' ? b.tranDate : (b.tranDate instanceof Date ? format(b.tranDate, dateFormat) : '');
+      const dateA =
+        typeof a.tranDate === 'string' ? a.tranDate : a.tranDate instanceof Date ? format(a.tranDate, dateFormat) : '';
+      const dateB =
+        typeof b.tranDate === 'string' ? b.tranDate : b.tranDate instanceof Date ? format(b.tranDate, dateFormat) : '';
       return dateA.localeCompare(dateB);
     });
 
@@ -501,7 +503,7 @@ export class DocumentAssetValueChangeCreateComponent implements OnInit, OnDestro
   private _amountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetValChgCreateComponent constructor',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const amt = group.get('amountControl')?.value;

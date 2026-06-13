@@ -16,20 +16,20 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 @Component({
-    selector: 'hih-language',
-    templateUrl: './language.component.html',
-    styleUrls: ['./language.component.less'],
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      TranslocoModule,
-      NzSpinModule,
-      NzPageHeaderModule,
-      NzTableModule,
-      NzBreadCrumbModule,
-      NzSwitchModule,
-      NzModalModule,
-    ]
+  selector: 'hih-language',
+  templateUrl: './language.component.html',
+  styleUrls: ['./language.component.less'],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzTableModule,
+    NzBreadCrumbModule,
+    NzSwitchModule,
+    NzModalModule,
+  ],
 })
 export class LanguageComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -42,7 +42,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LanguageComponent constructor...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -58,13 +58,13 @@ export class LanguageComponent implements OnInit, OnDestroy {
       .fetchAllLanguages()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: AppLanguage[]) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LanguageComponent OnInit fetchAllLanguages...`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.dataSource = x;
@@ -72,7 +72,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
         error: (error: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LanguageComponent OnInit fetchAllLanguages, failed ${error}...`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -87,7 +87,7 @@ export class LanguageComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LanguageComponent ngOnDestroy...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {

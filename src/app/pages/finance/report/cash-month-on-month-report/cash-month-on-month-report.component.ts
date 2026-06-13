@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -15,14 +15,10 @@ import {
   financePeriodLast3Months,
   financePeriodLast6Months,
   FinanceReportEntryMoM,
-  GeneralFilterItem,
-  GeneralFilterOperatorEnum,
-  GeneralFilterValueType,
   ModelUtility,
   dateFormat,
 } from '@model/index';
 import { FinanceOdataService, UIStatusService } from '@services/index';
-import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -43,7 +39,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     FormsModule,
     NgxEchartsModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -52,23 +48,27 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   reportData: FinanceReportEntryMoM[] = [];
   chartOption: EChartsOption | null = null;
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    public drawerService: NzDrawerService,
-    private uiStatusService: UIStatusService,
-    private router: Router,
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  public readonly drawerService = inject(NzDrawerService);
+
+  private readonly uiStatusService = inject(UIStatusService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Load data
@@ -79,7 +79,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -91,7 +91,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   onLoadData(forceReload?: boolean) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountReportComponent onLoadData(${forceReload})...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = true;
@@ -101,7 +101,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (values: FinanceReportEntryMoM[]) => {
@@ -111,7 +111,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering CashMonthOnMonthReportComponent onLoadData fetchCashReportMoM failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -126,7 +126,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   onChanges(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent onChanges with ${this.selectedPeriod}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (event) {
       // TBD
@@ -288,7 +288,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   onChartClick(event: SafeAny) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CashMonthOnMonthReportComponent onChartClick`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     // $vars: (3) ['seriesName', 'name', 'value']
     // componentIndex: 1
@@ -319,10 +319,7 @@ export class CashMonthOnMonthReportComponent implements OnInit, OnDestroy {
   }
   onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
     this.uiStatusService.docInsightOption = {
-      SelectedDataRange: [
-        parse(beginDate, dateFormat, new Date()),
-        parse(endDate, dateFormat, new Date()),
-      ],
+      SelectedDataRange: [parse(beginDate, dateFormat, new Date()), parse(endDate, dateFormat, new Date())],
       TransactionDirection: isexp ? false : true,
       ExcludeTransfer: true,
     };

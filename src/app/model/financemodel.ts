@@ -3,17 +3,9 @@ import {
   format,
   parse,
   startOfDay,
-  startOfMonth,
-  startOfYear,
-  startOfQuarter,
-  endOfDay,
-  endOfMonth,
-  endOfYear,
-  endOfQuarter,
   addMonths,
   addYears,
   addDays,
-  subMonths,
   isBefore,
   isAfter,
   isWithinInterval,
@@ -642,7 +634,7 @@ export class Account extends hih.BaseModel {
           this._addMessage(
             hih.MessageType.Error,
             'Common.CategoryFetchFailedOrNoOne',
-            'Common.CategoryFetchFailedOrNoOne'
+            'Common.CategoryFetchFailedOrNoOne',
           );
           brst = false;
         }
@@ -1483,7 +1475,7 @@ export class ControlCenter extends hih.BaseModel {
           this._addMessage(
             hih.MessageType.Error,
             'Finance.ControlCenterFetchFailedOrNoCC',
-            'Finance.ControlCenterFetchFailedOrNoCC'
+            'Finance.ControlCenterFetchFailedOrNoCC',
           );
           bRst = false;
         }
@@ -1707,7 +1699,7 @@ export class Order extends hih.BaseModel {
           this._addMessage(
             hih.MessageType.Error,
             'Finance.InvalidSettlementRule',
-            'Finance.SettlementRulePrecentSumNotCorrect'
+            'Finance.SettlementRulePrecentSumNotCorrect',
           );
           chkrst = false;
         }
@@ -1836,7 +1828,7 @@ export class SettlementRule {
       const msg: hih.InfoMessage = new hih.InfoMessage(
         hih.MessageType.Error,
         'Finance.InvalidRuleID',
-        'Finance.InvalidRuleID'
+        'Finance.InvalidRuleID',
       );
       this.VerifiedMsgs.push(msg);
       brst = false;
@@ -1854,7 +1846,7 @@ export class SettlementRule {
         const msg: hih.InfoMessage = new hih.InfoMessage(
           hih.MessageType.Error,
           'Finance.InvalidControlCenter',
-          'Finance.InvalidControlCenter'
+          'Finance.InvalidControlCenter',
         );
         this.VerifiedMsgs.push(msg);
         brst = false;
@@ -1864,7 +1856,7 @@ export class SettlementRule {
         const msg: hih.InfoMessage = new hih.InfoMessage(
           hih.MessageType.Error,
           'Finance.InvalidControlCenter',
-          'Finance.InvalidControlCenter'
+          'Finance.InvalidControlCenter',
         );
         this.VerifiedMsgs.push(msg);
         brst = false;
@@ -1876,7 +1868,7 @@ export class SettlementRule {
       const msg: hih.InfoMessage = new hih.InfoMessage(
         hih.MessageType.Error,
         'Finance.InvalidPrecent',
-        'Finance.InvalidPrecent'
+        'Finance.InvalidPrecent',
       );
       this.VerifiedMsgs.push(msg);
       brst = false;
@@ -2236,7 +2228,7 @@ export class Document extends hih.BaseModel {
                 this._addMessage(
                   hih.MessageType.Error,
                   'Finance.UnnecessaryExchangeRate',
-                  'Finance.UnnecessaryExchangeRate'
+                  'Finance.UnnecessaryExchangeRate',
                 );
                 chkrst = false;
               }
@@ -2270,7 +2262,7 @@ export class Document extends hih.BaseModel {
                 this._addMessage(
                   hih.MessageType.Error,
                   'Finance.UnnecessaryExchangeRate',
-                  'Finance.UnnecessaryExchangeRate'
+                  'Finance.UnnecessaryExchangeRate',
                 );
                 chkrst = false;
               }
@@ -2341,7 +2333,12 @@ export class Document extends hih.BaseModel {
             if (fit.OrderId && fit.OrderId > 0 && context && context.Orders.length > 0) {
               const vordidx: number = context.Orders.findIndex((ord: Order) => {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return +fit.OrderId! === +ord!.Id! && ord.ValidFrom && ord.ValidTo && isWithinInterval(this.TranDate, { start: ord.ValidFrom, end: ord.ValidTo });
+                return (
+                  +fit.OrderId! === +ord!.Id! &&
+                  ord.ValidFrom &&
+                  ord.ValidTo &&
+                  isWithinInterval(this.TranDate, { start: ord.ValidFrom, end: ord.ValidTo })
+                );
               });
 
               if (vordidx === -1) {
@@ -2361,7 +2358,7 @@ export class Document extends hih.BaseModel {
           this._addMessage(
             hih.MessageType.Error,
             'Finance.AmountIsNotCorrect',
-            'Finance.AmountIsZeroInTransferDocument'
+            'Finance.AmountIsZeroInTransferDocument',
           );
           chkrst = false;
         }
@@ -2537,7 +2534,7 @@ export class DocumentItem {
       const msg: hih.InfoMessage = new hih.InfoMessage(
         hih.MessageType.Error,
         'Finance.InvalidItemID',
-        'Finance.InvalidItemID'
+        'Finance.InvalidItemID',
       );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
@@ -2554,7 +2551,7 @@ export class DocumentItem {
           const msg: hih.InfoMessage = new hih.InfoMessage(
             hih.MessageType.Error,
             'Finance.InvalidAccount',
-            'Finance.InvalidAccount'
+            'Finance.InvalidAccount',
           );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
@@ -2563,7 +2560,7 @@ export class DocumentItem {
         const msg: hih.InfoMessage = new hih.InfoMessage(
           hih.MessageType.Error,
           'Finance.AccountIsMust',
-          'Finance.AccountIsMust'
+          'Finance.AccountIsMust',
         );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
@@ -2572,7 +2569,7 @@ export class DocumentItem {
       const msg: hih.InfoMessage = new hih.InfoMessage(
         hih.MessageType.Error,
         'Finance.AccountFetchFailed',
-        'Finance.AccountFetchFailed'
+        'Finance.AccountFetchFailed',
       );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
@@ -2593,7 +2590,7 @@ export class DocumentItem {
           const msg: hih.InfoMessage = new hih.InfoMessage(
             hih.MessageType.Error,
             'Finance.InvalidTransactionType',
-            'Finance.InvalidTransactionType'
+            'Finance.InvalidTransactionType',
           );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
@@ -2602,7 +2599,7 @@ export class DocumentItem {
         const msg: hih.InfoMessage = new hih.InfoMessage(
           hih.MessageType.Error,
           'Finance.TransactionTypeIsMust',
-          'Finance.TransactionTypeIsMust'
+          'Finance.TransactionTypeIsMust',
         );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
@@ -2611,7 +2608,7 @@ export class DocumentItem {
       const msg: hih.InfoMessage = new hih.InfoMessage(
         hih.MessageType.Error,
         'Finance.TransactionTypeFetchFailed',
-        'Finance.TransactionTypeFetchFailed'
+        'Finance.TransactionTypeFetchFailed',
       );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
@@ -2621,7 +2618,7 @@ export class DocumentItem {
       const msg: hih.InfoMessage = new hih.InfoMessage(
         hih.MessageType.Error,
         'Finance.AmountIsNotCorrect',
-        'Finance.AmountIsNotCorrect'
+        'Finance.AmountIsNotCorrect',
       );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
@@ -2631,7 +2628,7 @@ export class DocumentItem {
       const msg: hih.InfoMessage = new hih.InfoMessage(
         hih.MessageType.Error,
         'Finance.DespIsMust',
-        'Finance.DespIsMust'
+        'Finance.DespIsMust',
       );
       this.VerifiedMsgs.push(msg);
       chkrst = false;
@@ -2641,7 +2638,7 @@ export class DocumentItem {
         const msg: hih.InfoMessage = new hih.InfoMessage(
           hih.MessageType.Error,
           'Finance.DespIsTooLong',
-          'Finance.DespIsTooLong'
+          'Finance.DespIsTooLong',
         );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
@@ -2657,7 +2654,7 @@ export class DocumentItem {
         const msg: hih.InfoMessage = new hih.InfoMessage(
           hih.MessageType.Error,
           'Finance.DualInputFound',
-          'Finance.EitherControlCenterOrOrder'
+          'Finance.EitherControlCenterOrOrder',
         );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
@@ -2674,7 +2671,7 @@ export class DocumentItem {
         const msg: hih.InfoMessage = new hih.InfoMessage(
           hih.MessageType.Error,
           'Finance.NoInputFound',
-          'Finance.EitherControlCenterOrOrder'
+          'Finance.EitherControlCenterOrOrder',
         );
         this.VerifiedMsgs.push(msg);
         chkrst = false;
@@ -2697,7 +2694,7 @@ export class DocumentItem {
             const msg: hih.InfoMessage = new hih.InfoMessage(
               hih.MessageType.Error,
               'Finance.InvalidControlCenter',
-              'Finance.InvalidControlCenter'
+              'Finance.InvalidControlCenter',
             );
             this.VerifiedMsgs.push(msg);
             chkrst = false;
@@ -2706,7 +2703,7 @@ export class DocumentItem {
           const msg: hih.InfoMessage = new hih.InfoMessage(
             hih.MessageType.Error,
             'Finance.ControlCenterFetchFailedOrNoCC',
-            'Finance.ControlCenterFetchFailedOrNoCC'
+            'Finance.ControlCenterFetchFailedOrNoCC',
           );
           this.VerifiedMsgs.push(msg);
           chkrst = false;
@@ -2722,7 +2719,7 @@ export class DocumentItem {
             const msg: hih.InfoMessage = new hih.InfoMessage(
               hih.MessageType.Error,
               'Finance.InvalidActivity',
-              'Finance.InvalidActivity'
+              'Finance.InvalidActivity',
             );
             this.VerifiedMsgs.push(msg);
             chkrst = false;
@@ -2731,7 +2728,7 @@ export class DocumentItem {
           const msg: hih.InfoMessage = new hih.InfoMessage(
             hih.MessageType.Error,
             'Finance.ActivityFetchFailedOrNoActivity',
-            'Finance.ActivityFetchFailedOrNoActivity'
+            'Finance.ActivityFetchFailedOrNoActivity',
           );
           this.VerifiedMsgs.push(msg);
           chkrst = false;

@@ -14,10 +14,10 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trandateErrorTpl" style="text-align: left">
         <nz-date-picker id="idTranDate" formControlName="dateControl"></nz-date-picker>
         <ng-template #trandateErrorTpl let-control>
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>

@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -67,7 +67,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzSpinModule,
     RouterModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -100,15 +100,18 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   public docIdCreated?: number;
   public docPostingFailed = '';
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private router: Router
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Set the default currency
@@ -131,7 +134,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -168,7 +171,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent ngOnInit, forkJoin, ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.create({
             nzTitle: translate('Common.Error'),
@@ -182,7 +185,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -195,7 +198,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Save the doc
@@ -213,7 +216,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     ) {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave, onVerify failed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
@@ -231,13 +234,13 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.isDocPosting = false;
           this.currentStep = 3;
-        })
+        }),
       )
       .subscribe({
         next: (doc) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave createDocument...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
           this.docIdCreated = doc.Id;
           this.docPostingFailed = '';
@@ -245,7 +248,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentNormalCreateComponent onSave createDocument: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.docIdCreated = undefined;
           this.docPostingFailed = err;
@@ -372,11 +375,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
                 this.confirmInfo.warningExist = true;
                 this.confirmInfo.duplicatedItems.push(
                   'Account: ' +
-                  di.AccountId.toString() +
-                  '; Amount: ' +
-                  di.TranAmount.toString() +
-                  '; Tran. type: ' +
-                  di.TranType?.toString()
+                    di.AccountId.toString() +
+                    '; Amount: ' +
+                    di.TranAmount.toString() +
+                    '; Tran. type: ' +
+                    di.TranType?.toString(),
                 );
               }
             });

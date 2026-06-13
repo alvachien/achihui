@@ -1,10 +1,12 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+    >
     <nz-breadcrumb-item>{{ 'Finance.Reports' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
-  @if(!isChildMode) {
+  @if (!isChildMode) {
     <nz-page-header-extra>
       <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="detailReports">
         {{ 'Finance.DetailReport' | transloco }}
@@ -46,20 +48,20 @@
           </li>
         </ul>
       </nz-dropdown-menu>
-    </nz-page-header-extra>  
+    </nz-page-header-extra>
   }
 </nz-page-header>
 
-@if(isChildMode) {
+@if (isChildMode) {
   <div>
     <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
       <div nz-result-extra>
         <button nz-button nzType="primary">OK</button>
       </div>
-    </nz-result>  
+    </nz-result>
   </div>
 }
-@if(!isChildMode) {
+@if (!isChildMode) {
   <div>
     <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
@@ -67,13 +69,13 @@
           <div>
             <nz-list nzBordered nzSize="large">
               <nz-list-header>{{ 'Finance.Top3IncomeTransactionInCurrentMonth' | transloco }}</nz-list-header>
-              @for(item of reportByMostIncomeInCurrentMonth; track $index) {
+              @for (item of reportByMostIncomeInCurrentMonth; track $index) {
                 <nz-list-item>
                   <div>
                     <div>
                       <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
                       <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, 0, false)">
-                        {{ item.Amount | number : '1.2-2' }}
+                        {{ item.Amount | number: '1.2-2' }}
                       </button>
                     </div>
                     <nz-progress
@@ -82,15 +84,17 @@
                       [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
                     ></nz-progress>
                   </div>
-                </nz-list-item>  
+                </nz-list-item>
               }
-              @if(reportByMostIncomeInCurrentMonth.length === 0) {
+              @if (reportByMostIncomeInCurrentMonth.length === 0) {
                 <nz-list-empty></nz-list-empty>
               }
-              
+
               <nz-list-footer>
-                {{ 'Common.Total' | transloco }}: {{ totalIncomeInCurrentMonth | number : '1.2-2' }}
-                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+                {{ 'Common.Total' | transloco }}: {{ totalIncomeInCurrentMonth | number: '1.2-2' }}
+                <span style="padding-left: 2px"
+                  ><small>{{ baseCurrency }}</small></span
+                >
               </nz-list-footer>
             </nz-list>
           </div>
@@ -99,30 +103,33 @@
           <div>
             <nz-list nzBordered nzSize="large">
               <nz-list-header>{{ 'Finance.Top3OutgoTransactionInCurrentMonth' | transloco }}</nz-list-header>
-              @for(item of reportByMostOutgoInCurrentMonth; track $index) {
+              @for (item of reportByMostOutgoInCurrentMonth; track $index) {
                 <nz-list-item>
                   <div>
                     <div>
                       <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
                       <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, 0, true)">
-                        {{ item.Amount | number : '1.2-2' }}
+                        {{ item.Amount | number: '1.2-2' }}
                       </button>
                     </div>
                     <nz-progress
                       style="width: 120px"
                       [nzPercent]="item.Precentage"
-                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
+                    ></nz-progress>
                   </div>
-                </nz-list-item>  
+                </nz-list-item>
               }
-              @if(reportByMostOutgoInCurrentMonth.length === 0) {
+              @if (reportByMostOutgoInCurrentMonth.length === 0) {
                 <nz-list-empty></nz-list-empty>
               }
-              
+
               <nz-list-footer>
                 {{ 'Common.Total' | transloco }}:
-                {{ totalOutgoInCurrentMonth | number : '1.2-2' }}
-                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+                {{ totalOutgoInCurrentMonth | number: '1.2-2' }}
+                <span style="padding-left: 2px"
+                  ><small>{{ baseCurrency }}</small></span
+                >
               </nz-list-footer>
             </nz-list>
           </div>
@@ -131,30 +138,33 @@
           <div>
             <nz-list nzBordered nzSize="large">
               <nz-list-header>{{ 'Finance.Top3IncomeTransactionInLastMonth' | transloco }}</nz-list-header>
-              @for(item of reportByMostIncomeInLastMonth; track $index) {
+              @for (item of reportByMostIncomeInLastMonth; track $index) {
                 <nz-list-item>
                   <div>
                     <div>
                       <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
                       <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, -1, false)">
-                        {{ item.Amount | number : '1.2-2' }}
+                        {{ item.Amount | number: '1.2-2' }}
                       </button>
                     </div>
                     <nz-progress
                       style="width: 120px"
                       [nzPercent]="item.Precentage"
-                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
+                    ></nz-progress>
                   </div>
-                </nz-list-item>  
+                </nz-list-item>
               }
-              @if(reportByMostIncomeInLastMonth.length === 0) {
+              @if (reportByMostIncomeInLastMonth.length === 0) {
                 <nz-list-empty></nz-list-empty>
               }
-              
+
               <nz-list-footer>
                 {{ 'Common.Total' | transloco }}:
-                {{ totalIncomeInLastMonth | number : '1.2-2' }}
-                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+                {{ totalIncomeInLastMonth | number: '1.2-2' }}
+                <span style="padding-left: 2px"
+                  ><small>{{ baseCurrency }}</small></span
+                >
               </nz-list-footer>
             </nz-list>
           </div>
@@ -163,30 +173,33 @@
           <div>
             <nz-list nzBordered nzSize="large">
               <nz-list-header>{{ 'Finance.Top3OutgoTransactionInLastMonth' | transloco }}</nz-list-header>
-              @for(item of reportByMostOutgoInLastMonth; track $index) {
+              @for (item of reportByMostOutgoInLastMonth; track $index) {
                 <nz-list-item>
                   <div>
                     <div>
                       <span>{{ item.TransactionTypeName }}({{ item.TransactionType }}): </span>
                       <button nz-button nzType="link" (click)="onShowDetail(item.TransactionType, -1, true)">
-                        {{ item.Amount | number : '1.2-2' }}
+                        {{ item.Amount | number: '1.2-2' }}
                       </button>
                     </div>
                     <nz-progress
                       style="width: 120px"
                       [nzPercent]="item.Precentage"
-                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" ></nz-progress>
+                      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
+                    ></nz-progress>
                   </div>
-                </nz-list-item>  
+                </nz-list-item>
               }
-              @if(reportByMostOutgoInLastMonth.length === 0) {
+              @if (reportByMostOutgoInLastMonth.length === 0) {
                 <nz-list-empty></nz-list-empty>
               }
-              
+
               <nz-list-footer>
                 {{ 'Common.Total' | transloco }}:
-                {{ totalOutgoInLastMonth | number : '1.2-2' }}
-                <span style="padding-left: 2px"><small>{{ baseCurrency }}</small></span>
+                {{ totalOutgoInLastMonth | number: '1.2-2' }}
+                <span style="padding-left: 2px"
+                  ><small>{{ baseCurrency }}</small></span
+                >
               </nz-list-footer>
             </nz-list>
           </div>

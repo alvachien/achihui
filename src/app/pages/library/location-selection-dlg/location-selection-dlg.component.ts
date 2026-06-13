@@ -1,24 +1,18 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { Location } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 
 @Component({
-    selector: 'hih-location-selection-dlg',
-    templateUrl: './location-selection-dlg.component.html',
-    styleUrls: ['./location-selection-dlg.component.less'],
-    standalone: true,
-    imports: [
-      NzTableModule,
-      NzCheckboxModule,
-      TranslocoModule,
-      NzModalModule,
-    ]
+  selector: 'hih-location-selection-dlg',
+  templateUrl: './location-selection-dlg.component.html',
+  styleUrls: ['./location-selection-dlg.component.less'],
+  standalone: true,
+  imports: [NzTableModule, NzCheckboxModule, TranslocoModule, NzModalModule],
 })
 export class LocationSelectionDlgComponent implements OnInit {
   checked = false;

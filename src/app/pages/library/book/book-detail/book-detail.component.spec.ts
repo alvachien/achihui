@@ -12,18 +12,18 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
-  ActivatedRouteUrlStub,} from '../../../../../testing';
+  ActivatedRouteUrlStub,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, Book } from '../../../../model';
 import { BookDetailComponent } from './book-detail.component';
 import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
-import { OrganizationSelectionDlgComponent } from '../../organization-selection-dlg';
-import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
-import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -63,8 +63,9 @@ describe('BookDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
 
         ReactiveFormsModule,
         RouterTestingModule,
@@ -72,8 +73,9 @@ describe('BookDetailComponent', () => {
         BrowserDynamicTestingModule,
         NzInputModule,
         NzCheckboxModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -81,17 +83,18 @@ describe('BookDetailComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
         {
-            provide: NzModalRef,
-            useFactory: (modalSvc: NzModalService) => modalSvc.create({
-                nzClosable: true,
-                nzContent: PersonSelectionDlgComponent,
+          provide: NzModalRef,
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: PersonSelectionDlgComponent,
             }),
-            deps: [NzModalService],
+          deps: [NzModalService],
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -118,9 +121,9 @@ describe('BookDetailComponent', () => {
 
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -130,9 +133,9 @@ describe('BookDetailComponent', () => {
 
     it('create mode with valid data: name and comment', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
@@ -146,7 +149,7 @@ describe('BookDetailComponent', () => {
       const routerstub = TestBed.inject(Router);
       vi.spyOn(routerstub, 'navigate');
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(routerstub.navigate).toHaveBeenCalled();
@@ -155,9 +158,9 @@ describe('BookDetailComponent', () => {
 
     it('assign author', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
@@ -181,9 +184,9 @@ describe('BookDetailComponent', () => {
 
     it('display mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -198,13 +201,13 @@ describe('BookDetailComponent', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
 
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
       readBookSpy.and.returnValue(asyncError('Failed'));
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -212,19 +215,19 @@ describe('BookDetailComponent', () => {
 
     it('shall display error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });

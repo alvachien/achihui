@@ -18,9 +18,9 @@ describe('LanguageOdataService', () => {
     fakeData.buildAppLanguageFromAPI();
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [LanguageOdataService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [LanguageOdataService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    });
 
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -46,10 +46,8 @@ describe('LanguageOdataService', () => {
       expect(service.Languages.length, 'should not buffered yet').toEqual(0);
       service.fetchAllLanguages().subscribe({
         next: (langs: any) => {
-          expect(langs.length, 'should return expected languages')
-            .toEqual(fakeData.appLanguagesFromAPI.length);
-          expect(service.Languages.length, 'should have buffered')
-            .toEqual(fakeData.appLanguagesFromAPI.length);
+          expect(langs.length, 'should return expected languages').toEqual(fakeData.appLanguagesFromAPI.length);
+          expect(service.Languages.length, 'should have buffered').toEqual(fakeData.appLanguagesFromAPI.length);
         },
         error: () => {
           // Empty
@@ -103,8 +101,7 @@ describe('LanguageOdataService', () => {
       expect(service.Languages.length, 'should not buffered yet').toEqual(0);
       service.fetchAllLanguages().subscribe({
         next: (langs: any) => {
-          expect(langs.length, 'should return expected languages')
-            .toEqual(fakeData.appLanguagesFromAPI.length);
+          expect(langs.length, 'should return expected languages').toEqual(fakeData.appLanguagesFromAPI.length);
           expect(langs.length, 'should have buffered').toEqual(service.Languages.length);
         },
         error: () => {
@@ -120,19 +117,16 @@ describe('LanguageOdataService', () => {
       httpTestingController.verify();
 
       // Second call
-      expect(service.Languages.length, 'buffer should not changed')
-        .toEqual(fakeData.appLanguagesFromAPI.length);
+      expect(service.Languages.length, 'buffer should not changed').toEqual(fakeData.appLanguagesFromAPI.length);
       service.fetchAllLanguages().subscribe();
       const requests2: any = httpTestingController.match(dataAPIURL);
       expect(requests2.length, 'shall be 0 calls to real API due to buffer!').toEqual(0);
 
       // Third call
-      expect(service.Languages.length, 'buffer should not changed')
-        .toEqual(fakeData.appLanguagesFromAPI.length);
+      expect(service.Languages.length, 'buffer should not changed').toEqual(fakeData.appLanguagesFromAPI.length);
       service.fetchAllLanguages().subscribe({
         next: (langs: any) => {
-          expect(langs.length, 'should return expected languages')
-            .toEqual(fakeData.appLanguagesFromAPI.length);
+          expect(langs.length, 'should return expected languages').toEqual(fakeData.appLanguagesFromAPI.length);
         },
       });
 

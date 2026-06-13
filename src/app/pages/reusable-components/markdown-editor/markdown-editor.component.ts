@@ -8,6 +8,7 @@ import {
   forwardRef,
   HostListener,
   ChangeDetectorRef,
+  inject,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -39,32 +40,32 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'ac-markdown-editor',
-    standalone: true,
-    templateUrl: './markdown-editor.component.html',
-    styleUrls: ['./markdown-editor.component.less'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => MarkdownEditorComponent),
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: forwardRef(() => MarkdownEditorComponent),
-            multi: true,
-        },
-    ],
-    imports: [
-      NzButtonModule,
-      NzDividerModule,
-      NzCodeEditorModule,
-      MarkdownModule,
-      NzGridModule,
-      NzIconModule,
-      TranslocoModule
-    ]
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'ac-markdown-editor',
+  standalone: true,
+  templateUrl: './markdown-editor.component.html',
+  styleUrls: ['./markdown-editor.component.less'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => MarkdownEditorComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => MarkdownEditorComponent),
+      multi: true,
+    },
+  ],
+  imports: [
+    NzButtonModule,
+    NzDividerModule,
+    NzCodeEditorModule,
+    MarkdownModule,
+    NzGridModule,
+    NzIconModule,
+    TranslocoModule,
+  ],
 })
 export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() editorID = '';
@@ -97,7 +98,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   get value(): string {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       this.content = this.editor.getValue();
@@ -108,7 +109,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   set value(value: string) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value setter...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.content = value;
     if (this.editor) {
@@ -123,7 +124,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._onChange) {
@@ -133,7 +134,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   @HostListener('blur') onTouched(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._onTouched) {
@@ -141,14 +142,16 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     }
   }
 
-  constructor(
-    private changeDetect: ChangeDetectorRef,
-    private authService: AuthService,
-    private modalService: NzModalService
-  ) {
+  private readonly changeDetect = inject(ChangeDetectorRef);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.uploadAPI = environment.ApiUrl + 'api/PhotoFile';
@@ -157,21 +160,21 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   onEditorInit(e: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.editor = e;
@@ -187,7 +190,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     this.editor!.onDidChangeModelContent(() => {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -201,7 +204,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     this.editor!.onDidScrollChange((ec) => {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       // Rework for the scroll
@@ -221,7 +224,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   writeValue(val: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent writeValue...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.value = val;
@@ -229,21 +232,21 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._onChange = fn;
   }
   registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent setDisabledState...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (isDisabled) {
       this.readOnly = true;
@@ -266,7 +269,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarUndo(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUndo...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       // TBD
@@ -275,7 +278,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarRedo(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarRedo...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       // TBD
@@ -284,7 +287,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarBold(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarBold...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       const curmodel = this.editor.getModel();
@@ -307,7 +310,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarStrikethrough(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarStrikethrough...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -331,7 +334,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarItalic(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarItalic...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -355,7 +358,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarQuote(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarQuote...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       const curmodel = this.editor.getModel();
@@ -378,25 +381,25 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarUpperCase(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUpperCase...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
   onToolbarLowerCase(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarLowercase...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
   onToolbarHr(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarHr...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
   onToolbarH1(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH1...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -420,7 +423,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarH2(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH2...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -444,7 +447,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarH3(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH3...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -468,7 +471,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarH4(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH4...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -492,7 +495,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarH5(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH5...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -516,7 +519,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarH6(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarH6...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -540,7 +543,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarUnorderedList(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarUnorderedList...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       const curmodel = this.editor.getModel();
@@ -563,7 +566,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarOrderedList(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarOrderedList...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       const curmodel = this.editor.getModel();
@@ -586,7 +589,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarCode(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCode...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       const curmodel = this.editor.getModel();
@@ -609,7 +612,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarCodeBlock(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarCodeBlock...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.editor) {
@@ -633,13 +636,13 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarTex(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarTex...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
   onToolbarPageBreak(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPageBreak...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       const curmodel = this.editor.getModel();
@@ -664,7 +667,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarPicture(filename?: string): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPicture...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Upload
@@ -700,7 +703,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarClear(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarClear...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       this.editor.setValue('');
@@ -738,12 +741,12 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarPictureUpload(info: NzUploadChangeParam): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (info.file.status === 'done') {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarPictureUpload, succeed`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
       if (info.file.response) {
         this.onToolbarPicture(info.file.response[0].url);
@@ -751,7 +754,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     } else if (info.file.status === 'error') {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Error]: Entering MarkdownEditorComponent onToolbarPictureUpload, failed: ${info.file.response}`,
-        ConsoleLogTypeEnum.error
+        ConsoleLogTypeEnum.error,
       );
       this.modalService.error({
         nzTitle: translate('Common.Error'),
@@ -763,7 +766,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   onToolbarDateTime(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onToolbarDateTime...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.editor) {
       const curmodel = this.editor.getModel();
@@ -786,7 +789,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   validate(control: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent validate...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (control) {
       // TBD.
@@ -796,7 +799,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   registerOnValidatorChange?(fn: () => void): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent registerOnValidatorChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (!fn) {
       // EMPTY

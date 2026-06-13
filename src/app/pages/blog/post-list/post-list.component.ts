@@ -20,7 +20,7 @@ import {
 import { BlogOdataService } from '@services/index';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'hih-blog-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.less'],
@@ -33,7 +33,7 @@ import { BlogOdataService } from '@services/index';
     NzDividerModule,
     NzSpinModule,
     RouterModule,
-  ]
+  ],
 })
 export class PostListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -47,11 +47,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   private readonly odataService = inject(BlogOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly router = inject(Router);
-  
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PostListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -67,7 +67,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PostListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -96,7 +96,7 @@ export class PostListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (revdata: any) => {
@@ -116,7 +116,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         error: (err: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering PostListComponent ngOnInit, fetchAllPosts failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({

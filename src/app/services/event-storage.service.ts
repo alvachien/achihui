@@ -45,7 +45,7 @@ export class EventStorageService {
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LibraryStorageService constructor`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.bufferedGeneralEvents = new Map<number, GeneralEvent>();
@@ -64,7 +64,7 @@ export class EventStorageService {
     orderby?: { field: string; order: string },
     skipfinished?: boolean,
     dtbgn?: Date,
-    dtend?: Date
+    dtend?: Date,
   ): Observable<BaseListModel<GeneralEvent>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -117,11 +117,11 @@ export class EventStorageService {
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering EventStorageService fetchGeneralEvents failed with: ${error}`,
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
 
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      })
+      }),
     );
   }
 
@@ -145,7 +145,7 @@ export class EventStorageService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService readGeneralEvents`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: GeneralEvent = new GeneralEvent();
@@ -155,11 +155,13 @@ export class EventStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering EventStorageService readGeneralEvents, failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -184,7 +186,7 @@ export class EventStorageService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService, createGeneralEvent.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: GeneralEvent = new GeneralEvent();
@@ -197,11 +199,13 @@ export class EventStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering EventStorageService, createGeneralEvent failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -224,7 +228,7 @@ export class EventStorageService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService, deleteGeneralEvent, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return true;
@@ -232,11 +236,13 @@ export class EventStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering EventStorageService, deleteGeneralEvent failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -268,7 +274,7 @@ export class EventStorageService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService completeGeneralEvent.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return true;
@@ -276,11 +282,11 @@ export class EventStorageService {
         catchError((errresp: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering EventStorageService completeGeneralEvent failed ${errresp}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(errresp.statusText + '; ' + errresp.error + '; ' + errresp.message));
-        })
+        }),
       );
   }
 
@@ -292,7 +298,7 @@ export class EventStorageService {
   fetchRecurEvents(
     top?: number,
     skip?: number,
-    orderby?: { field: string; order: string }
+    orderby?: { field: string; order: string },
   ): Observable<BaseListModel<RecurEvent>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -337,11 +343,11 @@ export class EventStorageService {
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering EventStorageService fetchRecurEvents failed with: ${error}`,
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
 
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      })
+      }),
     );
   }
 
@@ -369,7 +375,7 @@ export class EventStorageService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService readRecurEvent`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const repdata: SafeAny = <SafeAny>response;
@@ -394,11 +400,13 @@ export class EventStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering EventStorageService readRecurEvent failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -425,7 +433,7 @@ export class EventStorageService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService createRecurEvent`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: RecurEvent = new RecurEvent();
@@ -435,11 +443,13 @@ export class EventStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering EventStorageService createRecurEvent failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -466,7 +476,7 @@ export class EventStorageService {
         map((response: SafeAny) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering EventStorageService deleteRecurEvent`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return response.ok;
@@ -474,11 +484,13 @@ export class EventStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering EventStorageService deleteRecurEvent failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -521,7 +533,7 @@ export class EventStorageService {
         }
 
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      })
+      }),
     );
   }
 
@@ -575,8 +587,10 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService readHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -619,8 +633,10 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -654,8 +670,10 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 
@@ -690,8 +708,10 @@ export class EventStorageService {
             console.error(`AC_HIH_UI [Error]: Entering EventStorageService generateHabitEvent failed ${error}`);
           }
 
-          return throwError(() => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message));
-        })
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
       );
   }
 

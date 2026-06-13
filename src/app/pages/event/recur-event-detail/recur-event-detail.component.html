@@ -24,15 +24,15 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="nameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        @if(control.hasError('maxlength')) {
+        @if (control.hasError('maxlength')) {
           <ng-container>
             {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
-        @if(control.hasError('required')) {
+        @if (control.hasError('required')) {
           <ng-container>
             {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
       </ng-template>
     </nz-form-control>
@@ -44,10 +44,10 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateTpl">
       <nz-range-picker formControlName="dateControl" required></nz-range-picker>
       <ng-template #dateTpl let-control>
-        @if(control.hasError('required')) {
+        @if (control.hasError('required')) {
           <ng-container>
             {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
       </ng-template>
     </nz-form-control>
@@ -58,16 +58,15 @@
     <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.RepeatFrequency' | transloco }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
       <nz-select formControlName="frqControl">
-        @for(rt of arFrequencies; track rt.value) {
-          <nz-option [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco">
-          </nz-option>  
+        @for (rt of arFrequencies; track rt.value) {
+          <nz-option [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco"> </nz-option>
         }
       </nz-select>
       <ng-template #frqTpl let-control>
-        @if(control.hasError('required')) {
+        @if (control.hasError('required')) {
           <ng-container>
             {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
       </ng-template>
     </nz-form-control>
@@ -99,12 +98,12 @@
     </tr>
   </thead>
   <tbody>
-    @for(data of basicTable.data; track $index) {
+    @for (data of basicTable.data; track $index) {
       <tr>
         <td>{{ data.ID }}</td>
         <td>{{ data.Name }}</td>
         <td>{{ data.StartDateDisplayString }} - {{ data.EndDateDisplayString }}</td>
-      </tr>  
+      </tr>
     }
   </tbody>
 </nz-table>

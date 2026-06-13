@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { format, subMonths, startOfYear, startOfMonth, parse, addYears, addMonths } from 'date-fns';
+import { format, subMonths, startOfYear, startOfMonth, addYears, addMonths } from 'date-fns';
 
 import {
   ModelUtility,
@@ -49,7 +49,7 @@ import { DecimalPipe } from '@angular/common';
     NzButtonModule,
     DecimalPipe,
     TranslocoModule,
-  ]
+  ],
 })
 export class TranTypeReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -64,15 +64,18 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   arTranType: TranType[] = [];
   arReportData: FinanceReportEntryByTransactionType[] = [];
 
-  constructor(
-    public odataService: FinanceOdataService,
-    private homeService: HomeDefOdataService,
-    private modalService: NzModalService,
-    private drawerService: NzDrawerService
-  ) {
+  public readonly odataService = inject(FinanceOdataService);
+
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly drawerService = inject(NzDrawerService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering TranTypeReportComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
@@ -81,7 +84,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering TranTypeReportComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -91,7 +94,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering TranTypeReportComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -104,7 +107,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   onLoadData() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering TranTypeReportComponent onLoadData...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = true;
@@ -133,13 +136,13 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (val) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering TranTypeReportComponent onLoadData forkJoin succeed`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.arReportData = val[0];
@@ -150,7 +153,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering TranTypeReportComponent ngOnInit forkJoin failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -228,7 +231,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
           } else {
             this.reportIncome[rptindex].Amount += item.InAmount;
             this.reportIncome[rptindex].Precentage = NumberUtility.Round2Two(
-              (100 * this.reportIncome[rptindex].Amount) / this.totalIncome
+              (100 * this.reportIncome[rptindex].Amount) / this.totalIncome,
             );
           }
         } else {
@@ -257,7 +260,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
           } else {
             this.reportExpense[rptindex].Amount += item.OutAmount;
             this.reportExpense[rptindex].Precentage = NumberUtility.Round2Two(
-              (100 * this.reportExpense[rptindex].Amount) / this.totalExpense
+              (100 * this.reportExpense[rptindex].Amount) / this.totalExpense,
             );
           }
         } else {

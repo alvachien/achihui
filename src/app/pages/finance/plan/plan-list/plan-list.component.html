@@ -1,6 +1,8 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+    >
     <nz-breadcrumb-item>{{ 'Common.Plan' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Common.Plan' | transloco }}</nz-page-header-title>
@@ -14,17 +16,17 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-@if(isChildMode) {
+@if (isChildMode) {
   <div>
     <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
       <div nz-result-extra>
         <button nz-button nzType="primary">OK</button>
       </div>
     </nz-result>
-  </div>  
+  </div>
 }
 
-@if(!isChildMode) {
+@if (!isChildMode) {
   <div>
     <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
       <nz-table #basicTable [nzData]="dataSet">
@@ -38,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          @for(data of basicTable.data; track $index) {
+          @for (data of basicTable.data; track $index) {
             <tr>
               <td>
                 {{ data.ID }}
@@ -61,12 +63,12 @@
               <td>{{ getDateDisplayString(data.StartDate!) }}</td>
               <td>{{ getDateDisplayString(data.TargetDate!) }}</td>
               <td>{{ data.Description }}</td>
-            </tr>  
+            </tr>
           }
         </tbody>
       </nz-table>
     </nz-spin>
-  </div>  
+  </div>
 }
 
 <nz-modal
@@ -74,7 +76,8 @@
   [nzTitle]="progressModalTitle"
   [nzContent]="progressModalContent"
   [nzFooter]="progressModalFooter"
-  (nzOnCancel)="handleProgressModalCancel()">
+  (nzOnCancel)="handleProgressModalCancel()"
+>
   <ng-template #progressModalTitle>{{ 'Common.Progress' | transloco }}</ng-template>
 
   <ng-template #progressModalContent>
@@ -155,7 +158,7 @@
         <nz-form-control [nzSpan]="12">
           <nz-input-number nzBorderless nzDisabled [ngModel]="currentDifferenceWithTarget">
             <span nzInputAddonAfter [ngModel]="currentPlan?.TranCurrency"></span>
-          </nz-input-number>            
+          </nz-input-number>
         </nz-form-control>
       </nz-form-item>
     </div>

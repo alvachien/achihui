@@ -6,7 +6,7 @@ import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router, RouterModule } from '@angular/router';
 
 import { ConsoleLogTypeEnum, Location, ModelUtility } from '@model/index';
-import { LibraryStorageService, UIStatusService } from '@services/index';
+import { LibraryStorageService } from '@services/index';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -14,19 +14,19 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @Component({
-    selector: 'hih-location-list',
-    templateUrl: './location-list.component.html',
-    styleUrls: ['./location-list.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzSpinModule,
-      NzTableModule,
-      NzDividerModule,
-      NzModalModule,
-      RouterModule,
-      TranslocoModule,
-    ]
+  selector: 'hih-location-list',
+  templateUrl: './location-list.component.html',
+  styleUrls: ['./location-list.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzSpinModule,
+    NzTableModule,
+    NzDividerModule,
+    NzModalModule,
+    RouterModule,
+    TranslocoModule,
+  ],
 })
 export class LocationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -40,7 +40,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -49,7 +49,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -58,13 +58,13 @@ export class LocationListComponent implements OnInit, OnDestroy {
       .fetchAllLocations()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: Location[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering LocationListComponent OnInit fetchAllLocations...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.dataSet = x;
@@ -72,7 +72,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LocationListComponent fetchAllLocations failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -86,7 +86,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -128,7 +128,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LocationList onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),
@@ -142,7 +142,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering LocationList onDelete cancelled`,
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         ),
     });
   }

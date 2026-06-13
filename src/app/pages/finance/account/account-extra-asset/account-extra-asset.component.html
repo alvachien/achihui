@@ -5,15 +5,15 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Category' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyErrorTpl">
         <nz-select formControlName="ctgyControl" (ngModelChange)="onChange()">
-          @for(rt of arAssetCategories; track rt.ID) {
+          @for (rt of arAssetCategories; track rt.ID) {
             <nz-option [nzValue]="rt.ID" [nzLabel]="t(rt.Name!)"></nz-option>
-          }          
+          }
         </nz-select>
         <ng-template #ctgyErrorTpl let-control>
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -25,15 +25,15 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
         <input nz-input formControlName="nameControl" maxlength="30" />
         <ng-template #nameErrorTpl let-control>
-          @if(control.hasError('maxlength')) {
+          @if (control.hasError('maxlength')) {
             <ng-container>
               {{ 'Common.FieldMaxLength' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -45,10 +45,10 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
         <input nz-input formControlName="commentControl" maxlength="45" />
         <ng-template #cmtTpl let-control>
-          @if(control.hasError('maxlength')) {
+          @if (control.hasError('maxlength')) {
             <ng-container>
               {{ 'Common.FieldMaxLength' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -94,7 +94,7 @@
   </div>
 
   <!-- Ref doc. ID -->
-  @if(refBuyDocID) {
+  @if (refBuyDocID) {
     <div nz-row class="achih-control-full-width">
       <div nz-col nzSpan="2" nzOffset="5">
         <label>{{ 'Finance.RefDoc' | transloco }}</label>
@@ -106,7 +106,7 @@
       </div>
     </div>
   }
-  @if(refSoldDocID) {
+  @if (refSoldDocID) {
     <div nz-row class="achih-control-full-width">
       <div nz-col nzSpan="2" nzOffset="5">
         <label>{{ 'Finance.RefDoc' | transloco }}</label>
@@ -116,6 +116,6 @@
           {{ refSoldDocID }}
         </button>
       </div>
-    </div>  
+    </div>
   }
 </ng-container>

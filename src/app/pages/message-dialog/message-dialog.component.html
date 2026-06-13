@@ -9,13 +9,12 @@
       </tr>
     </thead>
     <tbody>
-      @for(item of basicTable.data; track $index) 
-      {
+      @for (item of basicTable.data; track $index) {
         <tr>
           <td>{{ item.MsgType }}</td>
           <td>{{ item.MsgTitle | transloco }}</td>
           <td>{{ item.MsgContent | transloco }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

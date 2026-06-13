@@ -3,12 +3,11 @@ import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { format, parse, startOfMonth, endOfMonth } from 'date-fns';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '../../../../services';
+import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   Account,
   Document,
@@ -70,7 +69,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     NzDropDownModule,
     NzModalModule,
     RouterModule,
-  ]
+  ],
 })
 export class DocumentListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -112,14 +111,14 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -142,13 +141,13 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         takeUntil(this._destroyed$),
         finalize(() => {
           this.isLoadingResults = false;
-        })
+        }),
       )
       .subscribe({
         next: (val: SafeAny) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnInit, forkJoin...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.arDocTypes = val[0];
@@ -184,7 +183,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentListComponent ngOnInit, forkJoin failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           // Error
@@ -200,7 +199,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -252,7 +251,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   onQueryParamsChange(params: NzTableQueryParams) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentListComponent onQueryParamsChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const { pageSize, pageIndex, sort } = params;
@@ -294,10 +293,10 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       this.fetchData(
         fieldName && fieldOrder
           ? {
-            field: fieldName,
-            order: fieldOrder,
-          }
-          : undefined
+              field: fieldName,
+              order: fieldOrder,
+            }
+          : undefined,
       );
     }
   }
@@ -305,7 +304,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   fetchData(orderby?: { field: string; order: string }): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentListComponent fetchData...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = true;
@@ -337,12 +336,12 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         this._filterDocItem,
         this.pageSize,
         this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
-        orderby
+        orderby,
       )
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (revdata: BaseListModel<Document>) => {
@@ -362,7 +361,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentListComponent fetchData, fetchAllDocuments failed ${err}...`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -446,7 +445,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
       error: (err) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering DocumentListComponent onDelete, failed ${err}...`,
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
 
         this.modalService.error({

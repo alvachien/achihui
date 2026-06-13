@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -13,11 +13,7 @@ import { FinanceOdataService, UIStatusService } from '@services/index';
   selector: 'hih-fin-doc-type-list',
   templateUrl: './doc-type-list.component.html',
   styleUrls: ['./doc-type-list.component.less'],
-  imports: [
-    NzSpinModule,
-    NzTableModule,
-    TranslocoModule,
-  ]
+  imports: [NzSpinModule, NzTableModule, TranslocoModule],
 })
 export class DocTypeListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -25,14 +21,16 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
   isLoadingResults: boolean;
   dataSet: DocumentType[] = [];
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService
-  ) {
+  public readonly odataService = inject(FinanceOdataService);
+
+  public readonly uiStatusService = inject(UIStatusService);
+
+  public readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocTypeListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -41,7 +39,7 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocTypeListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -50,13 +48,13 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
       .fetchAllDocTypes()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: DocumentType[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocTypeListComponent fetchAllDocTypes...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.dataSet = x;
@@ -64,7 +62,7 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocTypeListComponent fetchAllDocTypes failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -79,7 +77,7 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocTypeListComponent OnDestory...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {

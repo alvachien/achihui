@@ -5,7 +5,7 @@ import { Order } from '../../../model';
 
 @Pipe({
   name: 'orderValidityFilter',
-  standalone: true
+  standalone: true,
 })
 export class OrderValidityFilterPipe implements PipeTransform {
   transform(allOrders: Order[], args?: Date | boolean): Order[] {

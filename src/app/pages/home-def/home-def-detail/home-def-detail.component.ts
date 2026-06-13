@@ -7,7 +7,7 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzFormLabelComponent, NzFormModule } from 'ng-zorro-antd/form';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -30,24 +30,24 @@ import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-    selector: 'hih-home-def-detail',
-    templateUrl: './home-def-detail.component.html',
-    styleUrls: ['./home-def-detail.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      TranslocoModule,
-      FormsModule,
-      ReactiveFormsModule,
-      NzFormModule,
-      NzSelectModule,
-      NzDividerModule,
-      NzTableModule,
-      NzInputModule,
-      NzCheckboxModule,
-      NzModalModule,
-      NzButtonModule,
-    ]
+  selector: 'hih-home-def-detail',
+  templateUrl: './home-def-detail.component.html',
+  styleUrls: ['./home-def-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    TranslocoModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzSelectModule,
+    NzDividerModule,
+    NzTableModule,
+    NzInputModule,
+    NzCheckboxModule,
+    NzModalModule,
+    NzButtonModule,
+  ],
 })
 export class HomeDefDetailComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -118,12 +118,10 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     return hdobj;
   }
 
-  constructor(
-    
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.listMemRel = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
@@ -138,7 +136,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
           value: this.authService.authSubject.getValue().getUserId(),
           disabled: true,
         },
-        Validators.required
+        Validators.required,
       ),
     });
     this.isLoadingResults = false;
@@ -147,7 +145,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -177,7 +175,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (rsts) => {
@@ -220,7 +218,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (curries: Currency[]) => {
@@ -252,7 +250,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -264,7 +262,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   onChange() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent onChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 

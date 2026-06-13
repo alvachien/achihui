@@ -28,9 +28,14 @@ describe('BlogOdataService', () => {
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [BlogOdataService, { provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [
+        BlogOdataService,
+        { provide: AuthService, useValue: authServiceStub },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -58,10 +63,8 @@ describe('BlogOdataService', () => {
 
       service.fetchAllCollections().subscribe({
         next: (curries: any) => {
-          expect(curries.length, 'should return expected currencies')
-            .toEqual(fakeData.blogCollectionAPI.length);
-          expect(service.Collections.length, 'should have buffered')
-            .toEqual(fakeData.blogCollectionAPI.length);
+          expect(curries.length, 'should return expected currencies').toEqual(fakeData.blogCollectionAPI.length);
+          expect(service.Collections.length, 'should have buffered').toEqual(fakeData.blogCollectionAPI.length);
         },
         error: (fail: any) => {
           // Empty
@@ -128,8 +131,7 @@ describe('BlogOdataService', () => {
       expect(service.Collections.length, 'should not buffered yet').toEqual(0);
       service.fetchAllCollections().subscribe({
         next: (curries: any) => {
-          expect(curries.length, 'should return expected currencies')
-            .toEqual(fakeData.blogCollectionAPI.length);
+          expect(curries.length, 'should return expected currencies').toEqual(fakeData.blogCollectionAPI.length);
           expect(curries.length, 'should have buffered').toEqual(service.Collections.length);
         },
         error: (fail: any) => {
@@ -157,8 +159,7 @@ describe('BlogOdataService', () => {
       // Third call
       service.fetchAllCollections().subscribe({
         next: (curries: any) => {
-          expect(curries.length, 'should return expected currencies')
-            .toEqual(fakeData.blogCollectionAPI.length);
+          expect(curries.length, 'should return expected currencies').toEqual(fakeData.blogCollectionAPI.length);
         },
         error: (fail: any) => {
           // Do nothing

@@ -1,5 +1,5 @@
 import { CurrencyPipe, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -63,7 +63,7 @@ interface FastInputExpectedResult {
     CurrencyPipe,
     NzInputNumberModule,
     NgIf,
-  ]
+  ],
 })
 export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestroy {
   currentStep = 0;
@@ -88,13 +88,17 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   };
   compareResult: AccountReconcileCompare[] = [];
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private activateRoute: ActivatedRoute,
-    private router: Router
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly activateRoute = inject(ActivatedRoute);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     // Set the default currency
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
@@ -130,7 +134,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering ReconcileByMonthComponent ngOnInit, forkJoin, ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.create({
             nzTitle: translate('Common.Error'),
@@ -143,7 +147,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   ngAfterViewInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.activateRoute.url.subscribe({
       next: (x) => {
@@ -151,7 +155,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
           if (x[0].path === 'bymonth') {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngAfterViewInit, set selected account ${x[1].path}...`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
             this.selectedAccountId = +x[1].path;
           }
@@ -162,7 +166,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ReconcileByMonthComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -248,7 +252,7 @@ export class ReconcileByMonthComponent implements OnInit, AfterViewInit, OnDestr
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering ReconcileByMonthComponent fetchAccountBalanceInfo, fetchAccountBalanceEx ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
           },
         });

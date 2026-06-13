@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
@@ -16,7 +16,7 @@ import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from '@mo
 import { EventStorageService, UIStatusService } from '@services/index';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'hih-recur-event-list',
   templateUrl: './recur-event-list.component.html',
   styleUrls: ['./recur-event-list.component.less'],
@@ -41,15 +41,18 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
   pageIndex = 1;
   totalCount = 0;
 
-  constructor(
-    public odataService: EventStorageService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService,
-    private router: Router
-  ) {
+  public readonly odataService = inject(EventStorageService);
+
+  public readonly uiStatusService = inject(UIStatusService);
+
+  public readonly modalService = inject(NzModalService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering RecurEventListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -58,7 +61,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -68,7 +71,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering RecurEventListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -85,7 +88,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sortOrder: string | null,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    filter: Array<{ key: string; value: string[] }> | null
+    filter: Array<{ key: string; value: string[] }> | null,
   ): void {
     this.isLoadingResults = true;
     this.odataService
@@ -93,13 +96,13 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: BaseListModel<RecurEvent>) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering RecurEventListComponent OnInit fetchGeneralEvents...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.totalCount = x.totalCount;
@@ -108,7 +111,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering RecurEventListComponent fetchGeneralEvents failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -156,7 +159,7 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering RecurEventListComponent onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),

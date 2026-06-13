@@ -9,8 +9,7 @@ describe('PlanComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule,
-        PlanComponent],
+      imports: [RouterTestingModule, PlanComponent],
     }).compileComponents();
   });
 

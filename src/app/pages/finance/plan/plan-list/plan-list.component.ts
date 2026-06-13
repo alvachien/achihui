@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -13,13 +13,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
-import {
-  Plan,
-  ModelUtility,
-  ConsoleLogTypeEnum,
-  UIDisplayStringUtil,
-  Account,
-} from '../../../../model';
+import { Plan, ModelUtility, ConsoleLogTypeEnum, UIDisplayStringUtil, Account } from '../../../../model';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { FormsModule } from '@angular/forms';
@@ -44,7 +38,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzSpinModule,
     NzInputNumberModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class PlanListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -64,15 +58,18 @@ export class PlanListComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public router: Router,
-    private homeService: HomeDefOdataService,
-    public modalService: NzModalService
-  ) {
+  public readonly odataService = inject(FinanceOdataService);
+
+  public readonly router = inject(Router);
+
+  private readonly homeService = inject(HomeDefOdataService);
+
+  public readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -88,7 +85,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -149,14 +146,11 @@ export class PlanListComponent implements OnInit, OnDestroy {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanListComponent onRefresh`, ConsoleLogTypeEnum.debug);
 
     this.isLoadingResults = true;
-    forkJoin([
-      this.odataService.fetchAllAccounts(),
-      this.odataService.fetchAllPlans(refresh),
-    ])
+    forkJoin([this.odataService.fetchAllAccounts(), this.odataService.fetchAllPlans(refresh)])
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x) => {
@@ -166,7 +160,7 @@ export class PlanListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering PlanListComponent onRefresh failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({

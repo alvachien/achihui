@@ -1,14 +1,20 @@
 <nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>{{ 'Finance.ControlCenters' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{ 'Finance.ControlCenter' | transloco }}</nz-page-header-title>
     <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/controlcenter/create">{{'Common.Create' | transloco}}</a>
-      <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">{{'Common.HierarchyView' | transloco}}</a>
+      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/controlcenter/create">{{
+        'Common.Create' | transloco
+      }}</a>
+      <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">{{
+        'Common.HierarchyView' | transloco
+      }}</a>
     </nz-page-header-extra>
   </nz-page-header>
 
@@ -22,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        @for(data of basicTable.data; track $index) {
+        @for (data of basicTable.data; track $index) {
           <tr>
             <td>
               {{ data.Id }}
@@ -34,20 +40,22 @@
                 {{ 'Common.Edit' | transloco }}
               </button>
 
-              @if(!isChildMode) {
+              @if (!isChildMode) {
                 <a
                   nz-button
                   nz-popconfirm
                   [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
-                  nzPopconfirmPlacement="bottom"                
+                  nzPopconfirmPlacement="bottom"
                   (nzOnConfirm)="onDelete(data.Id!)"
                   nzType="link"
-                  nzDanger>{{ 'Common.Delete' | transloco }}</a>
+                  nzDanger
+                  >{{ 'Common.Delete' | transloco }}</a
+                >
               }
             </td>
             <td>{{ data.Name }}</td>
             <td>{{ data.Comment }}</td>
-          </tr>  
+          </tr>
         }
       </tbody>
     </nz-table>

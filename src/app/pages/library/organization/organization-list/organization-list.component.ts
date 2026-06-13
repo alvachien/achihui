@@ -11,24 +11,24 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
-import { LibraryStorageService, UIStatusService } from '@services/index';
+import { LibraryStorageService } from '@services/index';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-    selector: 'hih-organization-list',
-    templateUrl: './organization-list.component.html',
-    styleUrls: ['./organization-list.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzSpinModule,
-      NzBreadCrumbModule,
-      NzTableModule,
-      NzDividerModule,
-      NzModalModule,
-      RouterModule,
-      TranslocoModule,
-      NzButtonModule,
-    ]
+  selector: 'hih-organization-list',
+  templateUrl: './organization-list.component.html',
+  styleUrls: ['./organization-list.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    NzBreadCrumbModule,
+    NzTableModule,
+    NzDividerModule,
+    NzModalModule,
+    RouterModule,
+    TranslocoModule,
+    NzButtonModule,
+  ],
 })
 export class OrganizationListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -42,7 +42,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -51,7 +51,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -60,13 +60,13 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
       .fetchAllOrganizations()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: Organization[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnInit fetchAllOrganizations...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.dataSet = x;
@@ -74,7 +74,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering PersonListComponent fetchAllOrganizations failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -88,7 +88,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -130,7 +130,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering OrganizationList onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),
@@ -144,7 +144,7 @@ export class OrganizationListComponent implements OnInit, OnDestroy {
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering OrganizationList onDelete cancelled`,
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         ),
     });
   }

@@ -398,7 +398,7 @@ describe('UIRouteLink', () => {
 });
 
 describe('BuildupOrderForSelectionEx', () => {
-  let arorders: Order[] = [];
+  const arorders: Order[] = [];
 
   beforeAll(() => {
     let ord = new Order();
@@ -417,13 +417,13 @@ describe('BuildupOrderForSelectionEx', () => {
   });
 
   it('Order in 2021', () => {
-    let uiords = BuildupOrderForSelectionEx(arorders, parse('2021-06-01', dateFormat, new Date()));
+    const uiords = BuildupOrderForSelectionEx(arorders, parse('2021-06-01', dateFormat, new Date()));
     expect(uiords.length).toEqual(1);
     expect(uiords[0].Id).toEqual(1);
   });
 
   it('Order in 2022', () => {
-    let uiords = BuildupOrderForSelectionEx(arorders, parse('2022-06-01', dateFormat, new Date()));
+    const uiords = BuildupOrderForSelectionEx(arorders, parse('2022-06-01', dateFormat, new Date()));
     expect(uiords.length).toEqual(1);
     expect(uiords[0].Id).toEqual(2);
   });

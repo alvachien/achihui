@@ -2,7 +2,8 @@
   <nz-page-header nzBackIcon [nzTitle]="'Common.Languages' | transloco">
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>
-        <a routerLink="/welcome">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+        <a routerLink="/welcome">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>{{ 'Common.Languages' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-content>
@@ -22,7 +23,7 @@
               </tr>
             </thead>
             <tbody>
-              @for(data of langTable.data; track $index) {
+              @for (data of langTable.data; track $index) {
                 <tr>
                   <td>{{ data.Lcid }}</td>
                   <td>{{ data.IsoName }}</td>
@@ -31,7 +32,7 @@
                   <td>
                     <nz-switch [ngModel]="data.AppFlag" nzDisabled></nz-switch>
                   </td>
-                </tr>  
+                </tr>
               }
             </tbody>
           </nz-table>

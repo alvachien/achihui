@@ -1,3 +1,20 @@
+import { TestBed } from '@angular/core/testing';
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+
+// Initialize the Angular test environment exactly once.
+// This MUST happen before any TestBed.configureTestingModule() calls.
+// It sets up the DOM adapter (BrowserDomAdapter.makeCurrent()) and the
+// platform injector — without it, services like LocationStrategy fail
+// with "Cannot read properties of null (reading 'getBaseHref')".
+//
+// When Vitest runs multiple test files, this setup may be invoked in
+// contexts where the platform was already created. Guard against NG0400.
+try {
+  TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+} catch {
+  // Test environment already initialized — safe to ignore.
+}
+
 // ResizeObserver polyfill for jsdom environment
 // ngx-echarts requires ResizeObserver which is not available in jsdom
 if (typeof (globalThis as any).ResizeObserver === 'undefined') {
@@ -20,10 +37,18 @@ if (typeof HTMLCanvasElement !== 'undefined' && !(HTMLCanvasElement.prototype as
         dpr: 1,
         __fillStyle: '',
         __strokeStyle: '',
-        get fillStyle() { return this.__fillStyle; },
-        set fillStyle(v: string) { this.__fillStyle = v; },
-        get strokeStyle() { return this.__strokeStyle; },
-        set strokeStyle(v: string) { this.__strokeStyle = v; },
+        get fillStyle() {
+          return this.__fillStyle;
+        },
+        set fillStyle(v: string) {
+          this.__fillStyle = v;
+        },
+        get strokeStyle() {
+          return this.__strokeStyle;
+        },
+        set strokeStyle(v: string) {
+          this.__strokeStyle = v;
+        },
         lineWidth: 1,
         font: '12px sans-serif',
         textAlign: 'start',
@@ -44,7 +69,15 @@ if (typeof HTMLCanvasElement !== 'undefined' && !(HTMLCanvasElement.prototype as
         restore() {},
         fillText() {},
         strokeText() {},
-        measureText() { return { width: 0, actualBoundingBoxAscent: 0, actualBoundingBoxDescent: 0, actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0 }; },
+        measureText() {
+          return {
+            width: 0,
+            actualBoundingBoxAscent: 0,
+            actualBoundingBoxDescent: 0,
+            actualBoundingBoxLeft: 0,
+            actualBoundingBoxRight: 0,
+          };
+        },
         beginPath() {},
         closePath() {},
         moveTo() {},
@@ -64,19 +97,37 @@ if (typeof HTMLCanvasElement !== 'undefined' && !(HTMLCanvasElement.prototype as
         transform() {},
         setTransform() {},
         setLineDash() {},
-        getLineDash() { return []; },
-        createLinearGradient() { return { addColorStop() {} }; },
-        createRadialGradient() { return { addColorStop() {} }; },
-        createPattern() { return null; },
-        getImageData() { return { data: new Uint8ClampedArray(4), width: 1, height: 1 }; },
+        getLineDash() {
+          return [];
+        },
+        createLinearGradient() {
+          return { addColorStop() {} };
+        },
+        createRadialGradient() {
+          return { addColorStop() {} };
+        },
+        createPattern() {
+          return null;
+        },
+        getImageData() {
+          return { data: new Uint8ClampedArray(4), width: 1, height: 1 };
+        },
         putImageData() {},
         drawImage() {},
-        isPointInPath() { return false; },
-        isPointInStroke() { return false; },
-        createImageData() { return { data: new Uint8ClampedArray(4), width: 1, height: 1 }; },
+        isPointInPath() {
+          return false;
+        },
+        isPointInStroke() {
+          return false;
+        },
+        createImageData() {
+          return { data: new Uint8ClampedArray(4), width: 1, height: 1 };
+        },
         drawFocusIfNeeded() {},
         scrollPathIntoView() {},
-        getTransform() { return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }; },
+        getTransform() {
+          return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+        },
         resetTransform() {},
       };
       mockContextCache.set(canvas, ctx);
@@ -85,7 +136,7 @@ if (typeof HTMLCanvasElement !== 'undefined' && !(HTMLCanvasElement.prototype as
   }
 
   (HTMLCanvasElement.prototype as any).__mockGetContext = true;
-  (HTMLCanvasElement.prototype as any).getContext = function(contextId: string, ..._args: unknown[]) {
+  (HTMLCanvasElement.prototype as any).getContext = function (contextId: string, ..._args: unknown[]) {
     if (contextId === '2d') {
       return getMockContext(this);
     }
@@ -101,16 +152,20 @@ if (typeof HTMLCanvasElement !== 'undefined' && !(HTMLCanvasElement.prototype as
 // and `typeof renderMathInElement === 'undefined'`
 (globalThis as any).katex = {
   render() {},
-  renderToString() { return ''; },
+  renderToString() {
+    return '';
+  },
 };
-(globalThis as any).renderMathInElement = function() {};
+(globalThis as any).renderMathInElement = function () {};
 
 // MutationObserver polyfill for jsdom (used by some nz-* components)
 if (typeof (globalThis as any).MutationObserver === 'undefined') {
   (globalThis as any).MutationObserver = class MutationObserver {
     observe() {}
     disconnect() {}
-    takeRecords() { return []; }
+    takeRecords() {
+      return [];
+    }
   };
 }
 
@@ -169,6 +224,3 @@ Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
     return 0;
   },
 });
-
-
-

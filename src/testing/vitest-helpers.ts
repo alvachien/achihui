@@ -29,7 +29,7 @@ type JasmineSpy<T> = ReturnType<typeof vi.fn<T extends (...args: any) => any ? T
 
 export function createSpyObj<T extends string>(
   name: string,
-  methodNames: T[]
+  methodNames: T[],
 ): Record<T, JasmineSpy<any>> & { _name: string } {
   const obj: any = { _name: name };
   for (const methodName of methodNames) {
@@ -38,7 +38,9 @@ export function createSpyObj<T extends string>(
     spy.and = {
       returnValue: (val: any) => spy.mockReturnValue(val),
       callFake: (fn: (...args: any[]) => any) => spy.mockImplementation(fn),
-      callThrough: () => { /* no-op */ },
+      callThrough: () => {
+        /* no-op */
+      },
       throwError: (msg: string) =>
         spy.mockImplementation(() => {
           throw new Error(msg);

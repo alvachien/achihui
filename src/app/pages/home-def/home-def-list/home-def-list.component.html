@@ -23,25 +23,22 @@
           </tr>
         </thead>
         <tbody>
-          @for(row of basicTable.data; track $index) {
+          @for (row of basicTable.data; track $index) {
             <tr>
               <td>
                 <span>{{ row.ID }}</span>
                 <nz-divider nzType="vertical"></nz-divider>
-                @if(!IsCurrentHomeChosed) {
+                @if (!IsCurrentHomeChosed) {
                   <a (click)="onChooseHome(row)">{{ 'Common.ChooseThisHome' | transloco }}</a>
                 }
-                
-                @if(IsCurrentHomeChosed) {
+
+                @if (IsCurrentHomeChosed) {
                   <a nz-button nzType="link" routerLink="/homedef/display/{{ row.ID }}">
                     {{ 'Common.Display' | transloco }}
-                  </a>  
+                  </a>
                 }
-                @if(IsCurrentHomeChosed && !IsChildMode) {
-                  <a
-                    nz-button
-                    nzType="link"
-                    routerLink="/homedef/edit/{{ row.ID }}">
+                @if (IsCurrentHomeChosed && !IsChildMode) {
+                  <a nz-button nzType="link" routerLink="/homedef/edit/{{ row.ID }}">
                     {{ 'Common.Edit' | transloco }}
                   </a>
                 }
@@ -50,7 +47,7 @@
               <td>{{ row.CreatorDisplayAs }}</td>
               <td>{{ row.BaseCurrency }}</td>
               <td>{{ row.Details }}</td>
-            </tr>  
+            </tr>
           }
         </tbody>
       </nz-table>

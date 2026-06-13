@@ -5,22 +5,16 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import { BookCategory, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
-import { LibraryStorageService, UIStatusService } from '@services/index';
+import { LibraryStorageService } from '@services/index';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { RouterModule } from '@angular/router';
 
 @Component({
-    selector: 'hih-book-category-list',
-    templateUrl: './book-category-list.component.html',
-    styleUrls: ['./book-category-list.component.less'],
-    imports: [
-      NzSpinModule,
-      NzTableModule,
-      TranslocoModule,
-      NzModalModule,
-      RouterModule,
-    ]
+  selector: 'hih-book-category-list',
+  templateUrl: './book-category-list.component.html',
+  styleUrls: ['./book-category-list.component.less'],
+  imports: [NzSpinModule, NzTableModule, TranslocoModule, NzModalModule, RouterModule],
 })
 export class BookCategoryListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -30,11 +24,10 @@ export class BookCategoryListComponent implements OnInit, OnDestroy {
   private readonly odataService = inject(LibraryStorageService);
   private readonly modalService = inject(NzModalService);
 
-  constructor(
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookCategoryListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -43,7 +36,7 @@ export class BookCategoryListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookCategoryListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -52,13 +45,13 @@ export class BookCategoryListComponent implements OnInit, OnDestroy {
       .fetchAllBookCategories()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: BookCategory[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering BookCategoryListComponent OnInit fetchAllBookCategories...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.dataSet = x;
@@ -66,7 +59,7 @@ export class BookCategoryListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BookCategoryListComponent fetchAllBookCategories failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -80,7 +73,7 @@ export class BookCategoryListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookCategoryListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {

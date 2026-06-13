@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { DocumentItemInsightComponent } from './document-item-insight.component';
@@ -64,8 +64,9 @@ describe('DocumentItemInsightComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
         NzTransferModule,
         NzTooltipModule,
         ReactiveFormsModule,
@@ -73,8 +74,9 @@ describe('DocumentItemInsightComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-        FinanceUIModule],
-    providers: [
+        FinanceUIModule,
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: NZ_I18N, useValue: en_US },
@@ -83,9 +85,8 @@ describe('DocumentItemInsightComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-})
-    .compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DocumentItemInsightComponent);
     component = fixture.componentInstance;
@@ -101,21 +102,23 @@ describe('DocumentItemInsightComponent', () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-      searchDocItemSpy.and.returnValue(asyncData({
-        totalCount: 0,
-        contentList: []
-      }));
+      searchDocItemSpy.and.returnValue(
+        asyncData({
+          totalCount: 0,
+          contentList: [],
+        }),
+      );
 
-      let uisrv = TestBed.inject(UIStatusService);
+      const uisrv = TestBed.inject(UIStatusService);
       uisrv.docInsightOption = {
         SelectedDataRange: [new Date(), addMonths(new Date(), 1)],
-        TransactionDirection: true
+        TransactionDirection: true,
       };
     });
 
     it('1. shall initialize the data', async () => {
       fixture.detectChanges(); // ngOninit
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(fetchAllAccountCategoriesSpy).toHaveBeenCalled();
@@ -125,11 +128,11 @@ describe('DocumentItemInsightComponent', () => {
 
     it('2. fetch data', async () => {
       fixture.detectChanges(); // ngOninit
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.fetchData();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(searchDocItemSpy).toHaveBeenCalled();
     });
@@ -140,49 +143,54 @@ describe('DocumentItemInsightComponent', () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-      searchDocItemSpy.and.returnValue(asyncData({
-        totalCount: 2,
-        contentList: [{
-          DocumentID: 1,
-          ItemID: 1,
-          HomeID: fakeData.chosedHome.ID,
-          TransactionDate: format(subYears(new Date(), 1), dateFormat),
-          DocumentDesp: 'test',
-          AccountID: fakeData.finAccounts[0].Id,
-          TransactionType: fakeData.finTranTypes[0].Id,
-          IsExpense: false,
-          Currency: fakeData.chosedHome.BaseCurrency,
-          OriginAmount: 1200,
-          Amount: 1200,
-          AmountInLocalCurrency: 1200,
-          ItemDesp: 'test',
-        }, {
-          DocumentID: 2,
-          ItemID: 1,
-          HomeID: fakeData.chosedHome.ID,
-          TransactionDate: format(subYears(new Date(), 1), dateFormat),
-          DocumentDesp: 'test',
-          AccountID: fakeData.finAccounts[0].Id,
-          TransactionType: fakeData.finTranTypes[0].Id,
-          IsExpense: false,
-          Currency: fakeData.chosedHome.BaseCurrency,
-          OriginAmount: 1200,
-          Amount: 1200,
-          AmountInLocalCurrency: 1200,
-          ItemDesp: 'test',
-        }]
-      }));
+      searchDocItemSpy.and.returnValue(
+        asyncData({
+          totalCount: 2,
+          contentList: [
+            {
+              DocumentID: 1,
+              ItemID: 1,
+              HomeID: fakeData.chosedHome.ID,
+              TransactionDate: format(subYears(new Date(), 1), dateFormat),
+              DocumentDesp: 'test',
+              AccountID: fakeData.finAccounts[0].Id,
+              TransactionType: fakeData.finTranTypes[0].Id,
+              IsExpense: false,
+              Currency: fakeData.chosedHome.BaseCurrency,
+              OriginAmount: 1200,
+              Amount: 1200,
+              AmountInLocalCurrency: 1200,
+              ItemDesp: 'test',
+            },
+            {
+              DocumentID: 2,
+              ItemID: 1,
+              HomeID: fakeData.chosedHome.ID,
+              TransactionDate: format(subYears(new Date(), 1), dateFormat),
+              DocumentDesp: 'test',
+              AccountID: fakeData.finAccounts[0].Id,
+              TransactionType: fakeData.finTranTypes[0].Id,
+              IsExpense: false,
+              Currency: fakeData.chosedHome.BaseCurrency,
+              OriginAmount: 1200,
+              Amount: 1200,
+              AmountInLocalCurrency: 1200,
+              ItemDesp: 'test',
+            },
+          ],
+        }),
+      );
 
-      let uisrv = TestBed.inject(UIStatusService);
+      const uisrv = TestBed.inject(UIStatusService);
       uisrv.docInsightOption = {
         SelectedDataRange: [new Date(), addMonths(new Date(), 1)],
-        TransactionDirection: true
+        TransactionDirection: true,
       };
     });
 
     it('1. shall initialize the data', async () => {
       fixture.detectChanges(); // ngOninit
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(fetchAllAccountCategoriesSpy).toHaveBeenCalled();
@@ -192,11 +200,11 @@ describe('DocumentItemInsightComponent', () => {
 
     it('2. fetch data', async () => {
       fixture.detectChanges(); // ngOninit
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.fetchData();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(searchDocItemSpy).toHaveBeenCalled();
     });

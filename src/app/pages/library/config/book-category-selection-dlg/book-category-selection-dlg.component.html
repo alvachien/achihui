@@ -14,12 +14,12 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of tableCategory.data; track $index) {
+      @for (data of tableCategory.data; track $index) {
         <tr>
           <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
           <td>{{ data.ID }}</td>
           <td>{{ data.Name | transloco }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

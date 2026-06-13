@@ -13,7 +13,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 
-import { FinanceOdataService, UIStatusService, HomeDefOdataService } from '@services/index';
+import { FinanceOdataService, HomeDefOdataService } from '@services/index';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '@model/index';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
@@ -34,7 +34,7 @@ import { SafeAny } from '@common/any';
     TranslocoModule,
     RouterModule,
     NzModalModule,
-  ]
+  ],
 })
 export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -63,7 +63,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.isLoadingResults = false;
     this.arMembers = (this.homeService.ChosedHome?.Members ?? []).slice();
@@ -80,7 +80,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -89,7 +89,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit activateRoute URL: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -114,7 +114,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               .pipe(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 takeUntil(this._destroyed$!),
-                finalize(() => (this.isLoadingResults = false))
+                finalize(() => (this.isLoadingResults = false)),
               )
               .subscribe({
                 next: (rsts) => {
@@ -135,7 +135,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 error: (err) => {
                   ModelUtility.writeConsoleLog(
                     `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${err}`,
-                    ConsoleLogTypeEnum.error
+                    ConsoleLogTypeEnum.error,
                   );
 
                   this.modalService.create({
@@ -156,13 +156,13 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
               .pipe(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 takeUntil(this._destroyed$!),
-                finalize(() => (this.isLoadingResults = false))
+                finalize(() => (this.isLoadingResults = false)),
               )
               .subscribe({
                 next: (cclist: ControlCenter[]) => {
                   ModelUtility.writeConsoleLog(
                     'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...',
-                    ConsoleLogTypeEnum.debug
+                    ConsoleLogTypeEnum.debug,
                   );
 
                   // Load all control centers.
@@ -171,7 +171,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
                 error: (err) => {
                   ModelUtility.writeConsoleLog(
                     `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${err}`,
-                    ConsoleLogTypeEnum.error
+                    ConsoleLogTypeEnum.error,
                   );
 
                   this.modalService.create({
@@ -191,7 +191,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -274,13 +274,13 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         takeUntil(this._destroyed$!),
         finalize(() => {
           // Finalized
-        })
+        }),
       )
       .subscribe({
         next: (x: ControlCenter) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, _createControlCenter`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           // Show the result dialog
@@ -289,7 +289,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, _createControlCenter failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           // Show error message
           this.modalService.error({
@@ -310,7 +310,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         next: (x) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent, _updateControlCenter`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           // Show the result dialog
@@ -319,7 +319,7 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent, _updateControlCenter`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           // Show error message
           this.modalService.error({

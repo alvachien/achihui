@@ -65,7 +65,7 @@ import { RouterModule } from '@angular/router';
     TranslocoModule,
     NzModalModule,
     RouterModule,
-  ]
+  ],
 })
 export class DocumentHeaderComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -82,9 +82,10 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @Input()
   set arDocTypes(doctypes: DocumentType[]) {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arDocTypes setter: ${doctypes ? 'NOT NULL and length is ' + doctypes.length : 'NULL'
+      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arDocTypes setter: ${
+        doctypes ? 'NOT NULL and length is ' + doctypes.length : 'NULL'
       }`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (doctypes && doctypes.length > 0) {
       this._arDocTypes = doctypes;
@@ -96,9 +97,10 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @Input()
   set arCurrencies(currs: Currency[]) {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arCurrencies setter: ${currs ? 'NOT NULL and length is ' + currs.length : 'NULL'
+      `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent arCurrencies setter: ${
+        currs ? 'NOT NULL and length is ' + currs.length : 'NULL'
       }`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (currs && currs.length > 0) {
       this._arCurrencies = currs;
@@ -114,7 +116,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   set currentUIMode(mode: UIMode) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent currentUIMode setter`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._uiMode !== mode) {
       this._uiMode = mode;
@@ -132,7 +134,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   set docType(dt: number | undefined) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent docType setter: ${dt}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._doctype = dt;
@@ -147,14 +149,14 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   set baseCurrency(curr: string) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent baseCurrency setter: ${curr}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (curr) {
       this._baseCurr = curr;
       if (this.headerForm && this.isCurrencyEditable && !this.headerForm.get('currControl')?.value) {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering DocumentHeaderComponent baseCurrency setter, set form control: ${curr}`,
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         this.headerForm.get('currControl')?.setValue(this._baseCurr);
       }
@@ -185,7 +187,11 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
     insobj.TranCurr = this.headerForm.get('currControl')?.value;
     // insobj.TranDate = parse(format(dateobj, dateFormat), dateFormat, new Date());
-    insobj.TranDate = parse(format(this.headerForm.get('dateControl')?.value as Date, dateFormat), dateFormat, new Date());
+    insobj.TranDate = parse(
+      format(this.headerForm.get('dateControl')?.value as Date, dateFormat),
+      dateFormat,
+      new Date(),
+    );
     insobj.Desp = this.headerForm.get('despControl')?.value;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     insobj.DocType = this.docType!;
@@ -262,7 +268,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.headerForm = new UntypedFormGroup({
@@ -284,7 +290,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent onChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._onChange) {
       this._onChange(this.value);
@@ -293,7 +299,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   @HostListener('blur') onTouched(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent onTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._onTouched) {
       this._onTouched();
@@ -303,7 +309,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   writeValue(val: Document): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent writeValue...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (val) {
@@ -322,21 +328,21 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent registerOnChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._onChange = fn;
   }
   registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent registerOnTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent setDisabledState...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (isDisabled) {
       this.headerForm.disable();
@@ -352,7 +358,7 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   validate(c: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent validate.',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Not editable, then just return

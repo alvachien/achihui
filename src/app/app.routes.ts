@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 import { AuthGuardService, HomeChoseGuardService } from './services';
-import { autoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 
 const routeConfig: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/welcome' },
   {
     path: 'welcome',
-    loadComponent: () => import('./pages/welcome/').then(c => c.WelcomeComponent)
+    loadComponent: () => import('./pages/welcome/').then((c) => c.WelcomeComponent),
   },
   {
     path: 'about',
@@ -31,32 +30,32 @@ const routeConfig: Routes = [
 
   {
     path: 'homedef',
-    canActivate: [autoLoginPartialRoutesGuard],
-    loadChildren: () => import('./pages/home-def/home-def.routes').then(m => m.HOMEDEF_ROUTES)
+    canActivate: [AuthGuardService],
+    loadChildren: () => import('./pages/home-def/home-def.routes').then((m) => m.HOMEDEF_ROUTES),
   },
 
   {
     path: 'finance',
     canActivate: [HomeChoseGuardService],
-    loadChildren: () => import('./pages/finance/finance.routes').then(m => m.FINANCE_ROUTES)
+    loadChildren: () => import('./pages/finance/finance.routes').then((m) => m.FINANCE_ROUTES),
   },
 
   {
     path: 'library',
     canActivate: [HomeChoseGuardService],
-    loadChildren: () => import('./pages/library/library.routes').then(m => m.LIBRARY_ROUTES)
+    loadChildren: () => import('./pages/library/library.routes').then((m) => m.LIBRARY_ROUTES),
   },
 
   {
     path: 'event',
     canActivate: [HomeChoseGuardService],
-    loadChildren: () => import('./pages/event/event.routes').then(m => m.EVENT_ROUTES)
+    loadChildren: () => import('./pages/event/event.routes').then((m) => m.EVENT_ROUTES),
   },
 
   {
     path: 'blog',
-    canActivate: [autoLoginPartialRoutesGuard],
-    loadChildren: () => import('./pages/blog/blog.routes').then(m => m.BLOG_ROUTES)
+    canActivate: [AuthGuardService],
+    loadChildren: () => import('./pages/blog/blog.routes').then((m) => m.BLOG_ROUTES),
   },
 
   {

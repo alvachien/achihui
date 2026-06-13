@@ -24,7 +24,7 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="nameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        @if(control.hasError('maxlength')) {
+        @if (control.hasError('maxlength')) {
           <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>
         }
         @if (control.hasError('required')) {
@@ -39,9 +39,8 @@
     <nz-form-label [nzSpan]="7" nzRequired>{{ 'Library.LocationType' | transloco }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback>
       <nz-select nzPlaceHolder="{{ 'Library.LocationType' | transloco }}" formControlName="locTypeControl">
-        @for(lstr of arLocationStrings; track lstr.value) {
-          <nz-option [nzLabel]="lstr.i18nterm | transloco" [nzValue]="lstr.value">
-          </nz-option>
+        @for (lstr of arLocationStrings; track lstr.value) {
+          <nz-option [nzLabel]="lstr.i18nterm | transloco" [nzValue]="lstr.value"> </nz-option>
         }
       </nz-select>
     </nz-form-control>
@@ -53,7 +52,7 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="cmtControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        @if(control.hasError('maxlength')) {
+        @if (control.hasError('maxlength')) {
           <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>
         }
       </ng-template>

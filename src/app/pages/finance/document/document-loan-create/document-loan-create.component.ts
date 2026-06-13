@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, inject } from '@angular/core';
 import {
   UntypedFormGroup,
   Validators,
@@ -45,7 +45,7 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService, AuthService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
-import { format, startOfDay, isBefore } from 'date-fns';
+import { startOfDay, isBefore } from 'date-fns';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -85,7 +85,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
     AccountExtraLoanComponent,
     TranslocoModule,
     NgIf,
-  ]
+  ],
 })
 export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -131,23 +131,30 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     return this.firstFormGroup && this.firstFormGroup.get('orderControl')?.value;
   }
 
-  constructor(
-    private _uiStatusService: UIStatusService,
-    private _activateRoute: ActivatedRoute,
-    private _authService: AuthService,
-    private _cdr: ChangeDetectorRef,
-    private _router: Router,
-    private homeService: HomeDefOdataService,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService
-  ) {
+  private readonly _uiStatusService = inject(UIStatusService);
+
+  private readonly _activateRoute = inject(ActivatedRoute);
+
+  private readonly _authService = inject(AuthService);
+
+  private readonly _cdr = inject(ChangeDetectorRef);
+
+  private readonly _router = inject(Router);
+
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.curDocType = financeDocTypeBorrowFrom;
-    this.baseCurrency = homeService.ChosedHome?.BaseCurrency ?? '';
+    this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
     this.firstFormGroup = new UntypedFormGroup(
       {
@@ -158,7 +165,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         ccControl: new UntypedFormControl(undefined),
         orderControl: new UntypedFormControl(undefined),
       },
-      [costObjectValidator, this._legacyDateValidator, this._accountValidator]
+      [costObjectValidator, this._legacyDateValidator, this._accountValidator],
     );
     this.extraFormGroup = new UntypedFormGroup({
       loanAccountControl: new UntypedFormControl(),
@@ -168,7 +175,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -186,7 +193,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         next: (rst) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit, forkJoin`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.arDocTypes = rst[1];
@@ -225,7 +232,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.create({
@@ -240,7 +247,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -282,7 +289,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       case 0: {
         if (this.accountExtraLoanCtrl) {
           this.accountExtraLoanCtrl.setLegacyLoanMode(
-            this.firstFormGroup.get('headerControl')?.get('dateControl')?.value as Date
+            this.firstFormGroup.get('headerControl')?.get('dateControl')?.value as Date,
           );
         }
         this.currentStep++;
@@ -306,7 +313,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   private _legacyDateValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _legacyDateValidator',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.isLegacyLoan) {
@@ -324,7 +331,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   private _accountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent _accountValidator',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (!this.isLegacyLoan) {
@@ -383,13 +390,13 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.currentStep = 3;
           this.isDocPosting = false;
-        })
+        }),
       )
       .subscribe({
         next: (nid: Document) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.docIdCreated = nid.Id;
@@ -399,7 +406,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
           // Show error message
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent, onSubmit, createLoanDocument, failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.docIdCreated = undefined;
@@ -415,7 +422,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     const chked = checked as boolean;
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent, onIsLegacyChecked: ${checked}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (chked) {

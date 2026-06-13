@@ -9,7 +9,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { format } from 'date-fns';
 import { UIMode } from 'actslib';
 
 import {
@@ -22,7 +21,6 @@ import {
   financeDocTypeNormal,
   UIAccountForSelection,
   UIOrderForSelection,
-  dateFormat,
 } from '../../../../model';
 import { SafeAny } from '@common/any';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -61,7 +59,7 @@ import { RouterModule } from '@angular/router';
     NzInputNumberModule,
     TranslocoModule,
     RouterModule,
-  ]
+  ],
 })
 export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -149,7 +147,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   set currentUIMode(mode: UIMode) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemsComponent currentUIMode setter`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._uiMode !== mode) {
       this._uiMode = mode;
@@ -241,7 +239,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent onChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._onChange) {
@@ -251,7 +249,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   @HostListener('blur') onTouched(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent onTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._onTouched) {
       this._onTouched();
@@ -261,7 +259,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   writeValue(val: DocumentItem[]): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent writeValue...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (val) {
       this.listItems = val;
@@ -271,21 +269,21 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._onChange = fn;
   }
   registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent registerOnTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemsComponent setDisabledState...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (isDisabled) {
       this._isChangable = false;

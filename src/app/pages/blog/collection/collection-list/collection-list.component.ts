@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { ModelUtility, ConsoleLogTypeEnum, BlogCollection } from '../../../../mo
 import { BlogOdataService } from '../../../../services';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'hih-blog-collection-list',
   templateUrl: './collection-list.component.html',
   styleUrls: ['./collection-list.component.less'],
@@ -36,10 +36,16 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   dataSet: BlogCollection[] = [];
 
-  constructor(private odataService: BlogOdataService, private modalService: NzModalService, private router: Router) {
+  private readonly odataService = inject(BlogOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -48,7 +54,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -59,7 +65,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
       .pipe(
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: BlogCollection[]) => {
@@ -68,7 +74,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering CollectionListComponent ngOnInit, fetchAllCollections failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -83,7 +89,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {

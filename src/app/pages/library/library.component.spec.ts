@@ -24,7 +24,8 @@ describe('LibraryComponent', () => {
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-        LibraryComponent],
+        LibraryComponent,
+      ],
       providers: [],
     }).compileComponents();
   });

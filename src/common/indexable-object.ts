@@ -1,5 +1,5 @@
 import { SafeAny } from './any';
 
 export interface IndexableObject {
-    [key: string]: SafeAny;
+  [key: string]: SafeAny;
 }

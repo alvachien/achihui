@@ -1,7 +1,9 @@
 <nz-spin [nzSpinning]="isLoadingResults">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
-      <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+      <nz-breadcrumb-item
+        ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+      >
       <nz-breadcrumb-item>{{ 'Finance.Documents' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
@@ -11,7 +13,8 @@
         nz-input
         class="shotcut-id"
         placeholder="{{ 'Common.ShortcutID' | transloco }}"
-        [(ngModel)]="shortcutDocID" />
+        [(ngModel)]="shortcutDocID"
+      />
       <button nz-button nzType="text" [disabled]="!shortcutDocID" (click)="onOpenShortCutDocID()">
         <i nz-icon nzType="folder-open" nzTheme="outline"></i>
       </button>
@@ -87,7 +90,8 @@
       [nzTotal]="totalDocumentCount"
       [nzPageIndex]="pageIndex"
       [nzPageSize]="pageSize"
-      (nzQueryParams)="onQueryParamsChange($event)">
+      (nzQueryParams)="onQueryParamsChange($event)"
+    >
       <thead>
         <tr>
           <th nzShowExpand></th>
@@ -105,7 +109,7 @@
         </tr>
       </thead>
       <tbody>
-        @for(data of docTable.data; track $index) {
+        @for (data of docTable.data; track $index) {
           <ng-template>
             <tr>
               <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id!]"></td>
@@ -126,7 +130,8 @@
                   nz-popconfirm
                   [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
                   (nzOnConfirm)="onDelete(data.Id!)"
-                  nzDanger>
+                  nzDanger
+                >
                   {{ 'Common.Delete' | transloco }}
                 </button>
                 <nz-dropdown-menu #menuForChange="nzDropdownMenu">
@@ -166,23 +171,23 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for(itemdata of itemTable.data; track $index) {
+                    @for (itemdata of itemTable.data; track $index) {
                       <tr>
                         <td>{{ itemdata.ItemId }}</td>
                         <td>{{ getAccountName(itemdata.AccountId!) }}</td>
                         <td>{{ getTranTypeName(itemdata.TranType!) }}</td>
                         <td>
-                          {{ itemdata.TranAmount | number : '1.2-2' }}
+                          {{ itemdata.TranAmount | number: '1.2-2' }}
                           <small>{{ getCurrencyName(data.TranCurr!) }}</small>
                         </td>
                         <td>{{ itemdata.Desp }}</td>
-                      </tr>  
+                      </tr>
                     }
                   </tbody>
                 </nz-table>
               </td>
             </tr>
-          </ng-template>            
+          </ng-template>
         }
       </tbody>
     </nz-table>

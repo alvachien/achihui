@@ -14,15 +14,15 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="despTpl">
         <input nz-input formControlName="despControl" maxlength="45" required />
         <ng-template #despTpl let-control>
-          @if(control.hasError('maxlength')) {
+          @if (control.hasError('maxlength')) {
             <ng-container>
               {{ 'Common.FieldMaxLength' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>

@@ -7,12 +7,7 @@ import { NzCalendarMode, NzCalendarModule } from 'ng-zorro-antd/calendar';
   selector: 'hih-event',
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.less'],
-  imports: [
-    FormsModule,
-    FormsModule,
-    NzCalendarModule,
-    RouterModule,
-  ]
+  imports: [FormsModule, FormsModule, NzCalendarModule, RouterModule],
 })
 export class EventComponent {
   selectedDate = new Date();

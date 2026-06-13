@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
@@ -86,10 +86,14 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
   }
 
-  constructor(private modalService: NzModalService, private homeService: HomeDefOdataService) {
+  private readonly modalService = inject(NzModalService);
+
+  private readonly homeService = inject(HomeDefOdataService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
     this.allFields = [
@@ -168,8 +172,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           a
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .TransactionDate!
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            .TransactionDate! // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             .localeCompare(b.TransactionDate!),
       },
       {

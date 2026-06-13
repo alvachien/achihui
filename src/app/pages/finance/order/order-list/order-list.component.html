@@ -1,6 +1,8 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+    >
     <nz-breadcrumb-item>{{ 'Finance.Activities' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Activities' | transloco }}</nz-page-header-title>
@@ -15,29 +17,30 @@
       <label nz-radio-button nzValue="2">{{'Common.CurrentYear' | transloco}}</label>
     </nz-radio-group> -->
 
-    @if(!isChildMode) {
-      <nz-switch 
+    @if (!isChildMode) {
+      <nz-switch
         [(ngModel)]="validOrderOnly"
         [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco"
         [nzUnCheckedChildren]="'Common.All' | transloco"
-        (ngModelChange)="onOrderValidityChanged()"></nz-switch>
+        (ngModelChange)="onOrderValidityChanged()"
+      ></nz-switch>
     }
   </nz-page-header-extra>
 </nz-page-header>
 
-@if(isChildMode) {
+@if (isChildMode) {
   <div>
     <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
       <div nz-result-extra>
         <button nz-button nzType="primary">OK</button>
       </div>
     </nz-result>
-  </div>  
+  </div>
 }
-@if(!isChildMode) {
+@if (!isChildMode) {
   <div>
     <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-      <nz-table #basicTable [nzData]="dataSet | orderValidityFilter : validOrderOnly">
+      <nz-table #basicTable [nzData]="dataSet | orderValidityFilter: validOrderOnly">
         <thead>
           <tr>
             <th>ID</th>
@@ -48,7 +51,7 @@
           </tr>
         </thead>
         <tbody>
-          @for(data of basicTable.data; track $index) {
+          @for (data of basicTable.data; track $index) {
             <tr>
               <td>
                 <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Id }}</span>
@@ -66,7 +69,9 @@
                   nzPopconfirmPlacement="bottom"
                   (nzOnConfirm)="onDelete(data.Id!)"
                   nzType="link"
-                  nzDanger>{{ 'Common.Delete' | transloco }}</a>
+                  nzDanger
+                  >{{ 'Common.Delete' | transloco }}</a
+                >
                 <nz-divider nzType="vertical"></nz-divider>
                 <button nz-button nzType="link" (click)="onDisplayDocItem(data.Id!, data.Name)">
                   {{ 'Finance.Documents' | transloco }}
@@ -78,11 +83,10 @@
               <td>{{ data.ValidFromFormatString }}</td>
               <td>{{ data.ValidToFormatString }}</td>
               <td>{{ data.Comment }}</td>
-            </tr>  
+            </tr>
           }
         </tbody>
       </nz-table>
     </nz-spin>
-  </div> 
+  </div>
 }
-

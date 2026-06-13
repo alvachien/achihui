@@ -36,7 +36,7 @@
         <div nz-col [nzSpan]="6">
           <nz-select nzPlaceHolder="{{ 'Common.Operator' | transloco }}" [(ngModel)]="filter.operator">
             <nz-option
-              *ngFor="let opr of allOperators | operatorFilter : filter.valueType"
+              *ngFor="let opr of allOperators | operatorFilter: filter.valueType"
               [nzLabel]="opr.i18nterm | transloco"
               [nzValue]="opr.value"
             >

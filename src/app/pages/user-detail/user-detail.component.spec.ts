@@ -35,17 +35,24 @@ describe('UserDetailComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [NoopAnimationsModule,
+      // declarations moved to imports
+      imports: [
+        NoopAnimationsModule,
         NzDescriptionsModule,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NzPageHeaderModule,
         getTranslocoModule(),
-        UserDetailComponent],
-    providers: [{ provide: AuthService, useValue: authServiceStub }, { provide: HomeDefOdataService, useValue: homeServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+        UserDetailComponent,
+      ],
+      providers: [
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: HomeDefOdataService, useValue: homeServiceStub },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -68,7 +75,7 @@ describe('UserDetailComponent', () => {
     });
     (authServiceStub.authSubject as BehaviorSubject<UserAuthInfo>).next(authorizedUser);
     fixture.detectChanges();
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     expect(component.userID).toBe('test-user-id');
     expect(component.userName).toBe('Test User');
   });

@@ -12,14 +12,7 @@ import { SafeAny } from '@common/any';
   selector: 'hih-account-change-name-dialog',
   templateUrl: './account-change-name-dialog.component.html',
   styleUrls: ['./account-change-name-dialog.component.less'],
-  imports: [
-    NzFormModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NzInputModule,
-    TranslocoModule,
-    NzModalModule,
-  ]
+  imports: [NzFormModule, FormsModule, ReactiveFormsModule, NzInputModule, TranslocoModule, NzModalModule],
 })
 export class AccountChangeNameDialogComponent implements OnInit {
   // Header forum
@@ -32,7 +25,7 @@ export class AccountChangeNameDialogComponent implements OnInit {
   private readonly modal = inject(NzModalRef);
   private readonly _zone = inject(NgZone);
   private readonly odataService = inject(FinanceOdataService);
-  
+
   constructor() {
     this.headerFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),

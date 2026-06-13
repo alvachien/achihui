@@ -6,10 +6,10 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="startdateErrorTpl">
         <nz-date-picker formControlName="startDateControl" (ngModelChange)="onChange()"></nz-date-picker>
         <ng-template #startdateErrorTpl let-control>
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -21,10 +21,10 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="enddateErrorTpl">
         <nz-date-picker formControlName="endDateControl" (ngModelChange)="onChange()"></nz-date-picker>
         <ng-template #enddateErrorTpl let-control>
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -35,15 +35,15 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.RepeatFrequency' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="frqTpl">
         <nz-select formControlName="frqControl" (ngModelChange)="onChange()">
-          @for(rt of arFrequencies; track rt.value) {
+          @for (rt of arFrequencies; track rt.value) {
             <nz-option [nzValue]="rt.value" [nzLabel]="rt.i18nterm | transloco"></nz-option>
           }
         </nz-select>
         <ng-template #frqTpl let-control>
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -55,15 +55,15 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
         <input nz-input formControlName="cmtControl" maxlength="45" (ngModelChange)="onChange()" required />
         <ng-template #cmtTpl let-control>
-          @if(control.hasError('maxlength')) {
+          @if (control.hasError('maxlength')) {
             <ng-container>
               {{ 'Common.FieldMaxLength' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -71,13 +71,13 @@
   </div>
 
   <!-- Ref doc. ID -->
-  @if(refDocId) {
+  @if (refDocId) {
     <div class="achih-control-full-width">
       <label>{{ 'Finance.RefDoc' | transloco }}</label>
       <button nz-button nzType="link" (click)="onRefDocClick(refDocId!)">
         {{ refDocId }}
       </button>
-    </div>  
+    </div>
   }
 
   <!-- Toolbar -->
@@ -98,13 +98,13 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>{{ data.TranDateFormatString }}</td>
           <td>{{ data.TranType }}</td>
           <td>{{ data.TranAmount }}</td>
           <td>{{ data.Desp }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

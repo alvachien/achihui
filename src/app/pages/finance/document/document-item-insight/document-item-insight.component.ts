@@ -8,14 +8,27 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzTransferModule, TransferItem } from 'ng-zorro-antd/transfer';
-import { finalize, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
 import { dateFormat } from '@model/index';
 
 import {
-  Account, ConsoleLogTypeEnum, DocumentItemView, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType, ModelUtility,
-  TranType, financeTranTypeAdvancePaymentOut, financeTranTypeAdvanceReceiveIn, financeTranTypeAssetValueDecrease, financeTranTypeAssetValueIncrease,
-  financeTranTypeOpeningAsset, financeTranTypeOpeningLiability, financeTranTypeTransferIn, financeTranTypeTransferOut
+  Account,
+  ConsoleLogTypeEnum,
+  DocumentItemView,
+  GeneralFilterItem,
+  GeneralFilterOperatorEnum,
+  GeneralFilterValueType,
+  ModelUtility,
+  TranType,
+  financeTranTypeAdvancePaymentOut,
+  financeTranTypeAdvanceReceiveIn,
+  financeTranTypeAssetValueDecrease,
+  financeTranTypeAssetValueIncrease,
+  financeTranTypeOpeningAsset,
+  financeTranTypeOpeningLiability,
+  financeTranTypeTransferIn,
+  financeTranTypeTransferOut,
 } from '@model/index';
 import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { RouterModule } from '@angular/router';
@@ -44,7 +57,7 @@ interface InsightRecord {
     NzModalModule,
     RouterModule,
     NgIf,
-  ]
+  ],
 })
 export class DocumentItemInsightComponent implements OnInit {
   listGroupFields: TransferItem[] = [];
@@ -74,13 +87,13 @@ export class DocumentItemInsightComponent implements OnInit {
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent constructor`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.listGroupFields.push({
       key: 'date',
       title: translate(`Common.Date`),
-      direction: 'right'
+      direction: 'right',
     });
     this.listGroupFields.push({
       key: 'trantype',
@@ -107,17 +120,21 @@ export class DocumentItemInsightComponent implements OnInit {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
   get isTranDateVisible(): boolean {
-    return this.listGroupFields.findIndex(p => p['key'] === 'date' && p.direction === 'right') !== -1;
+    return this.listGroupFields.findIndex((p) => p['key'] === 'date' && p.direction === 'right') !== -1;
   }
   get isAccountVisible(): boolean {
-    return this.listGroupFields.findIndex(p => p['key'] === 'account' && p.direction === 'right') !== -1;
+    return this.listGroupFields.findIndex((p) => p['key'] === 'account' && p.direction === 'right') !== -1;
   }
   get isTranTypeVisible(): boolean {
-    return this.listGroupFields.findIndex(p => p['key'] === 'trantype' && p.direction === 'right') !== -1;
+    return this.listGroupFields.findIndex((p) => p['key'] === 'trantype' && p.direction === 'right') !== -1;
   }
   get insideDateRangeString(): string {
     if (this.insightOption !== null) {
-      return format(this.insightOption.SelectedDataRange[0], dateFormat) + ' - ' + format(this.insightOption.SelectedDataRange[1], dateFormat);
+      return (
+        format(this.insightOption.SelectedDataRange[0], dateFormat) +
+        ' - ' +
+        format(this.insightOption.SelectedDataRange[1], dateFormat)
+      );
     }
     return '';
   }
@@ -125,7 +142,7 @@ export class DocumentItemInsightComponent implements OnInit {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent ngOnInit...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     // Options
     this.insightOption = this.uiStatusService.docInsightOption ? this.uiStatusService.docInsightOption : null;
@@ -144,7 +161,7 @@ export class DocumentItemInsightComponent implements OnInit {
       error: (err) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent ngOnInit forkJoin failed ${err}...`,
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
 
         this.modalService.error({
@@ -159,7 +176,7 @@ export class DocumentItemInsightComponent implements OnInit {
   onTransferChanged(ret: {}): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent onTransferChanged: ${ret}...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Need refresh data!
@@ -168,7 +185,7 @@ export class DocumentItemInsightComponent implements OnInit {
 
   fetchData(): void {
     if (this.insightOption) {
-      let fltrs: GeneralFilterItem[] = [];
+      const fltrs: GeneralFilterItem[] = [];
       if (this.insightOption.TransactionDirection !== undefined) {
         fltrs.push({
           fieldName: 'IsExpense',
@@ -187,66 +204,65 @@ export class DocumentItemInsightComponent implements OnInit {
       });
 
       this.isLoadingData = true;
-      this.odataService.searchDocItem(fltrs, 90, 0)
-        .subscribe({
-          next: val => {
-            this.totalDataCount = val.totalCount;
-            this.listData.push(...val.contentList);
+      this.odataService.searchDocItem(fltrs, 90, 0).subscribe({
+        next: (val) => {
+          this.totalDataCount = val.totalCount;
+          this.listData.push(...val.contentList);
 
-            if (this.totalDataCount > 90) {
-              let ntimes = Math.floor(this.totalDataCount / 90);
-              let nlef = this.totalDataCount % 90;
-              if (nlef > 0) {
-                ntimes++;
-              }
-              ntimes--; // Already fetched it
-              let nskip = 90;
-
-              while (ntimes > 0) {
-                this.odataService.searchDocItem(fltrs, 90, nskip).subscribe({
-                  next: val => {
-                    this.listData.push(...val.contentList);
-
-                    if (this.listData.length === this.totalDataCount) {
-                      this.buildDisplayList();
-                    }
-                  },
-                  error: err => {
-                    ModelUtility.writeConsoleLog(
-                      `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
-                      ConsoleLogTypeEnum.error
-                    );
-
-                    this.modalService.error({
-                      nzTitle: translate('Common.Error'),
-                      nzContent: err.toString(),
-                      nzClosable: true,
-                    });
-                  }
-                })
-
-                nskip += 90;
-                ntimes--;
-              }
-            } else {
-              if (this.listData.length === this.totalDataCount) {
-                this.buildDisplayList();
-              }
+          if (this.totalDataCount > 90) {
+            let ntimes = Math.floor(this.totalDataCount / 90);
+            const nlef = this.totalDataCount % 90;
+            if (nlef > 0) {
+              ntimes++;
             }
-          },
-          error: err => {
-            ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
-              ConsoleLogTypeEnum.error
-            );
+            ntimes--; // Already fetched it
+            let nskip = 90;
 
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err.toString(),
-              nzClosable: true,
-            });
+            while (ntimes > 0) {
+              this.odataService.searchDocItem(fltrs, 90, nskip).subscribe({
+                next: (val) => {
+                  this.listData.push(...val.contentList);
+
+                  if (this.listData.length === this.totalDataCount) {
+                    this.buildDisplayList();
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
+                    ConsoleLogTypeEnum.error,
+                  );
+
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+
+              nskip += 90;
+              ntimes--;
+            }
+          } else {
+            if (this.listData.length === this.totalDataCount) {
+              this.buildDisplayList();
+            }
           }
-        })
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
     }
   }
 
@@ -261,30 +277,32 @@ export class DocumentItemInsightComponent implements OnInit {
     const needtype = this.isTranTypeVisible;
     this.listDisplayData = [];
 
-    this.listData.forEach(p => {
+    this.listData.forEach((p) => {
       let bcont = true;
       if (this.insightOption?.ExcludeTransfer === true) {
-        if (p.TransactionType === financeTranTypeOpeningAsset
-          || p.TransactionType === financeTranTypeOpeningLiability
-          || p.TransactionType === financeTranTypeTransferIn
-          || p.TransactionType === financeTranTypeTransferOut
-          || p.TransactionType === financeTranTypeAdvancePaymentOut
-          || p.TransactionType === financeTranTypeAdvanceReceiveIn
-          || p.TransactionType === financeTranTypeAssetValueDecrease
-          || p.TransactionType === financeTranTypeAssetValueIncrease) {
+        if (
+          p.TransactionType === financeTranTypeOpeningAsset ||
+          p.TransactionType === financeTranTypeOpeningLiability ||
+          p.TransactionType === financeTranTypeTransferIn ||
+          p.TransactionType === financeTranTypeTransferOut ||
+          p.TransactionType === financeTranTypeAdvancePaymentOut ||
+          p.TransactionType === financeTranTypeAdvanceReceiveIn ||
+          p.TransactionType === financeTranTypeAssetValueDecrease ||
+          p.TransactionType === financeTranTypeAssetValueIncrease
+        ) {
           bcont = false;
         }
       }
 
       if (bcont) {
-        let isexps = this.arTranType.find(tt => tt.Id === p.TransactionType)?.Expense;
+        const isexps = this.arTranType.find((tt) => tt.Id === p.TransactionType)?.Expense;
         if (isexps) {
           this.outgoAmount += p.Amount;
         } else {
           this.incomeAmount += p.Amount;
         }
 
-        const idx = this.listDisplayData.findIndex(data => {
+        const idx = this.listDisplayData.findIndex((data) => {
           if (needdate && data.TransactionDate !== p.TransactionDate) {
             return false;
           }
@@ -300,7 +318,7 @@ export class DocumentItemInsightComponent implements OnInit {
         if (idx !== -1) {
           this.listDisplayData[idx].Amount += p.Amount;
         } else {
-          let ndata: InsightRecord = {
+          const ndata: InsightRecord = {
             Amount: p.Amount,
             Currency: this.baseCurrency,
           };

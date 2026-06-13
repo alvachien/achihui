@@ -11,7 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>{{ data.AssetAccountId }} ({{ getAccountNmae(data.AssetAccountId) }})</td>
           <td>
@@ -21,14 +21,15 @@
                   [nzMin]="0.01"
                   [nzStep]="0.01"
                   [(ngModel)]="data.TranAmount"
-                  [nzPlaceHolder]="'Finance.Amount' | transloco">
+                  [nzPlaceHolder]="'Finance.Amount' | transloco"
+                >
                   <span nzInputAddonAfter [ngModel]="data.TranCurr"></span>
                 </nz-input-number>
                 <ng-template #amountTpl let-control>
-                  @if(control.hasError('required')) {
+                  @if (control.hasError('required')) {
                     <ng-container>
                       {{ 'Common.FieldIsMandatory' | transloco }}
-                    </ng-container>  
+                    </ng-container>
                   }
                 </ng-template>
               </nz-form-control>
@@ -39,10 +40,10 @@
               <nz-form-control nzHasFeedback [nzErrorTip]="despTpl">
                 <input nz-input [(ngModel)]="data.Desp" />
                 <ng-template #despTpl let-control>
-                  @if(control.hasError('required')) {
+                  @if (control.hasError('required')) {
                     <ng-container>
                       {{ 'Common.FieldIsMandatory' | transloco }}
-                    </ng-container>  
+                    </ng-container>
                   }
                 </ng-template>
               </nz-form-control>
@@ -50,14 +51,14 @@
           </td>
           <td>
             <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
-              @for(tt of arControlCenters; track tt.Id) {
+              @for (tt of arControlCenters; track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"> </nz-option>
               }
             </nz-select>
           </td>
           <td>
             <nz-select [(ngModel)]="data.OrderId" nzAllowClear>
-              @for(tt of arUIOrders; track tt.Id) {
+              @for (tt of arUIOrders; track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
               }
             </nz-select>
@@ -67,7 +68,7 @@
               <span nz-icon nzType="send"></span>
             </button>
           </td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

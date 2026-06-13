@@ -38,6 +38,13 @@
             "style": "camelCase",
             "type": "attribute"
           }
+        ],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_"
+          }
         ]
       }
     },
@@ -50,6 +57,14 @@
         "plugin:prettier/recommended"
       ],
       "rules": {}
+    },
+    {
+      "files": [
+        "*.spec.ts"
+      ],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
     }
   ]
 }

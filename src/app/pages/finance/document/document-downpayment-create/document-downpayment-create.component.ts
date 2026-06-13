@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
@@ -71,7 +71,7 @@ import { AccountExtraDownpaymentComponent } from '../../account/account-extra-do
     NzModalModule,
     RouterModule,
     NgIf,
-  ]
+  ],
 })
 export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
@@ -149,11 +149,10 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   private readonly _router = inject(Router);
   private readonly modalService = inject(NzModalService);
 
-  constructor(
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent constructor`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.headerFormGroup = new UntypedFormGroup(
       {
@@ -164,7 +163,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         ccControl: new UntypedFormControl(''),
         orderControl: new UntypedFormControl(''),
       },
-      [costObjectValidator]
+      [costObjectValidator],
     );
     this.accountExtraInfoFormGroup = new UntypedFormGroup({
       infoControl: new UntypedFormControl(),
@@ -175,7 +174,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -194,7 +193,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         next: (rst) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentDownpaymentCreateComponent, forkJoin`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           // Accounts
@@ -242,7 +241,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Error]: Entering Entering DocumentADPCreateComponent ngOnInit forkJoin, failed',
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.create({
             nzTitle: translate('Common.Error'),
@@ -256,7 +255,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -324,13 +323,13 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.currentStep = 3;
           this.isDocPosting = false;
-        })
+        }),
       )
       .subscribe({
         next: (ndoc: Document) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent, onSubmit, createADPDocument`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.docIdCreated = ndoc.Id;

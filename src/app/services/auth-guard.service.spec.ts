@@ -51,16 +51,14 @@ describe('AuthGuardService', () => {
       expect(result).toBe(true);
     });
 
-    it('should trigger login when user is not authorized', () => {
+    it('should trigger login and return false when user is not authorized', () => {
       const service = TestBed.inject(AuthGuardService);
       const unauthorizedUser = new UserAuthInfo();
       unauthorizedUser.isAuthorized = false;
       authSubject.next(unauthorizedUser);
-      const result = service.checkLogin('/test');
+      const result = service.canActivate({} as any, { url: '/test' } as any);
       expect(result).toBe(false);
       expect(authServiceStub.doLogin).toHaveBeenCalled();
     });
   });
 });
-
-type Safe = Record<string, unknown>;

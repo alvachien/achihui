@@ -29,15 +29,15 @@
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
             <input nz-input formControlName="titleControl" maxlength="30" required />
             <ng-template #titleTpl let-control>
-              @if(control.hasError('maxlength')) {
+              @if (control.hasError('maxlength')) {
                 <ng-container>
                   {{ 'Common.FieldMaxLength' | transloco }}
-                </ng-container>  
+                </ng-container>
               }
-              @if(control.hasError('required')) {
+              @if (control.hasError('required')) {
                 <ng-container>
                   {{ 'Common.FieldIsMandatory' | transloco }}
-                </ng-container>  
+                </ng-container>
               }
             </ng-template>
           </nz-form-control>
@@ -48,9 +48,9 @@
           <nz-form-label [nzSpan]="7">{{ 'Blog.Collection' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12">
             <nz-select nzMode="multiple" formControlName="collectionControl">
-              @for(coll of listOfCollection; track coll.id) {
+              @for (coll of listOfCollection; track coll.id) {
                 <nz-option [nzLabel]="coll.name" [nzValue]="coll.id"></nz-option>
-              }              
+              }
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -75,10 +75,10 @@
           <nz-form-control [nzSpan]="24" nzHasFeedback [nzErrorTip]="briefTpl">
             <textarea rows="8" nz-input formControlName="briefControl"></textarea>
             <ng-template #briefTpl let-control>
-              @if(control.hasError('required')) {
+              @if (control.hasError('required')) {
                 <ng-container>
                   {{ 'Common.FieldIsMandatory' | transloco }}
-                </ng-container>  
+                </ng-container>
               }
             </ng-template>
           </nz-form-control>
@@ -92,10 +92,10 @@
         <ac-markdown-editor class="post_acme_editor" formControlName="contentControl"> </ac-markdown-editor>
       </nz-form-control>
       <ng-template #contentTpl let-control>
-        @if(control.hasError('required')) {
+        @if (control.hasError('required')) {
           <ng-container>
             {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
       </ng-template>
     </nz-form-item>
@@ -105,15 +105,15 @@
       <nz-form-label [nzSpan]="7">{{ 'Common.Tags' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="titleTpl">
         <nz-select nzMode="tags" nzPlaceHolder="Tags" formControlName="tagControl">
-          @for(tag of listOfTags; track tag.Tag) {
+          @for (tag of listOfTags; track tag.Tag) {
             <nz-option [nzLabel]="tag.Tag!" [nzValue]="tag.Tag"></nz-option>
-          }          
+          }
         </nz-select>
         <ng-template #titleTpl let-control>
-          @if(control.hasError('maxlength')) {
+          @if (control.hasError('maxlength')) {
             <ng-container>
               {{ 'Common.FieldMaxLength' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>

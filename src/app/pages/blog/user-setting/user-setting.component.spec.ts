@@ -6,7 +6,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { UserSettingComponent } from './user-setting.component';
 import { AuthService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
@@ -34,15 +34,15 @@ describe('UserSettingComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [getTranslocoModule(),
-        FormsModule,
-        
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        RouterTestingModule],
-    providers: [{ provide: BlogOdataService, useValue: storageService }, NzModalService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      // declarations moved to imports
+      imports: [getTranslocoModule(), FormsModule, ReactiveFormsModule, NoopAnimationsModule, RouterTestingModule],
+      providers: [
+        { provide: BlogOdataService, useValue: storageService },
+        NzModalService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

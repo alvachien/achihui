@@ -19,7 +19,8 @@
     [(nzPageIndex)]="pageIndex"
     [(nzPageSize)]="pageSize"
     (nzPageIndexChange)="fetchData()"
-    (nzPageSizeChange)="fetchData(true)">
+    (nzPageSizeChange)="fetchData(true)"
+  >
     <thead>
       <tr>
         <th>{{ 'Common.ID' | transloco }}</th>
@@ -30,7 +31,7 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>
             {{ data.id! }}
@@ -56,7 +57,7 @@
           <td>{{ getStatusDisplayString(data.status!) | transloco }}</td>
           <td>{{ data.brief }}</td>
           <td>{{ data.createdAtString }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

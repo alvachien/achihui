@@ -25,15 +25,15 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
         <input nz-input formControlName="nnameControl" maxlength="100" required />
         <ng-template #nameTpl let-control>
-          @if(control.hasError('maxlength')) {
+          @if (control.hasError('maxlength')) {
             <ng-container>
               {{ 'Common.FieldMaxLength' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
-          @if(control.hasError('required')) {
+          @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -45,10 +45,10 @@
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
         <input nz-input formControlName="cnameControl" maxlength="100" />
         <ng-template #nameTpl let-control>
-          @if(control.hasError('maxlength')) {
+          @if (control.hasError('maxlength')) {
             <ng-container>
               {{ 'Common.FieldMaxLength' | transloco }}
-            </ng-container>  
+            </ng-container>
           }
         </ng-template>
       </nz-form-control>
@@ -83,13 +83,13 @@
             </tr>
           </thead>
           <tbody>
-            @for(data of authorTable.data; track $index) {
+            @for (data of authorTable.data; track $index) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.NativeName }}</td>
                 <td>{{ data.ChineseName }}</td>
                 <td>{{ data.Detail }}</td>
-              </tr>  
+              </tr>
             }
           </tbody>
         </nz-table>
@@ -112,13 +112,13 @@
             </tr>
           </thead>
           <tbody>
-            @for(data of tranTable.data; track $index) {
+            @for (data of tranTable.data; track $index) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.NativeName }}</td>
                 <td>{{ data.ChineseName }}</td>
                 <td>{{ data.Detail }}</td>
-              </tr>  
+              </tr>
             }
           </tbody>
         </nz-table>
@@ -139,11 +139,11 @@
             </tr>
           </thead>
           <tbody>
-            @for(data of ctgyTable.data; track $index) {
+            @for (data of ctgyTable.data; track $index) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.Name | transloco }}</td>
-              </tr>  
+              </tr>
             }
           </tbody>
         </nz-table>
@@ -166,13 +166,13 @@
             </tr>
           </thead>
           <tbody>
-            @for(data of pressTable.data; track $index) {
+            @for (data of pressTable.data; track $index) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.NativeName }}</td>
                 <td>{{ data.ChineseName }}</td>
                 <td>{{ data.Detail }}</td>
-              </tr>  
+              </tr>
             }
           </tbody>
         </nz-table>
@@ -193,11 +193,11 @@
             </tr>
           </thead>
           <tbody>
-            @for(data of locTable.data; track $index) {
+            @for (data of locTable.data; track $index) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.Name }}</td>
-              </tr>  
+              </tr>
             }
           </tbody>
         </nz-table>

@@ -11,7 +11,7 @@ import { By } from '@angular/platform-browser';
 import { UIMode } from 'actslib';
 
 import { DocumentHeaderComponent } from './document-header.component';
-import {createSpyObj, getTranslocoModule, FakeDataHelper, FormGroupHelper} from '../../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, FormGroupHelper } from '../../../../../testing';
 import { AuthService, UIStatusService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, financeDocTypeCurrencyExchange, Document } from '../../../../model';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -42,8 +42,9 @@ describe('DocumentHeaderComponent', () => {
     const routerSpy = createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
 
         ReactiveFormsModule,
         NoopAnimationsModule,
@@ -53,16 +54,17 @@ describe('DocumentHeaderComponent', () => {
         NzInputModule,
         NzInputNumberModule,
         NzDatePickerModule,
-        NzCheckboxModule],
-    providers: [
+        NzCheckboxModule,
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -90,10 +92,10 @@ describe('DocumentHeaderComponent', () => {
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -101,7 +103,7 @@ describe('DocumentHeaderComponent', () => {
 
     it('Tran date is mandatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
@@ -119,7 +121,7 @@ describe('DocumentHeaderComponent', () => {
 
     it('Desp is mandatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
@@ -136,7 +138,7 @@ describe('DocumentHeaderComponent', () => {
 
     it('Currency is mandatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.isFieldChangable).toBeTruthy();
@@ -155,7 +157,7 @@ describe('DocumentHeaderComponent', () => {
     it('shall show exchange rate for foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       expect(fixture.debugElement.queryAll(By.css('#idexg')).length).toEqual(0);
       expect(fixture.debugElement.queryAll(By.css('#exgrate_plan')).length).toEqual(0);
@@ -171,7 +173,7 @@ describe('DocumentHeaderComponent', () => {
     it('Exchange rate is mandatory for foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -201,7 +203,7 @@ describe('DocumentHeaderComponent', () => {
       vi.spyOn(component, 'onChange');
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.onChange).toHaveBeenCalledTimes(0);
@@ -231,7 +233,7 @@ describe('DocumentHeaderComponent', () => {
     it('it shall return correct Document object', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -254,7 +256,7 @@ describe('DocumentHeaderComponent', () => {
     it('it shall return correct Document object with foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -284,7 +286,7 @@ describe('DocumentHeaderComponent', () => {
       component.arDocTypes = fakeData.finDocTypes;
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
 
       component.currentUIMode = UIMode.Display;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
@@ -312,10 +314,10 @@ describe('DocumentHeaderComponent', () => {
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -324,7 +326,7 @@ describe('DocumentHeaderComponent', () => {
     it('shall show exchange rate for second foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
@@ -344,7 +346,7 @@ describe('DocumentHeaderComponent', () => {
     it('Currency is mandatory', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
@@ -368,7 +370,7 @@ describe('DocumentHeaderComponent', () => {
     it('Currency2 is mandatory', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       expect(component.isFieldChangable).toBeTruthy();
 
@@ -387,7 +389,7 @@ describe('DocumentHeaderComponent', () => {
     it('Currency must be diff', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       expect(component.isFieldChangable).toBeTruthy();
 
@@ -406,7 +408,7 @@ describe('DocumentHeaderComponent', () => {
     it('Exgrate2 is mandatory if currency 2 is foreign', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
       component.docType = financeDocTypeCurrencyExchange;
       component.baseCurrency = fakeData.chosedHome.BaseCurrency;
@@ -430,7 +432,7 @@ describe('DocumentHeaderComponent', () => {
     it('OnChange method', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       const changefn = () => {
@@ -477,7 +479,7 @@ describe('DocumentHeaderComponent', () => {
     it('it shall return correct Document object', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency
@@ -504,7 +506,7 @@ describe('DocumentHeaderComponent', () => {
     it('it shall return correct Document object with foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
 
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input foreign currency

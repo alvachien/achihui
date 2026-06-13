@@ -10,9 +10,14 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('UIStatusService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule, getTranslocoModule()],
-    providers: [UIStatusService, TranslocoService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [RouterTestingModule, getTranslocoModule()],
+      providers: [
+        UIStatusService,
+        TranslocoService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
   });
 
   it('should be created', () => {

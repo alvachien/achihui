@@ -43,8 +43,9 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [RouterTestingModule,
+      // declarations moved to imports
+      imports: [
+        RouterTestingModule,
         NzLayoutModule,
         NzMenuModule,
         NzIconModule,
@@ -53,15 +54,16 @@ describe('AppComponent', () => {
         NzTableModule,
         NzModalModule,
         NoopAnimationsModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService },
         { provide: NZ_I18N, useValue: en_US },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -78,16 +80,16 @@ describe('AppComponent', () => {
 
   it('shall work with data', async () => {
     fixture.detectChanges();
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
     expect(component.isLoggedIn).toBeTruthy();
 
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
   });
 
   it('doLogon shall work', async () => {
     fixture.detectChanges();
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     vi.spyOn(authServiceStub, 'doLogin');
@@ -98,12 +100,12 @@ describe('AppComponent', () => {
     // if (environment.LoginRequired) {
     //   expect(authServiceStub.doLogin).toHaveBeenCalledTimes(1);
     // }
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
   });
 
   it('doLogout shall work', async () => {
     fixture.detectChanges();
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     vi.spyOn(authServiceStub, 'doLogout');
@@ -113,18 +115,18 @@ describe('AppComponent', () => {
     // if (environment.LoginRequired) {
     //   expect(authServiceStub.doLogout).toHaveBeenCalledTimes(1);
     // }
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
   });
 
   it('switch language shall work', async () => {
     fixture.detectChanges();
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
 
     component.switchLanguage('zh_CN');
     expect(component).toBeTruthy();
     component.switchLanguage('en_US');
     expect(component).toBeTruthy();
-    await new Promise<void>(r => setTimeout(r, 0));
+    await new Promise<void>((r) => setTimeout(r, 0));
   });
 });

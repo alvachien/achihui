@@ -7,19 +7,20 @@ import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { BehaviorSubject, of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { startOfMonth, endOfMonth, addMonths, addDays, addWeeks, format } from 'date-fns';
 import { dateFormat } from '../../../../model';
 
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,} from '../../../../../testing';
+  ElementClass_DialogCloseButton,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
 import { SafeAny } from '@common/any';
@@ -95,12 +96,13 @@ describe('DocumentRecurredMassCreateComponent', () => {
     searchDocItemSpy = odataService.searchDocItem.and.returnValue(
       of({
         contentList: [],
-      })
+      }),
     );
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
 
         NoopAnimationsModule,
         RouterTestingModule,
@@ -120,8 +122,9 @@ describe('DocumentRecurredMassCreateComponent', () => {
         NzTableModule,
         NzCollapseModule,
         NzDividerModule,
-        DocumentNormalMassCreateItemComponent],
-    providers: [
+        DocumentNormalMassCreateItemComponent,
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         NzModalService,
@@ -130,8 +133,8 @@ describe('DocumentRecurredMassCreateComponent', () => {
         { provide: NZ_I18N, useValue: en_US },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -223,7 +226,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
         asyncData({
           totalCount: 20,
           contentList: ardocitems,
-        })
+        }),
       );
 
       // Mass create
@@ -236,15 +239,15 @@ describe('DocumentRecurredMassCreateComponent', () => {
             },
           ],
           FailedDocuments: [],
-        })
+        }),
       );
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -254,164 +257,164 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should popup error dialog if fetchAllTranTypes fails', async () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should popup error dialog if fetchAllAccounts fails', async () => {
       fetchAllAccountsSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should popup error dialog if fetchAllControlCenters fails', async () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should popup error dialog if fetchAllOrders fails', async () => {
       fetchAllOrdersSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should popup error dialog if fetchAllCurrencies fails', async () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should popup error dialog if fetchAllDocTypes fails', async () => {
       fetchAllDocTypesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
       //await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
     });
 
     it('Step 0: search page without input', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -419,18 +422,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.searchFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 0: frequency is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeFalsy();
@@ -440,18 +441,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 0: Account is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.markAsDirty();
       expect(component.searchFormGroup.valid).toBeFalsy();
@@ -462,20 +461,18 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.searchFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 1: Error dialog if getRepeatedDates failed', async () => {
       getRepeatedDatesSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -484,36 +481,34 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.next();
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 1: Error dialog if searchDocItem failed', async () => {
       searchDocItemSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -522,34 +517,32 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.next();
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 1: Existing document items', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -558,7 +551,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       component.next();
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.currentStep).toEqual(1);
@@ -566,18 +559,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.listExistingDocItems.length).toBeGreaterThan(0);
 
       expect(component.nextButtonEnabled).toBeTruthy();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 2: Default value', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -587,31 +578,29 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
       expect(component.defaultValueFormGroup.valid).toBe(false);
       expect(component.nextButtonEnabled).toBe(false);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 2: Default page account is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -621,14 +610,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -642,18 +631,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 2: Default page tran type is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -663,14 +650,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -684,18 +671,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 2: Default page amount is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -705,14 +690,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -726,18 +711,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 2: Default page desp is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -747,14 +730,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -768,18 +751,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       expect(component.nextButtonEnabled).toBe(false);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 2: Default page cost object is manadatory', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -789,14 +770,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -819,18 +800,16 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.defaultValueFormGroup.valid).toBeTruthy();
       expect(component.nextButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 3: Items', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -840,14 +819,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -862,24 +841,22 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 3. Items
       expect(component.currentStep).toEqual(3);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 4: Confirm', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -889,14 +866,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -911,7 +888,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 3. Items
@@ -930,24 +907,22 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 4. Confirm
       expect(component.currentStep).toEqual(4);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('Step 5: Result page', async () => {
       fixture.detectChanges(); // ngOnInit
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
       // Step 0. Input search criteria
-      component.searchFormGroup
-        .get('dateRangeControl')
-        ?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
+      component.searchFormGroup.get('dateRangeControl')?.setValue([startOfMonth(new Date()), endOfMonth(new Date())]);
       component.searchFormGroup.get('frqControl')?.setValue(component.arFrequencies[0].value);
       component.searchFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.searchFormGroup.markAsDirty();
@@ -957,14 +932,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       // Step 1. Existing doc. items
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
 
       // Step 2. Default value
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(component.currentStep).toEqual(2);
 
@@ -979,7 +954,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
       component.next();
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 3. Items
@@ -987,7 +962,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 4. Confirm
@@ -995,14 +970,14 @@ describe('DocumentRecurredMassCreateComponent', () => {
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 5.
       expect(component.currentStep).toEqual(5);
       expect(component.docIdCreated.length).toBeGreaterThan(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

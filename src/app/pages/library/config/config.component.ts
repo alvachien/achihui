@@ -9,18 +9,18 @@ import { PersonRoleListComponent } from './person-role-list';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
-    selector: 'hih-config',
-    templateUrl: './config.component.html',
-    styleUrls: ['./config.component.less'],
-    imports: [
-        NzPageHeaderModule,
-        NzBreadCrumbModule,
-        NzTabsModule,
-        NzModalModule,
-        TranslocoModule,
-        BookCategoryListComponent,
-        OrganizationTypeListComponent,
-        PersonRoleListComponent
-    ]
+  selector: 'hih-config',
+  templateUrl: './config.component.html',
+  styleUrls: ['./config.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTabsModule,
+    NzModalModule,
+    TranslocoModule,
+    BookCategoryListComponent,
+    OrganizationTypeListComponent,
+    PersonRoleListComponent,
+  ],
 })
 export class ConfigComponent {}

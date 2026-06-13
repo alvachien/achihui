@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzResultModule } from 'ng-zorro-antd/result';
@@ -29,10 +29,10 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     TranTypeListComponent,
     TranslocoModule,
     NzModalModule,
-  ]
+  ],
 })
 export class ConfigComponent {
-  constructor(private homeService: HomeDefOdataService) { }
+  private readonly homeService = inject(HomeDefOdataService);
 
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;

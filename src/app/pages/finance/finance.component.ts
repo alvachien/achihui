@@ -5,7 +5,7 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { format, parse, isBefore, startOfDay, startOfMonth, startOfYear, endOfDay, endOfMonth, endOfYear, addMonths, getDate } from 'date-fns';
+import { format, isBefore, startOfDay, startOfMonth, startOfYear, endOfMonth, endOfYear, getDate } from 'date-fns';
 
 import {
   ModelUtility,
@@ -76,7 +76,7 @@ class DateCellData {
     NzDrawerModule,
     TranslocoModule,
     NzModalModule,
-  ]
+  ],
 })
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -112,7 +112,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering FinanceComponent constructor...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -229,13 +229,13 @@ export class FinanceComponent implements OnInit, OnDestroy {
           arItems,
           returnResults[4],
           returnResults[5],
-          BuildupOrderForSelection(returnResults[6], true)
+          BuildupOrderForSelection(returnResults[6], true),
         );
       },
       error: (err) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering FinanceComponent onAssetDeprec forkJoin failed ${err}...`,
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
 
         this.modalService.error({
@@ -251,7 +251,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     item: FinanceAssetDepreciationCreationItem[],
     accounts: Account[],
     controlCenters: ControlCenter[],
-    orders: UIOrderForSelection[]
+    orders: UIOrderForSelection[],
   ): void {
     const modal: NzModalRef = this.modal.create({
       nzTitle: translate('Sys.DocTy.AssetDeprec'),
@@ -311,7 +311,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (rsts) => {
@@ -359,7 +359,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering FinanceComponent fetchData forkJoin failed ${err}...`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -485,7 +485,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     NzIconModule,
     NzModalModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class FinanceAssetDepreciationDlgComponent {
   @Input() listItems: FinanceAssetDepreciationCreationItem[] = [];
@@ -498,8 +498,7 @@ export class FinanceAssetDepreciationDlgComponent {
   private readonly messageService = inject(NzMessageService);
   private readonly changeDetectRef = inject(ChangeDetectorRef);
 
-  constructor(
-  ) { }
+  constructor() {}
 
   destroyModal(): void {
     this.modal.destroy({ data: '' });
@@ -548,7 +547,7 @@ export class FinanceAssetDepreciationDlgComponent {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering FinanceAssetDepreciationDlgComponent createDoc failed ${err}...`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.messageService.error(err);

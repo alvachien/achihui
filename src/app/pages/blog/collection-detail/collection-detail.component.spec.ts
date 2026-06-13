@@ -9,7 +9,7 @@ import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UIMode } from 'actslib';
 
-import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub} from '../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../testing';
 import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService } from '@services/index';
 import { UserAuthInfo } from '@model/index';
@@ -42,15 +42,18 @@ describe('CollectionDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [CollectionDetailComponent, getTranslocoModule(),
+      // declarations moved to imports
+      imports: [
+        CollectionDetailComponent,
+        getTranslocoModule(),
         FormsModule,
-        
+
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
-        BrowserDynamicTestingModule],
-    providers: [
+        BrowserDynamicTestingModule,
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         UIStatusService,
@@ -58,8 +61,8 @@ describe('CollectionDetailComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -78,7 +81,7 @@ describe('CollectionDetailComponent', () => {
   describe('create mode', () => {
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();

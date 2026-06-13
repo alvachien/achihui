@@ -1,78 +1,41 @@
-import { inject, Injectable } from '@angular/core';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { environment } from '../../environments/environment';
+import { Injectable, inject } from '@angular/core';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 import { UIStatusService } from './uistatus.service';
+import { checkAuthentication } from './auth-check.util';
 
 @Injectable({
   providedIn: 'root',
 })
-export class HomeChoseGuardService  {
+export class HomeChoseGuardService {
   private readonly authService = inject(AuthService);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly uiService = inject(UIStatusService);
   private readonly router = inject(Router);
-  
-  constructor(
-  ) {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering HomeChoseGuardService constructor',
-      ConsoleLogTypeEnum.debug
-    );
-  }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const url: string = state.url;
-
-    if (this.uiService.fatalError) {
-      return false;
-    }
-
-    if (!environment.LoginRequired) {
-      return true;
-    }
-
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeChoseGuardService canActivate',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
-    if (!this.checkLogin()) {
+    if (!checkAuthentication(this.uiService, this.authService)) {
       return false;
     }
 
     // Has logged in but no home chosen yet.
-    this.homeService.RedirectURL = url;
+    // Save the attempted URL so we can redirect after home selection.
+    this.homeService.RedirectURL = state.url;
 
     if (!this.homeService.ChosedHome) {
-      // Navigate to other page
-      this.router.navigate(['/homedef']);
-      return false;
+      // Return a UrlTree instead of calling router.navigate() —
+      // calling navigate() inside a guard creates a competing navigation
+      // that corrupts the router state (the getBaseHref race condition).
+      return this.router.parseUrl('/homedef');
     }
 
     return true;
-  }
-
-  checkLogin(): boolean {
-    if (this.authService.authSubject.getValue().isAuthorized) {
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: TRUE',
-        ConsoleLogTypeEnum.debug
-      );
-
-      return true;
-    }
-
-    // Navigate to the login page with extras
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering HomeChoseGuardService checkLogin: FALSE, redirecting',
-      ConsoleLogTypeEnum.debug
-    );
-
-    this.authService.doLogin();
-
-    return false;
   }
 }
