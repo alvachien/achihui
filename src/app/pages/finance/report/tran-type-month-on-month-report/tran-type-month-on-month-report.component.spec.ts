@@ -11,12 +11,15 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
 import * as echarts from 'echarts';
 
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,} from '../../../../../testing';
+  ElementClass_DialogCloseButton,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
   UserAuthInfo,
@@ -50,10 +53,7 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
     fakeData.buildFinOrders();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
 
-    storageService = createSpyObj('FinanceOdataService', [
-      'fetchReportByTransactionTypeMoM',
-      'fetchAllTranTypes',
-    ]);
+    storageService = createSpyObj('FinanceOdataService', ['fetchReportByTransactionTypeMoM', 'fetchAllTranTypes']);
     fetchReportByTransactionTypeMoMSpy = storageService.fetchReportByTransactionTypeMoM.and.returnValue(of([]));
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
@@ -61,15 +61,17 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [TranTypeMonthOnMonthReportComponent,
+      // declarations moved to imports
+      imports: [
+        TranTypeMonthOnMonthReportComponent,
         NgxEchartsModule.forRoot({ echarts }),
         NzCascaderModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
@@ -78,8 +80,8 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
         NzDrawerService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -170,9 +172,9 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
 
     it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.arTranType.length).toBeGreaterThan(0);
@@ -180,17 +182,17 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       component.selectedTranTypes = [fakeData.finTranTypes[0].Id ?? 0];
       component.selectedPeriod = financePeriodLast3Months;
       component.refreshData();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should show data after period changed', async () => {
       fixture.detectChanges(); // ngOnInit()
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.arTranType.length).toBeGreaterThan(0);
@@ -198,15 +200,15 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       component.selectedTranTypes = [fakeData.finTranTypes[0].Id ?? 0];
       component.selectedPeriod = financePeriodLast6Months;
       component.refreshData();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.selectedPeriod = financePeriodLast12Months;
       component.refreshData();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -228,25 +230,25 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should display error when Report by tran type Service fails', async () => {
@@ -255,31 +257,31 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
       fetchReportByTransactionTypeMoMSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.selectedTranTypes = [fakeData.finTranTypes[0].Id ?? 0];
       component.selectedPeriod = financePeriodLast3Months;
       component.refreshData();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

@@ -40,24 +40,24 @@ import { DocumentItemViewComponent } from '../document/document-item-view';
 import { SafeAny } from '@common/any';
 
 @Component({
-    selector: 'hih-finance-report',
-    templateUrl: './report.component.html',
-    styleUrls: ['./report.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzDropDownModule,
-      NzSpinModule,
-      NzResultModule,
-      NzListModule,
-      NzProgressModule,
-      NzGridModule,
-      DecimalPipe,
-      NzModalModule,
-      RouterModule,
-      TranslocoModule,
-      NzDrawerModule,
-    ]
+  selector: 'hih-finance-report',
+  templateUrl: './report.component.html',
+  styleUrls: ['./report.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzDropDownModule,
+    NzSpinModule,
+    NzResultModule,
+    NzListModule,
+    NzProgressModule,
+    NzGridModule,
+    DecimalPipe,
+    NzModalModule,
+    RouterModule,
+    TranslocoModule,
+    NzDrawerModule,
+  ],
 })
 export class ReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -100,11 +100,10 @@ export class ReportComponent implements OnInit, OnDestroy {
   private readonly modalService = inject(NzModalService);
   private readonly drawerService = inject(NzDrawerService);
 
-  constructor(
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ReportComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
@@ -180,7 +179,7 @@ export class ReportComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (val) => {

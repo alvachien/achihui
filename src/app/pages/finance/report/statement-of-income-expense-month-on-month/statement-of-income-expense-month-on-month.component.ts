@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -14,15 +14,11 @@ import {
   financePeriodLast3Months,
   financePeriodLast6Months,
   FinanceReportEntryMoM,
-  GeneralFilterItem,
-  GeneralFilterOperatorEnum,
-  GeneralFilterValueType,
   ModelUtility,
   dateFormat,
 } from '@model/index';
 import { FinanceOdataService, UIStatusService } from '@services/index';
 import { NumberUtility } from 'actslib';
-import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -45,7 +41,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
     NzGridModule,
     NgxEchartsModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -55,23 +51,27 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   reportData: FinanceReportEntryMoM[] = [];
   chartOption: EChartsOption | null = null;
 
-  constructor(
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private drawerService: NzDrawerService,
-    private uiStatusService: UIStatusService,
-    private router: Router,
-  ) {
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly drawerService = inject(NzDrawerService);
+
+  private readonly uiStatusService = inject(UIStatusService);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Load data
@@ -82,7 +82,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -94,7 +94,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   onLoadData(forceReload?: boolean) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onLoadData(${forceReload})...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = true;
@@ -104,7 +104,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (values: FinanceReportEntryMoM[]) => {
@@ -114,7 +114,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onLoadData fetchStatementOfIncomeAndExposeMoM failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -129,7 +129,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   onChanges(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onChanges with ${this.selectedPeriod}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (event) {
       // TBD.
@@ -302,10 +302,7 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
   }
   onDisplayDocItem(beginDate: string, endDate: string, isexp: boolean) {
     this.uiStatusService.docInsightOption = {
-      SelectedDataRange: [
-        parse(beginDate, dateFormat, new Date()),
-        parse(endDate, dateFormat, new Date()),
-      ],
+      SelectedDataRange: [parse(beginDate, dateFormat, new Date()), parse(endDate, dateFormat, new Date())],
       TransactionDirection: isexp ? false : true,
     };
     this.router.navigate(['/finance/insight']);

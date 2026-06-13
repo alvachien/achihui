@@ -1,19 +1,11 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from './auth.service';
+
+// This interceptor is intentionally a pass-through.
+// Individual services (e.g. HomeDefOdataService) already manually attach
+// the Authorization header to their requests.
+// We do NOT inject AuthService here to avoid circular dependency:
+//   authInterceptor → AuthService → OidcSecurityService → HttpClient → authInterceptor
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.authSubject.getValue().getAccessToken();
-
-  if (token) {
-    const clonedReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return next(clonedReq);
-  }
-
   return next(req);
 };

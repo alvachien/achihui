@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject, forkJoin, takeUntil } from 'rxjs';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
@@ -41,14 +41,16 @@ import { NgxEchartsModule } from 'ngx-echarts';
     FormsModule,
     NgxEchartsModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
-  constructor(private oDataService: FinanceOdataService, private modalService: NzModalService) {
+  private readonly oDataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
@@ -68,35 +70,35 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([this.oDataService.fetchAllAccountCategories(), this.oDataService.fetchAllAccounts()])
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
-      next: (rsts) => {
-        this.arUIAccounts = BuildupAccountForSelection(rsts[1] as Account[], rsts[0] as AccountCategory[]);
-      },
-      error: (err) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering AccountMonthOnMonthReportComponent forkJoin failed ${err}`,
-          ConsoleLogTypeEnum.error
-        );
+        next: (rsts) => {
+          this.arUIAccounts = BuildupAccountForSelection(rsts[1] as Account[], rsts[0] as AccountCategory[]);
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering AccountMonthOnMonthReportComponent forkJoin failed ${err}`,
+            ConsoleLogTypeEnum.error,
+          );
 
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
 
   onChanges(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent onChanges with ${this.selectedAccountID}, ${this.selectedPeriod}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (event) {
       // TBD.
@@ -107,169 +109,172 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
   refreshData(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent refreshData`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.selectedAccountID === null) {
       return;
     }
 
-    this.oDataService.fetchReportByAccountMoM(this.selectedAccountID, this.selectedPeriod).pipe(takeUntil(this._destroyed$!)).subscribe({
-      next: (val: FinanceReportByAccountMOM[]) => {
-        // Fetch out data
-        const arAxis: string[] = [];
+    this.oDataService
+      .fetchReportByAccountMoM(this.selectedAccountID, this.selectedPeriod)
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: (val: FinanceReportByAccountMOM[]) => {
+          // Fetch out data
+          const arAxis: string[] = [];
 
-        const arIn: SafeAny[] = [];
-        const arOut: SafeAny[] = [];
-        const arBal: SafeAny[] = [];
-        if (this.selectedPeriod === financePeriodLast12Months) {
-          // Last 12 months
-          for (let imonth = 11; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            arAxis.push(format(monthinuse, 'yyyy.MM'));
-          }
+          const arIn: SafeAny[] = [];
+          const arOut: SafeAny[] = [];
+          const arBal: SafeAny[] = [];
+          if (this.selectedPeriod === financePeriodLast12Months) {
+            // Last 12 months
+            for (let imonth = 11; imonth >= 0; imonth--) {
+              const monthinuse = subMonths(new Date(), imonth);
+              arAxis.push(format(monthinuse, 'yyyy.MM'));
+            }
 
-          for (let imonth = 11; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
-            if (validx !== -1) {
-              arIn.push(val[validx].DebitBalance);
-              arOut.push(val[validx].CreditBalance);
-              arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
-            } else {
-              arIn.push(0);
-              arOut.push(0);
-              arBal.push(0);
+            for (let imonth = 11; imonth >= 0; imonth--) {
+              const monthinuse = subMonths(new Date(), imonth);
+              const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
+              if (validx !== -1) {
+                arIn.push(val[validx].DebitBalance);
+                arOut.push(val[validx].CreditBalance);
+                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
+              } else {
+                arIn.push(0);
+                arOut.push(0);
+                arBal.push(0);
+              }
+            }
+          } else if (this.selectedPeriod === financePeriodLast6Months) {
+            // Last 6 months
+            for (let imonth = 5; imonth >= 0; imonth--) {
+              const monthinuse = subMonths(new Date(), imonth);
+              arAxis.push(format(monthinuse, 'yyyy.MM'));
+            }
+
+            for (let imonth = 5; imonth >= 0; imonth--) {
+              const monthinuse = subMonths(new Date(), imonth);
+              const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
+              if (validx !== -1) {
+                arIn.push(val[validx].DebitBalance);
+                arOut.push(val[validx].CreditBalance);
+                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
+              } else {
+                arIn.push(0);
+                arOut.push(0);
+                arBal.push(0);
+              }
+            }
+          } else if (this.selectedPeriod === financePeriodLast3Months) {
+            // Last 3 months
+            for (let imonth = 2; imonth >= 0; imonth--) {
+              const monthinuse = subMonths(new Date(), imonth);
+              arAxis.push(format(monthinuse, 'yyyy.MM'));
+            }
+
+            for (let imonth = 2; imonth >= 0; imonth--) {
+              const monthinuse = subMonths(new Date(), imonth);
+              const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
+              if (validx !== -1) {
+                arIn.push(val[validx].DebitBalance);
+                arOut.push(val[validx].CreditBalance);
+                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
+              } else {
+                arIn.push(0);
+                arOut.push(0);
+                arBal.push(0);
+              }
             }
           }
-        } else if (this.selectedPeriod === financePeriodLast6Months) {
-          // Last 6 months
-          for (let imonth = 5; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            arAxis.push(format(monthinuse, 'yyyy.MM'));
-          }
 
-          for (let imonth = 5; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
-            if (validx !== -1) {
-              arIn.push(val[validx].DebitBalance);
-              arOut.push(val[validx].CreditBalance);
-              arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
-            } else {
-              arIn.push(0);
-              arOut.push(0);
-              arBal.push(0);
-            }
-          }
-        } else if (this.selectedPeriod === financePeriodLast3Months) {
-          // Last 3 months
-          for (let imonth = 2; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            arAxis.push(format(monthinuse, 'yyyy.MM'));
-          }
-
-          for (let imonth = 2; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            const validx = val.findIndex((p) => p.Month === monthinuse.getMonth() + 1);
-            if (validx !== -1) {
-              arIn.push(val[validx].DebitBalance);
-              arOut.push(val[validx].CreditBalance);
-              arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
-            } else {
-              arIn.push(0);
-              arOut.push(0);
-              arBal.push(0);
-            }
-          }
-        }
-
-        this.chartOption = {
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'cross',
-              crossStyle: {
-                color: '#999',
-              },
-            },
-          },
-          toolbox: {
-            feature: {
-              dataView: { show: true, readOnly: false },
-              restore: { show: true },
-              saveAsImage: { show: true },
-            },
-          },
-          xAxis: [
-            {
-              type: 'category',
-              data: arAxis,
+          this.chartOption = {
+            tooltip: {
+              trigger: 'axis',
               axisPointer: {
-                type: 'shadow',
+                type: 'cross',
+                crossStyle: {
+                  color: '#999',
+                },
               },
             },
-          ],
-          yAxis: [
-            {
-              type: 'value',
+            toolbox: {
+              feature: {
+                dataView: { show: true, readOnly: false },
+                restore: { show: true },
+                saveAsImage: { show: true },
+              },
             },
-          ],
-          series: [
-            {
-              name: translate('Finance.Income'),
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
+            xAxis: [
+              {
+                type: 'category',
+                data: arAxis,
+                axisPointer: {
+                  type: 'shadow',
+                },
               },
-              emphasis: {
-                focus: 'series',
+            ],
+            yAxis: [
+              {
+                type: 'value',
               },
-              data: arIn,
-            },
-            {
-              name: translate('Finance.Expense'),
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
+            ],
+            series: [
+              {
+                name: translate('Finance.Income'),
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arIn,
               },
-              emphasis: {
-                focus: 'series',
+              {
+                name: translate('Finance.Expense'),
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arOut,
               },
-              data: arOut,
-            },
-            {
-              name: translate('Common.Total'),
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
+              {
+                name: translate('Common.Total'),
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arBal,
               },
-              emphasis: {
-                focus: 'series',
-              },
-              data: arBal,
-            },
-          ],
-        };
-      },
-      error: (err) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering AccountMonthOnMonthReportComponent refreshData failed ${err}`,
-          ConsoleLogTypeEnum.error
-        );
+            ],
+          };
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering AccountMonthOnMonthReportComponent refreshData failed ${err}`,
+            ConsoleLogTypeEnum.error,
+          );
 
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
   ngOnDestroy(): void {
     if (this._destroyed$) {

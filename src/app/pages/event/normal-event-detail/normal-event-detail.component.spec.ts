@@ -11,11 +11,14 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
-  ActivatedRouteUrlStub,} from '../../../../testing';
+  ActivatedRouteUrlStub,
+} from '../../../../testing';
 import { AuthService, UIStatusService, EventStorageService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo, GeneralEvent } from '../../../model';
 import { NormalEventDetailComponent } from './normal-event-detail.component';
@@ -57,8 +60,9 @@ describe('NormalEventDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
 
         ReactiveFormsModule,
         RouterTestingModule,
@@ -66,8 +70,9 @@ describe('NormalEventDetailComponent', () => {
         BrowserDynamicTestingModule,
         NzInputModule,
         NzDatePickerModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -77,8 +82,8 @@ describe('NormalEventDetailComponent', () => {
         { provide: NZ_I18N, useValue: en_US },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -105,9 +110,9 @@ describe('NormalEventDetailComponent', () => {
 
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -133,9 +138,9 @@ describe('NormalEventDetailComponent', () => {
 
     it('display mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -150,13 +155,13 @@ describe('NormalEventDetailComponent', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
 
       activatedRouteStub.setURL([new UrlSegment('display', {}), new UrlSegment('122', {})] as UrlSegment[]);
       readGeneralEventSpy.and.returnValue(asyncError('Failed'));
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -164,19 +169,19 @@ describe('NormalEventDetailComponent', () => {
 
     it('shall display error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });

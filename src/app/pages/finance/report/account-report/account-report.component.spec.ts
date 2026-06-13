@@ -10,15 +10,17 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,} from '../../../../../testing';
+  ElementClass_DialogCloseButton,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, FinanceReportByAccount } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 import { AccountReportComponent } from './account-report.component';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -59,15 +61,17 @@ describe('AccountReportComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [AccountReportComponent,
+      // declarations moved to imports
+      imports: [
+        AccountReportComponent,
         NgxEchartsModule.forRoot({ echarts }),
         NzButtonModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
@@ -76,8 +80,8 @@ describe('AccountReportComponent', () => {
         NzDrawerService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -127,16 +131,16 @@ describe('AccountReportComponent', () => {
 
     it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.arReportByAccount.length).toBeGreaterThan(0);
       expect(component.arReportByAccount.length).toEqual(arRptData.length);
       expect(component.dataSet.length).toBeGreaterThan(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it.skip('should filter account list', async () => {
@@ -165,7 +169,7 @@ describe('AccountReportComponent', () => {
       //   }
       // });
       // expect(component.dataSet.length).toEqual(expamt);
-      // 
+      //
       // await new Promise<void>(r => setTimeout(r, 0));
     });
   });
@@ -210,25 +214,25 @@ describe('AccountReportComponent', () => {
       fetchReportByAccountSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should display error when account Service fails', async () => {
@@ -236,25 +240,25 @@ describe('AccountReportComponent', () => {
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should display error when account category Service fails', async () => {
@@ -262,25 +266,25 @@ describe('AccountReportComponent', () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

@@ -14,7 +14,7 @@ export class TagsService {
   private readonly _http = inject(HttpClient);
   private readonly _homeService = inject(HomeDefOdataService);
   private readonly _authService = inject(AuthService);
-  
+
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering TagsService constructor...');
@@ -91,7 +91,7 @@ export class TagsService {
           // this.listDataChange.next([]);
 
           return throwError(err.statusText + '; ' + err.error + '; ' + err.message);
-        })
+        }),
       );
     // } else {
     //   return Observable.of(this.listDataChange.value);

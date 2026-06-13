@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -13,11 +13,7 @@ import { FinanceOdataService, UIStatusService } from '@services/index';
   selector: 'hih-fin-tran-type-hierarchy',
   templateUrl: './tran-type-hierarchy.component.html',
   styleUrls: ['./tran-type-hierarchy.component.less'],
-  imports: [
-    NzSpinModule,
-    NzTreeModule,
-    TranslocoModule,
-  ]
+  imports: [NzSpinModule, NzTreeModule, TranslocoModule],
 })
 export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -25,21 +21,23 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   ttTreeNodes: NzTreeNodeOptions[] = [];
 
-  constructor(
-    public odataService: FinanceOdataService,
-    public uiStatusService: UIStatusService,
-    public modalService: NzModalService
-  ) {
+  public readonly odataService = inject(FinanceOdataService);
+
+  public readonly uiStatusService = inject(UIStatusService);
+
+  public readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -48,13 +46,13 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
       .fetchAllTranTypes()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: TranType[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent OnInit, fetchAllTranTypes...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           if (x) {
@@ -64,7 +62,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering TranTypeHierarchyComponent OnInit, fetchAllTranTypes failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -78,7 +76,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._destroyed$) {
       this._destroyed$.next(true);

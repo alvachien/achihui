@@ -15,7 +15,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { addYears, startOfDay } from 'date-fns';
+import { addYears } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -64,7 +64,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     TranslocoModule,
     RouterModule,
     NzModalModule,
-  ]
+  ],
 })
 export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -136,11 +136,10 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
 
-  constructor(
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.adpInfoFormGroup = new UntypedFormGroup({
@@ -154,7 +153,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._onChange) {
       this._onChange(this.value);
@@ -163,7 +162,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   @HostListener('blur') onTouched(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._onTouched) {
       this._onTouched();
@@ -173,7 +172,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
   }
@@ -181,7 +180,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -233,7 +232,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering AccountExtADPExComponent onGenerateTmpDocs, calcADPTmpDocs, failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -255,7 +254,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   public onRefDocClick(docid: number): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent onRefDocClick...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.router.navigate([`/finance/document/display/${docid}`]);
@@ -264,7 +263,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   writeValue(val: AccountExtraAdvancePayment): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent writeValue...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (val) {
@@ -292,7 +291,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._onChange = fn;
@@ -301,7 +300,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent registerOnTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._onTouched = fn;
@@ -310,7 +309,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   setDisabledState?(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent setDisabledState...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (isDisabled) {
@@ -326,7 +325,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   validate(c: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent validate...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.adpInfoFormGroup.valid) {

@@ -8,13 +8,16 @@ import { BehaviorSubject, of } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { DocumentHeaderComponent } from '../document-header';
-import { DocumentItemsComponent } from '../document-items';
 import { DocumentDetailComponent } from './document-detail.component';
-import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../../testing';
+import {
+  createSpyObj,
+  getTranslocoModule,
+  FakeDataHelper,
+  ActivatedRouteUrlStub,
+  asyncData,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
-import { subMonths, endOfMonth } from 'date-fns';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -87,13 +90,9 @@ describe('DocumentDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
-        
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        getTranslocoModule()],
-    providers: [
+      // declarations moved to imports
+      imports: [FormsModule, ReactiveFormsModule, NoopAnimationsModule, getTranslocoModule()],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -104,8 +103,8 @@ describe('DocumentDetailComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -160,11 +159,11 @@ describe('DocumentDetailComponent', () => {
       fetchAllDocTypesSpy = storageService.fetchAllDocTypes.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
+        asyncData(fakeData.finAccountCategories),
       );
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
-        asyncData(fakeData.finControlCenters)
+        asyncData(fakeData.finControlCenters),
       );
       fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(asyncData(fakeData.finOrders));
       readDocumentSpy = storageService.readDocument.and.returnValue(asyncData(docobj));
@@ -173,10 +172,10 @@ describe('DocumentDetailComponent', () => {
       changeDocumentSpy = storageService.changeDocument.and.returnValue(of({}));
     });
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -184,14 +183,14 @@ describe('DocumentDetailComponent', () => {
 
     it('change mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

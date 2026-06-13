@@ -6,8 +6,8 @@ import { addMonths, addYears, format } from 'date-fns';
 import { EventStorageService } from './event-storage.service';
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
-import { EventHabit, EventHabitDetail, BaseListModel, GeneralEvent, dateFormat } from '../model';
-import {createSpyObj, FakeDataHelper} from '../../testing';
+import { EventHabit, BaseListModel, GeneralEvent, dateFormat } from '../model';
+import { createSpyObj, FakeDataHelper } from '../../testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
@@ -29,15 +29,15 @@ describe('EventStorageService', () => {
     const fetchHomeMembersSpy: any = homeService.fetchHomeMembers.and.returnValue(fakeData.chosedHome.Members);
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         EventStorageService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ],
+    });
 
     httpTestingController = TestBed.inject(HttpTestingController);
     service = TestBed.inject(EventStorageService);

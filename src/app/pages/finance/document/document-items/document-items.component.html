@@ -1,13 +1,14 @@
 <ng-container>
-  @if(controlError) {
+  @if (controlError) {
     <div style="text-align: left">
       <nz-alert
         nzType="error"
         [nzMessage]="controlError.value | transloco"
         [nzDescription]="controlError.value | transloco"
-        nzShowIcon>
+        nzShowIcon
+      >
       </nz-alert>
-    </div>  
+    </div>
   }
 
   <div class="toolbar_buttons">
@@ -30,7 +31,7 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>
             {{ data.ItemId }}
@@ -49,16 +50,17 @@
                   style="width: 100%"
                   [nzDisabled]="!isAccountIDEditable"
                   [(ngModel)]="data.AccountId"
-                  (ngModelChange)="onChange()">
-                  @for(acnt of arUIAccounts; track acnt.Id) {
+                  (ngModelChange)="onChange()"
+                >
+                  @for (acnt of arUIAccounts; track acnt.Id) {
                     <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
-                  }                  
+                  }
                 </nz-select>
                 <ng-template #accountTpl let-control>
-                  @if(control.hasError('required')) {
+                  @if (control.hasError('required')) {
                     <ng-container>
                       {{ 'Common.FieldIsMandatory' | transloco }}
-                    </ng-container>  
+                    </ng-container>
                   }
                 </ng-template>
               </nz-form-control>
@@ -71,16 +73,17 @@
                   style="width: 100%"
                   [nzDisabled]="!isTranTypeEditable"
                   [(ngModel)]="data.TranType"
-                  (ngModelChange)="onChange()">
-                  @for(tt of arTranType; track tt.Id) {
+                  (ngModelChange)="onChange()"
+                >
+                  @for (tt of arTranType; track tt.Id) {
                     <nz-option [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
-                  }                  
+                  }
                 </nz-select>
                 <ng-template #trantypeTpl let-control>
-                  @if(control.hasError('required')) {
+                  @if (control.hasError('required')) {
                     <ng-container>
                       {{ 'Common.FieldIsMandatory' | transloco }}
-                    </ng-container>  
+                    </ng-container>
                   }
                 </ng-template>
               </nz-form-control>
@@ -95,35 +98,36 @@
                   [(ngModel)]="data.TranAmount"
                   [nzPlaceHolder]="'Finance.Amount' | transloco"
                   (ngModelChange)="onChange()"
-                  [nzDisabled]="!isAmountEditable">
+                  [nzDisabled]="!isAmountEditable"
+                >
                 </nz-input-number>
                 <ng-template #amountTpl let-control>
-                  @if(control.hasError('required')) {
+                  @if (control.hasError('required')) {
                     <ng-container>
                       {{ 'Common.FieldIsMandatory' | transloco }}
-                    </ng-container>  
+                    </ng-container>
                   }
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
           </td>
           <td>
-            @if(!data.UseCurr2) {
+            @if (!data.UseCurr2) {
               <div>{{ tranCurr }}</div>
             }
-            @if(data.UseCurr2) {
+            @if (data.UseCurr2) {
               <div>{{ tranCurr2 }}</div>
-            }            
+            }
           </td>
           <td>
             <nz-form-item>
               <nz-form-control nzHasFeedback [nzErrorTip]="despTpl">
                 <input nz-input [(ngModel)]="data.Desp" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
                 <ng-template #despTpl let-control>
-                  @if(control.hasError('required')) {
+                  @if (control.hasError('required')) {
                     <ng-container>
                       {{ 'Common.FieldIsMandatory' | transloco }}
-                    </ng-container>  
+                    </ng-container>
                   }
                 </ng-template>
               </nz-form-control>
@@ -133,23 +137,27 @@
             <nz-select
               [(ngModel)]="data.ControlCenterId"
               (ngModelChange)="data.ControlCenterId = $event === null ? undefined : $event; onChange()"
-              [nzDisabled]="!isFieldChangable" nzAllowClear>
-              @for(tt of arControlCenters; track tt.Id) {
+              [nzDisabled]="!isFieldChangable"
+              nzAllowClear
+            >
+              @for (tt of arControlCenters; track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-              }              
+              }
             </nz-select>
           </td>
           <td>
             <nz-select
               [(ngModel)]="data.OrderId"
               (ngModelChange)="data.OrderId = $event === null ? undefined : $event; onChange()"
-              [nzDisabled]="!isFieldChangable" nzAllowClear>
-              @for(tt of arUIOrders; track tt.Id) {
+              [nzDisabled]="!isFieldChangable"
+              nzAllowClear
+            >
+              @for (tt of arUIOrders; track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-              }              
+              }
             </nz-select>
           </td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

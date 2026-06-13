@@ -9,17 +9,13 @@ import { UIStatusService } from '@services/index';
   selector: 'hih-fatal-error',
   templateUrl: './fatal-error.component.html',
   styleUrls: ['./fatal-error.component.less'],
-  imports: [
-    NzResultModule,
-    NzButtonModule,
-    TranslocoModule
-  ]
+  imports: [NzResultModule, NzButtonModule, TranslocoModule],
 })
 export class FatalErrorComponent {
   errorContext = '';
 
   private readonly uiStatus = inject(UIStatusService);
-  
+
   constructor() {
     if (this.uiStatus.latestError) {
       this.errorContext = this.uiStatus.latestError;

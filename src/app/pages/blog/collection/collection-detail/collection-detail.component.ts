@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -17,7 +17,7 @@ import { ModelUtility, ConsoleLogTypeEnum, BlogCollection, getUIModeString } fro
 import { BlogOdataService } from '../../../../services';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'hih-blog-collection-detail',
   templateUrl: './collection-detail.component.html',
   styleUrls: ['./collection-detail.component.less'],
@@ -43,15 +43,18 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
   public uiMode: UIMode = UIMode.Create;
   detailFormGroup: UntypedFormGroup;
 
-  constructor(
-    private odataService: BlogOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService
-  ) {
+  private readonly odataService = inject(BlogOdataService);
+
+  private readonly activateRoute = inject(ActivatedRoute);
+
+  private readonly router = inject(Router);
+
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -64,7 +67,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -72,7 +75,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering CollectionDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -99,7 +102,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (e) => {
@@ -117,7 +120,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -142,7 +145,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -154,7 +157,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
   onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionDetailComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const objColl = new BlogCollection();
@@ -174,7 +177,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),

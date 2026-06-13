@@ -14,8 +14,6 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { addYears, format, parse } from 'date-fns';
-import { dateFormat } from '@model/index';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -75,7 +73,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     TranslocoModule,
     NzModalModule,
     RouterModule,
-  ]
+  ],
 })
 export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -189,7 +187,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     if (err) {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent controlError: ${err}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (err['noitems']) {
@@ -231,7 +229,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent constructor`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.loanInfoForm = new UntypedFormGroup({
@@ -252,7 +250,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent onChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._onChange) {
       this._onChange(this.value);
@@ -261,7 +259,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   @HostListener('blur') onTouched(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent onTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._onTouched) {
       this._onTouched();
@@ -271,7 +269,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent ngOnInit`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -286,7 +284,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent ngOnDestroy`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -360,7 +358,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   public onGenerateTmpDocs(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent onGenerateTmpDocs`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     let tmpdocs: TemplateDocLoan[] = [];
@@ -441,7 +439,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering AccountExtraLoanComponent onGenerateTmpDocs, failed with: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -456,14 +454,11 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   writeValue(val: AccountExtraLoan): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent writeValue`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (val) {
-      const dtrange = [
-        val.startDate ? val.startDate : undefined,
-        val.endDate ? val.endDate : undefined,
-      ];
+      const dtrange = [val.startDate ? val.startDate : undefined, val.endDate ? val.endDate : undefined];
       this.loanInfoForm.get('dateRangeControl')?.setValue(dtrange);
       this.loanInfoForm.get('totalMonthControl')?.setValue(val.TotalMonths);
       this.loanInfoForm.get('repayDayControl')?.setValue(val.RepayDayInMonth);
@@ -491,7 +486,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent registerOnChange`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._onChange = fn;
@@ -499,7 +494,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent registerOnTouched`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._onTouched = fn;
@@ -507,7 +502,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   setDisabledState?(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent setDisabledState`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (isDisabled) {

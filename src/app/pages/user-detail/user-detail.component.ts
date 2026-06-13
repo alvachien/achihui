@@ -10,23 +10,22 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { TranslocoModule } from '@jsverse/transloco';
-import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
-    selector: 'hih-user-detail',
-    templateUrl: './user-detail.component.html',
-    styleUrls: ['./user-detail.component.less'],
-    standalone: true,
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      NzPageHeaderModule,
-      NzButtonModule,
-      NzCheckboxModule,
-      NzDescriptionsModule,
-      NzSwitchModule,
-      TranslocoModule,
-    ]
+  selector: 'hih-user-detail',
+  templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.less'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NzPageHeaderModule,
+    NzButtonModule,
+    NzCheckboxModule,
+    NzDescriptionsModule,
+    NzSwitchModule,
+    TranslocoModule,
+  ],
 })
 export class UserDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;

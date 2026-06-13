@@ -4,21 +4,22 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router, UrlSegment, ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { ControlCenterDetailComponent } from './control-center-detail.component';
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   ActivatedRouteUrlStub,
   FakeDataHelper,
   asyncData,
-  asyncError,} from '../../../../../testing';
+  asyncError,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -64,14 +65,9 @@ describe('ControlCenterDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
-        
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        getTranslocoModule(),
-        RouterTestingModule],
-    providers: [
+      // declarations moved to imports
+      imports: [FormsModule, ReactiveFormsModule, NoopAnimationsModule, getTranslocoModule(), RouterTestingModule],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -80,8 +76,8 @@ describe('ControlCenterDetailComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -108,9 +104,9 @@ describe('ControlCenterDetailComponent', () => {
 
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -118,14 +114,14 @@ describe('ControlCenterDetailComponent', () => {
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.isCreateMode).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('create mode with valid data: name and comment', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nameControl')?.setValue('Test 1');
@@ -140,13 +136,13 @@ describe('ControlCenterDetailComponent', () => {
       const routerstub = TestBed.inject(Router);
       vi.spyOn(routerstub, 'navigate');
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(routerstub.navigate).toHaveBeenCalled();
       expect(createControlCenterSpy).toHaveBeenCalled();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -160,9 +156,9 @@ describe('ControlCenterDetailComponent', () => {
 
     it('change mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -170,7 +166,7 @@ describe('ControlCenterDetailComponent', () => {
       expect(component.isFieldChangable).toBeTruthy();
       expect(component.isCreateMode).toBeFalsy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -184,9 +180,9 @@ describe('ControlCenterDetailComponent', () => {
 
     it('display mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -194,7 +190,7 @@ describe('ControlCenterDetailComponent', () => {
       expect(component.isFieldChangable).toBeFalsy();
       expect(component.isCreateMode).toBeFalsy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -207,10 +203,10 @@ describe('ControlCenterDetailComponent', () => {
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -221,52 +217,52 @@ describe('ControlCenterDetailComponent', () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should display error when check failed', async () => {
       // By default: create mode
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Perform check
       component.onCheck();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
 
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

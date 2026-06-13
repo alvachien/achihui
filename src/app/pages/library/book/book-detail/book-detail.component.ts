@@ -34,26 +34,26 @@ import { BookCategorySelectionDlgComponent } from '../../config/book-category-se
 import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
 
 @Component({
-    selector: 'hih-book-detail',
-    templateUrl: './book-detail.component.html',
-    styleUrls: ['./book-detail.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzSpinModule,
-      NzBreadCrumbModule,
-      TranslocoModule,
-      NzFormModule,
-      FormsModule,
-      ReactiveFormsModule,
-      NzButtonModule,
-      NzDividerModule,
-      NzTabsModule,
-      NzTableModule,
-      NzInputModule,
-      NzCheckboxModule,
-      RouterModule,
-      NzModalModule,
-    ]
+  selector: 'hih-book-detail',
+  templateUrl: './book-detail.component.html',
+  styleUrls: ['./book-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    NzBreadCrumbModule,
+    TranslocoModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzButtonModule,
+    NzDividerModule,
+    NzTabsModule,
+    NzTableModule,
+    NzInputModule,
+    NzCheckboxModule,
+    RouterModule,
+    NzModalModule,
+  ],
 })
 export class BookDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -78,7 +78,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -96,7 +96,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -104,7 +104,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering BookDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -131,7 +131,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (e: Book) => {
@@ -155,7 +155,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering BookDetailComponent ngOnInit readBook failed ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modal.error({
                   nzTitle: translate('Common.Error'),
@@ -180,7 +180,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -205,7 +205,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, OK button...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         this.listAuthors = [];
         setPerson.forEach((pid) => {
@@ -219,7 +219,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, cancelled...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
       },
     });
@@ -229,7 +229,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, dialog closed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
     });
   }
@@ -252,7 +252,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, OK button...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         this.listPresses = [];
         setPress.forEach((pid) => {
@@ -266,7 +266,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, cancelled...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
       },
     });
@@ -276,7 +276,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, dialog closed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
     });
   }
@@ -296,7 +296,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, OK button...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         this.listCategories = [];
         setCategory.forEach((pid) => {
@@ -310,7 +310,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, cancelled...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
       },
     });
@@ -320,7 +320,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, dialog closed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
     });
   }
@@ -340,7 +340,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, OK button...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         this.listLocations = [];
         setLocation.forEach((pid) => {
@@ -354,7 +354,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, cancelled...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
       },
     });
@@ -364,7 +364,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       // Do nothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, dialog closed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
     });
   }
@@ -396,7 +396,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering BookDetailComponent onSave failed ${err}...`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modal.error({
               nzTitle: translate('Common.Error'),

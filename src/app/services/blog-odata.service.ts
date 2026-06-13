@@ -22,7 +22,7 @@ export class BlogOdataService {
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering BlogOdataService constructor...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isCollectionlistLoaded = false; // Performance improvement
@@ -63,7 +63,7 @@ export class BlogOdataService {
           map((response) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering BlogOdataService readUserSetting`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs = response as SafeAny;
@@ -77,14 +77,14 @@ export class BlogOdataService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering BlogOdataService readUserSetting failed: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this.isSettingLoaded = false;
             this.setting = null;
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this.setting);
@@ -108,7 +108,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService updateUserSetting`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const rjs = response;
@@ -121,14 +121,14 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService updateUserSetting failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.isSettingLoaded = false;
           this.setting = null;
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public deploySetting(owner: string): Observable<string> {
@@ -147,7 +147,7 @@ export class BlogOdataService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService deploySetting`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return ''; // Empty means success
@@ -155,11 +155,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService deploySetting failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   /**
@@ -188,7 +188,7 @@ export class BlogOdataService {
           map((response) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllCollections`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             this.listCollection = [];
@@ -207,14 +207,14 @@ export class BlogOdataService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering BlogOdataService fetchAllCollections failed: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this.isCollectionlistLoaded = false;
             this.listCollection = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this.listCollection);
@@ -243,7 +243,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService createCollection`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: BlogCollection = new BlogCollection();
@@ -253,11 +253,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService createCollection failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -277,7 +277,7 @@ export class BlogOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       '$filter',
-      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`
+      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`,
     );
     return this.http
       .get(apiUrl, {
@@ -288,7 +288,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService readCollection`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: BlogCollection = new BlogCollection();
@@ -312,11 +312,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService readCollection failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -349,7 +349,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllPosts`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const arsts: BlogPost[] = [];
@@ -371,11 +371,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService fetchAllPosts failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -401,7 +401,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService createPost`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: BlogPost = new BlogPost();
@@ -411,11 +411,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService createPost failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -441,7 +441,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService changePost`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: BlogPost = new BlogPost();
@@ -451,11 +451,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService changePost failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public deployPost(postid: number): Observable<string> {
@@ -474,7 +474,7 @@ export class BlogOdataService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService deployPost`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return ''; // Empty means success
@@ -482,11 +482,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService deployPost failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public revokeDeployPost(postid: number): Observable<string> {
@@ -505,7 +505,7 @@ export class BlogOdataService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService revokeDeployPost`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return ''; // Empty means success
@@ -513,11 +513,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService revokeDeployPost failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -537,7 +537,7 @@ export class BlogOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       '$filter',
-      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`
+      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`,
     );
     params = params.append('$expand', 'BlogPostCollections,BlogPostTags');
 
@@ -550,7 +550,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService readPost`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: BlogPost = new BlogPost();
@@ -564,11 +564,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService readPost failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -600,7 +600,7 @@ export class BlogOdataService {
         map((response) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering BlogOdataService fetchAllPostTags`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const arsts: BlogPostTag[] = [];
@@ -621,11 +621,11 @@ export class BlogOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BlogOdataService fetchAllPostTags failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 }

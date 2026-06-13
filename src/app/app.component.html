@@ -5,7 +5,8 @@
     nzBreakpoint="lg"
     [nzCollapsedWidth]="0"
     nzWidth="256px"
-    [(nzCollapsed)]="isCollapsed">
+    [(nzCollapsed)]="isCollapsed"
+  >
     <div class="sidebar-logo">
       <a href="/hih/" target="_blank">
         <img src="favicon.ico" alt="logo" />
@@ -123,7 +124,7 @@
       </li>
     </ul>
   </nz-sider>
-  <nz-layout>
+  <nz-layout class="right-layout">
     <nz-header>
       <div class="app-header">
         <ul class="app-header-nav">
@@ -133,7 +134,8 @@
                 nz-icon
                 [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
                 style="font-size: 24px"
-                (click)="isCollapsed = !isCollapsed"></i>
+                (click)="isCollapsed = !isCollapsed"
+              ></i>
             </div>
           </li>
         </ul>
@@ -182,50 +184,79 @@
               </nz-dropdown-menu>
             </div>
           </li>
-          @if(!isLoggedIn)
-          {
+          @if (!isLoggedIn) {
             <li>
               <div class="app-header-nav-item">
                 <a (click)="onLogon()">
                   <i nz-icon nzType="idcard" nzTheme="outline" class="app-header-icon"></i>
                 </a>
               </div>
-            </li>  
+            </li>
           }
-          @if(isLoggedIn)
-          {
+          @if (isLoggedIn) {
             <li>
               <div class="app-header-nav-item">
                 <a nz-dropdown [nzDropdownMenu]="menuUser">
-                  <i nz-icon nzType="idcard" nzTheme="outline" class="app-header-icon"></i>
+                  <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
+                  <span class="header-nav-label header-nav-item-active">{{ titleLogin }}</span>
                 </a>
                 <nz-dropdown-menu #menuUser="nzDropdownMenu">
                   <ul nz-menu nzSelectable>
                     <li nz-menu-item (click)="onGoToUserDetail()">
                       {{ 'Nav.UserDetail' | transloco }}
                     </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="onLogout()">
+                      {{ 'Login.Logout' | transloco }}
+                    </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
             </li>
           }
-          <li>
-            <div class="app-header-nav-item">
-              <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
-                <i nz-icon nzType="apartment" nzTheme="outline" class="app-header-icon"></i>
-              </a>
-              <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
-                <ul nz-menu nzSelectable>
-                  <li nz-menu-item>
-                    <a routerLink="/homedef">{{ 'Nav.HomeList' | transloco }}</a>
-                  </li>
-                  <li nz-menu-item (click)="onGoToSelectedHome()">
-                    {{ 'Nav.HomeDetail' | transloco }}
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-          </li>
+          @if (!selectedHomeName) {
+            <li>
+              <div class="app-header-nav-item">
+                <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
+                  <i nz-icon nzType="apartment" nzTheme="outline" class="app-header-icon header-nav-item-muted"></i>
+                </a>
+                <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
+                  <ul nz-menu nzSelectable>
+                    <li nz-menu-item>
+                      <a routerLink="/homedef">{{ 'Nav.HomeList' | transloco }}</a>
+                    </li>
+                    <li nz-menu-item nzDisabled>
+                      {{ 'Nav.HomeDetail' | transloco }}
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </li>
+          }
+          @if (selectedHomeName) {
+            <li>
+              <div class="app-header-nav-item">
+                <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
+                  <i nz-icon nzType="apartment" nzTheme="outline" class="app-header-icon"></i>
+                  <span class="header-nav-label header-nav-item-active">{{ selectedHomeName }}</span>
+                </a>
+                <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
+                  <ul nz-menu nzSelectable>
+                    <li nz-menu-item>
+                      <a routerLink="/homedef">{{ 'Nav.HomeList' | transloco }}</a>
+                    </li>
+                    <li nz-menu-item (click)="onGoToSelectedHome()">
+                      {{ 'Nav.HomeDetail' | transloco }}
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item>
+                      <a routerLink="/homedef">{{ 'Nav.SwitchHome' | transloco }}</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </li>
+          }
           <li class="app-header-nav-container">
             <div class="app-header-nav-item">
               <a nz-dropdown [nzDropdownMenu]="menuApps">
@@ -247,6 +278,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>© 2016 - {{currentYear}}, Alva Chien, All rights reserved</nz-footer>
+    <nz-footer>© 2016 - {{ currentYear }}, Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>

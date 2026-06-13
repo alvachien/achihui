@@ -26,7 +26,7 @@ import { BlogOdataService } from '@services/index';
     NzButtonModule,
     TranslocoModule,
     RouterModule,
-  ]
+  ],
 })
 export class CollectionListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -40,7 +40,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -49,7 +49,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -60,7 +60,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
       .pipe(
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: BlogCollection[]) => {
@@ -69,7 +69,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering CollectionListComponent ngOnInit, fetchAllCollections failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -84,7 +84,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering CollectionListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {

@@ -14,19 +14,19 @@ import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
 
 @Component({
-    selector: 'hih-home-def-list',
-    templateUrl: './home-def-list.component.html',
-    styleUrls: ['./home-def-list.component.less'],
-    imports: [
-      NzSpinModule,
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzTableModule,
-      TranslocoModule,
-      NzDividerModule,
-      NzModalModule,
-      RouterModule,
-    ]
+  selector: 'hih-home-def-list',
+  templateUrl: './home-def-list.component.html',
+  styleUrls: ['./home-def-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTableModule,
+    TranslocoModule,
+    NzDividerModule,
+    NzModalModule,
+    RouterModule,
+  ],
 })
 export class HomeDefListComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -55,7 +55,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -64,7 +64,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -74,7 +74,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -86,7 +86,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   public onChooseHome(row: HomeDef): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.homeService.ChosedHome = row;
     // Set current home member
@@ -96,7 +96,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       if (mem.User === this.authService.authSubject.value.getUserId()) {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome, set CurrentMemberInChosedHome...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         this.homeService.CurrentMemberInChosedHome = mem;
       }
@@ -120,7 +120,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (arHomeDef: HomeDef[]) => {
@@ -129,7 +129,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefListComponent ngOnInit, fetchAllHomeDef failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({

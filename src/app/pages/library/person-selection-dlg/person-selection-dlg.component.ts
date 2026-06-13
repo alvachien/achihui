@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -9,15 +9,11 @@ import { Person } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 
 @Component({
-    selector: 'hih-person-selection-dlg',
-    templateUrl: './person-selection-dlg.component.html',
-    styleUrls: ['./person-selection-dlg.component.less'],
-    standalone: true,
-    imports: [
-      NzTableModule,
-      NzCheckboxModule,
-      TranslocoModule,
-    ]
+  selector: 'hih-person-selection-dlg',
+  templateUrl: './person-selection-dlg.component.html',
+  styleUrls: ['./person-selection-dlg.component.less'],
+  standalone: true,
+  imports: [NzTableModule, NzCheckboxModule, TranslocoModule],
 })
 export class PersonSelectionDlgComponent implements OnInit {
   checked = false;
@@ -56,12 +52,13 @@ export class PersonSelectionDlgComponent implements OnInit {
     this.refreshCheckedStatus();
   }
 
-  constructor(
-    private modal: NzModalRef,
-    private storageSrv: LibraryStorageService,
-    private messageService: NzMessageService,
-    private changeDetectRef: ChangeDetectorRef
-  ) {}
+  private readonly modal = inject(NzModalRef);
+
+  private readonly storageSrv = inject(LibraryStorageService);
+
+  private readonly messageService = inject(NzMessageService);
+
+  private readonly changeDetectRef = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.storageSrv.fetchAllPersons().subscribe({

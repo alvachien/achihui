@@ -21,25 +21,25 @@ import { HomeDefOdataService, LibraryStorageService } from '@services/index';
 import { SafeAny } from '@common/any';
 
 @Component({
-    selector: 'hih-organization-detail',
-    templateUrl: './organization-detail.component.html',
-    styleUrls: ['./organization-detail.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzFormModule,
-      FormsModule,
-      ReactiveFormsModule,
-      NzInputModule,
-      NzButtonModule,
-      TranslocoModule,
-      NzTableModule,
-      NzSelectModule,
-      NzModalModule,
-      NzDividerModule,
-      NzCheckboxModule,
-      RouterModule,
-    ]
+  selector: 'hih-organization-detail',
+  templateUrl: './organization-detail.component.html',
+  styleUrls: ['./organization-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzButtonModule,
+    TranslocoModule,
+    NzTableModule,
+    NzSelectModule,
+    NzModalModule,
+    NzDividerModule,
+    NzCheckboxModule,
+    RouterModule,
+  ],
 })
 export class OrganizationDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -60,7 +60,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -78,7 +78,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -86,7 +86,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -115,7 +115,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (e) => {
@@ -137,7 +137,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit readOrganization failed ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -156,13 +156,13 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (rtndata) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes.`,
-                  ConsoleLogTypeEnum.debug
+                  ConsoleLogTypeEnum.debug,
                 );
                 this.allTypes = rtndata;
                 this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
@@ -170,7 +170,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -187,7 +187,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -218,7 +218,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const objtbo = new Organization();
@@ -241,7 +241,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit createOrganization failed ${err}...`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),

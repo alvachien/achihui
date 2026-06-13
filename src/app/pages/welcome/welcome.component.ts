@@ -13,14 +13,7 @@ import { environment } from '@environments/environment';
   selector: 'hih-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
-  imports: [
-    NzGridModule,
-    NzDividerModule,
-    NzTypographyModule,
-    NzCardModule,
-    NzImageModule,
-    TranslocoModule
-  ]
+  imports: [NzGridModule, NzDividerModule, NzTypographyModule, NzCardModule, NzImageModule, TranslocoModule],
 })
 export class WelcomeComponent {
   gridFinanceStyle = {
@@ -28,8 +21,8 @@ export class WelcomeComponent {
     textAlign: 'center',
   };
   private readonly router = inject(Router);
-  
-  constructor() { }
+
+  constructor() {}
 
   get accountImage(): string {
     return `${environment.AppHost}/assets/img/Accounts.png`;

@@ -13,7 +13,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { format, parse } from 'date-fns';
 import { SafeAny } from '@common/any';
 
 import { AssetCategory, ConsoleLogTypeEnum, ModelUtility, AccountExtraAsset } from '@model/index';
@@ -52,7 +51,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     NzButtonModule,
     TranslocoModule,
     RouterModule,
-  ]
+  ],
 })
 export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -73,7 +72,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   get value(): AccountExtraAsset {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent value getter...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const insobj: AccountExtraAsset = new AccountExtraAsset();
@@ -116,7 +115,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   @HostListener('change') onChange(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent onChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._onChange) {
@@ -126,7 +125,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   @HostListener('blur') onTouched(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent onTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._onTouched) {
@@ -139,9 +138,10 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   }
   set arAssetCategories(ctgy: AssetCategory[]) {
     ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter ${ctgy ? 'NOT NULL and length is ' + ctgy.length : 'NULL'
+      `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent arAssetCategories setter ${
+        ctgy ? 'NOT NULL and length is ' + ctgy.length : 'NULL'
       }`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (ctgy) {
@@ -150,11 +150,11 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   }
 
   public readonly router = inject(Router);
-  
+
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent constructor`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.assetInfoFormGroup = new UntypedFormGroup({
@@ -170,21 +170,21 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent ngOnInit`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent ngOnDestroy`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   writeValue(val: AccountExtraAsset): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent writeValue: ${val}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (val) {
@@ -219,7 +219,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   registerOnChange(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent registerOnChange...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._onChange = fn;
@@ -227,7 +227,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   registerOnTouched(fn: SafeAny): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent registerOnTouched...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._onTouched = fn;
@@ -235,7 +235,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   setDisabledState?(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent setDisabledState...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (isDisabled) {
@@ -251,7 +251,7 @@ export class AccountExtraAssetComponent implements OnInit, ControlValueAccessor,
   validate(c: AbstractControl): ValidationErrors | null {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountExtraAssetComponent validate...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.assetInfoFormGroup.valid) {

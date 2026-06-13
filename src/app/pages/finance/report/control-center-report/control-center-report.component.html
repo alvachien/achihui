@@ -1,7 +1,11 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/report">{{ 'Finance.Reports' | transloco }}</a></nz-breadcrumb-item
+    >
     <nz-breadcrumb-item>{{ 'Finance.ControlCenter' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
@@ -25,7 +29,7 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>
             {{ data.ControlCenterId }}
@@ -37,20 +41,20 @@
           <td>{{ data.ControlCenterName }}</td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayDebitData(data.ControlCenterId)">
-              {{ data.DebitBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+              {{ data.DebitBalance | number: '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
             </button>
           </td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayCreditData(data.ControlCenterId)">
-              {{ data.CreditBalance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+              {{ data.CreditBalance | number: '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
             </button>
           </td>
           <td>
             <button nz-button nzType="link" (click)="onDisplayBalanceData(data.ControlCenterId)">
-              {{ data.Balance | number : '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
+              {{ data.Balance | number: '1.2-2' }}<span style="padding-left: 5px">{{ baseCurrency }}</span>
             </button>
           </td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

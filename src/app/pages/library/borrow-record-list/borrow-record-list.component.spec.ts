@@ -7,7 +7,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { BorrowRecordListComponent } from './borrow-record-list.component';
@@ -33,10 +33,7 @@ describe('BorrowRecordListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = createSpyObj('LibraryStorageService', [
-      'fetchAllOrganizationTypes',
-      'fetchBookBorrowRecords',
-    ]);
+    storageService = createSpyObj('LibraryStorageService', ['fetchAllOrganizationTypes', 'fetchBookBorrowRecords']);
     fetchAllOrganizationTypesSpy = storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
     fetchBookBorrowRecordsSpy = storageService.fetchBookBorrowRecords.and.returnValue(of({}));
     homeService = {
@@ -50,15 +47,17 @@ describe('BorrowRecordListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
-        
+      // declarations moved to imports
+      imports: [
+        FormsModule,
+
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: LibraryStorageService, useValue: storageService },
@@ -66,8 +65,8 @@ describe('BorrowRecordListComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -88,12 +87,12 @@ describe('BorrowRecordListComponent', () => {
 
     it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.dataSet.length).toEqual(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

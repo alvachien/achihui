@@ -9,7 +9,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceUIModule } from '../finance-ui.module';
-import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { MessageDialogComponent } from '../../message-dialog';
@@ -86,7 +86,10 @@ describe('DocumentItemSearchComponent', () => {
         BrowserDynamicTestingModule,
         ReusableComponentsModule,
         getTranslocoModule(),
-        MessageDialogComponent, DocumentItemViewComponent, DocumentItemSearchComponent],
+        MessageDialogComponent,
+        DocumentItemViewComponent,
+        DocumentItemSearchComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -112,21 +115,17 @@ describe('DocumentItemSearchComponent', () => {
     beforeEach(() => {
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
-      fetchAllAccountCategoriesSpy.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
-      );
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
       // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(asyncData(fakeData.finDoc));
     });
 
     it('1. shall initialize the data', async () => {
       fixture.detectChanges(); // ngOninit
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(fetchAllDocTypesSpy).not.toHaveBeenCalled();

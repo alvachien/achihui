@@ -20,25 +20,25 @@ import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole }
 import { HomeDefOdataService, LibraryStorageService } from '@services/index';
 
 @Component({
-    selector: 'hih-person-detail',
-    templateUrl: './person-detail.component.html',
-    styleUrls: ['./person-detail.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzFormModule,
-      FormsModule,
-      ReactiveFormsModule,
-      NzInputModule,
-      NzButtonModule,
-      NzTableModule,
-      NzSelectModule,
-      NzDividerModule,
-      NzCheckboxModule,
-      NzModalModule,
-      TranslocoModule,
-      RouterModule,
-    ]
+  selector: 'hih-person-detail',
+  templateUrl: './person-detail.component.html',
+  styleUrls: ['./person-detail.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzButtonModule,
+    NzTableModule,
+    NzSelectModule,
+    NzDividerModule,
+    NzCheckboxModule,
+    NzModalModule,
+    TranslocoModule,
+    RouterModule,
+  ],
 })
 export class PersonDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -63,7 +63,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -78,7 +78,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -86,7 +86,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
@@ -112,13 +112,13 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (e) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit forkJoin.`,
-                  ConsoleLogTypeEnum.debug
+                  ConsoleLogTypeEnum.debug,
                 );
                 this.allRoles = e[0];
 
@@ -141,7 +141,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering PersonDetailComponent ngOnInit forkJoin failed ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -160,13 +160,13 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (rtndata) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Debug]: Entering PersonDetailComponent ngOnInit fetchAllPersonRoles.`,
-                  ConsoleLogTypeEnum.debug
+                  ConsoleLogTypeEnum.debug,
                 );
                 this.allRoles = rtndata;
                 this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
@@ -174,7 +174,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering PersonDetailComponent ngOnInit fetchAllPersonRoles ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -192,7 +192,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -215,7 +215,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
   onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonDetailComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const objtbo = new Person();
@@ -238,7 +238,7 @@ export class PersonDetailComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering PersonDetailComponent onSave createPerson failed ${err}...`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),

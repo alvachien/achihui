@@ -51,7 +51,7 @@ import { SafeAny } from '@common/any';
     TranslocoModule,
     NzModalModule,
     RouterModule,
-  ]
+  ],
 })
 export class OrderDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -98,7 +98,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -110,21 +110,21 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
         endDateControl: new UntypedFormControl(addYears(new Date(), 1), [Validators.required]),
         cmtControl: new UntypedFormControl(),
       },
-      [dateRangeValidator]
+      [dateRangeValidator],
     );
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
     this.activateRoute.url.subscribe((x: SafeAny) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -155,7 +155,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               takeUntil(this._destroyed$!),
               finalize(() => {
                 this.isLoadingResults = false;
-              })
+              }),
             )
             .subscribe({
               next: (rsts) => {
@@ -182,7 +182,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, forkJoin : ${err}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.uiMode = UIMode.Invalid;
                 this.modalService.create({
@@ -205,20 +205,20 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
               .pipe(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 takeUntil(this._destroyed$!),
-                finalize(() => (this.isLoadingResults = false))
+                finalize(() => (this.isLoadingResults = false)),
               )
               .subscribe({
                 next: (val) => {
                   ModelUtility.writeConsoleLog(
                     `AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnInit, fetchAllControlCenters`,
-                    ConsoleLogTypeEnum.debug
+                    ConsoleLogTypeEnum.debug,
                   );
                   this.arControlCenters = val;
                 },
                 error: (err) => {
                   ModelUtility.writeConsoleLog(
                     `AC_HIH_UI [Error]: Entering OrderDetailComponent ngOninit, fetchAllControlCenters ${err}`,
-                    ConsoleLogTypeEnum.error
+                    ConsoleLogTypeEnum.error,
                   );
                   this.modalService.create({
                     nzTitle: translate('Common.Error'),
@@ -236,7 +236,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -251,7 +251,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent onSubmit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isOrderSubmitting = true;
@@ -275,7 +275,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   private onCreateOrder(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent onCreateOrder...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const objOrder: Order = this._generateOrder();
@@ -298,13 +298,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.isOrderSubmitting = false;
           this.isOrderSubmitted = true;
-        })
+        }),
       )
       .subscribe({
         next: (neword: Order) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onCreateOrder`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.orderIdCreated = neword.Id;
@@ -314,7 +314,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           // Show error message
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering OrderDetailComponent, onCreateOrder, failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.orderIdCreated = undefined;
@@ -326,7 +326,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
   private onChangeOrder(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderDetailComponent onChangeOrder...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const ordObj: Order = this._generateOrder();
@@ -351,14 +351,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           finalize(() => {
             this.isOrderSubmitting = false;
             this.isOrderSubmitted = true;
-          })
+          }),
         )
         .subscribe({
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           next: (x: Order) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             this.orderSavedFailed = '';
@@ -368,7 +368,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             // Show error message
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this.orderSavedFailed = err;
@@ -395,14 +395,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
           finalize(() => {
             this.isOrderSubmitting = false;
             this.isOrderSubmitted = true;
-          })
+          }),
         )
         .subscribe({
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           next: (x: Order) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering OrderDetailComponent, onChangeOrder`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             this.orderSavedFailed = '';
@@ -412,7 +412,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
             // Show error message
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering OrderDetailComponent, onChangeOrder, failed: ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this.orderSavedFailed = err;

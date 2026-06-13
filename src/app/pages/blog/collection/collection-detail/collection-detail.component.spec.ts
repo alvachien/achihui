@@ -10,7 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UIMode } from 'actslib';
 
 import { BlogUIModule } from '../../blog-ui.module';
-import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub} from '../../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub } from '../../../../../testing';
 import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
@@ -42,16 +42,17 @@ describe('CollectionDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-      
       imports: [
         HttpClientTestingModule,
-        getTranslocoModule(), CollectionDetailComponent,
+        getTranslocoModule(),
+        CollectionDetailComponent,
         FormsModule,
         BlogUIModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
-        BrowserDynamicTestingModule],
+        BrowserDynamicTestingModule,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -78,7 +79,7 @@ describe('CollectionDetailComponent', () => {
   describe('create mode', () => {
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();

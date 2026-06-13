@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from '@common/any';
 
@@ -29,19 +29,16 @@ export interface MessageDialogInfo {
 }
 
 @Component({
-    selector: 'hih-message-dialog',
-    templateUrl: './message-dialog.component.html',
-    styleUrls: ['./message-dialog.component.less'],
-    imports: [
-      NzTableModule,
-      TranslocoModule,
-    ]
+  selector: 'hih-message-dialog',
+  templateUrl: './message-dialog.component.html',
+  styleUrls: ['./message-dialog.component.less'],
+  imports: [NzTableModule, TranslocoModule],
 })
 export class MessageDialogComponent {
   @Input() title = '';
   @Input() infoMessages: InfoMessage[] = [];
 
-  constructor(private modal: NzModalRef) {}
+  private readonly modal = inject(NzModalRef);
 
   handleOk(): void {
     this.modal.destroy();
@@ -62,7 +59,7 @@ export function popupDialog(
   modalService: NzModalService,
   title: string,
   msgs: InfoMessage[],
-  buttons: MessageDialogButtonEnum = MessageDialogButtonEnum.onlyok
+  buttons: MessageDialogButtonEnum = MessageDialogButtonEnum.onlyok,
 ) {
   let footer: any = [];
   switch (buttons) {

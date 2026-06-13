@@ -1,5 +1,13 @@
-import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom, isDevMode, provideAppInitializer, inject } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  importProvidersFrom,
+  isDevMode,
+  provideAppInitializer,
+  inject,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { APP_BASE_HREF } from '@angular/common';
 
 import routeConfig from './app.routes';
 import { icons } from './icons-provider';
@@ -7,6 +15,7 @@ import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
+import zh from '@angular/common/locales/zh';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -18,36 +27,38 @@ import { environment } from '@environments/environment';
 import { ThemeService } from '@services/theme.service';
 
 registerLocaleData(en);
+registerLocaleData(zh, 'zh-cn');
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routeConfig), 
-    provideNzIcons(icons), 
-    provideNzI18n(en_US), 
-    importProvidersFrom(FormsModule), 
-    provideAnimationsAsync(), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routeConfig),
+    { provide: APP_BASE_HREF, useValue: '/' },
+    provideNzIcons(icons),
+    provideNzI18n(en_US),
+    importProvidersFrom(FormsModule),
+    provideAnimationsAsync(),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideTransloco({
-      config: { 
+      config: {
         availableLangs: ['en', 'zh'],
         defaultLang: 'en',
         // Remove this option if your application doesn't support changing language in runtime.
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
       },
-      loader: TranslocoHttpLoader
+      loader: TranslocoHttpLoader,
     }),
     provideAppInitializer(() => {
       console.log('Entering App Initializer...');
       const themeService = inject(ThemeService);
-      themeService.loadTheme(true);
+      return themeService.loadTheme(true);
     }),
     provideAuth({
       config: {
         authority: environment.IDServerUrl,
 
-        redirectUrl: environment.AppHost, // window.location.origin,
+        redirectUrl: `${environment.AppHost}/signin-callback`, // window.location.origin,
         postLogoutRedirectUri: environment.AppHost,
 
         clientId: 'achihui.js',
@@ -64,8 +75,8 @@ export const appConfig: ApplicationConfig = {
         // ignoreNonceAfterRefresh: true, // this is required if the id_token is not returned
         // // allowUnsafeReuseRefreshToken: true, // this is required if the refresh token is not rotated
         // triggerRefreshWhenIdTokenExpired: false, // required to refresh the browser if id_token is not updated after the first authentication
-        logLevel: LogLevel.Warn,      
-      }
+        logLevel: LogLevel.Warn,
+      },
     }),
-  ]
+  ],
 };

@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { EventUIModule } from '../../event-ui.module';
-import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { RecurEventListComponent } from './recur-event-list.component';
@@ -43,7 +43,6 @@ describe('RecurEventListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      
       imports: [
         HttpClientTestingModule,
         FormsModule,
@@ -52,7 +51,8 @@ describe('RecurEventListComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule(), RecurEventListComponent,
+        getTranslocoModule(),
+        RecurEventListComponent,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
@@ -81,12 +81,12 @@ describe('RecurEventListComponent', () => {
 
     it('should show data after OnInit', async () => {
       fixture.detectChanges(); // ngOnInit()
-      await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
       expect(component.dataSet.length).toEqual(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

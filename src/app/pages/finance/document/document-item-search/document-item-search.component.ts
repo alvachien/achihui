@@ -38,28 +38,28 @@ import { RouterModule } from '@angular/router';
 import { OperatorFilterPipe } from 'app/pages/reusable-components/pipes';
 
 @Component({
-    selector: 'hih-document-item-search',
-    templateUrl: './document-item-search.component.html',
-    styleUrls: ['./document-item-search.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzResultModule,
-      NzFormModule,
-      FormsModule,
-      ReactiveFormsModule,
-      NzSelectModule,
-      NzInputModule,
-      NzGridModule,
-      NzButtonModule,
-      NzIconModule,
-      DocumentItemViewComponent,
-      NzModalModule,
-      RouterModule,
-      TranslocoModule,
-      OperatorFilterPipe,
-      NgIf,
-    ]
+  selector: 'hih-document-item-search',
+  templateUrl: './document-item-search.component.html',
+  styleUrls: ['./document-item-search.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzResultModule,
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzSelectModule,
+    NzInputModule,
+    NzGridModule,
+    NzButtonModule,
+    NzIconModule,
+    DocumentItemViewComponent,
+    NzModalModule,
+    RouterModule,
+    TranslocoModule,
+    OperatorFilterPipe,
+    NgIf,
+  ],
 })
 export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -85,11 +85,11 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
 
   private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
-  
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.allOperators = UIDisplayStringUtil.getGeneralFilterOperatorDisplayStrings();
     this.allFields = [

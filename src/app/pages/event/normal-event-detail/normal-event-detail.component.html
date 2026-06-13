@@ -24,15 +24,15 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
       <input nz-input formControlName="nameControl" maxlength="100" required />
       <ng-template #nameTpl let-control>
-        @if(control.hasError('maxlength')) {
+        @if (control.hasError('maxlength')) {
           <ng-container>
             {{ 'Common.FieldMaxLength' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
-        @if(control.hasError('required')) {
+        @if (control.hasError('required')) {
           <ng-container>
             {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
       </ng-template>
     </nz-form-control>
@@ -44,10 +44,10 @@
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateTpl">
       <nz-range-picker formControlName="dateControl" required></nz-range-picker>
       <ng-template #dateTpl let-control>
-        @if(control.hasError('required')) {
+        @if (control.hasError('required')) {
           <ng-container>
             {{ 'Common.FieldIsMandatory' | transloco }}
-          </ng-container>  
+          </ng-container>
         }
       </ng-template>
     </nz-form-control>

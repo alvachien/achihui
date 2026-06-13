@@ -41,31 +41,34 @@ describe('LocationSelectionDlgComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
         LibraryUIModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
-        LocationSelectionDlgComponent],
-    providers: [
+        LocationSelectionDlgComponent,
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
         {
-            provide: NzModalRef,
-            useFactory: (modalSvc: NzModalService) => modalSvc.create({
-                nzClosable: true,
-                nzContent: 'test',
+          provide: NzModalRef,
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: 'test',
             }),
-            deps: [NzModalService],
+          deps: [NzModalService],
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

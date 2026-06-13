@@ -52,7 +52,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     RouterModule,
     NzDrawerModule,
     NzButtonModule,
-  ]
+  ],
 })
 export class OrderListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -82,7 +82,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -98,7 +98,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
       .fetchAllOrders()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: Order[]) => {
@@ -107,7 +107,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering OrderListComponent ngOnInit, fetchAllOrders failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -122,7 +122,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -138,7 +138,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   onCreate(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderListComponent onCreate...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.router.navigate(['/finance/order/create']);
   }
@@ -146,7 +146,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   onDisplay(rid: number): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderListComponent onDisplay...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.router.navigate(['/finance/order/display/' + rid.toString()]);
   }
@@ -159,7 +159,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
   onDelete(rid: number) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderListComponent onDelete...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.odataService
       .deleteOrder(rid)

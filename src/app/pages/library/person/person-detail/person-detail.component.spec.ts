@@ -13,11 +13,14 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   FakeDataHelper,
   asyncData,
   asyncError,
-  ActivatedRouteUrlStub,} from '../../../../../testing';
+  ActivatedRouteUrlStub,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../../services';
 import { UserAuthInfo, Person } from '../../../../model';
 import { PersonDetailComponent } from './person-detail.component';
@@ -48,11 +51,7 @@ describe('PersonDetailComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildPersonRoles();
 
-    storageService = createSpyObj('LibraryStorageService', [
-      'fetchAllPersonRoles',
-      'readPerson',
-      'createPerson',
-    ]);
+    storageService = createSpyObj('LibraryStorageService', ['fetchAllPersonRoles', 'readPerson', 'createPerson']);
     fetchAllPersonRolesSpy = storageService.fetchAllPersonRoles.and.returnValue(of([]));
     readPersonSpy = storageService.readPerson.and.returnValue(of({}));
     createPersonSpy = storageService.createPerson.and.returnValue(of({}));
@@ -69,8 +68,9 @@ describe('PersonDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
 
         ReactiveFormsModule,
         RouterTestingModule,
@@ -79,8 +79,9 @@ describe('PersonDetailComponent', () => {
         NzInputModule,
         NzCheckboxModule,
         NzSelectModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -89,8 +90,8 @@ describe('PersonDetailComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -113,23 +114,23 @@ describe('PersonDetailComponent', () => {
 
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
       expect(component.isEditable).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('create mode with valid data: name and comment', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
@@ -144,13 +145,13 @@ describe('PersonDetailComponent', () => {
       const routerstub = TestBed.inject(Router);
       vi.spyOn(routerstub, 'navigate');
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(routerstub.navigate).toHaveBeenCalled();
       expect(createPersonSpy).toHaveBeenCalled();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -169,9 +170,9 @@ describe('PersonDetailComponent', () => {
 
     it('display mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -180,7 +181,7 @@ describe('PersonDetailComponent', () => {
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nperson.NativeName);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -196,16 +197,16 @@ describe('PersonDetailComponent', () => {
 
     it('display mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
 
       expect(component.isEditable).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -221,10 +222,10 @@ describe('PersonDetailComponent', () => {
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -235,23 +236,23 @@ describe('PersonDetailComponent', () => {
       fetchAllPersonRolesSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('should display error when create failed', async () => {
@@ -259,9 +260,9 @@ describe('PersonDetailComponent', () => {
       createPersonSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
@@ -287,7 +288,7 @@ describe('PersonDetailComponent', () => {
       // fixture.detectChanges();
       // expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

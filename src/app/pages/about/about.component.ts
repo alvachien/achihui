@@ -11,11 +11,7 @@ import { CheckVersionResult } from '@model/index';
   selector: 'hih-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.less'],
-  imports: [
-    NzTypographyModule,
-    TranslocoModule,
-    NzDividerModule
-  ]
+  imports: [NzTypographyModule, TranslocoModule, NzDividerModule],
 })
 export class AboutComponent {
   version: string;

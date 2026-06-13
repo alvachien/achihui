@@ -18,7 +18,6 @@ import {
   Order,
   BuildupAccountForSelection,
   UIAccountForSelection,
-  BuildupOrderForSelection,
   UIOrderForSelection,
   ModelUtility,
   ConsoleLogTypeEnum,
@@ -53,7 +52,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     TranslocoModule,
     RouterModule,
     NzModalModule,
-  ]
+  ],
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -89,7 +88,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.currentDocument = new Document();
@@ -104,7 +103,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
     this.cd.detectChanges();
@@ -112,7 +111,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -152,7 +151,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
               takeUntil(this._destroyed$!),
               finalize(() => {
                 this.isLoadingResults = false;
-              })
+              }),
             )
             .subscribe({
               next: (rsts) => {
@@ -191,14 +190,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                       takeUntil(this._destroyed$!),
                       finalize(() => {
                         this.onSetData();
-                      })
+                      }),
                     )
                     .subscribe({
                       next: () => {
                         this.arUIAccounts = [];
                         this.arUIAccounts = BuildupAccountForSelection(
                           this.odataService.Accounts,
-                          this.odataService.AccountCategories
+                          this.odataService.AccountCategories,
                         );
                       },
                       error: (err) => {
@@ -217,7 +216,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Failed in DocumentDetailComponent ngOninit, forkJoin : ${err}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
 
                 this.uiMode = UIMode.Invalid;
@@ -241,7 +240,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -296,7 +295,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.uiMode === UIMode.Update) {
       // Update mode.

@@ -17,7 +17,8 @@
     [nzTotal]="totalCount"
     [nzPageSize]="pageSize"
     [nzPageIndex]="pageIndex"
-    (nzQueryParams)="onQueryParamsChange($event)">
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
     <thead>
       <tr>
         <th>ID</th>
@@ -26,7 +27,7 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>
             {{ data.ID }}
@@ -38,7 +39,8 @@
               nz-button
               nzType="link"
               [disabled]="data.CompleteDate !== undefined"
-              (click)="onMarkAsComplete(data.ID!)">
+              (click)="onMarkAsComplete(data.ID!)"
+            >
               {{ 'Common.MarkasDone' | transloco }}
             </button>
             <button nz-button nzType="link" (click)="onDelete(data.ID!)" nzDanger>
@@ -47,7 +49,7 @@
           </td>
           <td>{{ data.Name }}</td>
           <td>{{ data.StartDateDisplayString }} - {{ data.EndDateDisplayString }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

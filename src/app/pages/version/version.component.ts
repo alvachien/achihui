@@ -5,14 +5,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 
 @Component({
-    selector: 'hih-version',
-    templateUrl: './version.component.html',
-    styleUrls: ['./version.component.less'],
-    imports: [
-        NzTimelineModule,
-
-        NzIconModule,
-        TranslocoModule
-    ]
+  selector: 'hih-version',
+  templateUrl: './version.component.html',
+  styleUrls: ['./version.component.less'],
+  imports: [NzTimelineModule, NzIconModule, TranslocoModule],
 })
-export class VersionComponent { }
+export class VersionComponent {}

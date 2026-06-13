@@ -47,7 +47,7 @@ import { NgClass, NgIf } from '@angular/common';
     TranslocoModule,
     NzModalModule,
     RouterModule,
-  ]
+  ],
 })
 export class AccountListComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
@@ -71,11 +71,10 @@ export class AccountListComponent implements OnInit, OnDestroy {
   private readonly modalService = inject(NzModalService);
   private readonly viewContainerRef = inject(ViewContainerRef);
 
-  constructor(
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -156,7 +155,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -167,13 +166,13 @@ export class AccountListComponent implements OnInit, OnDestroy {
       .fetchAllAccountCategories()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (val) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
           this.arCategories = val;
           this.arCategories.forEach((val2: AccountCategory) => {
@@ -187,7 +186,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Error]: Entering AccountListComponent ngOnInit fetchAllAccountCategories failed',
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -198,7 +197,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
         complete: () => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories completed',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
           this.onRefresh();
         },
@@ -208,7 +207,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -225,20 +224,20 @@ export class AccountListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (data: Account[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering AccountListComponent onRefresh fetchAllAccounts succeed',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
           this.dataSet = data.slice();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering AccountListComponent onRefresh fetchAllAccounts failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -261,7 +260,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
   onDelete(rid: number): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Error]: Entering AccountListComponent onDelete, ${rid}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     // After the pop confirm
     this.odataService

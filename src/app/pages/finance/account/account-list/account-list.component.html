@@ -11,7 +11,9 @@
     <nz-page-header-extra>
       <a nz-button nzType="link" (click)="onRefresh(true)">{{ 'Common.Refresh' | transloco }}</a>
       <nz-divider nzType="vertical"></nz-divider>
-      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{'Common.Create' | transloco}}</a>
+      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{
+        'Common.Create' | transloco
+      }}</a>
       <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{ 'Common.HierarchyView' | transloco }}</a>
     </nz-page-header-extra>
   </nz-page-header>
@@ -19,21 +21,22 @@
     <nz-table #basicTable [nzLoading]="isLoadingResults" [nzData]="dataSet" nzTableLayout="fixed">
       <thead>
         <tr>
-          @for(column of listOfColumns; track $index) {
-            <th 
+          @for (column of listOfColumns; track $index) {
+            <th
               [nzSortOrder]="column.sortOrder"
               [nzSortFn]="column.sortFn"
               [nzSortDirections]="column.sortDirections"
               [nzFilterMultiple]="column.filterMultiple"
               [nzFilters]="column.listOfFilter"
-              [nzFilterFn]="column.filterFn">
+              [nzFilterFn]="column.filterFn"
+            >
               {{ column.name | transloco }}
             </th>
           }
         </tr>
       </thead>
       <tbody>
-        @for(data of basicTable.data; track $index) {
+        @for (data of basicTable.data; track $index) {
           <tr>
             <td>
               <span [ngClass]="{ 'closed-account': data.isClosed }">{{ data.Id }}</span>
@@ -54,7 +57,9 @@
                 nzPopconfirmPlacement="bottom"
                 (nzOnConfirm)="onDelete(data.Id!)"
                 nzType="link"
-                nzDanger>{{ 'Common.Delete' | transloco }}</a>
+                nzDanger
+                >{{ 'Common.Delete' | transloco }}</a
+              >
               <nz-dropdown-menu #menuForChange="nzDropdownMenu">
                 <ul nz-menu>
                   <li nz-menu-item (click)="onEdit(data.Id!)">
@@ -77,7 +82,7 @@
             <td>{{ getCategoryName(data.CategoryId!) | transloco }}</td>
             <td>{{ getStatusString(data.Status) | transloco }}</td>
             <td>{{ data.Comment }}</td>
-          </tr>  
+          </tr>
         }
       </tbody>
     </nz-table>

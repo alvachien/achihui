@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -15,35 +15,38 @@ import { LibraryStorageService, UIStatusService } from '@services/index';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
-    selector: 'hih-person-list',
-    templateUrl: './person-list.component.html',
-    styleUrls: ['./person-list.component.less'],
-    imports: [
-      NzPageHeaderModule,
-      NzSpinModule,
-      NzTableModule,
-      NzBreadCrumbModule,
-      NzDividerModule,
-      NzModalModule,
-      RouterModule,
-      TranslocoModule,
-      NzButtonModule,
-    ]
+  selector: 'hih-person-list',
+  templateUrl: './person-list.component.html',
+  styleUrls: ['./person-list.component.less'],
+  imports: [
+    NzPageHeaderModule,
+    NzSpinModule,
+    NzTableModule,
+    NzBreadCrumbModule,
+    NzDividerModule,
+    NzModalModule,
+    RouterModule,
+    TranslocoModule,
+    NzButtonModule,
+  ],
 })
 export class PersonListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
   isLoadingResults: boolean;
   dataSet: Person[] = [];
 
-  constructor(
-    public odataService: LibraryStorageService,
-    public uiStatusService: UIStatusService,
-    public router: Router,
-    public modalService: NzModalService
-  ) {
+  public readonly odataService = inject(LibraryStorageService);
+
+  public readonly uiStatusService = inject(UIStatusService);
+
+  public readonly router = inject(Router);
+
+  public readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -58,13 +61,13 @@ export class PersonListComponent implements OnInit, OnDestroy {
       .fetchAllPersons()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: Person[]) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering PersonListComponent OnInit fetchAllPersons...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.dataSet = x;
@@ -72,7 +75,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
         error: (error) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering PersonListComponent fetchAllPersons failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -86,7 +89,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PersonListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -128,7 +131,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering PersonList onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),
@@ -142,7 +145,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering PersonList onDelete cancelled`,
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         ),
     });
   }

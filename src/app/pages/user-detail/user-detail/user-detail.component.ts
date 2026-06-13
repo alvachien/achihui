@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -25,7 +25,9 @@ export class UserDetailComponent implements OnInit {
   currentHomeMemIsChild: boolean | null = null;
   currentHomeMemRelI18n: string | null = null;
 
-  constructor(private authService: AuthService, private homeService: HomeDefOdataService) {}
+  private readonly authService = inject(AuthService);
+
+  private readonly homeService = inject(HomeDefOdataService);
 
   ngOnInit() {
     this.authService.authContent.subscribe({

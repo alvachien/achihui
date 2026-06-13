@@ -18,7 +18,7 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>
             {{ data.id }}
@@ -35,7 +35,7 @@
           </td>
           <td>{{ data.name }}</td>
           <td>{{ data.comment }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

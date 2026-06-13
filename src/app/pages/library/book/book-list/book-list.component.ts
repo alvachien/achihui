@@ -12,25 +12,25 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
-import { LibraryStorageService, UIStatusService } from '@services/index';
+import { LibraryStorageService } from '@services/index';
 import { BorrowRecordCreateDlgComponent } from '../../borrow-record-create-dlg';
 
 @Component({
-    selector: 'hih-book-list',
-    templateUrl: './book-list.component.html',
-    styleUrls: ['./book-list.component.less'],
-    imports: [
-      NzSpinModule,
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzTableModule,
-      TranslocoModule,
-      NzDividerModule,
-      NzModalModule,
-      NzButtonModule,
-      RouterModule,
-      NzModalModule,
-    ]
+  selector: 'hih-book-list',
+  templateUrl: './book-list.component.html',
+  styleUrls: ['./book-list.component.less'],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTableModule,
+    TranslocoModule,
+    NzDividerModule,
+    NzModalModule,
+    NzButtonModule,
+    RouterModule,
+    NzModalModule,
+  ],
 })
 export class BookListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -49,7 +49,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -65,7 +65,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BookListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -82,7 +82,7 @@ export class BookListComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sortOrder: string | null,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    filter: Array<{ key: string; value: string[] }> | null
+    filter: Array<{ key: string; value: string[] }> | null,
   ): void {
     this.isLoadingResults = true;
     this.odataService
@@ -90,13 +90,13 @@ export class BookListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: BaseListModel<Book>) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering BookListComponent OnInit fetchBooks...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.totalCount = x.totalCount;
@@ -105,7 +105,7 @@ export class BookListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering BookListComponent fetchBooks failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -149,7 +149,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, OK button...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         // this.listPresses = [];
         // setPress.forEach(pid => {
@@ -163,7 +163,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BookListComponent onCreateBorrowRecord, cancelled...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
       },
     });
@@ -173,7 +173,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       // Donothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
     });
   }
@@ -202,7 +202,7 @@ export class BookListComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering BookListComponent onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),
@@ -216,7 +216,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       nzOnCancel: () =>
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering BookListComponent onDelete cancelled`,
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         ),
     });
   }

@@ -10,7 +10,7 @@ describe('VersionComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [NzTimelineModule,  getTranslocoModule()],
+      imports: [NzTimelineModule, getTranslocoModule()],
       // declarations moved to imports
     }).compileComponents();
   });

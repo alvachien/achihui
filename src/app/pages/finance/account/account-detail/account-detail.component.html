@@ -26,15 +26,15 @@
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
           <input nz-input formControlName="nameControl" maxlength="30" required />
           <ng-template #nameTpl let-control>
-            @if(control.hasError('maxlength')) {
+            @if (control.hasError('maxlength')) {
               <ng-container>
                 {{ 'Common.FieldMaxLength' | transloco }}
-              </ng-container>  
+              </ng-container>
             }
-            @if(control.hasError('required')) {
+            @if (control.hasError('required')) {
               <ng-container>
                 {{ 'Common.FieldIsMandatory' | transloco }}
-              </ng-container>  
+              </ng-container>
             }
           </ng-template>
         </nz-form-control>
@@ -45,15 +45,19 @@
         <nz-form-label [nzSpan]="7">{{ 'Common.Category' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyTpl">
           <nz-select formControlName="ctgyControl">
-            @for(cc of arAccountCategories; track cc.ID) {
-              <nz-option [nzValue]="cc.ID" [nzLabel]="cc.Name | transloco" [nzDisabled]="isCategoryDisabled(cc.ID!)"></nz-option>
-            }            
+            @for (cc of arAccountCategories; track cc.ID) {
+              <nz-option
+                [nzValue]="cc.ID"
+                [nzLabel]="cc.Name | transloco"
+                [nzDisabled]="isCategoryDisabled(cc.ID!)"
+              ></nz-option>
+            }
           </nz-select>
           <ng-template #ctgyTpl let-control>
-            @if(control.hasError('required')) {
+            @if (control.hasError('required')) {
               <ng-container>
                 {{ 'Common.FieldIsMandatory' | transloco }}
-              </ng-container>  
+              </ng-container>
             }
           </ng-template>
         </nz-form-control>
@@ -64,15 +68,15 @@
         <nz-form-label [nzSpan]="7">{{ 'Common.Status' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="statusTpl">
           <nz-select formControlName="statusControl">
-            @for(sts of arStatusDisplayStrings; track sts.value) {
+            @for (sts of arStatusDisplayStrings; track sts.value) {
               <nz-option [nzValue]="sts.value" [nzLabel]="sts.i18nterm | transloco"></nz-option>
-            }            
+            }
           </nz-select>
           <ng-template #statusTpl let-control>
-            @if(control.hasError('required')) {
+            @if (control.hasError('required')) {
               <ng-container>
                 {{ 'Common.FieldIsMandatory' | transloco }}
-              </ng-container>  
+              </ng-container>
             }
           </ng-template>
         </nz-form-control>
@@ -83,15 +87,15 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.Owner' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ownerTpl">
           <nz-select formControlName="ownerControl">
-            @for(usr of arMembers; track usr.User) {
+            @for (usr of arMembers; track usr.User) {
               <nz-option [nzValue]="usr.User" [nzLabel]="usr.DisplayAs"></nz-option>
-            }            
+            }
           </nz-select>
           <ng-template #ownerTpl let-control>
-            @if(control.hasError('required')) {
+            @if (control.hasError('required')) {
               <ng-container>
                 {{ 'Common.FieldIsMandatory' | transloco }}
-              </ng-container>  
+              </ng-container>
             }
           </ng-template>
         </nz-form-control>
@@ -103,10 +107,10 @@
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="cmtTpl">
           <input nz-input formControlName="cmtControl" maxlength="45" />
           <ng-template #cmtTpl let-control>
-            @if(control.hasError('maxlength')) {
+            @if (control.hasError('maxlength')) {
               <ng-container>
                 {{ 'Common.FieldMaxLength' | transloco }}
-              </ng-container>  
+              </ng-container>
             }
           </ng-template>
         </nz-form-control>
@@ -114,17 +118,17 @@
     </form>
 
     <!-- Initial amount -->
-    @if(canEnterInitialAmount) {
+    @if (canEnterInitialAmount) {
       <div nz-row class="initamount-form-margin">
         <div nz-col [nzSpan]="12">
           <label nz-checkbox [(ngModel)]="isInitAmountRequired">
             <span>{{ 'Finance.InitialBalance' | transloco }}</span>
           </label>
         </div>
-      </div>  
+      </div>
     }
 
-    @if(isInitAmountRequired) {
+    @if (isInitAmountRequired) {
       <form [formGroup]="amountFormGroup">
         <!-- Tran date -->
         <nz-form-item>
@@ -133,75 +137,77 @@
             <nz-date-picker id="idTranDate" formControlName="dateControl"></nz-date-picker>
           </nz-form-control>
         </nz-form-item>
-  
+
         <nz-form-item>
           <nz-form-label [nzSpan]="7">{{ 'Finance.Amount' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountTpl">
             <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="amountControl"> </nz-input-number>
             <ng-template #amountTpl let-control>
-              @if(control.hasError('required')) {
+              @if (control.hasError('required')) {
                 <ng-container>
                   {{ 'Common.FieldIsMandatory' | transloco }}
-                </ng-container>  
+                </ng-container>
               }
             </ng-template>
           </nz-form-control>
         </nz-form-item>
-  
+
         <nz-form-item>
           <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountTpl">
             <nz-select nzAllowClear formControlName="ccControl">
-              @for(tt of arControlCenters; track tt.Id) {
+              @for (tt of arControlCenters; track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-              }            
+              }
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-  
+
         <nz-form-item>
           <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountTpl">
             <nz-select nzAllowClear formControlName="orderControl">
-              @for(tt of arUIOrders; track tt.Id) {
+              @for (tt of arUIOrders; track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-              }            
+              }
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-      </form>  
+      </form>
     }
 
     <nz-divider></nz-divider>
 
-    @if(isADPAccount) {
+    @if (isADPAccount) {
       <form nz-form #extraADP [formGroup]="extraADPFormGroup">
         <hih-finance-account-extra-downpayment
           formControlName="extADPControl"
           [tranAmount]="tranAmount"
           [tranType]="tranType"
-          [allTranTypes]="arTranTypes">
+          [allTranTypes]="arTranTypes"
+        >
         </hih-finance-account-extra-downpayment>
-      </form>  
+      </form>
     }
 
-    @if(isAssetAccount) {
+    @if (isAssetAccount) {
       <form nz-form #extraAsset [formGroup]="extraAssetFormGroup">
         <hih-finance-account-extra-asset formControlName="extAssetControl" [arAssetCategories]="arAssetCategories">
         </hih-finance-account-extra-asset>
-      </form>  
+      </form>
     }
 
-    @if(isLoanAccount) {
+    @if (isLoanAccount) {
       <form nz-form #extraLoan [formGroup]="extraLoanFormGroup">
         <hih-finance-account-extra-loan
           formControlName="extLoanControl"
           [tranAmount]="tranAmount"
           [controlCenterID]="controlCenterID"
           [orderID]="orderID"
-          [arUIAccount]="arUIAccount">
+          [arUIAccount]="arUIAccount"
+        >
         </hih-finance-account-extra-loan>
-      </form>  
+      </form>
     }
   </div>
 </nz-spin>

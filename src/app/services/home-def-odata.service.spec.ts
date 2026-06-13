@@ -24,9 +24,14 @@ describe('HomeDefOdataService', () => {
     authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [HomeDefOdataService, { provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [
+        HomeDefOdataService,
+        { provide: AuthService, useValue: authServiceStub },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
 
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -56,7 +61,7 @@ describe('HomeDefOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -94,7 +99,7 @@ describe('HomeDefOdataService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === `${service.apiUrl}?$count=true&$expand=HomeMembers`;
+        return requrl.method === 'GET' && requrl.url === `${service.apiUrl}?$count=true&$expand=Members`;
       });
 
       // respond with a 500 and the error message in the body
@@ -110,7 +115,7 @@ describe('HomeDefOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -162,7 +167,7 @@ describe('HomeDefOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -181,7 +186,7 @@ describe('HomeDefOdataService', () => {
         },
         (error: any) => {
           expect(error.message).toContain(msg);
-        }
+        },
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -212,7 +217,7 @@ describe('HomeDefOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -231,7 +236,7 @@ describe('HomeDefOdataService', () => {
         },
         (error: any) => {
           expect(error.message).toContain(msg);
-        }
+        },
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -262,7 +267,7 @@ describe('HomeDefOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -289,7 +294,7 @@ describe('HomeDefOdataService', () => {
         },
         (error: any) => {
           expect(error.message).toContain(msg);
-        }
+        },
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {

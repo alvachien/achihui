@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { format, startOfDay, isBefore } from 'date-fns';
+import { startOfDay, isBefore } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -46,7 +46,6 @@ import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
-import { DocumentItemViewComponent } from '../document-item-view';
 import { DocumentHeaderComponent } from '../document-header';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -81,7 +80,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
     TranslocoModule,
     RouterModule,
     NzModalModule,
-  ]
+  ],
 })
 export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -138,7 +137,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent constructor',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._docDate = new Date();
@@ -156,20 +155,20 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
         ccControl: new UntypedFormControl(),
         orderControl: new UntypedFormControl(),
       },
-      [costObjectValidator, this._legacyDateValidator, this._amountValidator]
+      [costObjectValidator, this._legacyDateValidator, this._amountValidator],
     );
     this.itemFormGroup = new UntypedFormGroup(
       {
         itemControl: new UntypedFormControl(undefined),
       },
-      [this.amountEqualsValidator]
+      [this.amountEqualsValidator],
     );
   }
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -188,7 +187,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
         next: (rst) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.arAssetCategories = rst[1];
@@ -209,7 +208,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentAssetBuyCreateComponent ngOnInit, forkJoin, failed:  ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -224,7 +223,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnDestroy',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -299,7 +298,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent onSubmit',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Generate the doc, and verify it
@@ -349,14 +348,14 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.isDocPosting = false;
           this.currentStep = 3;
-        })
+        }),
       )
       .subscribe({
         next: (docObj: Document) => {
           // New doc created with ID returned
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent onSubmit createAssetBuyinDocument',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.docIdCreated = docObj.Id;
@@ -365,7 +364,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
         error: (err: string) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentAssetBuyinCreateComponent, onSubmit createAssetBuyinDocument, failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           // Handle the error
@@ -401,7 +400,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   private _legacyDateValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent _legacyDateValidator',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this.IsLegacyAsset) {
@@ -419,7 +418,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   private _amountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent _amountValidator',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (!this.IsLegacyAsset) {
@@ -434,7 +433,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   private amountEqualsValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent amountEqualsValidator',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (!this.IsLegacyAsset) {

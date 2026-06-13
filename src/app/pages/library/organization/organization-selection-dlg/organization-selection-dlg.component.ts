@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -62,11 +62,11 @@ export class OrganizationSelectionDlgComponent implements OnInit {
     return this.setOfCheckedId.size >= 1;
   }
 
-  constructor(
-    private modal: NzModalRef,
-    private storageSrv: LibraryStorageService,
-    private messageService: NzMessageService
-  ) {}
+  private readonly modal = inject(NzModalRef);
+
+  private readonly storageSrv = inject(LibraryStorageService);
+
+  private readonly messageService = inject(NzMessageService);
 
   ngOnInit(): void {
     this.storageSrv.fetchAllOrganizations().subscribe({

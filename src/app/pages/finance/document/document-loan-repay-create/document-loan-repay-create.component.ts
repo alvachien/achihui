@@ -1,11 +1,9 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, ReplaySubject, of } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { format, parse, startOfDay, isBefore } from 'date-fns';
-import { dateFormat } from '@model/index';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -45,7 +43,6 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { DocumentHeaderComponent } from '../document-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzDividerComponent } from 'ng-zorro-antd/divider';
@@ -95,7 +92,7 @@ interface PayingAccountItem {
     UIAccountStatusFilterPipe,
     UIAccountCtgyFilterExPipe,
     NgIf,
-  ]
+  ],
 })
 export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -139,14 +136,19 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   public docIdCreated?: number;
   public docPostingFailed = '';
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private odataService: FinanceOdataService,
-    private uiService: UIStatusService,
-    private activedRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly uiService = inject(UIStatusService);
+
+  private readonly activedRoute = inject(ActivatedRoute);
+
+  private readonly router = inject(Router);
+
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     this.searchFormGroup = new UntypedFormGroup({
       docIDControl: new UntypedFormControl(),
@@ -171,7 +173,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -180,7 +182,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     this.activedRoute.url.subscribe((x: SafeAny) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit for activateRoute URL: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       forkJoin([
@@ -198,7 +200,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           next: (rst) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit, forkJoin`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             this.arDocTypes = rst[1];
@@ -239,7 +241,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent ngOnInit, failed in forkJoin : ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this.modalService.create({
@@ -255,7 +257,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -374,7 +376,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent onSearchLoanTmp, failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.create({
@@ -508,7 +510,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentLoanCreateComponent readLoanAccountInfo, failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.create({
@@ -640,7 +642,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.isDocPosting = false;
           this.currentStep = 3; // Result page
-        })
+        }),
       )
       .subscribe({
         next: (val) => {

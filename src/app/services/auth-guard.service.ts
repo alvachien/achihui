@@ -1,68 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { environment } from '../../environments/environment';
-
-import { LogLevel, ModelUtility, ConsoleLogTypeEnum } from '../model';
+import { ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { AuthService } from './auth.service';
 import { UIStatusService } from './uistatus.service';
+import { checkAuthentication } from './auth-check.util';
 
-@Injectable()
-export class AuthGuardService  {
-  constructor(private uiService: UIStatusService, private authService: AuthService) {
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering AuthGuardService constructor',
-        ConsoleLogTypeEnum.debug
-      );
-    }
-  }
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthGuardService {
+  private readonly authService = inject(AuthService);
+  private readonly uiService = inject(UIStatusService);
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const url: string = state.url;
-
-    // Fatal error
-    if (this.uiService.fatalError) {
-      return false;
-    }
-
-    if (!environment.LoginRequired) {
-      return true;
-    }
-
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthGuard canActivate', ConsoleLogTypeEnum.debug);
-    }
-
-    return this.checkLogin(url);
-  }
-
-  checkLogin(url: string): boolean {
-    if (this.authService.authSubject.getValue().isAuthorized) {
-      if (environment.LoggingLevel >= LogLevel.Debug) {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering AuthGuard checkLogin with TRUE',
-          ConsoleLogTypeEnum.debug
-        );
-      }
-      return true;
-    }
-
-    // For AC_HIH_UI: we cannot store the attempted URL because the whole page will be reloaded.
-    // Store the attempted URL for redirecting
-    // this.authService.redirectUrl = url;
-    if (url) {
-      // TBD.
-    }
-
-    // Navigate to the login page with extras
-    if (environment.LoggingLevel >= LogLevel.Debug) {
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering AuthGuard checkLogin with FALSE, therefore redirecting...',
-        ConsoleLogTypeEnum.debug
-      );
-    }
-    this.authService.doLogin();
-
-    return false;
+  canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): boolean {
+    ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthGuard canActivate', ConsoleLogTypeEnum.debug);
+    return checkAuthentication(this.uiService, this.authService);
   }
 }

@@ -119,7 +119,7 @@ export interface HomeDefJson {
   Host: string;
   BaseCurrency: string;
 
-  HomeMembers?: IHomeMemberJson[];
+  Members?: IHomeMemberJson[];
 }
 
 /**
@@ -236,8 +236,8 @@ export class HomeDef extends hih.BaseModel {
     this._basecurr = data.BaseCurrency;
 
     this._listMembers = [];
-    if (data.HomeMembers) {
-      for (const mem of data.HomeMembers) {
+    if (data.Members) {
+      for (const mem of data.Members) {
         const hmem: HomeMember = new HomeMember();
         hmem.parseJSONData(mem);
         this._listMembers.push(hmem);
@@ -251,7 +251,7 @@ export class HomeDef extends hih.BaseModel {
       Details: this._details,
       Host: this._host,
       BaseCurrency: this._basecurr,
-      HomeMembers: [],
+      Members: [],
     };
     if (!createmode) {
       jdata.ID = this._id;
@@ -260,7 +260,7 @@ export class HomeDef extends hih.BaseModel {
       for (const mem of this._listMembers) {
         const memjson: IHomeMemberJson = mem.generateJSONData();
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        jdata.HomeMembers!.push(memjson);
+        jdata.Members!.push(memjson);
       }
     }
 

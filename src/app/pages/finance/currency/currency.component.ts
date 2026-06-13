@@ -12,31 +12,24 @@ import { Currency, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
 import { FinanceOdataService } from '@services/index';
 
 @Component({
-    selector: 'hih-finance-currency',
-    templateUrl: './currency.component.html',
-    styleUrls: ['./currency.component.less'],
-    imports: [
-      NzSpinModule,
-      NzPageHeaderModule,
-      NzBreadCrumbModule,
-      NzTableModule,
-      NzModalModule,
-      TranslocoModule,
-    ]
+  selector: 'hih-finance-currency',
+  templateUrl: './currency.component.html',
+  styleUrls: ['./currency.component.less'],
+  imports: [NzSpinModule, NzPageHeaderModule, NzBreadCrumbModule, NzTableModule, NzModalModule, TranslocoModule],
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
   public dataSource: Currency[] = [];
   isLoadingResults: boolean;
-  
+
   private readonly currService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
 
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CurrencyComponent constructor...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -52,13 +45,13 @@ export class CurrencyComponent implements OnInit, OnDestroy {
       .fetchAllCurrencies()
       .pipe(
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering CurrencyComponent OnInit fetchAllCurrencies...`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
           if (x) {
             this.dataSource = x;
@@ -67,7 +60,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering CurrencyComponent OnInit fetchAllCurrencies, failed ${err}...`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -82,7 +75,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CurrencyComponent ngOnDestroy...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {

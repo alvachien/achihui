@@ -1,6 +1,8 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
-    <nz-breadcrumb-item><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item
+      ><a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+    >
     <nz-breadcrumb-item>{{ 'Common.Search' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
@@ -8,41 +10,42 @@
   <nz-page-header-extra> </nz-page-header-extra>
 </nz-page-header>
 
-@if(isChildMode) {
+@if (isChildMode) {
   <div>
     <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
       <div nz-result-extra>
         <button nz-button nzType="primary">OK</button>
       </div>
     </nz-result>
-  </div>  
+  </div>
 }
 
-@if(!isChildMode) {
+@if (!isChildMode) {
   <div>
     <div class="control-full-width">
-      @for(filter of filters; track $index; let idxfilter = $index) {
+      @for (filter of filters; track $index; let idxfilter = $index) {
         <div nz-row class="control-full-width">
           <div nz-row [nzGutter]="24" class="control-full-width" style="clear: both">
             <div nz-col [nzSpan]="6">
-              <nz-select nzPlaceHolder="{{ 'Common.Field' | transloco }}"
+              <nz-select
+                nzPlaceHolder="{{ 'Common.Field' | transloco }}"
                 [(ngModel)]="filter.fieldName"
-                (ngModelChange)="onFieldSelectionChanged(filter)">
-                @for(field of allFields; track field.value) {
+                (ngModelChange)="onFieldSelectionChanged(filter)"
+              >
+                @for (field of allFields; track field.value) {
                   <nz-option [nzLabel]="field.displayas | transloco" [nzValue]="field.value"></nz-option>
-                }              
-              </nz-select>
-            </div>
-    
-            <div nz-col [nzSpan]="6">
-              <nz-select nzPlaceHolder="{{ 'Common.Operator' | transloco }}" [(ngModel)]="filter.operator">
-                @for(opr of allOperators | operatorFilter : filter.valueType; track opr.value) {
-                  <nz-option [nzLabel]="opr.i18nterm | transloco" [nzValue]="opr.value">
-                  </nz-option>  
                 }
               </nz-select>
             </div>
-    
+
+            <div nz-col [nzSpan]="6">
+              <nz-select nzPlaceHolder="{{ 'Common.Operator' | transloco }}" [(ngModel)]="filter.operator">
+                @for (opr of allOperators | operatorFilter: filter.valueType; track opr.value) {
+                  <nz-option [nzLabel]="opr.i18nterm | transloco" [nzValue]="opr.value"> </nz-option>
+                }
+              </nz-select>
+            </div>
+
             <div nz-col [nzSpan]="6">
               <div nz-row [nzGutter]="8" *ngIf="filter.valueType === 1">
                 <div nz-col nzSpan="12">
@@ -51,7 +54,8 @@
                     type="number"
                     placeholder="{{ 'Common.Value' | transloco }}"
                     name="lvalue_1"
-                    [(ngModel)]="filter.lowValue" />
+                    [(ngModel)]="filter.lowValue"
+                  />
                 </div>
                 <div nz-col nzSpan="12">
                   <input
@@ -91,13 +95,13 @@
                   <nz-date-picker [(ngModel)]="filter.highValue"></nz-date-picker>
                 </div>
               </div>
-              @if(filter.valueType === 4) {
+              @if (filter.valueType === 4) {
                 <div>
                   <label nz-checkbox [(ngModel)]="filter.lowValue"></label>
-                </div>  
+                </div>
               }
             </div>
-    
+
             <div nz-col>
               <div nz-row [nzGutter]="6">
                 <div nz-col nzSpan="12">
@@ -113,7 +117,7 @@
               </div>
             </div>
           </div>
-        </div>  
+        </div>
       }
       <div nz-row style="margin: 8px">
         <button nz-button nzType="primary" (click)="onSearch()">
@@ -121,9 +125,9 @@
         </button>
       </div>
     </div>
-  
+
     <div class="control-full-width">
       <hih-fin-document-item-view [filterDocItem]="realFilters"></hih-fin-document-item-view>
     </div>
-  </div>  
+  </div>
 }

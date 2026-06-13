@@ -8,12 +8,12 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>{{ data.ID }}</td>
           <td>{{ data.Name | transloco }}</td>
           <td>{{ data.Comment }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

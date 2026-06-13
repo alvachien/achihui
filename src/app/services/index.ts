@@ -1,6 +1,7 @@
 export * from './auth.service';
 export * from './auth.interceptor';
 export * from './auth-guard.service';
+export * from './auth-check.util';
 export * from './can-deactivate-guard.service';
 
 export * from './home-chose-guard.service';

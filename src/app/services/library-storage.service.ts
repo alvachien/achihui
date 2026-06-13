@@ -79,11 +79,11 @@ export class LibraryStorageService {
   private readonly _http = inject(HttpClient);
   private readonly _authService = inject(AuthService);
   private readonly _homeService = inject(HomeDefOdataService);
-  
+
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering LibraryStorageService constructor`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._isPersonRoleLoaded = false;
@@ -123,7 +123,7 @@ export class LibraryStorageService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering map in fetchAllPersonRoles in LibraryStorageService`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs: any = <any>response;
@@ -144,14 +144,14 @@ export class LibraryStorageService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllPersonRoles, failed with: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this._isPersonRoleLoaded = false;
             this._listPersonRole = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this._listPersonRole);
@@ -181,7 +181,7 @@ export class LibraryStorageService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering map in fetchAllOrganizationTypes in LibraryStorageService`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs: any = <any>response;
@@ -202,14 +202,14 @@ export class LibraryStorageService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllOrganizationTypes, failed with: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this._isOrganizationTypeLoaded = false;
             this._listOrganizationType = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this._listOrganizationType);
@@ -237,7 +237,7 @@ export class LibraryStorageService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering map in fetchAllBookCategories in LibraryStorageService`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs: any = <any>response;
@@ -265,14 +265,14 @@ export class LibraryStorageService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllBookCategories, failed with: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this._isBookCtgyListLoaded = false;
             this._listBookCategories = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this._listBookCategories);
@@ -300,7 +300,7 @@ export class LibraryStorageService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering map in fetchAllPersons in LibraryStorageService`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs: any = <any>response;
@@ -321,14 +321,14 @@ export class LibraryStorageService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllPersons, failed with: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this._isPersonLoaded = false;
             this._listPerson = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this._listPerson);
@@ -354,7 +354,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, readPerson, map `,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const rjs: any = <any>response;
@@ -368,11 +368,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readPerson failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public createPerson(objtbc: Person): Observable<Person> {
@@ -392,7 +392,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, createPerson, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: Person = new Person();
@@ -404,11 +404,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createPerson failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public deletePerson(pid: number): Observable<any> {
@@ -426,7 +426,7 @@ export class LibraryStorageService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deletePerson, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const pidx = this._listPerson.findIndex((p) => p.ID === pid);
@@ -439,11 +439,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, deletePerson failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -468,7 +468,7 @@ export class LibraryStorageService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering map in fetchAllOrganizations in LibraryStorageService`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs: any = <any>response;
@@ -489,14 +489,14 @@ export class LibraryStorageService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LibraryStorageService, fetchAllOrganizations, failed with: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this._isPersonLoaded = false;
             this._listOrganization = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this._listOrganization);
@@ -522,7 +522,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, readOrganization, map `,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const rjs: any = <any>response;
@@ -536,11 +536,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readOrganization failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public createOrganization(objtbc: Organization): Observable<Organization> {
@@ -560,7 +560,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, createOrganization, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: Organization = new Organization();
@@ -572,11 +572,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createOrganization failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public deleteOrganization(pid: number): Observable<any> {
@@ -594,7 +594,7 @@ export class LibraryStorageService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteOrganization, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const pidx = this._listOrganization.findIndex((p) => p.ID === pid);
@@ -607,11 +607,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, deleteOrganization failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -636,7 +636,7 @@ export class LibraryStorageService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchAllLocations, map `,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs: any = <any>response;
@@ -657,14 +657,14 @@ export class LibraryStorageService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LibraryStorageService fetchAllLocations failed with: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this._isLocationListLoaded = false;
             this._listLocation = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this._listLocation);
@@ -689,7 +689,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, readLocation, map `,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const rjs: any = <any>response;
@@ -703,11 +703,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readLocation failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public createLocation(objtbc: Location): Observable<Location> {
@@ -727,7 +727,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, createLocation, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: Location = new Location();
@@ -744,11 +744,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createLocation failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public deleteLocation(pid: number): Observable<any> {
@@ -766,7 +766,7 @@ export class LibraryStorageService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteLocation, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           // Remove buffer
@@ -780,11 +780,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, deleteLocation failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -792,7 +792,7 @@ export class LibraryStorageService {
   public fetchBooks(
     top?: number,
     skip?: number,
-    orderby?: { field: string; order: string }
+    orderby?: { field: string; order: string },
   ): Observable<BaseListModel<Book>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -823,7 +823,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchBooks, map `,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const rjs: any = <any>response;
@@ -845,11 +845,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService fetchBooks failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public readBook(bid: number): Observable<Book> {
@@ -872,7 +872,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, readBook, map `,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const rjs: any = <any>response;
@@ -886,11 +886,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readBook failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public createBook(objtbc: Book): Observable<Book> {
@@ -910,7 +910,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, createBook, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: Book = new Book();
@@ -920,11 +920,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createBook failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public deleteBook(bkid: number): Observable<any> {
@@ -942,7 +942,7 @@ export class LibraryStorageService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteBook, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return true;
@@ -950,17 +950,17 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, deleteBook failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public fetchBookBorrowRecords(
     top?: number,
     skip?: number,
-    orderby?: { field: string; order: string }
+    orderby?: { field: string; order: string },
   ): Observable<BaseListModel<BookBorrowRecord>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -991,7 +991,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchBookBorrowRecords, map `,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const rjs: any = <any>response;
@@ -1013,11 +1013,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService fetchBookBorrowRecords failed with: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public createBookBorrowRecord(objtbc: BookBorrowRecord): Observable<BookBorrowRecord> {
@@ -1039,7 +1039,7 @@ export class LibraryStorageService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, createBookBorrowRecord, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: BookBorrowRecord = new BookBorrowRecord();
@@ -1049,11 +1049,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createBookBorrowRecord failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   public deleteBookBorrowRecord(bkid: number): Observable<any> {
@@ -1071,7 +1071,7 @@ export class LibraryStorageService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteBookBorrowRecord, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return true;
@@ -1079,11 +1079,11 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, deleteBookBorrowRecord failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 

@@ -21,11 +21,11 @@ export class LanguageOdataService {
   }
 
   private readonly _http = inject(HttpClient);
-  
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LanguageOdataService constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._islistLoaded = false; // Performance improvement
@@ -47,7 +47,7 @@ export class LanguageOdataService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               'AC_HIH_UI [Debug]: Entering LanguageOdataService fetchAllLanguages',
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             const rjs: any = response as any;
@@ -67,14 +67,14 @@ export class LanguageOdataService {
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering LanguageOdataService fetchAllLanguages failed: ${error}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
 
             this._islistLoaded = false;
             this._listData = [];
 
             return throwError(error.statusText + '; ' + error.error + '; ' + error.message);
-          })
+          }),
         );
     } else {
       return of(this._listData);

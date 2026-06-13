@@ -41,30 +41,26 @@ describe('BookCategorySelectionDlgComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
-        
-        NoopAnimationsModule,
-        RouterTestingModule,
-        ReactiveFormsModule,
-        getTranslocoModule()],
-    providers: [
+      // declarations moved to imports
+      imports: [FormsModule, NoopAnimationsModule, RouterTestingModule, ReactiveFormsModule, getTranslocoModule()],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
         {
-            provide: NzModalRef,
-            useFactory: (modalSvc: NzModalService) => modalSvc.create({
-                nzClosable: true,
-                nzContent: 'test',
+          provide: NzModalRef,
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: 'test',
             }),
-            deps: [NzModalService],
+          deps: [NzModalService],
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

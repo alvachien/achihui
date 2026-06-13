@@ -21,7 +21,7 @@ import { RouterModule } from '@angular/router';
     TranslocoModule,
     NzModalModule,
     RouterModule,
-  ]
+  ],
 })
 export class DocumentChangeDespDialogComponent implements OnInit {
   // Header forum
@@ -33,7 +33,7 @@ export class DocumentChangeDespDialogComponent implements OnInit {
   private readonly modal = inject(NzModalRef);
   private readonly _zone = inject(NgZone);
   private readonly odataService = inject(FinanceOdataService);
-  
+
   constructor() {
     this.headerFormGroup = new UntypedFormGroup({
       idControl: new UntypedFormControl({ value: undefined, disabled: true }),

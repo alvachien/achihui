@@ -6,8 +6,6 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
-import { format } from 'date-fns';
-import { dateFormat } from '../../../model';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -34,7 +32,7 @@ import { HomeDefOdataService, EventStorageService } from '@services/index';
     NzButtonModule,
     NzInputModule,
     NzDatePickerModule,
-  ]
+  ],
 })
 export class NormalEventDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -54,11 +52,10 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);
 
-  constructor(
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -72,7 +69,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -80,7 +77,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
@@ -107,13 +104,13 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (e: GeneralEvent) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit forkJoin.`,
-                  ConsoleLogTypeEnum.debug
+                  ConsoleLogTypeEnum.debug,
                 );
 
                 this.detailFormGroup.get('idControl')?.setValue(e.ID);
@@ -131,7 +128,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering NormalEventDetailComponent ngOnInit forkJoin failed ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -156,7 +153,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -168,7 +165,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   public onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const objtbo = new GeneralEvent();
@@ -199,7 +196,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering NormalEventDetailComponent onSave failed ${err}...`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),

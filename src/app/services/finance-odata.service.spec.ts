@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { parse, format, addMonths, addYears, addWeeks } from 'date-fns';
+import { format, addMonths, addYears, addWeeks } from 'date-fns';
 
 import {
   Document,
@@ -13,7 +13,6 @@ import {
   RepeatedDatesAPIInput,
   RepeatedDatesAPIOutput,
   RepeatedDatesWithAmountAPIInput,
-  RepeatedDatesWithAmountAPIOutput,
   RepeatDatesWithAmountAndInterestAPIOutput,
   RepeatDatesWithAmountAndInterestAPIInput,
   ControlCenter,
@@ -75,15 +74,15 @@ describe('FinanceOdataService', () => {
     };
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         FinanceOdataService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ],
+    });
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -109,10 +108,8 @@ describe('FinanceOdataService', () => {
 
       service.fetchAllCurrencies().subscribe({
         next: (curries: any) => {
-          expect(curries.length, 'should return expected currencies')
-            .toEqual(fakeData.currenciesFromAPI.length);
-          expect(service.Currencies.length, 'should have buffered')
-            .toEqual(fakeData.currenciesFromAPI.length);
+          expect(curries.length, 'should return expected currencies').toEqual(fakeData.currenciesFromAPI.length);
+          expect(service.Currencies.length, 'should have buffered').toEqual(fakeData.currenciesFromAPI.length);
         },
         error: (fail: any) => {
           // Empty
@@ -179,8 +176,7 @@ describe('FinanceOdataService', () => {
       expect(service.Currencies.length, 'should not buffered yet').toEqual(0);
       service.fetchAllCurrencies().subscribe({
         next: (curries: any) => {
-          expect(curries.length, 'should return expected currencies')
-            .toEqual(fakeData.currenciesFromAPI.length);
+          expect(curries.length, 'should return expected currencies').toEqual(fakeData.currenciesFromAPI.length);
           expect(curries.length, 'should have buffered').toEqual(service.Currencies.length);
         },
         error: (fail: any) => {
@@ -208,8 +204,7 @@ describe('FinanceOdataService', () => {
       // Third call
       service.fetchAllCurrencies().subscribe({
         next: (curries: any) => {
-          expect(curries.length, 'should return expected currencies')
-            .toEqual(fakeData.currenciesFromAPI.length);
+          expect(curries.length, 'should return expected currencies').toEqual(fakeData.currenciesFromAPI.length);
         },
         error: (fail: any) => {
           // Do nothing
@@ -235,10 +230,12 @@ describe('FinanceOdataService', () => {
 
       service.fetchAllAccountCategories().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected account categories')
-            .toEqual(fakeData.finAccountCategoriesFromAPI.length);
-          expect(service.AccountCategories.length, 'should have buffered')
-            .toEqual(fakeData.finAccountCategoriesFromAPI.length);
+          expect(data.length, 'should return expected account categories').toEqual(
+            fakeData.finAccountCategoriesFromAPI.length,
+          );
+          expect(service.AccountCategories.length, 'should have buffered').toEqual(
+            fakeData.finAccountCategoriesFromAPI.length,
+          );
         },
         error: (fail: any) => {
           // Empty
@@ -319,8 +316,9 @@ describe('FinanceOdataService', () => {
       expect(service.AccountCategories.length, 'should not buffered yet').toEqual(0);
       service.fetchAllAccountCategories().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected account categories')
-            .toEqual(fakeData.finAccountCategoriesFromAPI.length);
+          expect(data.length, 'should return expected account categories').toEqual(
+            fakeData.finAccountCategoriesFromAPI.length,
+          );
           expect(data.length, 'should have buffered').toEqual(service.AccountCategories.length);
         },
         error: (fail: any) => {
@@ -346,8 +344,9 @@ describe('FinanceOdataService', () => {
       // Third call
       service.fetchAllAccountCategories().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected account categories')
-            .toEqual(fakeData.finAccountCategoriesFromAPI.length);
+          expect(data.length, 'should return expected account categories').toEqual(
+            fakeData.finAccountCategoriesFromAPI.length,
+          );
         },
         error: (fail: any) => {
           // Do nothing
@@ -374,10 +373,12 @@ describe('FinanceOdataService', () => {
 
       service.fetchAllAssetCategories().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected asset categories')
-            .toEqual(fakeData.finAssetCategoriesFromAPI.length);
-          expect(service.AssetCategories.length, 'should have buffered')
-            .toEqual(fakeData.finAssetCategoriesFromAPI.length);
+          expect(data.length, 'should return expected asset categories').toEqual(
+            fakeData.finAssetCategoriesFromAPI.length,
+          );
+          expect(service.AssetCategories.length, 'should have buffered').toEqual(
+            fakeData.finAssetCategoriesFromAPI.length,
+          );
         },
         error: (fail: any) => {
           // Empty
@@ -458,8 +459,9 @@ describe('FinanceOdataService', () => {
       expect(service.AssetCategories.length, 'should not buffered yet').toEqual(0);
       service.fetchAllAssetCategories().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected asset categories')
-            .toEqual(fakeData.finAssetCategoriesFromAPI.length);
+          expect(data.length, 'should return expected asset categories').toEqual(
+            fakeData.finAssetCategoriesFromAPI.length,
+          );
           expect(data.length, 'should have buffered').toEqual(service.AssetCategories.length);
         },
         error: (fail: any) => {
@@ -495,8 +497,9 @@ describe('FinanceOdataService', () => {
       // Third call
       service.fetchAllAssetCategories().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected asset categories')
-            .toEqual(fakeData.finAssetCategoriesFromAPI.length);
+          expect(data.length, 'should return expected asset categories').toEqual(
+            fakeData.finAssetCategoriesFromAPI.length,
+          );
         },
         error: (fail: any) => {
           // Do nothing
@@ -528,10 +531,8 @@ describe('FinanceOdataService', () => {
 
       service.fetchAllDocTypes().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected doc types')
-            .toEqual(fakeData.finDocTypesFromAPI.length);
-          expect(service.DocumentTypes.length, 'should have buffered')
-            .toEqual(fakeData.finDocTypesFromAPI.length);
+          expect(data.length, 'should return expected doc types').toEqual(fakeData.finDocTypesFromAPI.length);
+          expect(service.DocumentTypes.length, 'should have buffered').toEqual(fakeData.finDocTypesFromAPI.length);
         },
         error: (fail: any) => {
           // Empty
@@ -612,8 +613,7 @@ describe('FinanceOdataService', () => {
       expect(service.DocumentTypes.length, 'should not buffered yet').toEqual(0);
       service.fetchAllDocTypes().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected doc types')
-            .toEqual(fakeData.finDocTypesFromAPI.length);
+          expect(data.length, 'should return expected doc types').toEqual(fakeData.finDocTypesFromAPI.length);
           expect(data.length, 'should have buffered').toEqual(service.DocumentTypes.length);
         },
         error: (fail: any) => {
@@ -649,8 +649,7 @@ describe('FinanceOdataService', () => {
       // Third call
       service.fetchAllDocTypes().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected doc types')
-            .toEqual(fakeData.finDocTypesFromAPI.length);
+          expect(data.length, 'should return expected doc types').toEqual(fakeData.finDocTypesFromAPI.length);
         },
         error: (fail: any) => {
           // Do nothing
@@ -682,14 +681,12 @@ describe('FinanceOdataService', () => {
 
       service.fetchAllTranTypes().subscribe(
         (data: any) => {
-          expect(data.length, 'should return expected tran types')
-            .toEqual(fakeData.finTranTypesFromAPI.length);
-          expect(service.TranTypes.length, 'should have buffered')
-            .toEqual(fakeData.finTranTypesFromAPI.length);
+          expect(data.length, 'should return expected tran types').toEqual(fakeData.finTranTypesFromAPI.length);
+          expect(service.TranTypes.length, 'should have buffered').toEqual(fakeData.finTranTypesFromAPI.length);
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET tran types from expected URL
@@ -766,8 +763,7 @@ describe('FinanceOdataService', () => {
       expect(service.TranTypes.length, 'should not buffered yet').toEqual(0);
       service.fetchAllTranTypes().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected tran types')
-            .toEqual(fakeData.finTranTypesFromAPI.length);
+          expect(data.length, 'should return expected tran types').toEqual(fakeData.finTranTypesFromAPI.length);
           expect(data.length, 'should have buffered').toEqual(service.TranTypes.length);
         },
         error: (fail: any) => {
@@ -837,8 +833,7 @@ describe('FinanceOdataService', () => {
       service.fetchAllAccounts().subscribe({
         next: (data) => {
           expect(data.length, 'should return expected account').toEqual(fakeData.finAccountsFromAPI.length);
-          expect(service.Accounts.length, 'should have buffered')
-            .toEqual(fakeData.finAccountsFromAPI.length);
+          expect(service.Accounts.length, 'should have buffered').toEqual(fakeData.finAccountsFromAPI.length);
         },
       });
 
@@ -949,8 +944,7 @@ describe('FinanceOdataService', () => {
       // Third call
       service.fetchAllAccounts().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected accounts')
-            .toEqual(fakeData.finAccountsFromAPI.length);
+          expect(data.length, 'should return expected accounts').toEqual(fakeData.finAccountsFromAPI.length);
         },
         error: (fail: any) => {
           // Do nothing
@@ -1095,7 +1089,7 @@ describe('FinanceOdataService', () => {
         },
         (error: any) => {
           expect(error).toContain(msg);
-        }
+        },
       );
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
@@ -1131,7 +1125,7 @@ describe('FinanceOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
@@ -1180,10 +1174,12 @@ describe('FinanceOdataService', () => {
 
       service.fetchAllControlCenters().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected control center')
-            .toEqual(fakeData.finControlCentersFromAPI.length);
-          expect(service.ControlCenters.length, 'should have buffered')
-            .toEqual(fakeData.finControlCentersFromAPI.length);
+          expect(data.length, 'should return expected control center').toEqual(
+            fakeData.finControlCentersFromAPI.length,
+          );
+          expect(service.ControlCenters.length, 'should have buffered').toEqual(
+            fakeData.finControlCentersFromAPI.length,
+          );
         },
       });
 
@@ -1258,8 +1254,7 @@ describe('FinanceOdataService', () => {
       expect(service.ControlCenters.length, 'should not buffered yet').toEqual(0);
       service.fetchAllControlCenters().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected cc')
-            .toEqual(fakeData.finControlCentersFromAPI.length);
+          expect(data.length, 'should return expected cc').toEqual(fakeData.finControlCentersFromAPI.length);
           expect(data.length, 'should have buffered').toEqual(service.ControlCenters.length);
         },
       });
@@ -1292,8 +1287,7 @@ describe('FinanceOdataService', () => {
       // Third call
       service.fetchAllControlCenters().subscribe({
         next: (data: any) => {
-          expect(data.length, 'should return expected ccs')
-            .toEqual(fakeData.finControlCentersFromAPI.length);
+          expect(data.length, 'should return expected ccs').toEqual(fakeData.finControlCentersFromAPI.length);
         },
       });
 
@@ -1934,7 +1928,7 @@ describe('FinanceOdataService', () => {
         ],
       });
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // Second call
       service.fetchAllPlans().subscribe();
@@ -2110,7 +2104,7 @@ describe('FinanceOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -2130,7 +2124,7 @@ describe('FinanceOdataService', () => {
         },
         (error: any) => {
           expect(error).toContain(msg);
-        }
+        },
       );
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
@@ -2175,7 +2169,7 @@ describe('FinanceOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -2213,7 +2207,7 @@ describe('FinanceOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -2233,7 +2227,7 @@ describe('FinanceOdataService', () => {
         },
         (error: any) => {
           expect(error).toContain(msg);
-        }
+        },
       );
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {
@@ -2262,7 +2256,7 @@ describe('FinanceOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to DELETE from expected URL
@@ -2282,7 +2276,7 @@ describe('FinanceOdataService', () => {
         },
         (error: any) => {
           expect(error).toContain(msg);
-        }
+        },
       );
 
       // Service should have made one request to DELETE from expected URL
@@ -2321,7 +2315,7 @@ describe('FinanceOdataService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -2382,7 +2376,7 @@ describe('FinanceOdataService', () => {
         },
         (error: any) => {
           expect(error).toContain(msg);
-        }
+        },
       );
 
       const req: SafeAny = httpTestingController.expectOne((requrl: SafeAny) => {

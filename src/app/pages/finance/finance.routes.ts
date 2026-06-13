@@ -15,15 +15,15 @@ export const FINANCE_ROUTES: Routes = [
   },
   {
     path: 'account',
-    loadChildren: () => import('./account/account.routes').then(m => m.ACCOUNT_ROUTES)
+    loadChildren: () => import('./account/account.routes').then((m) => m.ACCOUNT_ROUTES),
   },
   {
     path: 'controlcenter',
-    loadChildren: () => import('./control-center/control-center.routes').then(m => m.CONTROL_CENTER_ROUTES)
+    loadChildren: () => import('./control-center/control-center.routes').then((m) => m.CONTROL_CENTER_ROUTES),
   },
   {
     path: 'order',
-    loadChildren: () => import('./order/order.routes').then(m => m.ORDER_ROUTES)
+    loadChildren: () => import('./order/order.routes').then((m) => m.ORDER_ROUTES),
   },
   {
     path: 'config',
@@ -39,15 +39,15 @@ export const FINANCE_ROUTES: Routes = [
   },
   {
     path: 'plan',
-    loadChildren: () => import('./plan/plan.routes').then(m => m.PLAN_ROUTES)
+    loadChildren: () => import('./plan/plan.routes').then((m) => m.PLAN_ROUTES),
   },
   {
     path: 'document',
-    loadChildren: () => import('./document/document.routes').then(m => m.DOCUMENT_ROUTES)
+    loadChildren: () => import('./document/document.routes').then((m) => m.DOCUMENT_ROUTES),
   },
   {
     path: 'report',
-    loadChildren: () => import('./report/report.routes').then(m => m.REPORT_ROUTES)
+    loadChildren: () => import('./report/report.routes').then((m) => m.REPORT_ROUTES),
   },
   {
     path: 'account-reconcile',
@@ -59,8 +59,7 @@ export const FINANCE_ROUTES: Routes = [
       {
         path: 'bymonth/:id',
         loadComponent: () => import('./account-reconcile/reconcile-by-month/').then((m) => m.ReconcileByMonthComponent),
-      }
-    ]
-  }
-
+      },
+    ],
+  },
 ];

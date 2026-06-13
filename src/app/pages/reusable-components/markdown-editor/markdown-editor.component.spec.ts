@@ -26,15 +26,15 @@ import { UserAuthInfo } from '../../../../app/model';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
-    template: ` <form [formGroup]="formGrp">
+  template: ` <form [formGroup]="formGrp">
     <nz-form-item>
       <nz-form-control>
         <ac-markdown-editor formControlName="infoControl"></ac-markdown-editor>
       </nz-form-control>
     </nz-form-item>
   </form>`,
-    standalone: true,
-    imports: [ReactiveFormsModule, NzFormModule, MarkdownEditorComponent],
+  standalone: true,
+  imports: [ReactiveFormsModule, NzFormModule, MarkdownEditorComponent],
 })
 export class MarkdownEditorTestFormComponent {
   public formGrp: UntypedFormGroup;
@@ -60,8 +60,9 @@ describe('MarkdownEditorComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [getTranslocoModule(),
+      // declarations moved to imports
+      imports: [
+        getTranslocoModule(),
         FormsModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
@@ -77,9 +78,16 @@ describe('MarkdownEditorComponent', () => {
         NzLayoutModule,
         NzUploadModule,
         MarkdownModule.forRoot(),
-        MarkdownEditorComponent],
-    providers: [NzConfigService, NzModalService, { provide: AuthService, useValue: authServiceStub }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+        MarkdownEditorComponent,
+      ],
+      providers: [
+        NzConfigService,
+        NzModalService,
+        { provide: AuthService, useValue: authServiceStub },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -95,16 +103,16 @@ describe('MarkdownEditorComponent', () => {
   describe('edit mode', () => {
     it('edit mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('edit mode for code coverage', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
@@ -144,17 +152,17 @@ describe('MarkdownEditorComponent', () => {
         // Value setter
         testingComponent.editorComponent.value = ctent;
       }
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     // According to NZ-ANTD repo, there is no way to wait for editor initialized
     // .../components/code-editor/code-editor.spec.ts
     it.skip('edit mode with value change', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(testingComponent).toBeTruthy();
@@ -167,16 +175,16 @@ describe('MarkdownEditorComponent', () => {
       // });
 
       let curval = testingComponent.editorComponent?.value;
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       testingComponent.editorComponent?.onToolbarH1();
       testingComponent.formGrp.get('infoControl')?.markAsDirty();
       testingComponent.formGrp.get('infoControl')?.updateValueAndValidity();
 
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       curval = testingComponent.formGrp.get('infoControl')?.value;

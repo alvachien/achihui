@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { BehaviorSubject, of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
-import {createSpyObj, getTranslocoModule, FakeDataHelper} from '../../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { DocumentChangeDateDialogComponent } from './document-change-date-dialog.component';
@@ -42,15 +42,17 @@ describe('DocumentChangeDateDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
-        
+      // declarations moved to imports
+      imports: [
+        FormsModule,
+
         ReactiveFormsModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         RouterTestingModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -58,17 +60,18 @@ describe('DocumentChangeDateDialogComponent', () => {
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
         {
-            provide: NzModalRef,
-            useFactory: (modalSvc: NzModalService) => modalSvc.create({
-                nzClosable: true,
-                nzContent: DocumentChangeDateDialogComponent,
+          provide: NzModalRef,
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: DocumentChangeDateDialogComponent,
             }),
-            deps: [NzModalService],
+          deps: [NzModalService],
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

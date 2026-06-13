@@ -28,7 +28,7 @@ import { EventStorageService, UIStatusService } from '@services/index';
     NzButtonModule,
     NzModalModule,
     RouterModule,
-  ]
+  ],
 })
 export class NormalEventListComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -46,7 +46,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventListComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = false;
@@ -55,7 +55,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventListComponent OnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -65,7 +65,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -82,7 +82,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sortOrder: string | null,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    filter: Array<{ key: string; value: string[] }> | null
+    filter: Array<{ key: string; value: string[] }> | null,
   ): void {
     this.isLoadingResults = true;
     this.odataService
@@ -90,13 +90,13 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: (x: BaseListModel<GeneralEvent>) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering NormalEventListComponent OnInit fetchGeneralEvents...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.totalCount = x.totalCount;
@@ -105,7 +105,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering NormalEventListComponent fetchGeneralEvents failed ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.error({
             nzTitle: translate('Common.Error'),
@@ -163,7 +163,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering BookListComponent onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import {
   UntypedFormGroup,
   UntypedFormControl,
@@ -75,8 +75,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzButtonModule,
     NzIconModule,
     TranslocoModule,
-    RouterModule,    
-  ]
+    RouterModule,
+  ],
 })
 export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -107,16 +107,20 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   // Step: Confirm
   public confirmInfo: SafeAny = {};
 
-  constructor(
-    public homeService: HomeDefOdataService,
-    public uiStatusService: UIStatusService,
-    public odataService: FinanceOdataService,
-    public modalService: NzModalService,
-    public router: Router
-  ) {
+  public readonly homeService = inject(HomeDefOdataService);
+
+  public readonly uiStatusService = inject(UIStatusService);
+
+  public readonly odataService = inject(FinanceOdataService);
+
+  public readonly modalService = inject(NzModalService);
+
+  public readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.headerFormGroup = new UntypedFormGroup({
       headerControl: new UntypedFormControl(new Document(), [Validators.required]),
@@ -128,7 +132,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         ccControl: new UntypedFormControl(),
         orderControl: new UntypedFormControl(),
       },
-      [costObjectValidator]
+      [costObjectValidator],
     );
     this.toFormGroup = new UntypedFormGroup(
       {
@@ -136,7 +140,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         ccControl: new UntypedFormControl(),
         orderControl: new UntypedFormControl(),
       },
-      [costObjectValidator, this._duplicateAccountValidator]
+      [costObjectValidator, this._duplicateAccountValidator],
     );
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
@@ -156,7 +160,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -193,7 +197,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent ngOnInit, forkJoin, ${err.toString()}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.create({
             nzTitle: translate('Common.Error'),
@@ -207,7 +211,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -219,7 +223,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isDocPosting = true;
@@ -238,7 +242,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
     ) {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave, onVerify failed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       popupDialog(this.modalService, 'Common.Error', detailObject.VerifiedMsgs);
@@ -256,13 +260,13 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         takeUntil(this._destroyed$!),
         finalize(() => {
           this.isDocPosting = false;
-        })
+        }),
       )
       .subscribe({
         next: (doc) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent onSave createDocument...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
           this.docIdCreated = doc.Id;
           this.docPostingFailed = null;
@@ -270,7 +274,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentTransferCreateComponent onSave createDocument: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.docPostingFailed = err;
           this.docIdCreated = undefined;
@@ -364,7 +368,7 @@ export class DocumentTransferCreateComponent implements OnInit, OnDestroy {
   private _duplicateAccountValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentTransferCreateComponent _duplicateAccountValidator`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const account = group.get('accountControl')?.value;

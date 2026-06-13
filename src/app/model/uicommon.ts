@@ -931,7 +931,7 @@ export class UIAccountForSelection {
 export function BuildupAccountForSelection(
   acnts: Account[],
   acntctg: AccountCategory[],
-  ctgyFilter?: IAccountCategoryFilter
+  ctgyFilter?: IAccountCategoryFilter,
 ): UIAccountForSelection[] {
   const arrst: UIAccountForSelection[] = [];
 

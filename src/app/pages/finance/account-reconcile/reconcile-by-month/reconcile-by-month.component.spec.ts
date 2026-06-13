@@ -1,4 +1,4 @@
-import { provideHttpClientTesting} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { createSpyObj } from 'testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -38,7 +38,6 @@ describe('ReconcileByMonthComponent', () => {
   let fetchAllAccountCategoriesSpy: SafeAny;
   let fetchAllAccountsSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
-  let homeService: Partial<HomeDefOdataService> = {};
 
   beforeAll(() => {
     fakeData = new FakeDataHelper();
@@ -49,12 +48,6 @@ describe('ReconcileByMonthComponent', () => {
     fakeData.buildFinAccounts();
 
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-
-    homeService = {
-      ChosedHome: fakeData.chosedHome,
-      MembersInChosedHome: fakeData.chosedHome.Members,
-      CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
-    };
   });
 
   beforeEach(async () => {
@@ -71,8 +64,9 @@ describe('ReconcileByMonthComponent', () => {
     authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
 
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
@@ -92,8 +86,9 @@ describe('ReconcileByMonthComponent', () => {
         NzFormModule,
         NzElementPatchModule,
         NzDatePickerModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         UIStatusService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
@@ -102,8 +97,8 @@ describe('ReconcileByMonthComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ReconcileByMonthComponent);
     component = fixture.componentInstance;
@@ -122,7 +117,7 @@ describe('ReconcileByMonthComponent', () => {
 
     it('1. shall initialize the data', async () => {
       fixture.detectChanges(); // ngOninit
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component.arAccounts.length).toEqual(fakeData.finAccounts.length);

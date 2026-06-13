@@ -34,7 +34,7 @@ export class FinanceStorageService {
   private readonly _http = inject(HttpClient);
   private readonly _authService = inject(AuthService);
   private readonly _homeService = inject(HomeDefOdataService);
-  
+
   constructor() {
     if (environment.LoggingLevel >= LogLevel.Debug) {
       console.debug('AC_HIH_UI [Debug]: Entering FinanceStorageService constructor...');
@@ -71,7 +71,7 @@ export class FinanceStorageService {
         catchError((errresp: HttpErrorResponse) => {
           const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
           return throwError(errmsg);
-        })
+        }),
       );
   }
 
@@ -147,7 +147,7 @@ export class FinanceStorageService {
         catchError((errresp: HttpErrorResponse) => {
           const errmsg = `${errresp.status} (${errresp.statusText}) - ${errresp.error}`;
           return throwError(errmsg);
-        })
+        }),
       );
   }
 }

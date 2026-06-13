@@ -1,22 +1,29 @@
 <nz-page-header nzBackIcon>
   <nz-breadcrumb nz-page-header-breadcrumb>
     <nz-breadcrumb-item>
-      <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item>
-    <nz-breadcrumb-item>{{'Finance.Analysis' | transloco}}</nz-breadcrumb-item>
+      <a routerLink="/finance/overview">{{ 'Common.Overview' | transloco }}</a></nz-breadcrumb-item
+    >
+    <nz-breadcrumb-item>{{ 'Finance.Analysis' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{'Finance.Analysis' | transloco}}</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{ 'Finance.Analysis' | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra> </nz-page-header-extra>
 </nz-page-header>
 
 <nz-divider></nz-divider>
 
 <div>
-  <div>{{'Common.DateRange' | transloco}}: {{insideDateRangeString}}</div>
-  @if(insightOption?.TransactionDirection !== undefined) {
-    <div>{{'Finance.Income' | transloco}}: {{insightOption?.TransactionDirection}}</div>
-  }  
-  <div [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco" nz-tooltip *ngIf="insightOption?.ExcludeTransfer !== undefined">{{'Finance.ExcludeTransfer' | transloco}}: {{insightOption?.ExcludeTransfer}}</div>  
+  <div>{{ 'Common.DateRange' | transloco }}: {{ insideDateRangeString }}</div>
+  @if (insightOption?.TransactionDirection !== undefined) {
+    <div>{{ 'Finance.Income' | transloco }}: {{ insightOption?.TransactionDirection }}</div>
+  }
+  <div
+    [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco"
+    nz-tooltip
+    *ngIf="insightOption?.ExcludeTransfer !== undefined"
+  >
+    {{ 'Finance.ExcludeTransfer' | transloco }}: {{ insightOption?.ExcludeTransfer }}
+  </div>
 </div>
 
 <nz-divider nzText="Options"></nz-divider>
@@ -25,14 +32,20 @@
   [nzDataSource]="listGroupFields"
   [nzTitles]="['Available', 'Target']"
   [nzTargetKeys]="selectedGroupFieldKeys"
-  (nzChange)="onTransferChanged($event)">
+  (nzChange)="onTransferChanged($event)"
+>
 </nz-transfer>
 
 <nz-divider></nz-divider>
 
-<nz-table #resultTable nzBordered nzShowSizeChanger [nzData]="listDisplayData"
+<nz-table
+  #resultTable
+  nzBordered
+  nzShowSizeChanger
+  [nzData]="listDisplayData"
   [nzLoading]="isLoadingData"
-  [nzFooter]="footerTpl">
+  [nzFooter]="footerTpl"
+>
   <thead>
     <tr>
       <th nzColumnKey="date" *ngIf="isTranDateVisible">{{ 'Common.Date' | transloco }}</th>
@@ -42,36 +55,36 @@
     </tr>
   </thead>
   <tbody>
-    @for(data of resultTable.data; track $index) {
+    @for (data of resultTable.data; track $index) {
       <tr>
-        @if(isTranDateVisible) {
+        @if (isTranDateVisible) {
           <td>{{ data.TransactionDate }}</td>
         }
-        @if(isTranTypeVisible) {
+        @if (isTranTypeVisible) {
           <td>
             {{ getTranTypeName(data.TransactionType!) }}<small>({{ data.TransactionType }})</small>
-          </td>  
+          </td>
         }
-        @if(isAccountVisible) {
+        @if (isAccountVisible) {
           <td>
             {{ getAccountName(data.AccountID!) }}
             <small>({{ data.AccountID }})</small>
-          </td>  
+          </td>
         }
         <td>
-          {{ data.Amount | number : '1.2-2' }} <small>{{ data.Currency }}</small>
+          {{ data.Amount | number: '1.2-2' }} <small>{{ data.Currency }}</small>
         </td>
-      </tr>  
+      </tr>
     }
   </tbody>
 </nz-table>
 <ng-template #footerTpl let-control>
   <div nz-row>
     <div nz-col nzFlex="3">
-      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number : '1.2-2' }} ({{ baseCurrency }})
+      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number: '1.2-2' }} ({{ baseCurrency }})
     </div>
     <div nz-col nzFlex="3">
-      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number : '1.2-2' }} ({{ baseCurrency }})
+      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number: '1.2-2' }} ({{ baseCurrency }})
     </div>
   </div>
 </ng-template>

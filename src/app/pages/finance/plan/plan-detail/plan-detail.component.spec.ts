@@ -10,16 +10,18 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import {createSpyObj, getTranslocoModule,
+import {
+  createSpyObj,
+  getTranslocoModule,
   ActivatedRouteUrlStub,
   FakeDataHelper,
   asyncData,
   asyncError,
   ElementClass_DialogContent,
-  ElementClass_DialogCloseButton,} from '../../../../../testing';
+  ElementClass_DialogCloseButton,
+} from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, PlanTypeEnum } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
 import { PlanDetailComponent } from './plan-detail.component';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -78,15 +80,17 @@ describe('PlanDetailComponent', () => {
     activatedRouteStub = new ActivatedRouteUrlStub([new UrlSegment('create', {})] as UrlSegment[]);
 
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
-        
+      // declarations moved to imports
+      imports: [
+        FormsModule,
+
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
-        getTranslocoModule()],
-    providers: [
+        getTranslocoModule(),
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -96,8 +100,8 @@ describe('PlanDetailComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     // TestBed.overrideModule(BrowserDynamicTestingModule, {
     //   set: {
@@ -126,20 +130,20 @@ describe('PlanDetailComponent', () => {
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
       fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
+        asyncData(fakeData.finAccountCategories),
       );
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
-        asyncData(fakeData.finControlCenters)
+        asyncData(fakeData.finControlCenters),
       );
       createPlanSpy.and.returnValue(asyncData(fakeData.finPlans[0]));
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -147,11 +151,11 @@ describe('PlanDetailComponent', () => {
 
     it('init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -165,16 +169,16 @@ describe('PlanDetailComponent', () => {
       expect(component.detailFormGroup.get('endDateControl')?.value).toBeTruthy();
       expect(component.detailFormGroup.get('currControl')?.value).toEqual(fakeData.chosedHome.BaseCurrency);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('type is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       component.detailFormGroup.get('despControl')?.setValue('test');
@@ -192,16 +196,16 @@ describe('PlanDetailComponent', () => {
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('desp is manadatory', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.Account);
@@ -219,16 +223,16 @@ describe('PlanDetailComponent', () => {
       expect(component.detailFormGroup.valid).toBeTruthy();
       expect(component.saveButtonEnabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('it shall create plan with type Account successfully', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.Account);
@@ -243,25 +247,25 @@ describe('PlanDetailComponent', () => {
       expect(component.saveButtonEnabled).toBeTruthy();
 
       component.onSubmit();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createPlanSpy).toHaveBeenCalled();
       expect(component.isObjectSubmitted).toEqual(true);
       expect(component.isObjectSubmitting).toEqual(false);
       expect(component.objectIdCreated).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('it shall create plan with type Account Category successfully', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.AccountCategory);
@@ -276,25 +280,25 @@ describe('PlanDetailComponent', () => {
       expect(component.saveButtonEnabled).toBeTruthy();
 
       component.onSubmit();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createPlanSpy).toHaveBeenCalled();
       expect(component.isObjectSubmitted).toEqual(true);
       expect(component.isObjectSubmitting).toEqual(false);
       expect(component.objectIdCreated).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('it shall create plan with type Control Center successfully', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.ControlCenter);
@@ -309,25 +313,25 @@ describe('PlanDetailComponent', () => {
       expect(component.saveButtonEnabled).toBeTruthy();
 
       component.onSubmit();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createPlanSpy).toHaveBeenCalled();
       expect(component.isObjectSubmitted).toEqual(true);
       expect(component.isObjectSubmitting).toEqual(false);
       expect(component.objectIdCreated).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('it shall create plan with type Tran type successfully', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       component.detailFormGroup.get('typeControl')?.setValue(PlanTypeEnum.TranType);
@@ -342,151 +346,151 @@ describe('PlanDetailComponent', () => {
       expect(component.saveButtonEnabled).toBeTruthy();
 
       component.onSubmit();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(createPlanSpy).toHaveBeenCalled();
       expect(component.isObjectSubmitted).toEqual(true);
       expect(component.isObjectSubmitting).toEqual(false);
       expect(component.objectIdCreated).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for currencies service failure', async () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError('currencies service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for transaction type service failure', async () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError('transaction type service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for account category service failure', async () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError('account category service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for account service failure', async () => {
       fetchAllAccountsSpy.and.returnValue(asyncError('accounts service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for control center service failure', async () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError('control center service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 
@@ -500,20 +504,20 @@ describe('PlanDetailComponent', () => {
       fetchAllCurrenciesSpy = storageService.fetchAllCurrencies.and.returnValue(asyncData(fakeData.currencies));
       fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
+        asyncData(fakeData.finAccountCategories),
       );
       fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(asyncData(fakeData.finAccounts));
       fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(
-        asyncData(fakeData.finControlCenters)
+        asyncData(fakeData.finControlCenters),
       );
       readPlanSpy.and.returnValue(asyncData(fakeData.finPlans[0]));
     });
 
     beforeEach(() => {
-    const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-  });
+    });
 
     afterEach(() => {
       overlayContainer.ngOnDestroy();
@@ -521,11 +525,11 @@ describe('PlanDetailComponent', () => {
 
     it('display mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
@@ -534,169 +538,169 @@ describe('PlanDetailComponent', () => {
       expect(component.isCreateMode).toBeFalsy();
       expect(component.detailFormGroup.disabled).toBeTruthy();
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for currencies service failure', async () => {
       fetchAllCurrenciesSpy.and.returnValue(asyncError('currencies service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for transaction type service failure', async () => {
       fetchAllTranTypesSpy.and.returnValue(asyncError('transaction type service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for account category service failure', async () => {
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError('account category service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for account service failure', async () => {
       fetchAllAccountsSpy.and.returnValue(asyncError('accounts service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for control center service failure', async () => {
       fetchAllControlCentersSpy.and.returnValue(asyncError('control center service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
 
     it('shall popup dialog for read plan service failure', async () => {
       readPlanSpy.and.returnValue(asyncError('read plan service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // activateRoute
+      await new Promise<void>((r) => setTimeout(r, 0)); // activateRoute
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // forkJoin
+      await new Promise<void>((r) => setTimeout(r, 0)); // forkJoin
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0)); // nz-spin
+      await new Promise<void>((r) => setTimeout(r, 0)); // nz-spin
       fixture.detectChanges();
 
       // Expect there is a dialog
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(1);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
 
       // OK button
       const closeBtn = overlayContainerElement.querySelector(ElementClass_DialogCloseButton) as HTMLButtonElement;
       expect(closeBtn).toBeTruthy();
       closeBtn.click();
-      await new Promise<void>(r => setTimeout(r, 0));
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
 
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

@@ -16,14 +16,7 @@ import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from 
   selector: 'hih-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less'],
-  imports: [
-    TranslocoModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzIconModule,
-    NzDropDownModule,
-    RouterModule,
-  ]
+  imports: [TranslocoModule, NzLayoutModule, NzMenuModule, NzIconModule, NzDropDownModule, RouterModule],
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -33,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public isLoggedIn?: boolean;
   public titleLogin?: string;
   public userDisplayAs?: string;
+  public selectedHomeName: string | null = null;
   private readonly i18n = inject(NzI18nService);
   private readonly translocoService = inject(TranslocoService);
   private readonly _authService = inject(AuthService);
@@ -42,8 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly themeService = inject(ThemeService);
   private readonly _zone = inject(NgZone);
 
-  constructor(
-  ) {
+  constructor() {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', ConsoleLogTypeEnum.debug);
 
     this.currentYear = new Date().getFullYear();
@@ -60,7 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this._authService.authContent.pipe(takeUntil(this._destroyed$)).subscribe((x) => {
       ModelUtility.writeConsoleLog(
         'AC HIH UI [Debug]: Entering AppComponent authService.authContent subscribe',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
       this._zone.run(() => {
         this.isLoggedIn = x.isAuthorized;
@@ -70,17 +63,24 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     });
 
-    this._homeService.checkDBVersion().pipe(takeUntil(this._destroyed$)).subscribe({
-      next: (val) => {
-        this.uiService.versionResult = val;
-      },
-      error: (err) => {
-        // Jump to error page
-        this.uiService.latestError = err;
-        this.uiService.fatalError = true;
-        this.router.navigate(['/fatalerror']);
-      },
+    this._homeService.curHomeSelected.pipe(takeUntil(this._destroyed$)).subscribe((hd) => {
+      this.selectedHomeName = hd?.Name ?? null;
     });
+
+    this._homeService
+      .checkDBVersion()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: (val) => {
+          this.uiService.versionResult = val;
+        },
+        error: (err) => {
+          // Jump to error page
+          this.uiService.latestError = err;
+          this.uiService.fatalError = true;
+          this.router.navigate(['/fatalerror']);
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -139,4 +139,3 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 }
-

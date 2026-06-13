@@ -33,7 +33,7 @@ describe('authInterceptor', () => {
     httpTestingController.verify();
   });
 
-  it('should pass request without auth header when no token', () => {
+  it('should pass request through without modification (no token)', () => {
     const apiUrl = `${environment.ApiUrl}/test`;
     httpClient.get(apiUrl).subscribe();
 
@@ -42,7 +42,10 @@ describe('authInterceptor', () => {
     req.flush({});
   });
 
-  it('should attach Bearer token when token is available', () => {
+  it('should pass request through without modification (with token)', () => {
+    // The interceptor is intentionally a pass-through — individual services
+    // attach Authorization headers manually to avoid circular dependency:
+    //   authInterceptor → AuthService → OidcSecurityService → HttpClient → authInterceptor
     const authorizedUser = new UserAuthInfo();
     authorizedUser.setContent({ userId: '1', userName: 'test', accessToken: 'test-token-123' });
 
@@ -52,7 +55,8 @@ describe('authInterceptor', () => {
     httpClient.get(apiUrl).subscribe();
 
     const req = httpTestingController.expectOne(apiUrl);
-    expect(req.request.headers.get('Authorization')).toBe('Bearer test-token-123');
+    // The interceptor does NOT add auth headers — services do it themselves
+    expect(req.request.headers.has('Authorization')).toBe(false);
     req.flush({});
   });
 });

@@ -8,7 +8,8 @@
   [nzPageIndex]="pageIndex"
   [nzPageSize]="pageSize"
   [nzFooter]="footerTpl"
-  (nzQueryParams)="onQueryParamsChange($event)">
+  (nzQueryParams)="onQueryParamsChange($event)"
+>
   <thead>
     <tr>
       <th nzColumnKey="docid">{{ 'Common.ID' | transloco }}</th>
@@ -54,7 +55,7 @@
         <small>({{ data.AccountID }})</small>
       </td>
       <td>
-        {{ data.Amount | number : '1.2-2' }} <small>{{ data.Currency }}</small>
+        {{ data.Amount | number: '1.2-2' }} <small>{{ data.Currency }}</small>
       </td>
       <td>
         {{ getControlCenterName(data.ControlCenterID!) }}<small>({{ data.ControlCenterID }})</small>
@@ -68,10 +69,10 @@
 <ng-template #footerTpl let-control>
   <div nz-row>
     <div nz-col nzFlex="3">
-      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number : '1.2-2' }} ({{ incomeCurrency }})
+      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number: '1.2-2' }} ({{ incomeCurrency }})
     </div>
     <div nz-col nzFlex="3">
-      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number : '1.2-2' }} ({{ outgoCurrency }})
+      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number: '1.2-2' }} ({{ outgoCurrency }})
     </div>
   </div>
 </ng-template>

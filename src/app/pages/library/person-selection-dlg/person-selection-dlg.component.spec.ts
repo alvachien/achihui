@@ -1,7 +1,7 @@
-import { provideHttpClientTesting} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { createSpyObj } from 'testing';
 import { vi } from 'vitest';
-import { ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -52,15 +52,17 @@ describe('PersonSelectionDlgComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
         LibraryUIModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
-        PersonSelectionDlgComponent],
-    providers: [
+        PersonSelectionDlgComponent,
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: HomeDefOdataService, useValue: homeService },
@@ -68,17 +70,18 @@ describe('PersonSelectionDlgComponent', () => {
         NzMessageService,
         NzModalService,
         {
-            provide: NzModalRef,
-            useFactory: (modalSvc: NzModalService) => modalSvc.create({
-                nzClosable: true,
-                nzContent: 'test',
+          provide: NzModalRef,
+          useFactory: (modalSvc: NzModalService) =>
+            modalSvc.create({
+              nzClosable: true,
+              nzContent: 'test',
             }),
-            deps: [NzModalService],
+          deps: [NzModalService],
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

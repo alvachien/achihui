@@ -8,7 +8,7 @@ import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { NzContextMenuService, NzDropdownMenuComponent, NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
-import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
+import { FinanceOdataService, HomeDefOdataService } from '@services/index';
 import {
   Account,
   AccountStatusEnum,
@@ -24,7 +24,7 @@ import {
   getOverviewScopeRange,
   ControlCenter,
 } from '@model/index';
-import { parse, format } from 'date-fns';
+import { format } from 'date-fns';
 import { dateFormat } from '@model/index';
 import { AccountChangeNameDialogComponent } from '../account-change-name-dialog';
 import { SafeAny } from '@common/any';
@@ -77,7 +77,7 @@ interface ISettleAccountDetail {
     DocumentItemViewComponent,
     TranslocoModule,
     RouterModule,
-  ]
+  ],
 })
 export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -110,7 +110,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   }
 
   private readonly odataService = inject(FinanceOdataService);
-  private readonly modalService = inject( NzModalService);
+  private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly router = inject(Router);
   private readonly nzContextMenuService = inject(NzContextMenuService);
@@ -119,7 +119,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this.isLoadingResults = false; // Default value
 
@@ -131,7 +131,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
@@ -141,7 +141,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this._destroyed$) {
       this._destroyed$.next(true);
@@ -153,7 +153,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   onNodeClick(data: NzTreeNode | NzFormatEmitEvent): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onNodeClick...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (data instanceof NzTreeNode) {
@@ -249,31 +249,34 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     if (this.activatedNode) {
       if (this.activatedNode?.key.startsWith('a')) {
         const acntid = +this.activatedNode?.key.substring(1);
-        this.odataService.closeAccount(acntid).pipe(takeUntil(this._destroyed$!)).subscribe({
-          next: (val) => {
-            if (val) {
-              this.modalService.success({
-                nzTitle: translate('Common.Success'),
-                nzContent: translate('Finance.AccountClosedSuccesfully'),
-                nzClosable: true,
-              });
-              this._refreshTreeCore();
-            } else {
+        this.odataService
+          .closeAccount(acntid)
+          .pipe(takeUntil(this._destroyed$!))
+          .subscribe({
+            next: (val) => {
+              if (val) {
+                this.modalService.success({
+                  nzTitle: translate('Common.Success'),
+                  nzContent: translate('Finance.AccountClosedSuccesfully'),
+                  nzClosable: true,
+                });
+                this._refreshTreeCore();
+              } else {
+                this.modalService.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: translate('Finance.CloseAccountIsNotAllowed'),
+                  nzClosable: true,
+                });
+              }
+            },
+            error: (err) => {
               this.modalService.error({
                 nzTitle: translate('Common.Error'),
-                nzContent: translate('Finance.CloseAccountIsNotAllowed'),
+                nzContent: err.toString(),
                 nzClosable: true,
               });
-            }
-          },
-          error: (err) => {
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err.toString(),
-              nzClosable: true,
-            });
-          },
-        });
+            },
+          });
       } else {
         this.modalService.warning({
           nzTitle: translate('Common.Warning'),
@@ -292,40 +295,42 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.odataService.fetchAllAccountCategories(),
           this.odataService.fetchAllAccounts(),
           this.odataService.fetchAllControlCenters(),
-        ]).pipe(takeUntil(this._destroyed$!)).subscribe({
-          next: (rst) => {
-            // Accounts
-            const arAcnts = rst[1] as Account[];
-            const acntidx = arAcnts.findIndex((acnt) => acnt.Id === acntid);
-            let acntName = '';
-            let acntCtgyId = 0;
-            let acntCtgyName = '';
-            if (acntidx !== -1) {
-              acntName = arAcnts[acntidx].Name ?? '';
-              acntCtgyId = arAcnts[acntidx].CategoryId ?? 0;
-              acntCtgyName = arAcnts[acntidx].CategoryName ?? '';
-            }
-            this.arControlCenters = rst[2];
+        ])
+          .pipe(takeUntil(this._destroyed$!))
+          .subscribe({
+            next: (rst) => {
+              // Accounts
+              const arAcnts = rst[1] as Account[];
+              const acntidx = arAcnts.findIndex((acnt) => acnt.Id === acntid);
+              let acntName = '';
+              let acntCtgyId = 0;
+              let acntCtgyName = '';
+              if (acntidx !== -1) {
+                acntName = arAcnts[acntidx].Name ?? '';
+                acntCtgyId = arAcnts[acntidx].CategoryId ?? 0;
+                acntCtgyName = arAcnts[acntidx].CategoryName ?? '';
+              }
+              this.arControlCenters = rst[2];
 
-            this.selectedAccountForSettle = {
-              AccountID: +acntid,
-              AccountName: acntName,
-              AccountCategoryID: acntCtgyId,
-              AccountCategoryName: acntCtgyName,
-              SettleDate: new Date(),
-              Amount: 0,
-              Currency: this.homeService.ChosedHome?.BaseCurrency ?? '',
-            };
-            this.isAccountSettleDlgVisible = true;
-          },
-          error: (err) => {
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err.toString(),
-              nzClosable: true,
-            });
-          },
-        });
+              this.selectedAccountForSettle = {
+                AccountID: +acntid,
+                AccountName: acntName,
+                AccountCategoryID: acntCtgyId,
+                AccountCategoryName: acntCtgyName,
+                SettleDate: new Date(),
+                Amount: 0,
+                Currency: this.homeService.ChosedHome?.BaseCurrency ?? '',
+              };
+              this.isAccountSettleDlgVisible = true;
+            },
+            error: (err) => {
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err.toString(),
+                nzClosable: true,
+              });
+            },
+          });
       } else {
         this.modalService.warning({
           nzTitle: translate('Common.Warning'),
@@ -345,7 +350,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.selectedAccountForSettle.AccountID,
           new Date(this.selectedAccountForSettle.SettleDate),
           this.selectedAccountForSettle.Amount,
-          this.selectedAccountForSettle.ControlCenterID ?? 0
+          this.selectedAccountForSettle.ControlCenterID ?? 0,
         )
         .pipe(takeUntil(this._destroyed$!))
         .subscribe({
@@ -393,7 +398,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   onAccountStatusFilterChanged(selectedStatus: SafeAny[]): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent onAccountStatusFilterChanged...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._refreshTreeCore();
   }
@@ -406,7 +411,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _refreshTree(isReload?: boolean): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isLoadingResults = true;
@@ -415,13 +420,13 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false))
+        finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
         next: () => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent _refreshTree, forkJoin...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this._refreshTreeCore();
@@ -429,7 +434,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Error]: Entering AccountHierarchyComponent _refreshTree, forkJoin, failed...',
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.modalService.error({
@@ -456,7 +461,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     arctgy: AccountCategory[],
     aracnt: Account[],
     level: number,
-    ctgyid?: number
+    ctgyid?: number,
   ): NzTreeNodeOptions[] {
     const data: NzTreeNodeOptions[] = [];
 
@@ -496,14 +501,17 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     if (this.activatedNode?.key.startsWith('a')) {
       this.isAccountView = true;
       const acntid = +this.activatedNode?.key.substring(1);
-      this.odataService.fetchAccountBalance(acntid).pipe(takeUntil(this._destroyed$!)).subscribe({
-        next: (val) => {
-          this.currentAccountBalance = val;
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
+      this.odataService
+        .fetchAccountBalance(acntid)
+        .pipe(takeUntil(this._destroyed$!))
+        .subscribe({
+          next: (val) => {
+            this.currentAccountBalance = val;
+          },
+          error: (err) => {
+            console.error(err);
+          },
+        });
     } else {
       this.isAccountView = false;
     }

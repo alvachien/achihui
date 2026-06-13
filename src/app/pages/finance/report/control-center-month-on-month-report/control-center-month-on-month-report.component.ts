@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReplaySubject, takeUntil } from 'rxjs';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -40,14 +40,16 @@ import { SafeAny } from '@common/any';
     NgxEchartsModule,
     NzButtonModule,
     TranslocoModule,
-  ]
+  ],
 })
 export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
-  constructor(private odataService: FinanceOdataService, private modalService: NzModalService) {
+  private readonly odataService = inject(FinanceOdataService);
+  private readonly modalService = inject(NzModalService);
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
@@ -71,73 +73,76 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent fetchAllControlCenters...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
-    this.odataService.fetchAllControlCenters().pipe(takeUntil(this._destroyed$)).subscribe({
-      next: (val: ControlCenter[]) => {
-        this.arControlCenters = val.slice();
-        this.availableControlCenters = [];
+    this.odataService
+      .fetchAllControlCenters()
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: (val: ControlCenter[]) => {
+          this.arControlCenters = val.slice();
+          this.availableControlCenters = [];
 
-        val.forEach((tt) => {
-          if (!tt.ParentId) {
-            // Root
-            this.availableControlCenters.push({
-              value: tt.Id,
-              label: tt.Name,
-              children: [],
-              isLeaf: true,
-            });
-          }
-        });
-
-        this.availableControlCenters.forEach((root) => {
           val.forEach((tt) => {
-            if (tt.ParentId === root.value) {
-              const level2node: NzCascaderOption = {
+            if (!tt.ParentId) {
+              // Root
+              this.availableControlCenters.push({
                 value: tt.Id,
                 label: tt.Name,
                 children: [],
-                isLeaf: false,
-              };
-              val.forEach((tt2) => {
-                if (tt2.ParentId === tt.Id) {
-                  level2node.children?.push({
-                    value: tt2.Id,
-                    label: tt2.Name,
-                    isLeaf: true,
-                  });
-                }
+                isLeaf: true,
               });
-              if (level2node.children?.length === 0) {
-                level2node.isLeaf = true;
-              }
-              root.children?.push(level2node);
-              root.isLeaf = false;
             }
           });
-        });
-      },
-      error: (err) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering ControlCenterMonthOnMonthReportComponent fetchAllControlCenters failed ${err}`,
-          ConsoleLogTypeEnum.error
-        );
 
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+          this.availableControlCenters.forEach((root) => {
+            val.forEach((tt) => {
+              if (tt.ParentId === root.value) {
+                const level2node: NzCascaderOption = {
+                  value: tt.Id,
+                  label: tt.Name,
+                  children: [],
+                  isLeaf: false,
+                };
+                val.forEach((tt2) => {
+                  if (tt2.ParentId === tt.Id) {
+                    level2node.children?.push({
+                      value: tt2.Id,
+                      label: tt2.Name,
+                      isLeaf: true,
+                    });
+                  }
+                });
+                if (level2node.children?.length === 0) {
+                  level2node.isLeaf = true;
+                }
+                root.children?.push(level2node);
+                root.isLeaf = false;
+              }
+            });
+          });
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering ControlCenterMonthOnMonthReportComponent fetchAllControlCenters failed ${err}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
 
   refreshData(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent refreshData`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     if (this.isGoButtonDisabled) {
       return;
@@ -145,280 +150,289 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, no-unsafe-optional-chaining, @typescript-eslint/no-non-null-asserted-optional-chain
     const selccid = this.selectedControlCenters![this.selectedControlCenters?.length! - 1];
-    this.odataService.fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true).pipe(takeUntil(this._destroyed$!)).subscribe({
-      next: (val: FinanceReportByControlCenterMOM[]) => {
-        // Fetch out data
-        const arAxis: string[] = [];
-        const arControlCenterIDs: number[] = [];
-        val.forEach((valitem) => {
-          if (arControlCenterIDs.indexOf(valitem.ControlCenterId) === -1) {
-            arControlCenterIDs.push(valitem.ControlCenterId);
-          }
-        });
+    this.odataService
+      .fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true)
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: (val: FinanceReportByControlCenterMOM[]) => {
+          // Fetch out data
+          const arAxis: string[] = [];
+          const arControlCenterIDs: number[] = [];
+          val.forEach((valitem) => {
+            if (arControlCenterIDs.indexOf(valitem.ControlCenterId) === -1) {
+              arControlCenterIDs.push(valitem.ControlCenterId);
+            }
+          });
 
-        const arSeries: SafeAny[] = [];
-        if (this.selectedPeriod === financePeriodLast12Months) {
-          // Last 12 months
-          for (let imonth = 11; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            arAxis.push(format(monthinuse, 'yyyy.MM'));
-          }
-
-          arControlCenterIDs.forEach((ccid) => {
-            const arIn: number[] = [];
-            const arOut: number[] = [];
-            const arBal: number[] = [];
-
+          const arSeries: SafeAny[] = [];
+          if (this.selectedPeriod === financePeriodLast12Months) {
+            // Last 12 months
             for (let imonth = 11; imonth >= 0; imonth--) {
               const monthinuse = subMonths(new Date(), imonth);
-
-              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1);
-              if (validx !== -1) {
-                arIn.push(val[validx].DebitBalance);
-                arOut.push(val[validx].CreditBalance);
-                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
-              } else {
-                arIn.push(0);
-                arOut.push(0);
-                arBal.push(0);
-              }
+              arAxis.push(format(monthinuse, 'yyyy.MM'));
             }
 
-            const ccname = this.arControlCenters.find((p) => p.Id === ccid)?.Name;
-            arSeries.push({
-              name: ccname + 'In',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Finance.Income'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arIn,
-            });
-            arSeries.push({
-              name: ccname + 'Out',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Finance.Expense'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arOut,
-            });
-            arSeries.push({
-              name: ccname + 'Bal',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Common.Total'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arBal,
-            });
-          });
-        } else if (this.selectedPeriod === financePeriodLast6Months) {
-          // Last 6 months
-          for (let imonth = 5; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            arAxis.push(format(monthinuse, 'yyyy.MM'));
-          }
+            arControlCenterIDs.forEach((ccid) => {
+              const arIn: number[] = [];
+              const arOut: number[] = [];
+              const arBal: number[] = [];
 
-          arControlCenterIDs.forEach((ccid) => {
-            const arIn: number[] = [];
-            const arOut: number[] = [];
-            const arBal: number[] = [];
+              for (let imonth = 11; imonth >= 0; imonth--) {
+                const monthinuse = subMonths(new Date(), imonth);
 
+                const validx = val.findIndex(
+                  (p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1,
+                );
+                if (validx !== -1) {
+                  arIn.push(val[validx].DebitBalance);
+                  arOut.push(val[validx].CreditBalance);
+                  arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
+                } else {
+                  arIn.push(0);
+                  arOut.push(0);
+                  arBal.push(0);
+                }
+              }
+
+              const ccname = this.arControlCenters.find((p) => p.Id === ccid)?.Name;
+              arSeries.push({
+                name: ccname + 'In',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Finance.Income'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arIn,
+              });
+              arSeries.push({
+                name: ccname + 'Out',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Finance.Expense'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arOut,
+              });
+              arSeries.push({
+                name: ccname + 'Bal',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Common.Total'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arBal,
+              });
+            });
+          } else if (this.selectedPeriod === financePeriodLast6Months) {
+            // Last 6 months
             for (let imonth = 5; imonth >= 0; imonth--) {
               const monthinuse = subMonths(new Date(), imonth);
-
-              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1);
-              if (validx !== -1) {
-                arIn.push(val[validx].DebitBalance);
-                arOut.push(val[validx].CreditBalance);
-                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
-              } else {
-                arIn.push(0);
-                arOut.push(0);
-                arBal.push(0);
-              }
+              arAxis.push(format(monthinuse, 'yyyy.MM'));
             }
 
-            const ccname = this.arControlCenters.find((p) => p.Id === ccid)?.Name;
-            arSeries.push({
-              name: ccname + 'In',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Finance.Income'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arIn,
-            });
-            arSeries.push({
-              name: ccname + 'Out',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Finance.Expense'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arOut,
-            });
-            arSeries.push({
-              name: ccname + 'Bal',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Common.Total'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arBal,
-            });
-          });
-        } else if (this.selectedPeriod === financePeriodLast3Months) {
-          // Last 3 months
-          for (let imonth = 2; imonth >= 0; imonth--) {
-            const monthinuse = subMonths(new Date(), imonth);
-            arAxis.push(format(monthinuse, 'yyyy.MM'));
-          }
+            arControlCenterIDs.forEach((ccid) => {
+              const arIn: number[] = [];
+              const arOut: number[] = [];
+              const arBal: number[] = [];
 
-          arControlCenterIDs.forEach((ccid) => {
-            const arIn: number[] = [];
-            const arOut: number[] = [];
-            const arBal: number[] = [];
+              for (let imonth = 5; imonth >= 0; imonth--) {
+                const monthinuse = subMonths(new Date(), imonth);
 
+                const validx = val.findIndex(
+                  (p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1,
+                );
+                if (validx !== -1) {
+                  arIn.push(val[validx].DebitBalance);
+                  arOut.push(val[validx].CreditBalance);
+                  arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
+                } else {
+                  arIn.push(0);
+                  arOut.push(0);
+                  arBal.push(0);
+                }
+              }
+
+              const ccname = this.arControlCenters.find((p) => p.Id === ccid)?.Name;
+              arSeries.push({
+                name: ccname + 'In',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Finance.Income'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arIn,
+              });
+              arSeries.push({
+                name: ccname + 'Out',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Finance.Expense'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arOut,
+              });
+              arSeries.push({
+                name: ccname + 'Bal',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Common.Total'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arBal,
+              });
+            });
+          } else if (this.selectedPeriod === financePeriodLast3Months) {
+            // Last 3 months
             for (let imonth = 2; imonth >= 0; imonth--) {
               const monthinuse = subMonths(new Date(), imonth);
-
-              const validx = val.findIndex((p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1);
-              if (validx !== -1) {
-                arIn.push(val[validx].DebitBalance);
-                arOut.push(val[validx].CreditBalance);
-                arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
-              } else {
-                arIn.push(0);
-                arOut.push(0);
-                arBal.push(0);
-              }
+              arAxis.push(format(monthinuse, 'yyyy.MM'));
             }
 
-            const ccname = this.arControlCenters.find((p) => p.Id === ccid)?.Name;
-            arSeries.push({
-              name: ccname + 'In',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Finance.Income'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arIn,
-            });
-            arSeries.push({
-              name: ccname + 'Out',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Finance.Expense'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arOut,
-            });
-            arSeries.push({
-              name: ccname + 'Bal',
-              type: 'bar',
-              label: {
-                show: true,
-                formatter: '{c}',
-                fontSize: 16,
-              },
-              stack: translate('Common.Total'),
-              emphasis: {
-                focus: 'series',
-              },
-              data: arBal,
-            });
-          });
-        }
+            arControlCenterIDs.forEach((ccid) => {
+              const arIn: number[] = [];
+              const arOut: number[] = [];
+              const arBal: number[] = [];
 
-        this.chartOption = {
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'cross',
-              crossStyle: {
-                color: '#999',
-              },
-            },
-          },
-          toolbox: {
-            feature: {
-              dataView: { show: true, readOnly: false },
-              restore: { show: true },
-              saveAsImage: { show: true },
-            },
-          },
-          xAxis: [
-            {
-              type: 'category',
-              data: arAxis,
+              for (let imonth = 2; imonth >= 0; imonth--) {
+                const monthinuse = subMonths(new Date(), imonth);
+
+                const validx = val.findIndex(
+                  (p) => p.ControlCenterId === ccid && p.Month === monthinuse.getMonth() + 1,
+                );
+                if (validx !== -1) {
+                  arIn.push(val[validx].DebitBalance);
+                  arOut.push(val[validx].CreditBalance);
+                  arBal.push(NumberUtility.Round2Two(val[validx].DebitBalance + val[validx].CreditBalance));
+                } else {
+                  arIn.push(0);
+                  arOut.push(0);
+                  arBal.push(0);
+                }
+              }
+
+              const ccname = this.arControlCenters.find((p) => p.Id === ccid)?.Name;
+              arSeries.push({
+                name: ccname + 'In',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Finance.Income'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arIn,
+              });
+              arSeries.push({
+                name: ccname + 'Out',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Finance.Expense'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arOut,
+              });
+              arSeries.push({
+                name: ccname + 'Bal',
+                type: 'bar',
+                label: {
+                  show: true,
+                  formatter: '{c}',
+                  fontSize: 16,
+                },
+                stack: translate('Common.Total'),
+                emphasis: {
+                  focus: 'series',
+                },
+                data: arBal,
+              });
+            });
+          }
+
+          this.chartOption = {
+            tooltip: {
+              trigger: 'axis',
               axisPointer: {
-                type: 'shadow',
+                type: 'cross',
+                crossStyle: {
+                  color: '#999',
+                },
               },
             },
-          ],
-          yAxis: [
-            {
-              type: 'value',
+            toolbox: {
+              feature: {
+                dataView: { show: true, readOnly: false },
+                restore: { show: true },
+                saveAsImage: { show: true },
+              },
             },
-          ],
-          series: arSeries,
-        };
-      },
-      error: (err) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering ControlCenterMonthOnMonthReportComponent refreshData failed ${err}`,
-          ConsoleLogTypeEnum.error
-        );
+            xAxis: [
+              {
+                type: 'category',
+                data: arAxis,
+                axisPointer: {
+                  type: 'shadow',
+                },
+              },
+            ],
+            yAxis: [
+              {
+                type: 'value',
+              },
+            ],
+            series: arSeries,
+          };
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering ControlCenterMonthOnMonthReportComponent refreshData failed ${err}`,
+            ConsoleLogTypeEnum.error,
+          );
 
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
   ngOnDestroy(): void {
     if (this._destroyed$) {

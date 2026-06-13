@@ -1,8 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+  UntypedFormArray,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -56,7 +63,7 @@ import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-c
     DocumentNormalMassCreateItemComponent,
     TranslocoModule,
     RouterModule,
-  ]
+  ],
 })
 export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
@@ -85,17 +92,22 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   public docIdCreated: Document[] = [];
   public docIdFailed: Document[] = [];
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private uiStatusService: UIStatusService,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService,
-    private fb: UntypedFormBuilder,
-    private router: Router
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly uiStatusService = inject(UIStatusService);
+
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  private readonly fb = inject(UntypedFormBuilder);
+
+  private readonly router = inject(Router);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     // Set the default currency
@@ -106,7 +118,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -149,7 +161,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent ngOnInit, forkJoin, ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           this.modalService.create({
             nzTitle: translate('Common.Error'),
@@ -163,7 +175,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -273,7 +285,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       },
       {
         validators: [costObjectValidator],
-      }
+      },
     );
   }
   private createItem(): number {
@@ -427,13 +439,13 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isDocPosting = false))
+        finalize(() => (this.isDocPosting = false)),
       )
       .subscribe({
         next: (rsts: { PostedDocuments: Document[]; FailedDocuments: Document[] }) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.docIdCreated = rsts.PostedDocuments;
@@ -442,7 +454,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent doPosting massCreateNormalDocument failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
         },
       });
@@ -458,13 +470,13 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isDocPosting = false))
+        finalize(() => (this.isDocPosting = false)),
       )
       .subscribe({
         next: (rsts: { PostedDocuments: Document[]; FailedDocuments: Document[] }) => {
           ModelUtility.writeConsoleLog(
             'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument...',
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.docIdCreated.push(...rsts.PostedDocuments);
@@ -473,7 +485,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
         error: (err) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering DocumentNormalMassCreateComponent onResubmitFailedItems massCreateNormalDocument failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
         },
       });

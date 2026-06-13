@@ -27,7 +27,7 @@
       </tr>
     </thead>
     <tbody>
-      @for(data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track $index) {
         <tr>
           <td>
             {{ data.ID }}
@@ -41,7 +41,7 @@
           </td>
           <td>{{ data.Name }}</td>
           <td>{{ data.StartDateDisplayString }} - {{ data.EndDateDisplayString }}</td>
-        </tr>  
+        </tr>
       }
     </tbody>
   </nz-table>

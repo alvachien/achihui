@@ -45,15 +45,15 @@ describe('FinanceStorageService', () => {
     };
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         FinanceStorageService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ],
+    });
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -82,7 +82,7 @@ describe('FinanceStorageService', () => {
         },
         (fail: any) => {
           // Empty
-        }
+        },
       );
 
       // Service should have made one request to GET cc from expected URL
@@ -102,7 +102,7 @@ describe('FinanceStorageService', () => {
         },
         (error: any) => {
           expect(error).toContain(msg);
-        }
+        },
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
@@ -161,10 +161,12 @@ describe('FinanceStorageService', () => {
 
     it('should handle error response', () => {
       service.getReportTranType().subscribe(
-        () => { throw new Error('expected to fail'); },
+        () => {
+          throw new Error('expected to fail');
+        },
         (error: any) => {
           expect(error).toBeTruthy();
-        }
+        },
       );
 
       const req: any = httpTestingController.expectOne((requrl: any) => {

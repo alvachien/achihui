@@ -23,7 +23,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class HomeDefOdataService {
-  private _redirURL = '';
+  private static readonly REDIRECT_URL_KEY = 'achihui_redirect_url';
 
   // Buffer
   private _islistLoaded: boolean;
@@ -43,7 +43,7 @@ export class HomeDefOdataService {
   set ChosedHome(hd: HomeDef | null) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering HomeDefOdataService ChosedHome setter: ${hd}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (hd) {
@@ -59,7 +59,7 @@ export class HomeDefOdataService {
   set CurrentMemberInChosedHome(hm: HomeMember | null) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering HomeDefOdataService CurrentMemberInChosedHome setter: ${hm}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (hm) {
@@ -72,12 +72,16 @@ export class HomeDefOdataService {
     return this.ChosedHome?.Members ?? [];
   }
 
-  // Redirect URL
+  // Redirect URL — persisted in sessionStorage so it survives OIDC page reloads
   get RedirectURL(): string {
-    return this._redirURL;
+    return sessionStorage.getItem(HomeDefOdataService.REDIRECT_URL_KEY) ?? '';
   }
   set RedirectURL(url: string) {
-    this._redirURL = url;
+    if (url) {
+      sessionStorage.setItem(HomeDefOdataService.REDIRECT_URL_KEY, url);
+    } else {
+      sessionStorage.removeItem(HomeDefOdataService.REDIRECT_URL_KEY);
+    }
   }
 
   // Properties
@@ -85,11 +89,11 @@ export class HomeDefOdataService {
 
   private readonly _http = inject(HttpClient);
   private readonly _authService = inject(AuthService);
-  
+
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering HomeDefOdataService constructor...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._islistLoaded = false; // Performance improvement
@@ -102,13 +106,23 @@ export class HomeDefOdataService {
   public fetchAllHomeDef(forceReload?: boolean): Observable<HomeDef[]> {
     if (!this._islistLoaded || forceReload) {
       let headers: HttpHeaders = new HttpHeaders();
-      headers = headers
-        .append('Content-Type', 'application/json')
-        .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      headers = headers.append('Content-Type', 'application/json').append('Accept', 'application/json');
+      const token = this._authService.authSubject.getValue().getAccessToken();
+      if (token) {
+        headers = headers.append('Authorization', 'Bearer ' + token);
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: fetchAllHomeDef - sending request with token (length: ${token.length})`,
+          ConsoleLogTypeEnum.debug,
+        );
+      } else {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Warn]: fetchAllHomeDef - sending request WITHOUT Authorization header! isAuthorized: ${this._authService.authSubject.getValue().isAuthorized}`,
+          ConsoleLogTypeEnum.warn,
+        );
+      }
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('$expand', 'HomeMembers');
+      params = params.append('$expand', 'Members');
 
       return this._http
         .get(this.apiUrl, {
@@ -119,7 +133,7 @@ export class HomeDefOdataService {
           map((response: any) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Debug]: Entering HomeDefOdataService, fetchAllHomeDef...`,
-              ConsoleLogTypeEnum.debug
+              ConsoleLogTypeEnum.debug,
             );
 
             this._listHomeDefList = [];
@@ -138,15 +152,15 @@ export class HomeDefOdataService {
           }),
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef failed: ${error}`,
-              ConsoleLogTypeEnum.error
+              `AC_HIH_UI [Error]: Entering HomeDefOdataService, fetchAllHomeDef failed: status=${error.status}, statusText=${error.statusText}, url=${error.url}`,
+              ConsoleLogTypeEnum.error,
             );
 
             this._islistLoaded = false;
             this._listHomeDefList = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-          })
+          }),
         );
     } else {
       return of(this._listHomeDefList);
@@ -163,7 +177,7 @@ export class HomeDefOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
-    params = params.append('$expand', 'HomeMembers');
+    params = params.append('$expand', 'Members');
     params = params.append('$filter', `ID eq ${hid}`);
 
     return this._http
@@ -175,7 +189,7 @@ export class HomeDefOdataService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering HomeDefOdataService, readHomeDef.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: HomeDef = new HomeDef();
@@ -196,11 +210,11 @@ export class HomeDefOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefOdataService, readHomeDef, Failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -225,7 +239,7 @@ export class HomeDefOdataService {
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering HomeDefOdataService, createHomeDef, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           const hd: HomeDef = new HomeDef();
@@ -238,11 +252,11 @@ export class HomeDefOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefOdataService createHomeDef failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
   /**
@@ -267,7 +281,7 @@ export class HomeDefOdataService {
         map(() => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering HomeDefOdataService, changeHomeDef, map.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           // Empty result from API : 204
@@ -281,11 +295,11 @@ export class HomeDefOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefOdataService changeHomeDef failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -309,10 +323,10 @@ export class HomeDefOdataService {
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering HomeDefOdataService, getHomeMessages failed: ${error}`,
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      })
+      }),
     );
   }
 
@@ -344,10 +358,10 @@ export class HomeDefOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefOdataService, createHomeMessage failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -387,10 +401,10 @@ export class HomeDefOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefOdataService, markHomeMessageHasRead failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -430,10 +444,10 @@ export class HomeDefOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefOdataService, deleteHomeMessage failed: ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 
@@ -455,7 +469,7 @@ export class HomeDefOdataService {
       map((x: HttpResponse<any>) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Debug]: Entering HomeDefDetailService, getHomeKeyFigure, map.`,
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
 
         this.keyFigure = new HomeKeyFigure();
@@ -465,11 +479,11 @@ export class HomeDefOdataService {
       catchError((error: HttpErrorResponse) => {
         ModelUtility.writeConsoleLog(
           `AC_HIH_UI [Error]: Entering HomeDefDetailService, getHomeKeyFigure, Failed: ${error}`,
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
 
         return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-      })
+      }),
     );
   }
 
@@ -486,13 +500,13 @@ export class HomeDefOdataService {
         {},
         {
           headers,
-        }
+        },
       )
       .pipe(
         map((response: any) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering HomeDefOdataService, checkDBVersion.`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           return response as any as CheckVersionResult;
@@ -500,11 +514,11 @@ export class HomeDefOdataService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering HomeDefOdataService, checkDBVersion, Failed ${error}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
-        })
+        }),
       );
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -58,7 +58,7 @@ import { UIAccountStatusFilterPipe } from '../../pipes';
     NzResultModule,
     TranslocoModule,
     UIAccountStatusFilterPipe,
-  ]
+  ],
 })
 export class PlanDetailComponent implements OnInit, OnDestroy {
   private _destroyed$: ReplaySubject<boolean> | null = null;
@@ -124,15 +124,18 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  constructor(
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private odataService: FinanceOdataService,
-    private modalService: NzModalService
-  ) {
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly activateRoute = inject(ActivatedRoute);
+
+  private readonly odataService = inject(FinanceOdataService);
+
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.arFinPlanTypes = UIDisplayStringUtil.getFinancePlanTypeEnumDisplayStrings();
@@ -163,21 +166,21 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
         amountControl: new UntypedFormControl(0, [Validators.required]),
         currControl: new UntypedFormControl(this.homeService.ChosedHome?.BaseCurrency ?? 0, [Validators.required]),
       },
-      [dateRangeValidator]
+      [dateRangeValidator],
     );
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     this._destroyed$ = new ReplaySubject(1);
 
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
 
       if (x instanceof Array && x.length > 0) {
@@ -212,7 +215,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
               takeUntil(this._destroyed$!),
               finalize(() => {
                 this.isLoadingResults = false;
-              })
+              }),
             )
             .subscribe({
               next: (rsts) => {
@@ -245,7 +248,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin : ${err}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.uiMode = UIMode.Invalid;
                 this.modalService.create({
@@ -272,13 +275,13 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (rsts) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, forkJoin`,
-                  ConsoleLogTypeEnum.debug
+                  ConsoleLogTypeEnum.debug,
                 );
 
                 this.arCurrencies = rsts[0];
@@ -290,7 +293,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin: ${err}`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
@@ -308,7 +311,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -320,7 +323,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent onSubmit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.isObjectSubmitting = true;
@@ -334,7 +337,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   private onCreatePlan(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent onCreatePlan...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const dataObj: Plan = this._generatePlan();
@@ -353,13 +356,13 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.isObjectSubmitting = false;
           this.isObjectSubmitted = true;
-        })
+        }),
       )
       .subscribe({
         next: (newplan: Plan) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Debug]: Entering PlanDetailComponent, onCreatePlan`,
-            ConsoleLogTypeEnum.debug
+            ConsoleLogTypeEnum.debug,
           );
 
           this.objectIdCreated = newplan.ID;
@@ -369,7 +372,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
           // Show error message
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering PlanDetailComponent, onCreatePlan, failed: ${err}`,
-            ConsoleLogTypeEnum.error
+            ConsoleLogTypeEnum.error,
           );
 
           this.objectIdCreated = undefined;
@@ -381,7 +384,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   private onChangePlan(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent onChangePlan...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const dataObj: Plan = this._generatePlan();
@@ -419,7 +422,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   public onPlanTypeChanged(event: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering PlanDetailComponent, onPlanTypeChanged: ${event}`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const newType: PlanTypeEnum = event as PlanTypeEnum;

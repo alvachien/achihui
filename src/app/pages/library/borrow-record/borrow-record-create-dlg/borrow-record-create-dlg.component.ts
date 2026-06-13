@@ -1,8 +1,6 @@
-import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { format } from 'date-fns';
-import { dateFormat } from '@model/index';
 import { NzModalRef, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
@@ -14,7 +12,7 @@ import { LibraryStorageService } from '@services/index';
 import { OrganizationSelectionDlgComponent } from '../../organization/organization-selection-dlg';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'hih-borrow-record-create-dlg',
   templateUrl: './borrow-record-create-dlg.component.html',
   styleUrls: ['./borrow-record-create-dlg.component.less'],
@@ -33,16 +31,20 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
   @Input() selectedBook: Book | null = null;
   selectedOrg: Organization | null = null;
 
-  constructor(
-    private modalService: NzModalService,
-    private modal: NzModalRef,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetect: ChangeDetectorRef,
-    private storageService: LibraryStorageService
-  ) {
+  private readonly modalService = inject(NzModalService);
+
+  private readonly modal = inject(NzModalRef);
+
+  private readonly viewContainerRef = inject(ViewContainerRef);
+
+  private readonly changeDetect = inject(ChangeDetectorRef);
+
+  private readonly storageService = inject(LibraryStorageService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -74,7 +76,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
   ngOnInit(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
@@ -102,7 +104,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       nzOnOk: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, OK button...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
         this.storageService.Organizations.forEach((org) => {
           if (setPress.has(org.ID)) {
@@ -114,7 +116,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       nzOnCancel: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, cancelled...',
-          ConsoleLogTypeEnum.debug
+          ConsoleLogTypeEnum.debug,
         );
       },
     });
@@ -124,7 +126,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       // Do nothing by now.
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...',
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
     });
   }
@@ -147,7 +149,7 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       error: () => {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Error]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...',
-          ConsoleLogTypeEnum.error
+          ConsoleLogTypeEnum.error,
         );
       },
     });

@@ -13,7 +13,13 @@ import { MarkdownModule } from 'ngx-markdown';
 import { UIMode } from 'actslib';
 
 import { BlogUIModule } from '../../blog-ui.module';
-import {createSpyObj, getTranslocoModule, FakeDataHelper, ActivatedRouteUrlStub, asyncData} from '../../../../../testing';
+import {
+  createSpyObj,
+  getTranslocoModule,
+  FakeDataHelper,
+  ActivatedRouteUrlStub,
+  asyncData,
+} from '../../../../../testing';
 import { PostDetailComponent } from './post-detail.component';
 import { MarkdownEditorComponent } from '../../../reusable-components/markdown-editor';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../../services';
@@ -60,7 +66,9 @@ describe('PostDetailComponent', () => {
         NzResizableModule,
         NzCodeEditorModule,
         MarkdownModule.forRoot(),
-        MarkdownEditorComponent, PostDetailComponent],
+        MarkdownEditorComponent,
+        PostDetailComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -90,15 +98,15 @@ describe('PostDetailComponent', () => {
 
     it('create mode init without error', async () => {
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
       expect(component.uiMode).toEqual(UIMode.Create);
       expect(component.listOfCollection.length).toEqual(fakeData.blogCollection.length);
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
     });
   });
 });

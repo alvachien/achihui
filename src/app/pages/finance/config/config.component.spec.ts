@@ -2,11 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AccountCategoryListComponent } from './account-category-list';
-import { AssetCategoryListComponent } from './asset-category-list';
-import { DocTypeListComponent } from './doc-type-list';
-import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
-import { TranTypeListComponent } from './tran-type-list';
 import { ConfigComponent } from './config.component';
 import { getTranslocoModule, FakeDataHelper } from '../../../../testing';
 import { HomeDefOdataService } from '../../../services';

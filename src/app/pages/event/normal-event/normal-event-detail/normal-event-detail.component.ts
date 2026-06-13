@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -6,8 +6,6 @@ import { takeUntil, finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService, NzModalModule } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
-import { format } from 'date-fns';
-import { dateFormat } from '../../../../model';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -19,7 +17,7 @@ import { ModelUtility, ConsoleLogTypeEnum, GeneralEvent, getUIModeString } from 
 import { HomeDefOdataService, EventStorageService } from '../../../../services';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'hih-normal-event-detail',
   templateUrl: './normal-event-detail.component.html',
   styleUrls: ['./normal-event-detail.component.less'],
@@ -48,16 +46,20 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
     return isUIEditable(this.uiMode);
   }
 
-  constructor(
-    private storageService: EventStorageService,
-    private homeService: HomeDefOdataService,
-    private activateRoute: ActivatedRoute,
-    private router: Router,
-    private modalService: NzModalService
-  ) {
+  private readonly storageService = inject(EventStorageService);
+
+  private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly activateRoute = inject(ActivatedRoute);
+
+  private readonly router = inject(Router);
+
+  private readonly modalService = inject(NzModalService);
+
+  constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent constructor...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this.detailFormGroup = new UntypedFormGroup({
@@ -71,7 +73,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     this._destroyed$ = new ReplaySubject(1);
@@ -79,7 +81,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
     this.activateRoute.url.subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug
+        ConsoleLogTypeEnum.debug,
       );
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
@@ -106,13 +108,13 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
             .pipe(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false))
+              finalize(() => (this.isLoadingResults = false)),
             )
             .subscribe({
               next: (e: GeneralEvent) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit forkJoin.`,
-                  ConsoleLogTypeEnum.debug
+                  ConsoleLogTypeEnum.debug,
                 );
 
                 this.detailFormGroup.get('idControl')?.setValue(e.ID);
@@ -130,7 +132,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
               error: (err) => {
                 ModelUtility.writeConsoleLog(
                   `AC_HIH_UI [Error]: Entering NormalEventDetailComponent ngOnInit forkJoin failed ${err}...`,
-                  ConsoleLogTypeEnum.error
+                  ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
                   nzTitle: translate('Common.Error'),
@@ -155,7 +157,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     if (this._destroyed$) {
@@ -167,7 +169,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   public onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering NormalEventDetailComponent onSave...',
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
 
     const objtbo = new GeneralEvent();
@@ -198,7 +200,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
           error: (err) => {
             ModelUtility.writeConsoleLog(
               `AC_HIH_UI [Error]: Entering NormalEventDetailComponent onSave failed ${err}...`,
-              ConsoleLogTypeEnum.error
+              ConsoleLogTypeEnum.error,
             );
             this.modalService.error({
               nzTitle: translate('Common.Error'),

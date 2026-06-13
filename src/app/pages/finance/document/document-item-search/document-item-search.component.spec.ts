@@ -8,11 +8,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
-import {createSpyObj, getTranslocoModule, FakeDataHelper, asyncData} from '../../../../../testing';
+import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
-import { MessageDialogComponent } from '../../../message-dialog';
-import { DocumentItemViewComponent } from '../document-item-view/document-item-view.component';
 import { DocumentItemSearchComponent } from './document-item-search.component';
 import { FinanceUIModule } from '../../finance-ui.module';
 import { SafeAny } from '@common/any';
@@ -76,15 +74,17 @@ describe('DocumentItemSearchComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    // declarations moved to imports
-    imports: [FormsModule,
+      // declarations moved to imports
+      imports: [
+        FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         BrowserDynamicTestingModule,
         getTranslocoModule(),
-        FinanceUIModule],
-    providers: [
+        FinanceUIModule,
+      ],
+      providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: NZ_I18N, useValue: en_US },
@@ -93,8 +93,8 @@ describe('DocumentItemSearchComponent', () => {
         NzModalService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -111,21 +111,17 @@ describe('DocumentItemSearchComponent', () => {
     beforeEach(() => {
       fetchAllDocTypesSpy.and.returnValue(asyncData(fakeData.finDocTypes));
       fetchAllCurrenciesSpy.and.returnValue(asyncData(fakeData.currencies));
-      fetchAllAccountCategoriesSpy.and.returnValue(
-        asyncData(fakeData.finAccountCategories)
-      );
+      fetchAllAccountCategoriesSpy.and.returnValue(asyncData(fakeData.finAccountCategories));
       fetchAllTranTypesSpy.and.returnValue(asyncData(fakeData.finTranTypes));
       fetchAllAccountsSpy.and.returnValue(asyncData(fakeData.finAccounts));
-      fetchAllControlCentersSpy.and.returnValue(
-        asyncData(fakeData.finControlCenters)
-      );
+      fetchAllControlCentersSpy.and.returnValue(asyncData(fakeData.finControlCenters));
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
       // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(asyncData(fakeData.finDoc));
     });
 
     it('1. shall initialize the data', async () => {
       fixture.detectChanges(); // ngOninit
-      await new Promise<void>(r => setTimeout(r, 0));
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       expect(fetchAllDocTypesSpy).not.toHaveBeenCalled();

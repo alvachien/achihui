@@ -1,7 +1,6 @@
 import { Injectable, EventEmitter, inject } from '@angular/core';
 
 import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum } from '../model';
-import { TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 
 export interface DocInsightOption {
@@ -88,18 +87,18 @@ export class UIStatusService {
   public langChangeEvent: EventEmitter<string> = new EventEmitter<string>(undefined);
 
   private readonly _router = inject(Router);
-  
+
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering UIStatusService constructor...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
   }
 
   private onLanguageChanged(): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering UIStatusService onLanguageChanged...`,
-      ConsoleLogTypeEnum.debug
+      ConsoleLogTypeEnum.debug,
     );
     // this._tranService.get(arstrings).subscribe((x: any) => {
     //   for (let attr in x) {
