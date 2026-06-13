@@ -43,17 +43,18 @@ export class ThemeService {
     }
 
     return new Promise<Event>((resolve, reject) => {
-      this.loadCss(`${theme}.css`, theme).then(        
+      this.loadCss(`${theme}.css`, theme).then(
         (e) => {
           console.debug(`Got CSS file for ${theme}`);
 
           if (!firstLoad) {
             document.documentElement.classList.add(theme);
+            document.documentElement.classList.remove(this.reverseTheme(theme));
           }
           this.removeUnusedTheme(this.reverseTheme(theme));
           resolve(e);
         },
-        (e) => reject(e)
+        (e) => reject(e),
       );
     });
   }
