@@ -57,19 +57,19 @@ A live application is hosted at [alvachien.com](http://www.alvachien.com/hih).
 
 ### Snapshots
 
-![Index page](https://github.com/alvachien/achihui/blob/master/docs/images/index.JPG)
+![Index page](https://github.com/alvachien/achihui/blob/main/docs/images/index.JPG)
 Welcome page
 
-![Finance report](https://github.com/alvachien/achihui/blob/master/docs/images/finance_report.JPG)
+![Finance report](https://github.com/alvachien/achihui/blob/main/docs/images/finance_report.JPG)
 Finance reports
 
-![Tag cloud](https://github.com/alvachien/achihui/blob/master/docs/images/tag_cloud.JPG)
+![Tag cloud](https://github.com/alvachien/achihui/blob/main/docs/images/tag_cloud.JPG)
 Cloud of tag
 
-![Create document](https://github.com/alvachien/achihui/blob/master/docs/images/create_doc.JPG)
+![Create document](https://github.com/alvachien/achihui/blob/main/docs/images/create_doc.JPG)
 Create a financial document
 
-![Document display](https://github.com/alvachien/achihui/blob/master/docs/images/display_doc.JPG)
+![Document display](https://github.com/alvachien/achihui/blob/main/docs/images/display_doc.JPG)
 Display a posted document
 
 ### Related API/App
