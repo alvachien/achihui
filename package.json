@@ -1,6 +1,6 @@
 {
   "name": "achihui",
-  "version": "1.8.506",
+  "version": "1.8.508",
   "private": true,
   "description": "Web App for Home Information Hub.",
   "keywords": [
@@ -21,7 +21,7 @@
     "bundle-analyzer": "webpack-bundle-analyzer ./dist/achihui/stats.json"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "dependencies": {
     "@angular/animations": "^21.2.13",

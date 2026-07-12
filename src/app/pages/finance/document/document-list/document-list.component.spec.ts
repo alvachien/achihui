@@ -204,6 +204,21 @@ describe('DocumentListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
+    it('should render a table row per document after data loads', async () => {
+      // Regression: the @for body was wrapped in an inert <ng-template>, so
+      // listOfDocs was populated by the API but no rows reached the DOM.
+      fixture.detectChanges(); // ngOnInit()
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(component.listOfDocs.length).toBeGreaterThan(0);
+
+      const rows = fixture.nativeElement.querySelectorAll('tbody tr');
+      expect(rows.length).toBeGreaterThanOrEqual(component.listOfDocs.length);
+    });
+
     it('shall trigger navigation on menus for document creating', () => {
       const routerstub = TestBed.inject(Router);
       vi.spyOn(routerstub, 'navigate');

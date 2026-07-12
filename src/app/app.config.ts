@@ -7,7 +7,6 @@ import {
   inject,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { APP_BASE_HREF } from '@angular/common';
 
 import routeConfig from './app.routes';
 import { icons } from './icons-provider';
@@ -33,7 +32,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routeConfig),
-    { provide: APP_BASE_HREF, useValue: '/' },
     provideNzIcons(icons),
     provideNzI18n(en_US),
     importProvidersFrom(FormsModule),
