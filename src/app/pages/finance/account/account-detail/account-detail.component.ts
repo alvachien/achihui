@@ -230,170 +230,181 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       ConsoleLogTypeEnum.debug,
     );
 
-    this.activateRoute.url.subscribe((x) => {
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
+          this.changeDetectRef.detectChanges();
         }
-        this.currentMode = getUIModeString(this.uiMode);
-        this.changeDetectRef.detectChanges();
-      }
 
-      switch (this.uiMode) {
-        case UIMode.Update:
-        case UIMode.Display: {
-          forkJoin([
-            this.odataService.fetchAllAccountCategories(),
-            this.odataService.fetchAllAssetCategories(),
-            this.odataService.fetchAllTranTypes(),
-            this.odataService.readAccount(this.routerID),
-          ])
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .pipe(takeUntil(this._destroyed$!))
-            .subscribe({
-              next: (rst: SafeAny[]) => {
-                this.arAccountCategories = rst[0];
-                this.arAssetCategories = rst[1];
-                this.arTranTypes = rst[2];
-                const acnt = rst[3] as Account;
+        switch (this.uiMode) {
+          case UIMode.Update:
+          case UIMode.Display: {
+            forkJoin([
+              this.odataService.fetchAllAccountCategories(),
+              this.odataService.fetchAllAssetCategories(),
+              this.odataService.fetchAllTranTypes(),
+              this.odataService.readAccount(this.routerID),
+            ])
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              .pipe(takeUntil(this._destroyed$!))
+              .subscribe({
+                next: (rst: SafeAny[]) => {
+                  this.arAccountCategories = rst[0];
+                  this.arAssetCategories = rst[1];
+                  this.arTranTypes = rst[2];
+                  const acnt = rst[3] as Account;
 
-                if (acnt.CategoryId === financeAccountCategoryAdvancePayment) {
-                  this.odataService.fetchAllDPTmpDocs({ AccountID: this.routerID }).subscribe({
-                    next: (val) => {
-                      (acnt.ExtraInfo as AccountExtraAdvancePayment).dpTmpDocs = val;
-                      this._displayAccountContent(acnt);
+                  if (acnt.CategoryId === financeAccountCategoryAdvancePayment) {
+                    this.odataService
+                      .fetchAllDPTmpDocs({ AccountID: this.routerID })
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      .pipe(takeUntil(this._destroyed$!))
+                      .subscribe({
+                        next: (val) => {
+                          (acnt.ExtraInfo as AccountExtraAdvancePayment).dpTmpDocs = val;
+                          this._displayAccountContent(acnt);
 
-                      this.headerFormGroup.markAsPristine();
-                      this.extraADPFormGroup.markAsPristine();
-                      this.extraAssetFormGroup.markAsPristine();
-                      this.extraLoanFormGroup.markAsPristine();
+                          this.headerFormGroup.markAsPristine();
+                          this.extraADPFormGroup.markAsPristine();
+                          this.extraAssetFormGroup.markAsPristine();
+                          this.extraLoanFormGroup.markAsPristine();
 
-                      if (this.uiMode === UIMode.Display) {
-                        this.headerFormGroup.disable();
-                        this.extraADPFormGroup.disable();
-                        this.extraAssetFormGroup.disable();
-                        this.extraLoanFormGroup.disable();
-                      }
-                    },
-                    error: (err) => {
-                      this.modalService.error({
-                        nzTitle: translate('Common.Error'),
-                        nzContent: err.toString(),
-                        nzClosable: true,
+                          if (this.uiMode === UIMode.Display) {
+                            this.headerFormGroup.disable();
+                            this.extraADPFormGroup.disable();
+                            this.extraAssetFormGroup.disable();
+                            this.extraLoanFormGroup.disable();
+                          }
+                        },
+                        error: (err) => {
+                          this.modalService.error({
+                            nzTitle: translate('Common.Error'),
+                            nzContent: err.toString(),
+                            nzClosable: true,
+                          });
+                        },
                       });
-                    },
-                  });
-                } else if (acnt.CategoryId === financeAccountCategoryBorrowFrom) {
-                  this.odataService.fetchAllLoanTmpDocs({ AccountID: this.routerID }).subscribe({
-                    next: (val) => {
-                      (acnt.ExtraInfo as AccountExtraLoan).loanTmpDocs = val;
-                      this._displayAccountContent(acnt);
+                  } else if (acnt.CategoryId === financeAccountCategoryBorrowFrom) {
+                    this.odataService
+                      .fetchAllLoanTmpDocs({ AccountID: this.routerID })
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      .pipe(takeUntil(this._destroyed$!))
+                      .subscribe({
+                        next: (val) => {
+                          (acnt.ExtraInfo as AccountExtraLoan).loanTmpDocs = val;
+                          this._displayAccountContent(acnt);
 
-                      this.headerFormGroup.markAsPristine();
-                      this.extraADPFormGroup.markAsPristine();
-                      this.extraAssetFormGroup.markAsPristine();
-                      this.extraLoanFormGroup.markAsPristine();
+                          this.headerFormGroup.markAsPristine();
+                          this.extraADPFormGroup.markAsPristine();
+                          this.extraAssetFormGroup.markAsPristine();
+                          this.extraLoanFormGroup.markAsPristine();
 
-                      if (this.uiMode === UIMode.Display) {
-                        this.headerFormGroup.disable();
-                        this.extraADPFormGroup.disable();
-                        this.extraAssetFormGroup.disable();
-                        this.extraLoanFormGroup.disable();
-                      }
-                    },
-                    error: (err) => {
-                      this.modalService.error({
-                        nzTitle: translate('Common.Error'),
-                        nzContent: err.toString(),
-                        nzClosable: true,
+                          if (this.uiMode === UIMode.Display) {
+                            this.headerFormGroup.disable();
+                            this.extraADPFormGroup.disable();
+                            this.extraAssetFormGroup.disable();
+                            this.extraLoanFormGroup.disable();
+                          }
+                        },
+                        error: (err) => {
+                          this.modalService.error({
+                            nzTitle: translate('Common.Error'),
+                            nzContent: err.toString(),
+                            nzClosable: true,
+                          });
+                        },
                       });
-                    },
+                  } else if (acnt.CategoryId === financeAccountCategoryAsset) {
+                    this._displayAccountContent(acnt);
+                    this.headerFormGroup.markAsPristine();
+                    this.extraADPFormGroup.markAsPristine();
+                    this.extraAssetFormGroup.markAsPristine();
+                    this.extraLoanFormGroup.markAsPristine();
+
+                    if (this.uiMode === UIMode.Display) {
+                      this.headerFormGroup.disable();
+                      this.extraADPFormGroup.disable();
+                      this.extraAssetFormGroup.disable();
+                      this.extraLoanFormGroup.disable();
+                    }
+                  } else {
+                    this._displayAccountContent(acnt);
+                    this.headerFormGroup.markAsPristine();
+                    this.extraADPFormGroup.markAsPristine();
+                    this.extraAssetFormGroup.markAsPristine();
+                    this.extraLoanFormGroup.markAsPristine();
+
+                    if (this.uiMode === UIMode.Display) {
+                      this.headerFormGroup.disable();
+                      this.extraADPFormGroup.disable();
+                      this.extraAssetFormGroup.disable();
+                      this.extraLoanFormGroup.disable();
+                    }
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${err}`,
+                    ConsoleLogTypeEnum.error,
+                  );
+
+                  this.uiMode = UIMode.Invalid;
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
                   });
-                } else if (acnt.CategoryId === financeAccountCategoryAsset) {
-                  this._displayAccountContent(acnt);
-                  this.headerFormGroup.markAsPristine();
-                  this.extraADPFormGroup.markAsPristine();
-                  this.extraAssetFormGroup.markAsPristine();
-                  this.extraLoanFormGroup.markAsPristine();
+                },
+              });
+            break;
+          }
 
-                  if (this.uiMode === UIMode.Display) {
-                    this.headerFormGroup.disable();
-                    this.extraADPFormGroup.disable();
-                    this.extraAssetFormGroup.disable();
-                    this.extraLoanFormGroup.disable();
-                  }
-                } else {
-                  this._displayAccountContent(acnt);
-                  this.headerFormGroup.markAsPristine();
-                  this.extraADPFormGroup.markAsPristine();
-                  this.extraAssetFormGroup.markAsPristine();
-                  this.extraLoanFormGroup.markAsPristine();
+          case UIMode.Create:
+          default: {
+            forkJoin([
+              this.odataService.fetchAllAccountCategories(),
+              this.odataService.fetchAllControlCenters(),
+              this.odataService.fetchAllOrders(),
+            ])
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              .pipe(takeUntil(this._destroyed$!))
+              .subscribe({
+                next: (rst) => {
+                  this.arAccountCategories = rst[0];
+                  this._arControlCenters = rst[1];
+                  this._arUIOrders = BuildupOrderForSelection(rst[2]);
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${err.toString()}`,
+                    ConsoleLogTypeEnum.error,
+                  );
 
-                  if (this.uiMode === UIMode.Display) {
-                    this.headerFormGroup.disable();
-                    this.extraADPFormGroup.disable();
-                    this.extraAssetFormGroup.disable();
-                    this.extraLoanFormGroup.disable();
-                  }
-                }
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${err}`,
-                  ConsoleLogTypeEnum.error,
-                );
-
-                this.uiMode = UIMode.Invalid;
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
         }
-
-        case UIMode.Create:
-        default: {
-          forkJoin([
-            this.odataService.fetchAllAccountCategories(),
-            this.odataService.fetchAllControlCenters(),
-            this.odataService.fetchAllOrders(),
-          ])
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .pipe(takeUntil(this._destroyed$!))
-            .subscribe({
-              next: (rst) => {
-                this.arAccountCategories = rst[0];
-                this._arControlCenters = rst[1];
-                this._arUIOrders = BuildupOrderForSelection(rst[2]);
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${err.toString()}`,
-                  ConsoleLogTypeEnum.error,
-                );
-
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
-        }
-      }
-    });
+      });
   }
 
   ngOnDestroy(): void {
@@ -509,19 +520,23 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             docitem.OrderId = this.amountFormGroup.get('orderControl')?.value;
             doc.Items.push(docitem);
 
-            this.odataService.createDocument(doc).subscribe({
-              next: (crtdoc) => {
-                // Navigate to display mode
-                this.router.navigate(['/finance/document/display', crtdoc.Id]);
-              },
-              error: (err2) => {
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err2,
-                  nzClosable: true,
-                });
-              },
-            });
+            this.odataService
+              .createDocument(doc)
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              .pipe(takeUntil(this._destroyed$!))
+              .subscribe({
+                next: (crtdoc) => {
+                  // Navigate to display mode
+                  this.router.navigate(['/finance/document/display', crtdoc.Id]);
+                },
+                error: (err2) => {
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err2,
+                    nzClosable: true,
+                  });
+                },
+              });
           } else {
             // Navigate to display mode
             this.router.navigate(['/finance/account/display', val.Id]);

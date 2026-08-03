@@ -81,6 +81,7 @@ class DateCellData {
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
+  private _modalOkTimer?: ReturnType<typeof setTimeout>;
   private _selectedYear: number | null = null;
   private _selectedMonth: number | null = null;
 
@@ -141,6 +142,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+    }
+
+    if (this._modalOkTimer) {
+      clearTimeout(this._modalOkTimer);
     }
   }
 
@@ -264,7 +269,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
         arControlCenters: controlCenters,
         accounts: accounts,
       },
-      nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
+      nzOnOk: () =>
+        new Promise((resolve) => {
+          this._modalOkTimer = setTimeout(resolve, 1000);
+        }),
       nzFooter: [
         {
           label: translate('Common.Close'),

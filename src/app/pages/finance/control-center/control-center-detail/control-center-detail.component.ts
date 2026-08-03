@@ -86,106 +86,109 @@ export class ControlCenterDetailComponent implements OnInit, OnDestroy {
     this._destroyed$ = new ReplaySubject(1);
 
     // Distinguish current mode
-    this.activateRoute.url.subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit activateRoute URL: ${x}`,
-        ConsoleLogTypeEnum.debug,
-      );
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit activateRoute URL: ${x}`,
+          ConsoleLogTypeEnum.debug,
+        );
 
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          // Do nothing
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            // Do nothing
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-        switch (this.uiMode) {
-          case UIMode.Update:
-          case UIMode.Display: {
-            this.isLoadingResults = true;
-
-            forkJoin([this.odataService.fetchAllControlCenters(), this.odataService.readControlCenter(this.routerID)])
-              .pipe(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                takeUntil(this._destroyed$!),
-                finalize(() => (this.isLoadingResults = false)),
-              )
-              .subscribe({
-                next: (rsts) => {
-                  this.existedCC = rsts[0];
-
-                  this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
-                  this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
-                  this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
-                  this.detailFormGroup.get('parentControl')?.setValue(rsts[1].ParentId);
-                  this.detailFormGroup.get('ownerControl')?.setValue(rsts[1].Owner);
-                  this.detailFormGroup.markAsPristine();
-                  if (this.uiMode === UIMode.Display) {
-                    this.detailFormGroup.disable();
-                  } else {
-                    this.detailFormGroup.enable();
-                  }
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${err}`,
-                    ConsoleLogTypeEnum.error,
-                  );
-
-                  this.modalService.create({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
-                  });
-                },
-              });
-            break;
+            this.uiMode = UIMode.Display;
           }
+          this.currentMode = getUIModeString(this.uiMode);
+          switch (this.uiMode) {
+            case UIMode.Update:
+            case UIMode.Display: {
+              this.isLoadingResults = true;
 
-          case UIMode.Create:
-          default: {
-            this.isLoadingResults = true;
-            this.odataService
-              .fetchAllControlCenters()
-              .pipe(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                takeUntil(this._destroyed$!),
-                finalize(() => (this.isLoadingResults = false)),
-              )
-              .subscribe({
-                next: (cclist: ControlCenter[]) => {
-                  ModelUtility.writeConsoleLog(
-                    'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...',
-                    ConsoleLogTypeEnum.debug,
-                  );
+              forkJoin([this.odataService.fetchAllControlCenters(), this.odataService.readControlCenter(this.routerID)])
+                .pipe(
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  takeUntil(this._destroyed$!),
+                  finalize(() => (this.isLoadingResults = false)),
+                )
+                .subscribe({
+                  next: (rsts) => {
+                    this.existedCC = rsts[0];
 
-                  // Load all control centers.
-                  this.existedCC = cclist;
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${err}`,
-                    ConsoleLogTypeEnum.error,
-                  );
+                    this.detailFormGroup.get('idControl')?.setValue(rsts[1].Id);
+                    this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
+                    this.detailFormGroup.get('cmtControl')?.setValue(rsts[1].Comment);
+                    this.detailFormGroup.get('parentControl')?.setValue(rsts[1].ParentId);
+                    this.detailFormGroup.get('ownerControl')?.setValue(rsts[1].Owner);
+                    this.detailFormGroup.markAsPristine();
+                    if (this.uiMode === UIMode.Display) {
+                      this.detailFormGroup.disable();
+                    } else {
+                      this.detailFormGroup.enable();
+                    }
+                  },
+                  error: (err) => {
+                    ModelUtility.writeConsoleLog(
+                      `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, readControlCenter failed: ${err}`,
+                      ConsoleLogTypeEnum.error,
+                    );
 
-                  this.modalService.create({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
-                  });
-                },
-              });
-            break;
+                    this.modalService.create({
+                      nzTitle: translate('Common.Error'),
+                      nzContent: err.toString(),
+                      nzClosable: true,
+                    });
+                  },
+                });
+              break;
+            }
+
+            case UIMode.Create:
+            default: {
+              this.isLoadingResults = true;
+              this.odataService
+                .fetchAllControlCenters()
+                .pipe(
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  takeUntil(this._destroyed$!),
+                  finalize(() => (this.isLoadingResults = false)),
+                )
+                .subscribe({
+                  next: (cclist: ControlCenter[]) => {
+                    ModelUtility.writeConsoleLog(
+                      'AC_HIH_UI [Debug]: Entering ControlCenterDetailComponent ngOnInit, fetchAllControlCenters...',
+                      ConsoleLogTypeEnum.debug,
+                    );
+
+                    // Load all control centers.
+                    this.existedCC = cclist;
+                  },
+                  error: (err) => {
+                    ModelUtility.writeConsoleLog(
+                      `AC_HIH_UI [Error]: Entering ControlCenterDetailComponent ngOninit, fetchAllControlCenters failed: ${err}`,
+                      ConsoleLogTypeEnum.error,
+                    );
+
+                    this.modalService.create({
+                      nzTitle: translate('Common.Error'),
+                      nzContent: err.toString(),
+                      nzClosable: true,
+                    });
+                  },
+                });
+              break;
+            }
           }
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {

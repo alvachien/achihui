@@ -83,105 +83,108 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug,
-      );
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit activateRoute: ${x}`,
+          ConsoleLogTypeEnum.debug,
+        );
 
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-      }
-
-      switch (this.uiMode) {
-        case UIMode.Update:
-        case UIMode.Display: {
-          this.isLoadingResults = true;
-          forkJoin([
-            this.storageService.fetchAllOrganizationTypes(),
-            this.storageService.readOrganization(this.routerID),
-          ])
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (e) => {
-                this.allTypes = e[0];
-
-                this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
-                this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
-                this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
-                this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
-                this.listTypes = e[1].Types.slice();
-
-                if (this.uiMode === UIMode.Display) {
-                  this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
-                  this.detailFormGroup.enable();
-                  this.detailFormGroup.get('idControl')?.disable();
-                }
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit readOrganization failed ${err}...`,
-                  ConsoleLogTypeEnum.error,
-                );
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
         }
 
-        case UIMode.Create:
-        default: {
-          this.storageService
-            .fetchAllOrganizationTypes()
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (rtndata) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes.`,
-                  ConsoleLogTypeEnum.debug,
-                );
-                this.allTypes = rtndata;
-                this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes ${err}...`,
-                  ConsoleLogTypeEnum.error,
-                );
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
+        switch (this.uiMode) {
+          case UIMode.Update:
+          case UIMode.Display: {
+            this.isLoadingResults = true;
+            forkJoin([
+              this.storageService.fetchAllOrganizationTypes(),
+              this.storageService.readOrganization(this.routerID),
+            ])
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => (this.isLoadingResults = false)),
+              )
+              .subscribe({
+                next: (e) => {
+                  this.allTypes = e[0];
+
+                  this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
+                  this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
+                  this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
+                  this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
+                  this.listTypes = e[1].Types.slice();
+
+                  if (this.uiMode === UIMode.Display) {
+                    this.detailFormGroup.disable();
+                  } else if (this.uiMode === UIMode.Update) {
+                    this.detailFormGroup.enable();
+                    this.detailFormGroup.get('idControl')?.disable();
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit readOrganization failed ${err}...`,
+                    ConsoleLogTypeEnum.error,
+                  );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
+
+          case UIMode.Create:
+          default: {
+            this.storageService
+              .fetchAllOrganizationTypes()
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => (this.isLoadingResults = false)),
+              )
+              .subscribe({
+                next: (rtndata) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes.`,
+                    ConsoleLogTypeEnum.debug,
+                  );
+                  this.allTypes = rtndata;
+                  this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes ${err}...`,
+                    ConsoleLogTypeEnum.error,
+                  );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+          }
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {

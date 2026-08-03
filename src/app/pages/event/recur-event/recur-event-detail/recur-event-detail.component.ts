@@ -103,80 +103,83 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug,
-      );
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit activateRoute: ${x}`,
+          ConsoleLogTypeEnum.debug,
+        );
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-      }
-
-      switch (this.uiMode) {
-        case UIMode.Update:
-        case UIMode.Display: {
-          this.isLoadingResults = true;
-
-          this.storageService
-            .readRecurEvent(this.routerID)
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (e: GeneralEvent) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit forkJoin.`,
-                  ConsoleLogTypeEnum.debug,
-                );
-
-                this.detailFormGroup.get('idControl')?.setValue(e.ID);
-                this.detailFormGroup.get('nameControl')?.setValue(e.Name);
-                this.detailFormGroup.get('dateControl')?.setValue([e.StartDate, e.EndDate]);
-                this.detailFormGroup.get('contentControl')?.setValue(e.Content);
-
-                if (this.uiMode === UIMode.Display) {
-                  this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
-                  this.detailFormGroup.enable();
-                  this.detailFormGroup.get('idControl')?.disable();
-                }
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering RecurEventDetailComponent ngOnInit forkJoin failed ${err}...`,
-                  ConsoleLogTypeEnum.error,
-                );
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
         }
 
-        case UIMode.Create:
-        default: {
-          this.detailFormGroup.get('dateControl')?.setValue([new Date(), new Date()]);
-          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-          break;
+        switch (this.uiMode) {
+          case UIMode.Update:
+          case UIMode.Display: {
+            this.isLoadingResults = true;
+
+            this.storageService
+              .readRecurEvent(this.routerID)
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => (this.isLoadingResults = false)),
+              )
+              .subscribe({
+                next: (e: GeneralEvent) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit forkJoin.`,
+                    ConsoleLogTypeEnum.debug,
+                  );
+
+                  this.detailFormGroup.get('idControl')?.setValue(e.ID);
+                  this.detailFormGroup.get('nameControl')?.setValue(e.Name);
+                  this.detailFormGroup.get('dateControl')?.setValue([e.StartDate, e.EndDate]);
+                  this.detailFormGroup.get('contentControl')?.setValue(e.Content);
+
+                  if (this.uiMode === UIMode.Display) {
+                    this.detailFormGroup.disable();
+                  } else if (this.uiMode === UIMode.Update) {
+                    this.detailFormGroup.enable();
+                    this.detailFormGroup.get('idControl')?.disable();
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering RecurEventDetailComponent ngOnInit forkJoin failed ${err}...`,
+                    ConsoleLogTypeEnum.error,
+                  );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
+
+          case UIMode.Create:
+          default: {
+            this.detailFormGroup.get('dateControl')?.setValue([new Date(), new Date()]);
+            this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+            break;
+          }
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {

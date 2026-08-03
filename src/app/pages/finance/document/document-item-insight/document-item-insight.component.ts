@@ -1,5 +1,6 @@
 import { DecimalPipe, NgIf } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { SafeAny } from '@common/any';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -8,7 +9,8 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzTransferModule, TransferItem } from 'ng-zorro-antd/transfer';
-import { forkJoin } from 'rxjs';
+import { forkJoin, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { format } from 'date-fns';
 import { dateFormat } from '@model/index';
 
@@ -59,7 +61,8 @@ interface InsightRecord {
     NgIf,
   ],
 })
-export class DocumentItemInsightComponent implements OnInit {
+export class DocumentItemInsightComponent implements OnInit, OnDestroy {
+  private _destroyed$: ReplaySubject<boolean> | null = null;
   listGroupFields: TransferItem[] = [];
   isLoadingData = false;
   arTranType: TranType[] = [];
@@ -144,6 +147,7 @@ export class DocumentItemInsightComponent implements OnInit {
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent ngOnInit...`,
       ConsoleLogTypeEnum.debug,
     );
+    this._destroyed$ = new ReplaySubject(1);
     // Options
     this.insightOption = this.uiStatusService.docInsightOption ? this.uiStatusService.docInsightOption : null;
     // Read accounts and tran. types
@@ -151,29 +155,39 @@ export class DocumentItemInsightComponent implements OnInit {
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllTranTypes(),
       this.odataService.fetchAllAccounts(),
-    ]).subscribe({
-      next: (returnResults) => {
-        this.arAccounts = returnResults[2];
-        this.arTranType = returnResults[1];
+    ])
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: (returnResults) => {
+          this.arAccounts = returnResults[2];
+          this.arTranType = returnResults[1];
 
-        this.fetchData();
-      },
-      error: (err) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent ngOnInit forkJoin failed ${err}...`,
-          ConsoleLogTypeEnum.error,
-        );
+          this.fetchData();
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent ngOnInit forkJoin failed ${err}...`,
+            ConsoleLogTypeEnum.error,
+          );
 
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
 
-  onTransferChanged(ret: {}): void {
+  ngOnDestroy(): void {
+    if (this._destroyed$) {
+      this._destroyed$.next(true);
+      this._destroyed$.complete();
+    }
+  }
+
+  onTransferChanged(ret: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent onTransferChanged: ${ret}...`,
       ConsoleLogTypeEnum.debug,
@@ -204,65 +218,73 @@ export class DocumentItemInsightComponent implements OnInit {
       });
 
       this.isLoadingData = true;
-      this.odataService.searchDocItem(fltrs, 90, 0).subscribe({
-        next: (val) => {
-          this.totalDataCount = val.totalCount;
-          this.listData.push(...val.contentList);
+      this.odataService
+        .searchDocItem(fltrs, 90, 0)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .pipe(takeUntil(this._destroyed$!))
+        .subscribe({
+          next: (val) => {
+            this.totalDataCount = val.totalCount;
+            this.listData.push(...val.contentList);
 
-          if (this.totalDataCount > 90) {
-            let ntimes = Math.floor(this.totalDataCount / 90);
-            const nlef = this.totalDataCount % 90;
-            if (nlef > 0) {
-              ntimes++;
-            }
-            ntimes--; // Already fetched it
-            let nskip = 90;
+            if (this.totalDataCount > 90) {
+              let ntimes = Math.floor(this.totalDataCount / 90);
+              const nlef = this.totalDataCount % 90;
+              if (nlef > 0) {
+                ntimes++;
+              }
+              ntimes--; // Already fetched it
+              let nskip = 90;
 
-            while (ntimes > 0) {
-              this.odataService.searchDocItem(fltrs, 90, nskip).subscribe({
-                next: (val) => {
-                  this.listData.push(...val.contentList);
+              while (ntimes > 0) {
+                this.odataService
+                  .searchDocItem(fltrs, 90, nskip)
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  .pipe(takeUntil(this._destroyed$!))
+                  .subscribe({
+                    next: (val) => {
+                      this.listData.push(...val.contentList);
 
-                  if (this.listData.length === this.totalDataCount) {
-                    this.buildDisplayList();
-                  }
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
-                    ConsoleLogTypeEnum.error,
-                  );
+                      if (this.listData.length === this.totalDataCount) {
+                        this.buildDisplayList();
+                      }
+                    },
+                    error: (err) => {
+                      ModelUtility.writeConsoleLog(
+                        `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
+                        ConsoleLogTypeEnum.error,
+                      );
 
-                  this.modalService.error({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
+                      this.modalService.error({
+                        nzTitle: translate('Common.Error'),
+                        nzContent: err.toString(),
+                        nzClosable: true,
+                      });
+                    },
                   });
-                },
-              });
 
-              nskip += 90;
-              ntimes--;
+                nskip += 90;
+                ntimes--;
+              }
+            } else {
+              if (this.listData.length === this.totalDataCount) {
+                this.buildDisplayList();
+              }
             }
-          } else {
-            if (this.listData.length === this.totalDataCount) {
-              this.buildDisplayList();
-            }
-          }
-        },
-        error: (err) => {
-          ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
-            ConsoleLogTypeEnum.error,
-          );
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering DocumentItemInsightComponent searchDocItem ${err}...`,
+              ConsoleLogTypeEnum.error,
+            );
 
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
-          });
-        },
-      });
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
+            });
+          },
+        });
     }
   }
 
