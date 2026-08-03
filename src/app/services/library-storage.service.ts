@@ -98,6 +98,27 @@ export class LibraryStorageService {
     this._listOrganization = [];
     this._isLocationListLoaded = false;
     this._listLocation = [];
+
+    // Invalidate all cached library data when the selected home changes.
+    // Optional chaining keeps the service robust to partial DI mocks in tests.
+    this._homeService.curHomeSelected?.subscribe(() => {
+      this.resetCaches();
+    });
+  }
+
+  private resetCaches(): void {
+    this._isPersonRoleLoaded = false;
+    this._listPersonRole = [];
+    this._isOrganizationTypeLoaded = false;
+    this._listOrganizationType = [];
+    this._isBookCtgyListLoaded = false;
+    this._listBookCategories = [];
+    this._isLocationListLoaded = false;
+    this._listLocation = [];
+    this._isPersonLoaded = false;
+    this._listPerson = [];
+    this._isOrganizationLoaded = false;
+    this._listOrganization = [];
   }
 
   ///
@@ -492,7 +513,7 @@ export class LibraryStorageService {
               ConsoleLogTypeEnum.error,
             );
 
-            this._isPersonLoaded = false;
+            this._isOrganizationLoaded = false;
             this._listOrganization = [];
 
             return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
@@ -771,7 +792,7 @@ export class LibraryStorageService {
 
           // Remove buffer
           const lidx = this._listLocation.findIndex((p) => p.ID === pid);
-          if (lidx === -1) {
+          if (lidx !== -1) {
             this._listLocation.splice(lidx, 1);
           }
 

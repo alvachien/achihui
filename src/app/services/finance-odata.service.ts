@@ -181,6 +181,65 @@ export class FinanceOdataService {
       'AC_HIH_UI [Debug]: Entering FinanceOdataService constructor...',
       ConsoleLogTypeEnum.debug,
     );
+
+    // Invalidate all cached finance data when the selected home changes, so
+    // list/report data from the previous home is never shown after a switch.
+    // Optional chaining keeps the service robust to partial DI mocks in tests.
+    this.homeService.curHomeSelected?.subscribe(() => {
+      this.resetCaches();
+    });
+  }
+
+  private resetCaches(): void {
+    this.isCurrencylistLoaded = false;
+    this.listCurrency = [];
+    this.isAcntCtgyListLoaded = false;
+    this.listAccountCategory = [];
+    this.isDocTypeListLoaded = false;
+    this.listDocType = [];
+    this.isTranTypeListLoaded = false;
+    this.listTranType = [];
+    this.isAsstCtgyListLoaded = false;
+    this.listAssetCategory = [];
+    this.isAccountListLoaded = false;
+    this.listAccount = [];
+    this.isConctrolCenterListLoaded = false;
+    this.listControlCenter = [];
+    this.isOrderListLoaded = false;
+    this.listOrder = [];
+    this.isPlanListLoaded = false;
+    this.listPlan = [];
+    this.isReportByAccountLoaded = false;
+    this.listReportByAccount = [];
+    this.isReportByControlCenterLoaded = false;
+    this.listReportByControlCenter = [];
+    this.isReportByOrderLoaded = false;
+    this.listReportByOrder = [];
+    this.isOverviewKeyfigureLoaded = false;
+    this.overviewKeyfigure = new FinanceOverviewKeyfigure();
+    this.isCashOverviewKeyfigureLoaded = false;
+    this.cashOverviewKeyfigure = new FinanceReportEntry();
+    this.isStatementOfIncomeAndExpenseMOMWithTransferLoaded = false;
+    this.statementOfIncomeAndExpenseMOMWithTransferPeriod = '';
+    this.statementOfIncomeAndExpenseMOMWithTransfer = [];
+    this.isStatementOfIncomeAndExpenseMOMWOTransferLoaded = false;
+    this.statementOfIncomeAndExpenseMOMWOTransferPeriod = '';
+    this.statementOfIncomeAndExpenseMOMWOTransfer = [];
+    this.isDailyStatementOfIncomeAndExpenseWithTransferLoaded = false;
+    this.dailyStatementOfIncomeAndExpenseWithTransferYear = 0;
+    this.dailyStatementOfIncomeAndExpenseWithTransferMonth = 0;
+    this.dailyStatementOfIncomeAndExpenseWithTransfer = [];
+    this.isDailyStatementOfIncomeAndExpenseWOTransferLoaded = false;
+    this.dailyStatementOfIncomeAndExpenseWOTransferYear = 0;
+    this.dailyStatementOfIncomeAndExpenseWOTransferMonth = 0;
+    this.dailyStatementOfIncomeAndExpenseWOTransfer = [];
+    this.isCashReportMOMLoaded = false;
+    this.cashReportMOMPeriod = '';
+    this.cashReportMoM = [];
+    this.isDailyCashReportLoaed = false;
+    this.dailyCashReportYear = 0;
+    this.dailyCashReportMonth = 0;
+    this.dailyCashReport = [];
   }
 
   /**
@@ -1197,7 +1256,7 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
 
     return this.http
-      .delete(this.controlCenterAPIUrl + `${objectId}`, {
+      .delete(this.controlCenterAPIUrl + `(${objectId})`, {
         headers,
       })
       .pipe(
@@ -1926,7 +1985,7 @@ export class FinanceOdataService {
       filterstrs.push(`ControlCenterID eq ${filter.ControlCenterID}`);
     }
     if (filter.OrderID) {
-      filterstrs.push(`ControlCenterID eq ${filter.OrderID}`);
+      filterstrs.push(`OrderID eq ${filter.OrderID}`);
     }
 
     const apiurl: string = environment.ApiUrl + '/FinanceTmpLoanDocuments';
@@ -2569,7 +2628,20 @@ export class FinanceOdataService {
 
     const arsent: SafeAny[] = [];
     items.forEach((doc) => {
-      arsent.push(this.createDocument(doc));
+      // Each inner create gets its own catchError so a single failure doesn't
+      // error the whole forkJoin; failed docs return null and are classified
+      // into FailedDocuments by the map below (null is not instanceof Document).
+      arsent.push(
+        this.createDocument(doc).pipe(
+          catchError((error: HttpErrorResponse) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: massCreateNormalDocument: create failed: ${error}`,
+              ConsoleLogTypeEnum.error,
+            );
+            return of(null);
+          }),
+        ),
+      );
     });
     return forkJoin(arsent).pipe(
       map((alldocs: SafeAny[]) => {

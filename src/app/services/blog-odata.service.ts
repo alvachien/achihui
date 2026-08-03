@@ -29,6 +29,26 @@ export class BlogOdataService {
     this.listCollection = [];
     this.isSettingLoaded = false;
     this.setting = null;
+
+    // Blog data is user-scoped: clear the cache on logout so a different
+    // user logging in afterwards never sees the previous user's posts/settings.
+    this.authService.authSubject.subscribe((info) => {
+      if (!info.isAuthorized) {
+        this.isCollectionlistLoaded = false;
+        this.listCollection = [];
+        this.isSettingLoaded = false;
+        this.setting = null;
+      }
+    });
+  }
+
+  /**
+   * Escape a string for safe embedding in an OData $filter string literal.
+   * OData doubles single quotes: O'Brien -> 'O''Brien'. Prevents both
+   * breakage and $filter injection when the userId (or other value) contains a quote.
+   */
+  private escapeODataString(value: string | undefined): string {
+    return (value ?? '').replace(/'/g, "''");
   }
 
   // Buffer in current page.
@@ -52,7 +72,10 @@ export class BlogOdataService {
         .append('Accept', 'application/json')
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
-      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
+      params = params.append(
+        '$filter',
+        `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`,
+      );
 
       return this.http
         .get(apiUrl, {
@@ -177,7 +200,10 @@ export class BlogOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
-      params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
+      params = params.append(
+        '$filter',
+        `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`,
+      );
 
       return this.http
         .get(apiUrl, {
@@ -277,7 +303,7 @@ export class BlogOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       '$filter',
-      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`,
+      `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}' and ID eq ${id}`,
     );
     return this.http
       .get(apiUrl, {
@@ -336,7 +362,10 @@ export class BlogOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append('$count', 'true');
     params = params.append('$select', 'ID,Owner,Title,Status,Brief,CreatedAt');
-    params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
+    params = params.append(
+      '$filter',
+      `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`,
+    );
     params = params.append('$top', `${top}`);
     params = params.append('$skip', `${skip}`);
 
@@ -537,7 +566,7 @@ export class BlogOdataService {
     let params: HttpParams = new HttpParams();
     params = params.append(
       '$filter',
-      `Owner eq '${this.authService.authSubject.getValue().getUserId()}' and ID eq ${id}`,
+      `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}' and ID eq ${id}`,
     );
     params = params.append('$expand', 'BlogPostCollections,BlogPostTags');
 
@@ -587,7 +616,7 @@ export class BlogOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
     let params: HttpParams = new HttpParams();
     params = params.append('$count', 'true');
-    // params = params.append('$filter', `Owner eq '${this.authService.authSubject.getValue().getUserId()}'`);
+    // params = params.append('$filter', `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`);
     params = params.append('$top', `${top}`);
     params = params.append('$skip', `${skip}`);
 

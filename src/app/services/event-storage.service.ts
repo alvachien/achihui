@@ -50,6 +50,13 @@ export class EventStorageService {
 
     this.bufferedGeneralEvents = new Map<number, GeneralEvent>();
     this.bufferedRecurEvents = new Map<number, RecurEvent>();
+
+    // Invalidate buffered events when the selected home changes.
+    // Optional chaining keeps the service robust to partial DI mocks in tests.
+    this._homeService.curHomeSelected?.subscribe(() => {
+      this.bufferedGeneralEvents.clear();
+      this.bufferedRecurEvents.clear();
+    });
   }
 
   /**
@@ -550,7 +557,16 @@ export class EventStorageService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
 
-    return this._http.get<SafeAny>(requestUrl, { headers: headers });
+    return this._http.get<SafeAny>(requestUrl, { headers: headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (environment.LoggingLevel >= LogLevel.Error) {
+          console.error(`AC_HIH_UI [Error]: Entering EventStorageService fetchHabitDetailWithCheckIn failed ${error}`);
+        }
+        return throwError(
+          () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+        );
+      }),
+    );
   }
 
   /**
@@ -730,9 +746,20 @@ export class EventStorageService {
     const jdata: string = JSON && JSON.stringify(hevnt.writeJSONObject());
     let params: HttpParams = new HttpParams();
     params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
-    return this._http.post(apiurl, jdata, {
-      headers: headers,
-      params: params,
-    });
+    return this._http
+      .post(apiurl, jdata, {
+        headers: headers,
+        params: params,
+      })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (environment.LoggingLevel >= LogLevel.Error) {
+            console.error(`AC_HIH_UI [Error]: Entering EventStorageService checkInHabitEvent failed ${error}`);
+          }
+          return throwError(
+            () => new Error(error.statusText + '; ' + (error.error ?? error.message) + '; ' + error.message),
+          );
+        }),
+      );
   }
 }

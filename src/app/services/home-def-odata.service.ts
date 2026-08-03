@@ -111,7 +111,7 @@ export class HomeDefOdataService {
       if (token) {
         headers = headers.append('Authorization', 'Bearer ' + token);
         ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Debug]: fetchAllHomeDef - sending request with token (length: ${token.length})`,
+          `AC_HIH_UI [Debug]: fetchAllHomeDef - sending request with Authorization header (token present)`,
           ConsoleLogTypeEnum.debug,
         );
       } else {
