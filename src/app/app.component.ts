@@ -67,20 +67,19 @@ export class AppComponent implements OnInit, OnDestroy {
       this.selectedHomeName = hd?.Name ?? null;
     });
 
-    this._homeService
-      .checkDBVersion()
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe({
-        next: (val) => {
-          this.uiService.versionResult = val;
-        },
-        error: (err) => {
-          // Jump to error page
-          this.uiService.latestError = err;
-          this.uiService.fatalError = true;
-          this.router.navigate(['/fatalerror']);
-        },
-      });
+    if (this._authService.authSubject?.getValue()?.isAuthorized) {
+      this._homeService
+        .checkDBVersion()
+        .pipe(takeUntil(this._destroyed$))
+        .subscribe({
+          next: (val) => {
+            this.uiService.versionResult = val;
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(`AC HIH UI [Error]: checkDBVersion failed: ${err}`, ConsoleLogTypeEnum.error);
+          },
+        });
+    }
   }
 
   ngOnDestroy(): void {

@@ -12,6 +12,11 @@ export class AuthService {
   public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
   public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();
 
+  // Deep link to restore after a successful OIDC login (saved by the route guard
+  // before triggering login, consumed by the SignInCallbackComponent).
+  public redirectUrl: string | null = null;
+
+  private _isCheckingAuth = false;
   private readonly authService = inject(OidcSecurityService);
   private readonly eventService = inject(PublicEventsService);
 
@@ -90,14 +95,30 @@ export class AuthService {
   }
   public doLogout(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthService doLogout...', ConsoleLogTypeEnum.debug);
-    this.authService.logoffAndRevokeTokens().subscribe(() => {
+    // Clear local auth state in both next and error paths: if the server-side
+    // token revocation fails, the user still intended to log out locally.
+    const clearLocal = () => {
       const usrAuthInfo = this.authSubject.value;
       usrAuthInfo.cleanContent();
       this.authSubject.next(usrAuthInfo);
+    };
+    this.authService.logoffAndRevokeTokens().subscribe({
+      next: () => clearLocal(),
+      error: (err) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Error]: doLogout token revocation failed: ${err}`,
+          ConsoleLogTypeEnum.error,
+        );
+        clearLocal();
+      },
     });
   }
 
   public checkAuth() {
+    if (this._isCheckingAuth) {
+      return;
+    }
+    this._isCheckingAuth = true;
     this.authService
       .checkAuth()
       .pipe(
@@ -112,10 +133,17 @@ export class AuthService {
               `AC_HIH_UI [Warn]: Stale OIDC params detected in URL, clearing: ${err?.message}`,
               ConsoleLogTypeEnum.warn,
             );
-            // Strip OIDC params from URL and retry on clean URL
-            window.history.replaceState(null, '', '/welcome');
+            // Strip stale OIDC params but KEEP the user's current path (base-relative
+            // via pathname), so production base-href (/hih/) is respected rather than
+            // rewriting to /welcome. Then retry on the clean URL.
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('state');
+            cleanUrl.searchParams.delete('code');
+            cleanUrl.searchParams.delete('session_state');
+            cleanUrl.searchParams.delete('error');
+            cleanUrl.searchParams.delete('error_description');
+            window.history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
             // Retry checkAuth on the clean URL (no state param → normal flow)
-            // Use switchMap to return the retry observable
             return this.authService.checkAuth();
           } else {
             ModelUtility.writeConsoleLog(
@@ -135,24 +163,32 @@ export class AuthService {
           }
         }),
       )
-      .subscribe(({ isAuthenticated, userData, accessToken }) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Debug]: Entering AuthService checkAuth callback with 'IsAuthenticated' = ${isAuthenticated}.`,
-          ConsoleLogTypeEnum.debug,
-        );
-        if (isAuthenticated && accessToken) {
-          const usrAuthInfo = this.authSubject.value;
-          usrAuthInfo.setContent({
-            userId: userData?.sub ?? '',
-            userName: userData?.name ?? '',
-            accessToken: accessToken,
-          });
-          this.authSubject.next(usrAuthInfo);
-        } else {
-          const usrAuthInfo = this.authSubject.value;
-          usrAuthInfo.cleanContent();
-          this.authSubject.next(usrAuthInfo);
-        }
+      .subscribe({
+        next: ({ isAuthenticated, userData, accessToken }) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering AuthService checkAuth callback with 'IsAuthenticated' = ${isAuthenticated}.`,
+            ConsoleLogTypeEnum.debug,
+          );
+          if (isAuthenticated && accessToken) {
+            const usrAuthInfo = this.authSubject.value;
+            usrAuthInfo.setContent({
+              userId: userData?.sub ?? '',
+              userName: userData?.name ?? '',
+              accessToken: accessToken,
+            });
+            this.authSubject.next(usrAuthInfo);
+          } else {
+            const usrAuthInfo = this.authSubject.value;
+            usrAuthInfo.cleanContent();
+            this.authSubject.next(usrAuthInfo);
+          }
+        },
+        error: () => {
+          this._isCheckingAuth = false;
+        },
+        complete: () => {
+          this._isCheckingAuth = false;
+        },
       });
   }
 }
