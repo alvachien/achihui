@@ -97,7 +97,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (data of basicTable.data; track $index) {
+        @for (data of basicTable.data; track data.RuleId) {
           <tr>
             <td>
               {{ data.RuleId }}

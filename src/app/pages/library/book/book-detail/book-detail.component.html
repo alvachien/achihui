@@ -83,7 +83,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (data of authorTable.data; track $index) {
+            @for (data of authorTable.data; track data.ID) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.NativeName }}</td>
@@ -112,7 +112,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (data of tranTable.data; track $index) {
+            @for (data of tranTable.data; track data.ID) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.NativeName }}</td>
@@ -139,7 +139,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (data of ctgyTable.data; track $index) {
+            @for (data of ctgyTable.data; track data.ID) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.Name | transloco }}</td>
@@ -166,7 +166,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (data of pressTable.data; track $index) {
+            @for (data of pressTable.data; track data.ID) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.NativeName }}</td>
@@ -193,7 +193,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (data of locTable.data; track $index) {
+            @for (data of locTable.data; track data.ID) {
               <tr>
                 <td>{{ data.ID }}</td>
                 <td>{{ data.Name }}</td>

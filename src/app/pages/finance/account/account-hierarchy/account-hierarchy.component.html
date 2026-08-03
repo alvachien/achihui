@@ -15,12 +15,12 @@
       [nzPlaceHolder]="'Common.Status' | transloco"
       (ngModelChange)="onAccountStatusFilterChanged($event)"
     >
-      @for (option of arrayStatus; track $index) {
+      @for (option of arrayStatus; track option.value) {
         <nz-option [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
       }
     </nz-select>
     <nz-select [(ngModel)]="selectedScope" nzPlaceHolder="Scope" (ngModelChange)="onScopeChanged($event)">
-      @for (option of arrayScopes; track $index) {
+      @for (option of arrayScopes; track option.value) {
         <nz-option [nzValue]="option.value" [nzLabel]="option.i18nterm | transloco"></nz-option>
       }
     </nz-select>

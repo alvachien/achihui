@@ -29,7 +29,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.ControlCenterId) {
         <tr>
           <td>
             {{ data.ControlCenterId }}

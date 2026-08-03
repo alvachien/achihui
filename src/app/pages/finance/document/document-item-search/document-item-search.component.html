@@ -23,7 +23,7 @@
 @if (!isChildMode) {
   <div>
     <div class="control-full-width">
-      @for (filter of filters; track $index; let idxfilter = $index) {
+      @for (filter of filters; track filter; let idxfilter = $index) {
         <div nz-row class="control-full-width">
           <div nz-row [nzGutter]="24" class="control-full-width" style="clear: both">
             <div nz-col [nzSpan]="6">

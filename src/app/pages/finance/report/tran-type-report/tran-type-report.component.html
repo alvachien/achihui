@@ -39,7 +39,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of incomeTable.data; track $index) {
+          @for (data of incomeTable.data; track data.TransactionType) {
             <tr>
               <td>{{ data.TransactionType }}</td>
               <td>{{ data.TransactionTypeName }}</td>
@@ -82,7 +82,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of expenseTable.data; track $index) {
+          @for (data of expenseTable.data; track data.TransactionType) {
             <tr>
               <td>{{ data.TransactionType }}</td>
               <td>{{ data.TransactionTypeName }}</td>

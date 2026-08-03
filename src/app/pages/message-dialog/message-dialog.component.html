@@ -9,7 +9,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (item of basicTable.data; track $index) {
+      @for (item of basicTable.data; track item) {
         <tr>
           <td>{{ item.MsgType }}</td>
           <td>{{ item.MsgTitle | transloco }}</td>

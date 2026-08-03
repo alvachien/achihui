@@ -38,7 +38,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (data of innerTable.data; track $index) {
+    @for (data of innerTable.data; track data) {
       <tr>
         <td>
           <button nz-button nzType="link" (click)="onDisplayDocument(data.DocumentID!)">

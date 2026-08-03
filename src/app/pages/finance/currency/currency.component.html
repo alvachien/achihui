@@ -23,7 +23,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (data of basicTable.data; track $index) {
+                  @for (data of basicTable.data; track data.Currency) {
                     <tr>
                       <td>{{ data.Currency }}</td>
                       <td>{{ data.Name | transloco }}</td>

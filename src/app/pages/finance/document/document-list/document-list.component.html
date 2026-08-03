@@ -109,7 +109,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (data of docTable.data; track $index) {
+        @for (data of docTable.data; track data.Id) {
           <tr>
             <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id!]"></td>
             <td>
@@ -170,7 +170,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (itemdata of itemTable.data; track $index) {
+                  @for (itemdata of itemTable.data; track itemdata.ItemId) {
                     <tr>
                       <td>{{ itemdata.ItemId }}</td>
                       <td>{{ getAccountName(itemdata.AccountId!) }}</td>

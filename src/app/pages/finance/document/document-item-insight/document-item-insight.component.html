@@ -55,7 +55,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (data of resultTable.data; track $index) {
+    @for (data of resultTable.data; track data) {
       <tr>
         @if (isTranDateVisible) {
           <td>{{ data.TransactionDate }}</td>

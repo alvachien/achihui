@@ -98,7 +98,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of roleTable.data; track $index) {
+      @for (data of roleTable.data; track data.ID) {
         <tr>
           <td>
             <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable">

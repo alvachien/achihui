@@ -51,7 +51,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of basicTable.data; track $index) {
+          @for (data of basicTable.data; track data.Id) {
             <tr>
               <td>
                 <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Id }}</span>

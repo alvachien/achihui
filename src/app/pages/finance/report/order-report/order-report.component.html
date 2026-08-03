@@ -32,7 +32,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.OrderId) {
         <tr>
           <td>
             {{ data.OrderId }}

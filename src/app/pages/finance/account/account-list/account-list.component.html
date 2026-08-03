@@ -21,7 +21,7 @@
     <nz-table #basicTable [nzLoading]="isLoadingResults" [nzData]="dataSet" nzTableLayout="fixed">
       <thead>
         <tr>
-          @for (column of listOfColumns; track $index) {
+          @for (column of listOfColumns; track column) {
             <th
               [nzSortOrder]="column.sortOrder"
               [nzSortFn]="column.sortFn"
@@ -36,7 +36,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (data of basicTable.data; track $index) {
+        @for (data of basicTable.data; track data.Id) {
           <tr>
             <td>
               <span [ngClass]="{ 'closed-account': data.isClosed }">{{ data.Id }}</span>

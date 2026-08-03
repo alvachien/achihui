@@ -76,7 +76,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of typeTable.data; track $index) {
+      @for (data of typeTable.data; track data.ID) {
         <tr>
           <td>
             <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable" (ngModelChange)="onTypeModeChanged($event)">

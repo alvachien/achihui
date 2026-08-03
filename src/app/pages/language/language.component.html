@@ -23,7 +23,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (data of langTable.data; track $index) {
+              @for (data of langTable.data; track data.Lcid) {
                 <tr>
                   <td>{{ data.Lcid }}</td>
                   <td>{{ data.IsoName }}</td>

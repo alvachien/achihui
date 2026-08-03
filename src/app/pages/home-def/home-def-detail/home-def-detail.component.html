@@ -116,7 +116,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index; let idx = $index) {
+      @for (data of basicTable.data; track data; let idx = $index) {
         <tr>
           <td>
             <nz-form-item>

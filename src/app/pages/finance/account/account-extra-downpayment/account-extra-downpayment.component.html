@@ -98,7 +98,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.DocId) {
         <tr>
           <td>{{ data.TranDateFormatString }}</td>
           <td>{{ data.TranType }}</td>

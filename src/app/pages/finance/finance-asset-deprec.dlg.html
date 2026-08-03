@@ -11,7 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.AssetAccountId) {
         <tr>
           <td>{{ data.AssetAccountId }} ({{ getAccountNmae(data.AssetAccountId) }})</td>
           <td>

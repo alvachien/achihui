@@ -87,7 +87,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (data of expectDataTable.data; track $index) {
+                @for (data of expectDataTable.data; track data) {
                   <tr>
                     <td>
                       <nz-date-picker nzMode="month" [(ngModel)]="data.currentMonth"></nz-date-picker>
@@ -123,7 +123,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (data of compareDataTable.data; track $index) {
+                @for (data of compareDataTable.data; track data) {
                   <tr>
                     <td>
                       <nz-date-picker nzMode="month" nzDisabled [(ngModel)]="data.currentMonth"></nz-date-picker>

@@ -81,7 +81,7 @@
         @if (confirmInfo?.warningExist) {
           <div>
             <nz-divider></nz-divider>
-            @for (item of confirmInfo?.duplicatedItems; track $index) {
+            @for (item of confirmInfo?.duplicatedItems; track item) {
               <p nz-paragraph>
                 <i nz-icon nzType="right-circle" nzTheme="outline"></i>
                 <span nz-typography nzType="warning">{{ item }}</span>

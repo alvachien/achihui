@@ -137,7 +137,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (tdoc of rowLoanTmpDocs.data; track $index) {
+            @for (tdoc of rowLoanTmpDocs.data; track tdoc.DocId) {
               <tr>
                 <td nzShowCheckbox (nzCheckedChange)="onTmpLoanDocRowSelectChanged($event, tdoc)"></td>
                 <td>{{ tdoc.DocId }}</td>
@@ -213,7 +213,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of orgItemsTable.data; track $index; let itemIdx = $index) {
+          @for (data of orgItemsTable.data; track data; let itemIdx = $index) {
             <tr>
               <td>{{ itemIdx + 1 }}</td>
               <td>
@@ -308,7 +308,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of itemsTable.data; track $index; let itemIdx = $index) {
+          @for (data of itemsTable.data; track data; let itemIdx = $index) {
             <tr>
               <td>{{ itemIdx + 1 }}</td>
               <td>
@@ -400,7 +400,7 @@
         <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
           {{ confirmInfo.TranDateFormatString }}
         </nz-descriptions-item>
-        @for (iteminfo of confirmInfo.Items; track $index) {
+        @for (iteminfo of confirmInfo.Items; track iteminfo) {
           <div>
             <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
               {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})

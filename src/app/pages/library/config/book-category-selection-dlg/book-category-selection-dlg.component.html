@@ -14,7 +14,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of tableCategory.data; track $index) {
+      @for (data of tableCategory.data; track data.ID) {
         <tr>
           <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
           <td>{{ data.ID }}</td>
