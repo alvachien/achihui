@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
+import { SafeAny } from '@common/any';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -62,7 +63,7 @@ export class PersonSelectionDlgComponent implements OnInit {
 
   ngOnInit(): void {
     this.storageSrv.fetchAllPersons().subscribe({
-      next: (data: any) => {
+      next: (data: SafeAny) => {
         this.listAllPerson = data;
       },
       error: () => {

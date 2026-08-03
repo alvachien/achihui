@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { SafeAny } from '@common/any';
 import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -178,7 +179,7 @@ export class DocumentItemInsightComponent implements OnInit {
     });
   }
 
-  onTransferChanged(ret: {}): void {
+  onTransferChanged(ret: SafeAny): void {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent onTransferChanged: ${ret}...`,
       ConsoleLogTypeEnum.debug,

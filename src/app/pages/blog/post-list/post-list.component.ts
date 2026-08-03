@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { SafeAny } from '@common/any';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
@@ -99,7 +100,7 @@ export class PostListComponent implements OnInit, OnDestroy {
         finalize(() => (this.isLoadingResults = false)),
       )
       .subscribe({
-        next: (revdata: any) => {
+        next: (revdata: SafeAny) => {
           if (revdata) {
             if (revdata.totalCount) {
               this.totalPostCount = +revdata.totalCount;
@@ -113,7 +114,7 @@ export class PostListComponent implements OnInit, OnDestroy {
             this.dataSet = [];
           }
         },
-        error: (err: any) => {
+        error: (err: SafeAny) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering PostListComponent ngOnInit, fetchAllPosts failed ${err}`,
             ConsoleLogTypeEnum.error,
@@ -152,7 +153,7 @@ export class PostListComponent implements OnInit, OnDestroy {
           modalRef.close();
         }, 1000);
       },
-      error: (err: any) => {
+      error: (err: SafeAny) => {
         this.modalService.error({
           nzTitle: translate('Common.Error'),
           nzContent: err.toString(),
@@ -172,7 +173,7 @@ export class PostListComponent implements OnInit, OnDestroy {
           modalRef.close();
         }, 1000);
       },
-      error: (err: any) => {
+      error: (err: SafeAny) => {
         this.modalService.error({
           nzTitle: translate('Common.Error'),
           nzContent: err.toString(),
