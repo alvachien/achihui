@@ -1,11 +1,11 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { addYears, addDays } from 'date-fns';
@@ -36,7 +36,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentLoanCreateComponent', () => {
   let component: DocumentLoanCreateComponent;
@@ -90,7 +90,7 @@ describe('DocumentLoanCreateComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -103,7 +103,6 @@ describe('DocumentLoanCreateComponent', () => {
         FormsModule,
 
         ReactiveFormsModule,
-        NoopAnimationsModule,
         getTranslocoModule(),
         NzFormModule,
         NzSelectModule,
@@ -127,12 +126,12 @@ describe('DocumentLoanCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: NZ_I18N, useValue: en_US },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -182,7 +181,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -193,7 +192,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -225,7 +224,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -269,7 +268,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -313,7 +312,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -397,13 +396,13 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
 
       // Go back to step 0
       component.pre();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -533,7 +532,7 @@ describe('DocumentLoanCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -630,7 +629,7 @@ describe('DocumentLoanCreateComponent', () => {
 
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -714,7 +713,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(createLoanDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBe(1);
-      expect(component.currentStep).toBe(3);
+      expect(component.currentStep()).toBe(3);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -791,7 +790,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(createLoanDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
-      expect(component.currentStep).toBe(3);
+      expect(component.currentStep()).toBe(3);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

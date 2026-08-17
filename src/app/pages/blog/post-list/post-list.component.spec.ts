@@ -1,20 +1,19 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of, BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
 import { PostListComponent } from './post-list.component';
-import { BlogUIModule } from '../blog-ui.module';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { Router } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('PostListComponent', () => {
   let component: PostListComponent;
@@ -33,18 +32,18 @@ describe('PostListComponent', () => {
     storageService = createSpyObj('BlogOdataService', ['fetchAllPosts']);
     fetchAllPostsSpy = storageService.fetchAllPosts.and.returnValue(of({}));
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, getTranslocoModule(), PostListComponent, RouterTestingModule, BlogUIModule],
+      imports: [getTranslocoModule(), PostListComponent, RouterTestingModule],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         NzModalService,
         { provide: BlogOdataService, useValue: storageService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

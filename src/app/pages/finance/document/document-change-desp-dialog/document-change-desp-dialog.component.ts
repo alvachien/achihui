@@ -1,4 +1,4 @@
-import { Component, inject, Input, NgZone, OnInit } from '@angular/core';
+import { Component, inject, input, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
   selector: 'hih-document-change-desp-dialog',
   templateUrl: './document-change-desp-dialog.component.html',
   styleUrls: ['./document-change-desp-dialog.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -26,12 +27,11 @@ import { RouterModule } from '@angular/router';
 export class DocumentChangeDespDialogComponent implements OnInit {
   // Header forum
   public headerFormGroup: UntypedFormGroup;
-  @Input() documentid?: number;
-  @Input() documentdesp?: string;
-  isSubmitting = false;
+  readonly documentid = input<number>();
+  readonly documentdesp = input<string>();
+  isSubmitting = signal(false);
 
   private readonly modal = inject(NzModalRef);
-  private readonly _zone = inject(NgZone);
   private readonly odataService = inject(FinanceOdataService);
 
   constructor() {
@@ -42,33 +42,31 @@ export class DocumentChangeDespDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._zone.run(() => {
-      this.headerFormGroup.get('idControl')?.setValue(this.documentid);
-      this.headerFormGroup.get('despControl')?.setValue(this.documentdesp);
-    });
+    this.headerFormGroup.get('idControl')?.setValue(this.documentid());
+    this.headerFormGroup.get('despControl')?.setValue(this.documentdesp());
   }
 
   get isSubmittedDisabled(): boolean {
     if (!this.headerFormGroup.valid) {
       return true;
     }
-    if (this.isSubmitting) {
+    if (this.isSubmitting()) {
       return true;
     }
     return false;
   }
 
   onSubmit(): void {
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
     this.odataService
-      .changeDocumentDespViaPatch(this.documentid ?? 0, this.headerFormGroup.get('despControl')?.value)
+      .changeDocumentDespViaPatch(this.documentid() ?? 0, this.headerFormGroup.get('despControl')?.value)
       .subscribe({
         next: () => {
           this.modal.destroy();
         },
         error: () => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           // Show error
           // this.modalService.warning({
           //   nzTitle: translate('Common.Warning'),

@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'" [nzTip]="'Common.Loading' | transloco">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>{{ 'Nav.LibraryTrace' | transloco }}</nz-breadcrumb-item>
@@ -7,17 +7,17 @@
     <nz-page-header-title>{{ 'Library.BorrowRecords' | transloco }}</nz-page-header-title>
     <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <!-- <a nz-button nzType="link" (click)="onCreate()">{{'Common.Create' | transloco}}</a> -->
+      <a nz-button nzType="link" (click)="onCreate()">{{ 'Common.Create' | transloco }}</a>
     </nz-page-header-extra>
   </nz-page-header>
   <nz-table
     #basicTable
-    [nzData]="dataSet"
+    [nzData]="dataSet()"
     nzShowSizeChanger
     [nzFrontPagination]="false"
-    [nzTotal]="totalCount"
-    [nzPageSize]="pageSize"
-    [nzPageIndex]="pageIndex"
+    [nzTotal]="totalCount()"
+    [nzPageSize]="pageSize()"
+    [nzPageIndex]="pageIndex()"
     (nzQueryParams)="onQueryParamsChange($event)"
   >
     <thead>
@@ -27,6 +27,7 @@
         <th>{{ 'Library.BorrowFrom' | transloco }}</th>
         <th>{{ 'Common.StartDate' | transloco }}</th>
         <th>{{ 'Common.EndDate' | transloco }}</th>
+        <th>{{ 'Library.HasReturned' | transloco }}</th>
         <th>{{ 'Common.Comment' | transloco }}</th>
       </tr>
     </thead>
@@ -44,6 +45,7 @@
           <td>{{ getBorrowFromName(data.BorrowFrom) }} ({{ data.BorrowFrom }})</td>
           <td>{{ data.FromDateString }}</td>
           <td>{{ data.ToDateString }}</td>
+          <td>{{ data.HasReturned ? ('Common.Yes' | transloco) : ('Common.No' | transloco) }}</td>
           <td>{{ data.Comment }}</td>
         </tr>
       }

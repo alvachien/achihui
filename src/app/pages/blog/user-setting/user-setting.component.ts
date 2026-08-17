@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -18,6 +18,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   selector: 'hih-user-setting',
   templateUrl: './user-setting.component.html',
   styleUrls: ['./user-setting.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzSpinModule,
@@ -147,25 +148,29 @@ export class UserSettingComponent implements OnInit, OnDestroy {
             nzOkText: 'OK',
             nzCancelText: translate('Comon.Cancel'),
             nzOnOk: () => {
-              this.odataService.deploySetting(settings.owner).subscribe({
-                next: () => {
-                  // Show success dialog
-                  const ref: NzModalRef = this.modalService.success({
-                    nzTitle: translate('Blog.DeploySuccess'),
-                    nzContent: translate('Common.WillCloseIn1Second'),
-                  });
-                  setTimeout(() => {
-                    ref.close();
-                  }, 1000);
-                },
-                error: (derr) => {
-                  // Popup another dialog
-                  this.modalService.error({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: derr.toString(),
-                  });
-                },
-              });
+              this.odataService
+                .deploySetting(settings.owner)
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                .pipe(takeUntil(this._destroyed$!))
+                .subscribe({
+                  next: () => {
+                    // Show success dialog
+                    const ref: NzModalRef = this.modalService.success({
+                      nzTitle: translate('Blog.DeploySuccess'),
+                      nzContent: translate('Common.WillCloseIn1Second'),
+                    });
+                    setTimeout(() => {
+                      ref.close();
+                    }, 1000);
+                  },
+                  error: (derr) => {
+                    // Popup another dialog
+                    this.modalService.error({
+                      nzTitle: translate('Common.Error'),
+                      nzContent: derr.toString(),
+                    });
+                  },
+                });
             },
             nzOnCancel: () => {
               // Do nothing

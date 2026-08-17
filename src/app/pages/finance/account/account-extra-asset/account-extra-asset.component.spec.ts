@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AccountExtraAssetComponent } from './account-extra-asset.component';
 import { getTranslocoModule, FakeDataHelper } from '../../../../../testing';
 import { AssetCategory, AccountExtraAsset } from '../../../../model';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -41,7 +40,6 @@ describe('AccountExtraAssetComponent', () => {
 
         ReactiveFormsModule,
         RouterTestingModule,
-        NoopAnimationsModule,
         RouterTestingModule,
         getTranslocoModule(),
         NzFormModule,
@@ -51,7 +49,7 @@ describe('AccountExtraAssetComponent', () => {
         NzDatePickerModule,
         NzButtonModule,
       ],
-      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   });
 
@@ -183,6 +181,7 @@ describe('AccountExtraAssetComponent', () => {
       </hih-finance-account-extra-asset>
     </form>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, AccountExtraAssetComponent],
 })
 export class FinanceAccountExtraAssetTestFormComponent {

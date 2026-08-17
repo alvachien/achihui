@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -33,6 +33,7 @@ import { SafeAny } from '@common/any';
   selector: 'hih-recur-event-detail',
   templateUrl: './recur-event-detail.component.html',
   styleUrls: ['./recur-event-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -68,6 +69,7 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
   private readonly activateRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -92,80 +94,86 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug,
-      );
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit activateRoute: ${x}`,
+          ConsoleLogTypeEnum.debug,
+        );
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-      }
-
-      switch (this.uiMode) {
-        case UIMode.Update:
-        case UIMode.Display: {
-          this.isLoadingResults = true;
-
-          this.storageService
-            .readRecurEvent(this.routerID)
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (e: GeneralEvent) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit forkJoin.`,
-                  ConsoleLogTypeEnum.debug,
-                );
-
-                this.detailFormGroup.get('idControl')?.setValue(e.ID);
-                this.detailFormGroup.get('nameControl')?.setValue(e.Name);
-                this.detailFormGroup.get('dateControl')?.setValue([e.StartDate, e.EndDate]);
-                this.detailFormGroup.get('contentControl')?.setValue(e.Content);
-
-                if (this.uiMode === UIMode.Display) {
-                  this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
-                  this.detailFormGroup.enable();
-                  this.detailFormGroup.get('idControl')?.disable();
-                }
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering RecurEventDetailComponent ngOnInit forkJoin failed ${err}...`,
-                  ConsoleLogTypeEnum.error,
-                );
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
         }
 
-        case UIMode.Create:
-        default: {
-          this.detailFormGroup.get('dateControl')?.setValue([new Date(), new Date()]);
-          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-          break;
+        switch (this.uiMode) {
+          case UIMode.Update:
+          case UIMode.Display: {
+            this.isLoadingResults = true;
+
+            this.storageService
+              .readRecurEvent(this.routerID)
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => {
+                  this.isLoadingResults = false;
+                  this.cdr.markForCheck();
+                }),
+              )
+              .subscribe({
+                next: (e: GeneralEvent) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Debug]: Entering RecurEventDetailComponent ngOnInit forkJoin.`,
+                    ConsoleLogTypeEnum.debug,
+                  );
+
+                  this.detailFormGroup.get('idControl')?.setValue(e.ID);
+                  this.detailFormGroup.get('nameControl')?.setValue(e.Name);
+                  this.detailFormGroup.get('dateControl')?.setValue([e.StartDate, e.EndDate]);
+                  this.detailFormGroup.get('contentControl')?.setValue(e.Content);
+
+                  if (this.uiMode === UIMode.Display) {
+                    this.detailFormGroup.disable();
+                  } else if (this.uiMode === UIMode.Update) {
+                    this.detailFormGroup.enable();
+                    this.detailFormGroup.get('idControl')?.disable();
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering RecurEventDetailComponent ngOnInit forkJoin failed ${err}...`,
+                    ConsoleLogTypeEnum.error,
+                  );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
+
+          case UIMode.Create:
+          default: {
+            this.detailFormGroup.get('dateControl')?.setValue([new Date(), new Date()]);
+            this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+            break;
+          }
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {
@@ -188,33 +196,37 @@ export class RecurEventDetailComponent implements OnInit, OnDestroy {
       EndDate: new Date(dtrange[1] as Date),
       RepeatType: this.detailFormGroup.get('frqControl')?.value as RepeatFrequencyEnum,
     };
-    this.financeService.getRepeatedDates(datinput).subscribe({
-      next: (val) => {
-        this.dataSet = [];
+    this.financeService
+      .getRepeatedDates(datinput)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: (val) => {
+          this.dataSet = [];
 
-        if (val instanceof Array && val.length > 0) {
-          val.forEach((valentry: RepeatedDatesAPIOutput, index: number) => {
-            const gevent: GeneralEvent = new GeneralEvent();
-            gevent.Name = this.detailFormGroup.get('nameControl')?.value + ` ${index + 1} / ${val.length}`;
-            gevent.StartDate = valentry.StartDate;
-            gevent.EndDate = valentry.EndDate;
+          if (val instanceof Array && val.length > 0) {
+            val.forEach((valentry: RepeatedDatesAPIOutput, index: number) => {
+              const gevent: GeneralEvent = new GeneralEvent();
+              gevent.Name = this.detailFormGroup.get('nameControl')?.value + ` ${index + 1} / ${val.length}`;
+              gevent.StartDate = valentry.StartDate;
+              gevent.EndDate = valentry.EndDate;
 
-            this.dataSet.push(gevent);
+              this.dataSet.push(gevent);
+            });
+          }
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering RecurEventDetailComponent onSimulateGeneratedEvents, getRepeatedDates, failed ${err}`,
+            ConsoleLogTypeEnum.error,
+          );
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
           });
-        }
-      },
-      error: (err) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering RecurEventDetailComponent onSimulateGeneratedEvents, getRepeatedDates, failed ${err}`,
-          ConsoleLogTypeEnum.error,
-        );
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+        },
+      });
   }
 
   public onSave(): void {

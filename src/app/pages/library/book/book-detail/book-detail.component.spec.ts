@@ -1,13 +1,12 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -25,7 +24,7 @@ import { UserAuthInfo, Book } from '../../../../model';
 import { BookDetailComponent } from './book-detail.component';
 import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('BookDetailComponent', () => {
   let component: BookDetailComponent;
@@ -34,7 +33,7 @@ describe('BookDetailComponent', () => {
   let storageService: SafeAny;
   let readBookSpy: SafeAny;
   let createBookSpy: SafeAny;
-  let fetchAllPersonsSpy: SafeAny;
+  let _fetchAllPersonsSpy: SafeAny;
   let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -49,14 +48,14 @@ describe('BookDetailComponent', () => {
     storageService = createSpyObj('LibraryStorageService', ['readBook', 'fetchAllPersons', 'createBook']);
     readBookSpy = storageService.readBook.and.returnValue(of({}));
     createBookSpy = storageService.createBook.and.returnValue(of({}));
-    fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
+    _fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -69,8 +68,6 @@ describe('BookDetailComponent', () => {
 
         ReactiveFormsModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         NzInputModule,
         NzCheckboxModule,
         getTranslocoModule(),
@@ -91,7 +88,7 @@ describe('BookDetailComponent', () => {
             }),
           deps: [NzModalService],
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -105,11 +102,6 @@ describe('BookDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-
-    const btest = false;
-    if (btest) {
-      expect(fetchAllPersonsSpy).toHaveBeenCalled();
-    }
   });
 
   describe('create mode', () => {

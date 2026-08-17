@@ -1,10 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
@@ -19,7 +19,7 @@ import {
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, financeDocTypeNormal, Document, DocumentItem } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentDetailComponent', () => {
   let component: DocumentDetailComponent;
@@ -82,7 +82,7 @@ describe('DocumentDetailComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -91,7 +91,7 @@ describe('DocumentDetailComponent', () => {
 
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [FormsModule, ReactiveFormsModule, NoopAnimationsModule, getTranslocoModule()],
+      imports: [FormsModule, ReactiveFormsModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -101,7 +101,7 @@ describe('DocumentDetailComponent', () => {
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

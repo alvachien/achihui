@@ -1,7 +1,6 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { Router, RouterModule } from '@angular/router';
 
@@ -12,11 +11,14 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'hih-location-list',
   templateUrl: './location-list.component.html',
   styleUrls: ['./location-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -24,26 +26,25 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     NzTableModule,
     NzDividerModule,
     NzModalModule,
+    NzButtonModule,
     RouterModule,
     TranslocoModule,
   ],
 })
-export class LocationListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean;
-  dataSet: Location[] = [];
+export class LocationListComponent implements OnInit {
+  isLoadingResults = signal(false);
+  dataSet = signal<Location[]>([]);
 
   private readonly odataService = inject(LibraryStorageService);
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering LocationListComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit() {
@@ -51,14 +52,13 @@ export class LocationListComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering LocationListComponent OnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
 
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     this.odataService
       .fetchAllLocations()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x: Location[]) => {
@@ -67,7 +67,7 @@ export class LocationListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.dataSet = x;
+          this.dataSet.set(x);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -81,18 +81,6 @@ export class LocationListComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering LocationListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   public onDisplay(pid: number) {
@@ -111,32 +99,31 @@ export class LocationListComponent implements OnInit, OnDestroy {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
-        this.odataService.deleteLocation(pid).subscribe({
-          next: () => {
-            const sdlg = this.modalService.success({
-              nzTitle: translate('Common.Success'),
-            });
-            sdlg.afterClose.subscribe(() => {
-              const dix = this.dataSet.findIndex((p) => p.ID === pid);
-              if (dix !== -1) {
-                this.dataSet.splice(dix, 1);
-                this.dataSet = [...this.dataSet];
-              }
-            });
-            setTimeout(() => sdlg.destroy(), 1000);
-          },
-          error: (err) => {
-            ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering LocationList onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error,
-            );
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err.toString(),
-              nzClosable: true,
-            });
-          },
-        });
+        this.odataService
+          .deleteLocation(pid)
+          .pipe(takeUntilDestroyed(this.destroyedRef))
+          .subscribe({
+            next: () => {
+              const sdlg = this.modalService.success({
+                nzTitle: translate('Common.Success'),
+              });
+              sdlg.afterClose.subscribe(() => {
+                this.dataSet.update((items) => items.filter((p) => p.ID !== pid));
+              });
+              setTimeout(() => sdlg.destroy(), 1000);
+            },
+            error: (err) => {
+              ModelUtility.writeConsoleLog(
+                `AC_HIH_UI [Error]: Entering LocationList onDelete failed ${err}`,
+                ConsoleLogTypeEnum.error,
+              );
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err.toString(),
+                nzClosable: true,
+              });
+            },
+          });
       },
       nzCancelText: 'No',
       nzOnCancel: () =>

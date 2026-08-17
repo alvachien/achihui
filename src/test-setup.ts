@@ -1,20 +1,3 @@
-import { TestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
-
-// Initialize the Angular test environment exactly once.
-// This MUST happen before any TestBed.configureTestingModule() calls.
-// It sets up the DOM adapter (BrowserDomAdapter.makeCurrent()) and the
-// platform injector — without it, services like LocationStrategy fail
-// with "Cannot read properties of null (reading 'getBaseHref')".
-//
-// When Vitest runs multiple test files, this setup may be invoked in
-// contexts where the platform was already created. Guard against NG0400.
-try {
-  TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-} catch {
-  // Test environment already initialized — safe to ignore.
-}
-
 // ResizeObserver polyfill for jsdom environment
 // ngx-echarts requires ResizeObserver which is not available in jsdom
 if (typeof (globalThis as any).ResizeObserver === 'undefined') {

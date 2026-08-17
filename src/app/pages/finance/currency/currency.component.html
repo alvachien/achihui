@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults">
+<nz-spin [nzSpinning]="isLoadingResults()">
   <nz-page-header nzBackIcon [nzTitle]="'Finance.Currency' | transloco">
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item
@@ -14,7 +14,7 @@
               {{ 'Finance.Currencies' | transloco }}
             </p>
             <div>
-              <nz-table #basicTable [nzData]="dataSource">
+              <nz-table #basicTable [nzData]="dataSource()">
                 <thead>
                   <tr>
                     <th>{{ 'Finance.Currency' | transloco }}</th>

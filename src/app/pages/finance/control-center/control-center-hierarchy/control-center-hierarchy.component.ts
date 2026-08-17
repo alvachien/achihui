@@ -1,7 +1,15 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  DestroyRef,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import { NzFormatEmitEvent, NzTreeModule, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
-import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
@@ -22,11 +30,13 @@ import {
   GeneralFilterValueType,
 } from '@model/index';
 import { RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'hih-fin-control-center-hierarchy',
   templateUrl: './control-center-hierarchy.component.html',
   styleUrls: ['./control-center-hierarchy.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -41,34 +51,31 @@ import { RouterModule } from '@angular/router';
     RouterModule,
   ],
 })
-export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
+export class ControlCenterHierarchyComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  filterDocItem: GeneralFilterItem[] = [];
+  filterDocItem = signal<GeneralFilterItem[]>([]);
 
-  isLoadingResults: boolean;
+  isLoadingResults = signal(false);
   // Hierarchy
   arControlCenters: ControlCenter[] = [];
-  ccTreeNodes: NzTreeNodeOptions[] = [];
+  ccTreeNodes = signal<NzTreeNodeOptions[]>([]);
   col = 8;
   id = -1;
-
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-  }
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly _uiStatusService = inject(UIStatusService);
   private readonly homeService = inject(HomeDefOdataService);
+  readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit() {
@@ -77,14 +84,12 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     this.odataService
       .fetchAllControlCenters()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (value) => {
@@ -96,7 +101,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
           this.arControlCenters = value;
 
           if (this.arControlCenters) {
-            this.ccTreeNodes = this._buildControlCenterTree(this.arControlCenters, 1);
+            this.ccTreeNodes.set(this._buildControlCenterTree(this.arControlCenters, 1));
           }
         },
         error: (err) => {
@@ -114,22 +119,11 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering ControlCenterHierarchyComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   onResize({ col }: NzResizeEvent): void {
     cancelAnimationFrame(this.id);
     this.id = requestAnimationFrame(() => {
       this.col = col ?? 0;
+      this.cdr.detectChanges();
     });
   }
   onNodeClick(event: NzFormatEmitEvent): void {
@@ -152,7 +146,7 @@ export class ControlCenterHierarchyComponent implements OnInit, OnDestroy {
         valueType: GeneralFilterValueType.number,
       });
 
-      this.filterDocItem = arflt;
+      this.filterDocItem.set(arflt);
     }
   }
 

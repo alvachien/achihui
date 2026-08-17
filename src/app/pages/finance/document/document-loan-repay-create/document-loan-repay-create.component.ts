@@ -1,9 +1,18 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { forkJoin, ReplaySubject, of } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -71,6 +80,7 @@ interface PayingAccountItem {
   selector: 'hih-document-loan-repay-create',
   templateUrl: './document-loan-repay-create.component.html',
   styleUrls: ['./document-loan-repay-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -94,25 +104,23 @@ interface PayingAccountItem {
     NgIf,
   ],
 })
-export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
+export class DocumentLoanRepayCreateComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-
-  public arUIAccount: UIAccountForSelection[] = [];
+  public arUIAccount = signal<UIAccountForSelection[]>([]);
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
-  public arUIOrder: UIOrderForSelection[] = [];
+  public arUIOrder = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter: boolean | undefined;
   // Variables
-  arControlCenters: ControlCenter[] = [];
-  arOrders: Order[] = [];
-  arTranTypes: TranType[] = [];
-  arAccounts: Account[] = [];
-  arDocTypes: DocumentType[] = [];
-  arCurrencies: Currency[] = [];
+  arControlCenters = signal<ControlCenter[]>([]);
+  arOrders = signal<Order[]>([]);
+  arTranTypes = signal<TranType[]>([]);
+  arAccounts = signal<Account[]>([]);
+  arDocTypes = signal<DocumentType[]>([]);
+  arCurrencies = signal<Currency[]>([]);
   baseCurrency: string;
   // Form
-  currentStep = 0;
+  currentStep = signal(0);
   // Step 0: Search for loan
   searchFormGroup: UntypedFormGroup;
   acntCategoryFilter: IAccountCategoryFilterEx;
@@ -148,6 +156,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
   private readonly modalService = inject(NzModalService);
 
+  private readonly destroyedRef = inject(DestroyRef);
+
+  private readonly cdr = inject(ChangeDetectorRef);
+
   constructor() {
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     this.searchFormGroup = new UntypedFormGroup({
@@ -175,11 +187,9 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
-
     // Distinguish current mode
     let tmpdocid: number | null = null;
-    this.activedRoute.url.subscribe((x: SafeAny) => {
+    this.activedRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x: SafeAny) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnInit for activateRoute URL: ${x}`,
         ConsoleLogTypeEnum.debug,
@@ -194,8 +204,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         this.odataService.fetchAllOrders(),
         this.odataService.fetchAllCurrencies(),
       ])
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (rst) => {
             ModelUtility.writeConsoleLog(
@@ -203,19 +212,19 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
               ConsoleLogTypeEnum.debug,
             );
 
-            this.arDocTypes = rst[1];
-            this.arTranTypes = rst[2];
-            this.arAccounts = rst[3];
-            this.arControlCenters = rst[4];
-            this.arOrders = rst[5];
-            this.arCurrencies = rst[6];
+            this.arDocTypes.set(rst[1]);
+            this.arTranTypes.set(rst[2]);
+            this.arAccounts.set(rst[3]);
+            this.arControlCenters.set(rst[4]);
+            this.arOrders.set(rst[5]);
+            this.arCurrencies.set(rst[6]);
 
             // Accounts
-            this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+            this.arUIAccount.set(BuildupAccountForSelection(this.arAccounts(), rst[0]));
             this.uiAccountStatusFilter = undefined;
             this.uiAccountCtgyFilter = undefined;
             // Orders
-            this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+            this.arUIOrder.set(BuildupOrderForSelection(this.arOrders(), true));
             this.uiOrderFilter = undefined;
 
             if (x instanceof Array && x.length > 0) {
@@ -254,22 +263,9 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentLoanRepayCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
-
   // Steps
   get nextButtonEnabled(): boolean {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0:
         return this.normalLoanCase || this.legacyLoan;
 
@@ -285,19 +281,19 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     return false;
   }
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0:
         if (this.nextButtonEnabled) {
           this.readLoanAccountInfo();
 
-          this.currentStep++;
+          this.currentStep.update((s) => s + 1);
         }
         break;
 
       case 1:
         if (this.nextButtonEnabled) {
           this.buildConfirmInfo();
-          this.currentStep++;
+          this.currentStep.update((s) => s + 1);
         }
         break;
 
@@ -311,28 +307,28 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     }
   }
   pre(): void {
-    this.currentStep--;
+    this.currentStep.update((s) => s - 1);
   }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find((acnt) => {
+    const acntObj = this.arAccounts().find((acnt) => {
       return acnt.Id === acntid;
     });
     return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find((cc) => {
+    const ccObj = this.arControlCenters().find((cc) => {
       return cc.Id === ccid;
     });
     return ccObj ? ccObj.Name : '';
   }
   public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find((ord) => {
+    const orderObj = this.arOrders().find((ord) => {
       return ord.Id === ordid;
     });
     return orderObj ? orderObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranTypes.find((tt) => {
+    const tranTypeObj = this.arTranTypes().find((tt) => {
       return tt.Id === ttid;
     });
 
@@ -364,14 +360,14 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
         OrderID: orderid,
       }),
     ])
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (respdata) => {
           if (respdata[0] === 0) {
             this.legacyLoan = true;
           }
           this.listOfLoanTmpDoc = respdata[1].slice();
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -410,7 +406,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
   // Step 1. Items
   get isValidItem(): boolean {
-    if (this.currentStep === 1) {
+    if (this.currentStep() === 1) {
       if (this.legacyLoan) {
         // Legacy loan case.
         // Orignal loan amount shall less than the account balance
@@ -486,8 +482,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
     }
     this.odataService
       .readAccount(acntid)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val) => {
           this.selectedLoanAccount = val;
@@ -506,6 +501,7 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
           }
 
           this.initOriginItem();
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -637,11 +633,10 @@ export class DocumentLoanRepayCreateComponent implements OnInit, OnDestroy {
 
     postrst
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => {
           this.isDocPosting = false;
-          this.currentStep = 3; // Result page
+          this.currentStep.set(3); // Result page
         }),
       )
       .subscribe({

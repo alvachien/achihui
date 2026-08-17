@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzTreeModule, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
@@ -8,24 +7,27 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { ModelUtility, ConsoleLogTypeEnum, TranType } from '@model/index';
 import { FinanceOdataService, UIStatusService } from '@services/index';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'hih-fin-tran-type-hierarchy',
   templateUrl: './tran-type-hierarchy.component.html',
   styleUrls: ['./tran-type-hierarchy.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzSpinModule, NzTreeModule, TranslocoModule],
 })
-export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
+export class TranTypeHierarchyComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  ttTreeNodes: NzTreeNodeOptions[] = [];
+  isLoadingResults = signal(false);
+  ttTreeNodes = signal<NzTreeNodeOptions[]>([]);
 
   public readonly odataService = inject(FinanceOdataService);
 
   public readonly uiStatusService = inject(UIStatusService);
 
   public readonly modalService = inject(NzModalService);
+
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -40,13 +42,12 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     this.odataService
       .fetchAllTranTypes()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x: TranType[]) => {
@@ -56,7 +57,7 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           );
 
           if (x) {
-            this.ttTreeNodes = this._buildTree(x, 1);
+            this.ttTreeNodes.set(this._buildTree(x, 1));
           }
         },
         error: (err) => {
@@ -71,18 +72,6 @@ export class TranTypeHierarchyComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering TranTypeHierarchyComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
   }
 
   private _buildTree(value: TranType[], level: number, id?: number): NzTreeNodeOptions[] {

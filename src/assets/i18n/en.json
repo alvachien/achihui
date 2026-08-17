@@ -698,6 +698,8 @@
     "SelectPress": "Select Press",
     "SelectLocation": "Select Location",
     "SelectCategory": "Select Category",
+    "ChooseBook": "Choose Book",
+    "SelectOrganization": "Select Organization",
     "PaperBook": "Paper Book",
     "EBook": "Electronic Book",
     "LocationType": "Location Type",

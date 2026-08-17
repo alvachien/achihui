@@ -5,11 +5,9 @@ import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
-import { ViewChild, Component } from '@angular/core';
+import { of } from 'rxjs';
+import { signal, ViewChild, Component, ChangeDetectionStrategy } from '@angular/core';
 import { addMonths } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
@@ -24,7 +22,7 @@ import {
   RepeatedDatesWithAmountAPIOutput,
 } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('AccountExtraDownpaymentComponent', () => {
   let testcomponent: FinanceAccountExtraDPTestFormComponent;
@@ -50,23 +48,14 @@ describe('AccountExtraDownpaymentComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     calcADPTmpDocsSpy = storageService.calcADPTmpDocs.and.returnValue(of([]));
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        RouterTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
@@ -74,7 +63,7 @@ describe('AccountExtraDownpaymentComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -400,6 +389,7 @@ describe('AccountExtraDownpaymentComponent', () => {
       </hih-finance-account-extra-downpayment>
     </form>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, AccountExtraDownpaymentComponent],
 })
 export class FinanceAccountExtraDPTestFormComponent {

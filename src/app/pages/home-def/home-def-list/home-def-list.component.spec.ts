@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, of } from 'rxjs';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -24,8 +24,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { HomeDefListComponent } from './home-def-list.component';
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../testing';
 import { AuthService, HomeDefOdataService } from '../../../services';
-import { UserAuthInfo } from '../../../model';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HomeDef, HomeMember, UserAuthInfo } from '../../../model';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('HomeDefListComponent', () => {
   let component: HomeDefListComponent;
@@ -45,18 +45,19 @@ describe('HomeDefListComponent', () => {
     fakeData.buildHomeDefs();
 
     authServiceStub = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     //uiServiceStub = {};
     homeService = createSpyObj('HomeDefOdataService', ['fetchAllHomeDef']);
     fetchAllHomeDefSpy = homeService.fetchAllHomeDef.and.returnValue(of([]));
     homeService.ChosedHome = fakeData.chosedHome;
+    homeService.curHomeSelected = signal<HomeDef | null>(fakeData.chosedHome ?? null);
+    homeService.curHomeMember = signal<HomeMember | null>(fakeData.chosedHome.Members[0] ?? null);
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
       imports: [
-        NoopAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
@@ -80,12 +81,12 @@ describe('HomeDefListComponent', () => {
         { provide: NZ_I18N, useValue: en_US },
         Overlay,
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -114,7 +115,7 @@ describe('HomeDefListComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.dataSource.length).toEqual(0);
+      expect(component.dataSource().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -124,8 +125,8 @@ describe('HomeDefListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.dataSource.length).toBeGreaterThan(0);
-      expect(component.dataSource.length).toEqual(fakeData.HomeDefs.length);
+      expect(component.dataSource().length).toBeGreaterThan(0);
+      expect(component.dataSource().length).toEqual(fakeData.HomeDefs.length);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -151,9 +152,9 @@ describe('HomeDefListComponent', () => {
       fixture.detectChanges();
 
       // Simulate the row click
-      component.onChooseHome(component.dataSource[0]);
+      component.onChooseHome(component.dataSource()[0]);
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables.
-      expect(component.IsCurrentHomeChosed).toBeTruthy();
+      expect(component.IsCurrentHomeChosed()).toBeTruthy();
 
       expect(routerstub.navigate).toHaveBeenCalled();
       expect(routerstub.navigate).toHaveBeenCalledWith(['/']);
@@ -165,12 +166,12 @@ describe('HomeDefListComponent', () => {
     //   await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
     //   fixture.detectChanges();
 
-    //   component.onDisplayHome(component.dataSource[0]);
+    //   component.onDisplayHome(component.dataSource()[0]);
     //   await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables.
     //   fixture.detectChanges();
 
     //   expect(routerstub.navigate).toHaveBeenCalled();
-    //   expect(routerstub.navigate).toHaveBeenCalledWith(['/homedef/display/' + component.dataSource[0].ID.toString()]);
+    //   expect(routerstub.navigate).toHaveBeenCalledWith(['/homedef/display/' + component.dataSource()[0].ID.toString()]);
     // }));
   });
 

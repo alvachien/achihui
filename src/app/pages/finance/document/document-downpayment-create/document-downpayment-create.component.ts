@@ -1,9 +1,10 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -52,6 +53,7 @@ import { AccountExtraDownpaymentComponent } from '../../account/account-extra-do
   selector: 'hih-fin-document-downpayment-create',
   templateUrl: './document-downpayment-create.component.html',
   styleUrls: ['./document-downpayment-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -73,25 +75,23 @@ import { AccountExtraDownpaymentComponent } from '../../account/account-extra-do
     NgIf,
   ],
 })
-export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
+export class DocumentDownpaymentCreateComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/naming-convention,no-underscore-dangle,id-blacklist,id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
   private _isADP = false;
 
   public curMode: UIMode = UIMode.Create;
-  public arUIAccount: UIAccountForSelection[] = [];
+  public arUIAccount = signal<UIAccountForSelection[]>([]);
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
-  public arUIOrder: UIOrderForSelection[] = [];
+  public arUIOrder = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter: boolean | undefined;
   public curTitle = '';
-  public arCurrencies: Currency[] = [];
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arAccounts: Account[] = [];
-  public arOrders: Order[] = [];
-  public arDocTypes: DocumentType[] = [];
+  public arCurrencies = signal<Currency[]>([]);
+  public arTranType = signal<TranType[]>([]);
+  public arControlCenters = signal<ControlCenter[]>([]);
+  public arAccounts = signal<Account[]>([]);
+  public arOrders = signal<Order[]>([]);
+  public arDocTypes = signal<DocumentType[]>([]);
   public curDocType: number = financeDocTypeAdvancePayment;
   public baseCurrency = '';
   // Step: Header
@@ -104,7 +104,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   // Step: Result
   public docIdCreated?: number;
   public docPostingFailed?: string;
-  currentStep = 0;
+  currentStep = signal(0);
 
   get tranAmount(): number {
     return (
@@ -122,7 +122,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     let isEnabled = false;
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
         isEnabled = this.headerFormGroup.valid;
         break;
@@ -148,6 +148,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
   private readonly homeService = inject(HomeDefOdataService);
   private readonly _router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -168,7 +169,6 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     this.accountExtraInfoFormGroup = new UntypedFormGroup({
       infoControl: new UntypedFormControl(),
     });
-    this.currentStep = 0;
   }
 
   ngOnInit() {
@@ -176,8 +176,6 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-
-    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -188,7 +186,7 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
     ])
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rst) => {
           ModelUtility.writeConsoleLog(
@@ -197,26 +195,26 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
           );
 
           // Accounts
-          this.arAccounts = rst[3];
-          this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+          this.arAccounts.set(rst[3]);
+          this.arUIAccount.set(BuildupAccountForSelection(rst[3], rst[0]));
           this.uiAccountStatusFilter = undefined;
           this.uiAccountCtgyFilter = undefined;
           // Orders
-          this.arOrders = rst[5];
-          this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+          this.arOrders.set(rst[5]);
+          this.arUIOrder.set(BuildupOrderForSelection(rst[5], true));
           this.uiOrderFilter = undefined;
           // Currencies
-          this.arCurrencies = rst[6];
+          this.arCurrencies.set(rst[6]);
           // Tran. type
-          this.arTranType = rst[2];
+          this.arTranType.set(rst[2]);
           // Control Centers
-          this.arControlCenters = rst[4];
+          this.arControlCenters.set(rst[4]);
           // Document type
-          this.arDocTypes = rst[1];
+          this.arDocTypes.set(rst[1]);
           // Base currency
           this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
-          this._activateRoute.url.subscribe((x) => {
+          this._activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
             if (x instanceof Array && x.length > 0) {
               if (x[0].path === 'createadp' || x[0].path === 'createadr') {
                 if (x[0].path === 'createadp') {
@@ -252,31 +250,19 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentADPCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   pre(): void {
-    this.currentStep -= 1;
+    this.currentStep.update((s) => s - 1);
   }
 
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 1: {
         // Show the dp docs
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         this._updateConfirmInfo();
         break;
       }
@@ -300,12 +286,12 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     // Check!
     if (
       !docObj.onVerify({
-        ControlCenters: this.arControlCenters,
-        Orders: this.arOrders,
-        Accounts: this.arAccounts,
-        DocumentTypes: this.arDocTypes,
-        TransactionTypes: this.arTranType,
-        Currencies: this.arCurrencies,
+        ControlCenters: this.arControlCenters(),
+        Orders: this.arOrders(),
+        Accounts: this.arAccounts(),
+        DocumentTypes: this.arDocTypes(),
+        TransactionTypes: this.arTranType(),
+        Currencies: this.arCurrencies(),
         BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
       } as DocumentVerifyContext)
     ) {
@@ -318,10 +304,9 @@ export class DocumentDownpaymentCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createADPDocument(docObj, accountExtra, this._isADP)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => {
-          this.currentStep = 3;
+          this.currentStep.set(3);
           this.isDocPosting = false;
         }),
       )

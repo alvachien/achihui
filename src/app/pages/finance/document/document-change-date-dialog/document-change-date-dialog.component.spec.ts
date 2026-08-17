@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper } from '../../../../../testing';
@@ -14,7 +13,7 @@ import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { DocumentChangeDateDialogComponent } from './document-change-date-dialog.component';
 import { UserAuthInfo } from '@model/index';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentChangeDateDialogComponent', () => {
   let component: DocumentChangeDateDialogComponent;
@@ -36,22 +35,14 @@ describe('DocumentChangeDateDialogComponent', () => {
 
     storageService = createSpyObj('FinanceOdataService', ['changeDocumentDateViaPatch']);
     changeDocumentDateViaPatchSpy = storageService.changeDocumentDateViaPatch.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        RouterTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
@@ -68,7 +59,7 @@ describe('DocumentChangeDateDialogComponent', () => {
             }),
           deps: [NzModalService],
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -85,8 +76,8 @@ describe('DocumentChangeDateDialogComponent', () => {
   });
 
   it('should set form values from inputs on init', () => {
-    component.documentid = 123;
-    component.documentdate = new Date(2024, 0, 15);
+    fixture.componentRef.setInput('documentid', 123);
+    fixture.componentRef.setInput('documentdate', new Date(2024, 0, 15));
     fixture.detectChanges();
     // idControl is disabled, so getValue() returns the wrapped value
     expect(component.headerFormGroup.get('idControl')?.getRawValue()).toBe(123);
@@ -99,12 +90,12 @@ describe('DocumentChangeDateDialogComponent', () => {
 
   it('should return true for isSubmittedDisabled when isSubmitting is true', () => {
     component.headerFormGroup.get('dateControl')?.setValue(new Date());
-    component.isSubmitting = true;
+    component.isSubmitting.set(true);
     expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should call changeDocumentDateViaPatch on valid submit', () => {
-    component.documentid = 123;
+    fixture.componentRef.setInput('documentid', 123);
     component.headerFormGroup.get('dateControl')?.setValue(new Date(2024, 0, 15));
     component.onSubmit();
     expect(changeDocumentDateViaPatchSpy).toHaveBeenCalled();
@@ -117,12 +108,12 @@ describe('DocumentChangeDateDialogComponent', () => {
   });
 
   it('should reset isSubmitting on submit error', () => {
-    component.documentid = 123;
+    fixture.componentRef.setInput('documentid', 123);
     component.headerFormGroup.get('dateControl')?.setValue(new Date(2024, 0, 15));
     changeDocumentDateViaPatchSpy.and.returnValue({
       subscribe: (callbacks: SafeAny) => callbacks.error?.('server error'),
     });
     component.onSubmit();
-    expect(component.isSubmitting).toBe(false);
+    expect(component.isSubmitting()).toBe(false);
   });
 });

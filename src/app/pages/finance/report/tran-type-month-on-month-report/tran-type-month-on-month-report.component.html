@@ -20,7 +20,7 @@
       nzChangeOnSelect
       [nzShowSearch]="true"
       [(ngModel)]="selectedTranTypes"
-      [nzOptions]="availableTranTypes"
+      [nzOptions]="availableTranTypes()"
       (ngModelChange)="onChanges($event)"
     >
     </nz-cascader>

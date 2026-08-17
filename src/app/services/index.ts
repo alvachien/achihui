@@ -5,7 +5,6 @@ export * from './auth-check.util';
 
 export * from './home-chose-guard.service';
 export * from './library-storage.service';
-export * from './tags.service';
 export * from './event-storage.service';
 
 export * from './uistatus.service';

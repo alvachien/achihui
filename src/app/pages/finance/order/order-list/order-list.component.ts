@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
@@ -34,6 +34,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   selector: 'hih-fin-order-list',
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -54,15 +55,11 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzButtonModule,
   ],
 })
-export class OrderListComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean;
+export class OrderListComponent implements OnInit {
+  isLoadingResults = signal(false);
   validOrderOnly = false;
-  dataSet: Order[] = [];
+  dataSet = signal<Order[]>([]);
 
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-  }
   invalidOrder(ord: Order): boolean {
     if (ord) {
       const cur = new Date();
@@ -78,31 +75,33 @@ export class OrderListComponent implements OnInit, OnDestroy {
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly drawerService = inject(NzDrawerService);
+  private readonly destroyedRef = inject(DestroyRef);
+
+  // Read the service's curHomeMember signal directly (Tier F route (b)):
+  // isChildMode updates reactively without manual subscriptions.
+  private readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
 
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderListComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent OnInit...', ConsoleLogTypeEnum.debug);
 
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     this.odataService
       .fetchAllOrders()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x: Order[]) => {
-          this.dataSet = x.slice();
+          this.dataSet.set(x.slice());
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -117,18 +116,6 @@ export class OrderListComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering OrderListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   onOrderValidityChanged(): void {
@@ -163,19 +150,11 @@ export class OrderListComponent implements OnInit, OnDestroy {
     );
     this.odataService
       .deleteOrder(rid)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: () => {
           // Delete item from list
-          const exts = this.dataSet.slice();
-          const extidx = exts.findIndex((ext) => {
-            return ext.Id === rid;
-          });
-          if (extidx !== -1) {
-            exts.splice(extidx, 1);
-            this.dataSet = exts;
-          }
+          this.dataSet.update((items) => items.filter((ext) => ext.Id !== rid));
         },
         error: (err) => {
           this.modalService.error({

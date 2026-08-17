@@ -1,10 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
@@ -21,7 +21,7 @@ import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService 
 import { UserAuthInfo } from '../../../../model';
 import { DocumentNormalMassCreateComponent } from './document-normal-mass-create.component';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentNormalMassCreateComponent', () => {
   let component: DocumentNormalMassCreateComponent;
@@ -49,7 +49,7 @@ describe('DocumentNormalMassCreateComponent', () => {
 
   beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
     const odataService = createSpyObj('FinanceOdataService', [
@@ -73,7 +73,7 @@ describe('DocumentNormalMassCreateComponent', () => {
 
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [FormsModule, NoopAnimationsModule, RouterTestingModule, ReactiveFormsModule, getTranslocoModule()],
+      imports: [FormsModule, RouterTestingModule, ReactiveFormsModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -81,12 +81,12 @@ describe('DocumentNormalMassCreateComponent', () => {
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -312,7 +312,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       const control: UntypedFormArray = component.itemsFormGroup?.controls['items'] as UntypedFormArray;
       expect(control.length).toEqual(1);
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       // Ensure create work
       const nidx = component.onCreateNewItem();
@@ -349,7 +349,7 @@ describe('DocumentNormalMassCreateComponent', () => {
       component.next();
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.confirmInfo.length).toBeGreaterThan(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -378,14 +378,14 @@ describe('DocumentNormalMassCreateComponent', () => {
       component.next();
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.confirmInfo.length).toBeGreaterThan(0);
 
       expect(component.nextButtonEnabled).toBe(true);
       component.next();
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
       expect(component.docIdCreated.length).toBeGreaterThan(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));

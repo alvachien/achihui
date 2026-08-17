@@ -1,6 +1,6 @@
 <div>
-  <h2>{{ title | transloco }}</h2>
-  <nz-table #basicTable [nzData]="infoMessages">
+  <h2>{{ title() | transloco }}</h2>
+  <nz-table #basicTable [nzData]="infoMessages()">
     <thead>
       <tr>
         <th>Type</th>

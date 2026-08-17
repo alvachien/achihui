@@ -1,78 +1,101 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { NZ_MODAL_DATA, NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { Organization } from '@model/index';
 import { LibraryStorageService } from '@services/index';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { SelectionDlgModalData } from '../selection-dlg.models';
 
 @Component({
   selector: 'hih-organization-selection-dlg',
   templateUrl: './organization-selection-dlg.component.html',
   styleUrls: ['./organization-selection-dlg.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzTableModule, NzCheckboxModule, NzButtonModule, TranslocoModule, NzModalModule],
 })
 export class OrganizationSelectionDlgComponent implements OnInit {
-  checked = false;
-  loading = false;
-  indeterminate = false;
-  listAllOrganization: readonly Organization[] = [];
-  listOfOrganizationInCurrentPage: readonly Organization[] = [];
-  @Input() setOfCheckedId = new Set<number>();
-  @Input() singleSelection = false;
-  @Input() roleFilter?: number;
-  // @Input() singleSelectedOrg: Organization | null = null;
+  loading = signal(false);
+  listAllOrganization = signal<readonly Organization[]>([]);
+  listOfOrganizationInCurrentPage = signal<readonly Organization[]>([]);
+
+  private readonly modalData = inject<SelectionDlgModalData | null>(NZ_MODAL_DATA, { optional: true });
+  setOfCheckedId = signal<Set<number>>(new Set<number>(this.modalData?.setOfCheckedId ?? []));
+  singleSelection = signal<boolean>(this.modalData?.singleSelection ?? false);
+
+  checked = computed(() => {
+    const page = this.listOfOrganizationInCurrentPage();
+    return page.length > 0 && page.every((prn) => this.setOfCheckedId().has(prn.ID));
+  });
+  indeterminate = computed(
+    () => this.listOfOrganizationInCurrentPage().some((prn) => this.setOfCheckedId().has(prn.ID)) && !this.checked(),
+  );
+  isSubmittedAllowed = computed(() => {
+    const size = this.setOfCheckedId().size;
+    return this.singleSelection() ? size === 1 : size >= 1;
+  });
 
   updateCheckedSet(id: number, checked: boolean): void {
-    if (checked) {
-      this.setOfCheckedId.add(id);
-    } else {
-      this.setOfCheckedId.delete(id);
-    }
+    this.setOfCheckedId.update((s) => {
+      if (this.singleSelection() && checked) {
+        // Single-selection mode: checking a row replaces the current selection.
+        return new Set<number>([id]);
+      }
+      const ns = new Set(s);
+      if (checked) {
+        ns.add(id);
+      } else {
+        ns.delete(id);
+      }
+      return ns;
+    });
   }
 
   onCurrentPageDataChange(listOfCurrentPageData: readonly Organization[]): void {
-    this.listOfOrganizationInCurrentPage = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
-
-  refreshCheckedStatus(): void {
-    this.checked = this.listOfOrganizationInCurrentPage.every((prn) => this.setOfCheckedId.has(prn.ID));
-    this.indeterminate =
-      this.listOfOrganizationInCurrentPage.some((prn) => this.setOfCheckedId.has(prn.ID)) && !this.checked;
+    this.listOfOrganizationInCurrentPage.set(listOfCurrentPageData);
   }
 
   onItemChecked(id: number, checked: boolean): void {
     this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
   }
 
   onAllChecked(checked: boolean): void {
-    this.listOfOrganizationInCurrentPage.forEach((prn) => this.updateCheckedSet(prn.ID, checked));
-    this.refreshCheckedStatus();
-  }
-
-  get isSubmittedAllowed(): boolean {
-    if (this.singleSelection) {
-      return this.setOfCheckedId.size === 1;
+    if (this.singleSelection()) {
+      // Select-all makes no sense in single-selection mode.
+      return;
     }
-
-    return this.setOfCheckedId.size >= 1;
+    this.setOfCheckedId.update((s) => {
+      const ns = new Set(s);
+      this.listOfOrganizationInCurrentPage().forEach((prn) => {
+        if (checked) {
+          ns.add(prn.ID);
+        } else {
+          ns.delete(prn.ID);
+        }
+      });
+      return ns;
+    });
   }
 
   private readonly modal = inject(NzModalRef);
   private readonly storageSrv = inject(LibraryStorageService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {}
 
   ngOnInit(): void {
-    this.storageSrv.fetchAllOrganizations().subscribe({
-      next: (data) => {
-        this.listAllOrganization = data;
-      },
-    });
+    this.storageSrv
+      .fetchAllOrganizations()
+      .pipe(takeUntilDestroyed(this.destroyedRef))
+      .subscribe({
+        next: (data) => {
+          this.listAllOrganization.set(data);
+        },
+      });
   }
 
   handleCancel(): void {
@@ -80,13 +103,6 @@ export class OrganizationSelectionDlgComponent implements OnInit {
   }
 
   handleOk(): void {
-    // if (this.singleSelection) {
-    //   this.listAllOrganization.forEach(ds => {
-    //     if (this.setOfCheckedId.has(ds.ID)) {
-    //       this.singleSelectedOrg = ds;
-    //     }
-    //   });
-    // }
     this.modal.triggerOk();
   }
 }

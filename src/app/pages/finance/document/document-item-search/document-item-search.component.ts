@@ -1,6 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { format, parse } from 'date-fns';
 
@@ -41,6 +40,7 @@ import { OperatorFilterPipe } from 'app/pages/reusable-components/pipes';
   selector: 'hih-document-item-search',
   templateUrl: './document-item-search.component.html',
   styleUrls: ['./document-item-search.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -61,13 +61,12 @@ import { OperatorFilterPipe } from 'app/pages/reusable-components/pipes';
     NgIf,
   ],
 })
-export class DocumentItemSearchComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class DocumentItemSearchComponent implements OnInit {
   // Filter
-  filters: GeneralFilterItem[] = [];
+  filters = signal<GeneralFilterItem[]>([]);
   allOperators: UIDisplayString[] = [];
   allFields: SafeAny[] = [];
-  realFilters: GeneralFilterItem[] = [];
+  realFilters = signal<GeneralFilterItem[]>([]);
   // Table
   isLoadingDocItems = false;
   public arTranType: TranType[] = [];
@@ -79,12 +78,11 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   listDocItem: DocumentItemView[] = [];
   totalDocumentItemCount = 0;
   listOfColumns: UITableColumnItem<DocumentItemView>[] = [];
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-  }
 
   private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
+  readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -252,15 +250,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._destroyed$ = new ReplaySubject(1);
     this.onAddFilter();
-  }
-  ngOnDestroy(): void {
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
   }
 
   ///
@@ -274,18 +264,18 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
     });
   }
   public onAddFilter(): void {
-    this.filters.push(new GeneralFilterItem());
+    this.filters.update((arr) => [...arr, new GeneralFilterItem()]);
   }
   public onRemoveFilter(idx: number): void {
-    this.filters.splice(idx, 1);
-    if (this.filters.length === 0) {
-      this.onAddFilter();
-    }
+    this.filters.update((arr) => {
+      const next = arr.filter((_, i) => i !== idx);
+      return next.length === 0 ? [new GeneralFilterItem()] : next;
+    });
   }
   onSearch(): void {
     // Do the translate first
     const arRealFilter: GeneralFilterItem[] = [];
-    this.filters.forEach((value: GeneralFilterItem) => {
+    this.filters().forEach((value: GeneralFilterItem) => {
       if (!value.valueType || !value.fieldName) {
         return;
       }
@@ -346,7 +336,7 @@ export class DocumentItemSearchComponent implements OnInit, OnDestroy {
       arRealFilter.push(val);
     });
     if (arRealFilter.length > 0) {
-      this.realFilters = arRealFilter;
+      this.realFilters.set(arRealFilter);
     } else {
       this.modalService.warning({
         nzTitle: translate('Common.Warning'),

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -21,6 +21,7 @@ import { HomeDefOdataService, EventStorageService } from '@services/index';
   selector: 'hih-normal-event-detail',
   templateUrl: './normal-event-detail.component.html',
   styleUrls: ['./normal-event-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     TranslocoModule,
@@ -51,6 +52,7 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
   private readonly activateRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -74,80 +76,86 @@ export class NormalEventDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug,
-      );
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit activateRoute: ${x}`,
+          ConsoleLogTypeEnum.debug,
+        );
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-      }
-
-      switch (this.uiMode) {
-        case UIMode.Update:
-        case UIMode.Display: {
-          this.isLoadingResults = true;
-
-          this.storageService
-            .readGeneralEvent(this.routerID)
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (e: GeneralEvent) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit forkJoin.`,
-                  ConsoleLogTypeEnum.debug,
-                );
-
-                this.detailFormGroup.get('idControl')?.setValue(e.ID);
-                this.detailFormGroup.get('nameControl')?.setValue(e.Name);
-                this.detailFormGroup.get('dateControl')?.setValue([e.StartDate, e.EndDate]);
-                this.detailFormGroup.get('contentControl')?.setValue(e.Content);
-
-                if (this.uiMode === UIMode.Display) {
-                  this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
-                  this.detailFormGroup.enable();
-                  this.detailFormGroup.get('idControl')?.disable();
-                }
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering NormalEventDetailComponent ngOnInit forkJoin failed ${err}...`,
-                  ConsoleLogTypeEnum.error,
-                );
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
         }
 
-        case UIMode.Create:
-        default: {
-          this.detailFormGroup.get('dateControl')?.setValue([new Date(), new Date()]);
-          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-          break;
+        switch (this.uiMode) {
+          case UIMode.Update:
+          case UIMode.Display: {
+            this.isLoadingResults = true;
+
+            this.storageService
+              .readGeneralEvent(this.routerID)
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => {
+                  this.isLoadingResults = false;
+                  this.cdr.markForCheck();
+                }),
+              )
+              .subscribe({
+                next: (e: GeneralEvent) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Debug]: Entering NormalEventDetailComponent ngOnInit forkJoin.`,
+                    ConsoleLogTypeEnum.debug,
+                  );
+
+                  this.detailFormGroup.get('idControl')?.setValue(e.ID);
+                  this.detailFormGroup.get('nameControl')?.setValue(e.Name);
+                  this.detailFormGroup.get('dateControl')?.setValue([e.StartDate, e.EndDate]);
+                  this.detailFormGroup.get('contentControl')?.setValue(e.Content);
+
+                  if (this.uiMode === UIMode.Display) {
+                    this.detailFormGroup.disable();
+                  } else if (this.uiMode === UIMode.Update) {
+                    this.detailFormGroup.enable();
+                    this.detailFormGroup.get('idControl')?.disable();
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering NormalEventDetailComponent ngOnInit forkJoin failed ${err}...`,
+                    ConsoleLogTypeEnum.error,
+                  );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
+
+          case UIMode.Create:
+          default: {
+            this.detailFormGroup.get('dateControl')?.setValue([new Date(), new Date()]);
+            this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+            break;
+          }
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {

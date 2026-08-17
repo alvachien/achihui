@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { filter, take, timeout } from 'rxjs/operators';
 
 import { AuthService } from '../../services/auth.service';
 import { ModelUtility, ConsoleLogTypeEnum } from '../../model';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 /**
  * Handles the OIDC sign-in callback. The `redirectUrl` in `app.config.ts`
@@ -15,19 +15,25 @@ import { ModelUtility, ConsoleLogTypeEnum } from '../../model';
  */
 @Component({
   selector: 'hih-signin-callback',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<p class="signin-callback">Completing sign in...</p>',
 })
-export class SignInCallbackComponent implements OnInit, OnDestroy {
+export class SignInCallbackComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private sub?: Subscription;
+  private readonly destroyedRef = inject(DestroyRef);
+  // Bridge the authSubject signal to an Observable so the RxJS pipeline below
+  // (filter/take/timeout) can wait for authorization. toObservable must run in
+  // an injection context, hence the field initializer.
+  private readonly authContent$ = toObservable(this.authService.authSubject);
 
   ngOnInit(): void {
-    this.sub = this.authService.authSubject
+    this.authContent$
       .pipe(
         filter((info) => info.isAuthorized),
         take(1),
         timeout(10000),
+        takeUntilDestroyed(this.destroyedRef),
       )
       .subscribe({
         next: () => {
@@ -46,9 +52,5 @@ export class SignInCallbackComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('/welcome');
         },
       });
-  }
-
-  ngOnDestroy(): void {
-    this.sub?.unsubscribe();
   }
 }

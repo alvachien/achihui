@@ -1,4 +1,12 @@
-import { Component, forwardRef, HostListener, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  HostListener,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -53,6 +61,7 @@ import { RouterModule } from '@angular/router';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzFormModule,
     FormsModule,

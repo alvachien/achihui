@@ -6,7 +6,7 @@
     <nz-breadcrumb-item>{{ 'Common.Plan' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Common.Plan' | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <button nz-button nzType="primary" [disabled]="!saveButtonEnabled" (click)="onSubmit()">
       {{ 'Common.Save' | transloco }}
@@ -16,7 +16,7 @@
 
 <div *transloco="let t">
   @if (!(isObjectSubmitting || isObjectSubmitted)) {
-    <nz-spin [nzSpinning]="isLoadingResults">
+    <nz-spin [nzSpinning]="isLoadingResults()">
       <form nz-form [formGroup]="detailFormGroup">
         <!-- ID -->
         <nz-form-item>
@@ -95,7 +95,7 @@
           <nz-form-label [nzSpan]="7">{{ 'Finance.Account' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountTpl">
             <nz-select formControlName="accountControl">
-              @for (acnt of arUIAccounts | uiAccountStatusFilter: 'Normal'; track acnt.Id) {
+              @for (acnt of arUIAccounts() | uiAccountStatusFilter: 'Normal'; track acnt.Id) {
                 <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
               }
             </nz-select>
@@ -114,7 +114,7 @@
           <nz-form-label [nzSpan]="7">{{ 'Common.Category' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="acntCtgyTpl">
             <nz-select formControlName="acntCtgyControl">
-              @for (cc of arAccountCategories; track cc.ID) {
+              @for (cc of arAccountCategories(); track cc.ID) {
                 <nz-option [nzValue]="cc.ID" [nzLabel]="t(cc.Name!)"></nz-option>
               }
             </nz-select>
@@ -133,7 +133,7 @@
           <nz-form-label [nzSpan]="7">{{ 'Finance.TransactionType' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trantypeTpl">
             <nz-select formControlName="tranTypeControl">
-              @for (tt of arTranType; track tt.Id) {
+              @for (tt of arTranType(); track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
               }
             </nz-select>
@@ -152,7 +152,7 @@
           <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="controlCenterTpl">
             <nz-select formControlName="controlCenterControl">
-              @for (tt of arControlCenters; track tt.Id) {
+              @for (tt of arControlCenters(); track tt.Id) {
                 <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
               }
             </nz-select>
@@ -185,7 +185,7 @@
           <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Currency' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
             <nz-select formControlName="currControl">
-              @for (cr of arCurrencies; track cr.Currency) {
+              @for (cr of arCurrencies(); track cr.Currency) {
                 <nz-option [nzValue]="cr.Currency" [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
               }
             </nz-select>

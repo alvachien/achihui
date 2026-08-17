@@ -1,24 +1,22 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { DocumentItemInsightComponent } from './document-item-insight.component';
-import { FinanceUIModule } from '../../finance-ui.module';
 import { SafeAny } from '@common/any';
 import { NzTransferModule } from 'ng-zorro-antd/transfer';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { format, addMonths, subYears } from 'date-fns';
 import { dateFormat } from '@model/index';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentItemInsightComponent', () => {
   let component: DocumentItemInsightComponent;
@@ -53,7 +51,7 @@ describe('DocumentItemInsightComponent', () => {
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     searchDocItemSpy = storageService.searchDocItem.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
 
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -71,10 +69,7 @@ describe('DocumentItemInsightComponent', () => {
         NzTooltipModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         getTranslocoModule(),
-        FinanceUIModule,
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
@@ -83,7 +78,7 @@ describe('DocumentItemInsightComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

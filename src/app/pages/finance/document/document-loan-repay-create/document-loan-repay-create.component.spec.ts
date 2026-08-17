@@ -1,10 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { addMonths } from 'date-fns';
@@ -37,7 +37,7 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentLoanRepayCreateComponent', () => {
   let component: DocumentLoanRepayCreateComponent;
@@ -100,7 +100,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -113,7 +113,6 @@ describe('DocumentLoanRepayCreateComponent', () => {
         FormsModule,
 
         ReactiveFormsModule,
-        NoopAnimationsModule,
         getTranslocoModule(),
         NzFormModule,
         NzInputModule,
@@ -137,12 +136,12 @@ describe('DocumentLoanRepayCreateComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -376,7 +375,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Search filter
@@ -415,7 +414,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Search filter
@@ -455,7 +454,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.searchFormGroup.valid).toBeFalsy();
 
       // Search filter
@@ -503,7 +502,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       // Step 0. Search filter
       component.searchFormGroup.get('dateRangeControl')?.setValue([new Date(), addMonths(new Date(), 1)]);
@@ -526,7 +525,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1. Items
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add items
@@ -546,7 +545,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       // Step 0. Search filter
       component.searchFormGroup.get('dateRangeControl')?.setValue([new Date(), addMonths(new Date(), 1)]);
@@ -569,7 +568,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1. Items
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add items
@@ -585,7 +584,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // fixture.detectChanges();
 
       // // Step 2.
-      // expect(component.currentStep).toEqual(2);
+      // expect(component.currentStep()).toEqual(2);
 
       // await new Promise<void>(r => setTimeout(r, 0));
     });
@@ -595,7 +594,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       // Step 0. Search filter
       component.searchFormGroup.get('dateRangeControl')?.setValue([new Date(), addMonths(new Date(), 1)]);
@@ -618,7 +617,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1. Items
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add items
@@ -632,7 +631,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // fixture.detectChanges();
 
       // // Step 2. Confirm
-      // expect(component.currentStep).toEqual(2);
+      // expect(component.currentStep()).toEqual(2);
       // expect(component.nextButtonEnabled).toBeTruthy();
       // component.next();
       // fixture.detectChanges();

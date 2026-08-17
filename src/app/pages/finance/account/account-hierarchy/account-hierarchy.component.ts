@@ -1,12 +1,22 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  ViewContainerRef,
+  inject,
+  signal,
+  computed,
+  DestroyRef,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { NzFormatEmitEvent, NzTreeModule, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { Router, RouterModule } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzResizableModule, NzResizeEvent } from 'ng-zorro-antd/resizable';
-import { NzContextMenuService, NzDropdownMenuComponent, NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzContextMenuService, NzDropdownMenuComponent, NzDropdownModule } from 'ng-zorro-antd/dropdown';
 
 import { FinanceOdataService, HomeDefOdataService } from '@services/index';
 import {
@@ -40,6 +50,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { DecimalPipe } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Interace: Settle Account Detail
 interface ISettleAccountDetail {
@@ -57,6 +68,7 @@ interface ISettleAccountDetail {
   selector: 'hih-fin-account-hierarchy',
   templateUrl: './account-hierarchy.component.html',
   styleUrls: ['./account-hierarchy.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -64,7 +76,7 @@ interface ISettleAccountDetail {
     NzSpinModule,
     NzTreeModule,
     NzResizableModule,
-    NzDropDownModule,
+    NzDropdownModule,
     NzModalModule,
     NzDescriptionsModule,
     NzFormModule,
@@ -79,11 +91,10 @@ interface ISettleAccountDetail {
     RouterModule,
   ],
 })
-export class AccountHierarchyComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  filterDocItem: GeneralFilterItem[] = [];
+export class AccountHierarchyComponent implements OnInit {
+  filterDocItem = signal<GeneralFilterItem[]>([]);
 
-  isLoadingResults = false;
+  isLoadingResults = signal(false);
   isLoadingDocItems = false;
   // Filter
   listSelectedAccountStatus: AccountStatusEnum[] = [];
@@ -93,7 +104,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   arrayScopes: UIDisplayString[] = [];
   selectedScope: OverviewScopeEnum = OverviewScopeEnum.CurrentMonth;
   // Hierarchy
-  accountTreeNodes: NzTreeNodeOptions[] = [];
+  accountTreeNodes = signal<NzTreeNodeOptions[]>([]);
   col = 8;
   id = -1;
   activatedNode?: NzTreeNode;
@@ -103,25 +114,24 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   // Settle dialog
   isAccountSettleDlgVisible = false;
   selectedAccountForSettle: ISettleAccountDetail | undefined;
-  arControlCenters: ControlCenter[] = [];
-
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-  }
+  arControlCenters = signal<ControlCenter[]>([]);
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
+  readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
   private readonly router = inject(Router);
   private readonly nzContextMenuService = inject(NzContextMenuService);
   private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly destroyedRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
-    this.isLoadingResults = false; // Default value
 
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
     this.arrayScopes = UIDisplayStringUtil.getOverviewScopeStrings();
@@ -133,21 +143,8 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
 
     this._refreshTree(false);
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering AccountHierarchyComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
   }
 
   onNodeClick(data: NzTreeNode | NzFormatEmitEvent): void {
@@ -251,7 +248,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         const acntid = +this.activatedNode?.key.substring(1);
         this.odataService
           .closeAccount(acntid)
-          .pipe(takeUntil(this._destroyed$!))
+          .pipe(takeUntilDestroyed(this.destroyedRef))
           .subscribe({
             next: (val) => {
               if (val) {
@@ -296,7 +293,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.odataService.fetchAllAccounts(),
           this.odataService.fetchAllControlCenters(),
         ])
-          .pipe(takeUntil(this._destroyed$!))
+          .pipe(takeUntilDestroyed(this.destroyedRef))
           .subscribe({
             next: (rst) => {
               // Accounts
@@ -310,7 +307,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
                 acntCtgyId = arAcnts[acntidx].CategoryId ?? 0;
                 acntCtgyName = arAcnts[acntidx].CategoryName ?? '';
               }
-              this.arControlCenters = rst[2];
+              this.arControlCenters.set(rst[2]);
 
               this.selectedAccountForSettle = {
                 AccountID: +acntid,
@@ -352,7 +349,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           this.selectedAccountForSettle.Amount,
           this.selectedAccountForSettle.ControlCenterID ?? 0,
         )
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
             // Settled.
@@ -381,6 +378,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
           },
           complete: () => {
             this.isAccountSettleDlgVisible = false;
+            this.cdr.markForCheck();
           },
         });
     }
@@ -391,6 +389,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
     this.id = requestAnimationFrame(() => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.col = col!;
+      this.cdr.detectChanges();
     });
   }
 
@@ -414,13 +413,12 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
 
     forkJoin([this.odataService.fetchAllAccountCategories(), this.odataService.fetchAllAccounts(isReload)])
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: () => {
@@ -455,7 +453,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
   private _refreshTreeCore(): void {
     this.availableCategories = this.odataService.AccountCategories.slice();
     this.availableAccounts = this._filterAccountsByStatus(this.odataService.Accounts);
-    this.accountTreeNodes = this._buildAccountTree(this.availableCategories, this.availableAccounts, 1);
+    this.accountTreeNodes.set(this._buildAccountTree(this.availableCategories, this.availableAccounts, 1));
   }
   private _buildAccountTree(
     arctgy: AccountCategory[],
@@ -503,10 +501,11 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
       const acntid = +this.activatedNode?.key.substring(1);
       this.odataService
         .fetchAccountBalance(acntid)
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
             this.currentAccountBalance = val;
+            this.cdr.markForCheck();
           },
           error: (err) => {
             console.error(err);
@@ -553,7 +552,7 @@ export class AccountHierarchyComponent implements OnInit, OnDestroy {
         highValue: format(dats.EndDate, dateFormat),
         valueType: GeneralFilterValueType.date,
       });
-      this.filterDocItem = arFilters;
+      this.filterDocItem.set(arFilters);
     }
   }
 }

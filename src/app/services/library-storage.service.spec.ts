@@ -1,6 +1,6 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { BehaviorSubject } from 'rxjs';
 
 import { LibraryStorageService } from './library-storage.service';
 import { AuthService } from './auth.service';
@@ -16,7 +16,7 @@ import {
   PersonRole,
 } from '../model';
 import { FakeDataHelper } from '../../testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('LibraryStorageService', () => {
   /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
@@ -33,7 +33,7 @@ describe('LibraryStorageService', () => {
 
   beforeEach(() => {
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
+    authServiceStub.authSubject = signal(fakeData.currentUser);
     const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -45,7 +45,7 @@ describe('LibraryStorageService', () => {
         LibraryStorageService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

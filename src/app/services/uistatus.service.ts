@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, inject } from '@angular/core';
+import { Injectable, EventEmitter, inject, signal } from '@angular/core';
 
 import { TemplateDocLoan, CheckVersionResult, ModelUtility, ConsoleLogTypeEnum } from '../model';
 import { Router } from '@angular/router';
@@ -38,12 +38,12 @@ export class UIStatusService {
   }
 
   // Version info.
-  private _versionInfo: CheckVersionResult | null = null;
+  private readonly _versionInfo = signal<CheckVersionResult | null>(null);
   get versionResult(): CheckVersionResult | null {
-    return this._versionInfo;
+    return this._versionInfo();
   }
   set versionResult(rst: CheckVersionResult | null) {
-    this._versionInfo = rst;
+    this._versionInfo.set(rst);
   }
 
   // Selected loan template

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { effect, inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError, forkJoin } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -184,9 +184,12 @@ export class FinanceOdataService {
 
     // Invalidate all cached finance data when the selected home changes, so
     // list/report data from the previous home is never shown after a switch.
-    // Optional chaining keeps the service robust to partial DI mocks in tests.
-    this.homeService.curHomeSelected?.subscribe(() => {
-      this.resetCaches();
+    // Skip the no-op run when curHomeSelected is absent (partial DI mocks in tests);
+    // reset caches on every real home change (incl. initial null).
+    effect(() => {
+      if (this.homeService.curHomeSelected?.() !== undefined) {
+        this.resetCaches();
+      }
     });
   }
 
@@ -254,7 +257,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
 
@@ -314,7 +317,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,AssetFlag,Comment');
       params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
@@ -377,7 +380,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,Comment');
       params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
@@ -440,7 +443,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,Expense,ParID,Comment');
@@ -526,7 +529,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,Desp');
       params = params.append('$filter', `HomeID eq ${hid} or HomeID eq null`);
@@ -585,7 +588,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,CategoryID,Status,Comment');
@@ -650,7 +653,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0} and ID eq ${acntid}`);
@@ -705,7 +708,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: string = objAcnt.writeJSONString();
     return this.http
@@ -745,7 +748,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: string = objAcnt.writeJSONString();
     return this.http
@@ -798,7 +801,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     return this.http
       .patch(this.accountAPIUrl + `/${accountId}`, listOfChanges, {
@@ -848,7 +851,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     return this.http
       .delete(this.accountAPIUrl + `(${accountId})`, {
@@ -889,7 +892,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
     const jdata = {
       HomeID: this.homeService.ChosedHome?.ID,
       AccountID: accountId,
@@ -936,7 +939,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
     const jdata = {
       HomeID: this.homeService.ChosedHome?.ID,
       AccountID: accountId,
@@ -982,7 +985,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
       if (this.homeService.CurrentMemberInChosedHome?.IsChild ?? false) {
@@ -1049,7 +1052,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.controlCenterAPIUrl;
     let params: HttpParams = new HttpParams();
@@ -1104,7 +1107,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: string = objDetail.writeJSONString();
     return this.http
@@ -1145,7 +1148,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl = `${this.controlCenterAPIUrl}(${objDetail.Id})`;
 
@@ -1202,7 +1205,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.controlCenterAPIUrl + '/' + controlCenterID.toString();
 
@@ -1253,7 +1256,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     return this.http
       .delete(this.controlCenterAPIUrl + `(${objectId})`, {
@@ -1296,7 +1299,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       // params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
@@ -1350,7 +1353,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0} and ID eq ${ordid}`);
@@ -1405,7 +1408,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: string = objDetail.writeJSONString();
     return this.http
@@ -1447,7 +1450,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl = `${this.orderAPIUrl}/${objDetail.Id}`;
     const jdata: string = objDetail.writeJSONString();
@@ -1500,7 +1503,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.orderAPIUrl + '/' + orderID.toString();
     return this.http
@@ -1550,7 +1553,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     return this.http
       .delete(this.orderAPIUrl + `(${orderId})`, {
@@ -1596,7 +1599,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$filter', `HomeID eq ${hid}`);
@@ -1650,7 +1653,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: string = nplan.writeJSONString();
     return this.http
@@ -1690,7 +1693,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0} and ID eq ${planid}`);
@@ -1747,7 +1750,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
     const hid = this.homeService.ChosedHome?.ID ?? 0;
     let filterstr = `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0}`;
     const subfilter = getFilterString(filters);
@@ -1809,7 +1812,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0} and ID eq ${docid}`);
@@ -1848,7 +1851,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const hid = this.homeService.ChosedHome?.ID ?? 0;
     const filterstrs: string[] = [];
@@ -1916,7 +1919,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const hid = this.homeService.ChosedHome?.ID ?? 0;
     const filterstrs: string[] = [];
@@ -1961,7 +1964,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const hid = this.homeService.ChosedHome?.ID ?? 0;
     const filterstrs: string[] = [];
@@ -2037,7 +2040,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: string = objDetail.writeJSONString();
     return this.http
@@ -2075,7 +2078,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = environment.ApiUrl + `/FinanceTmpDPDocuments/PostDocument`;
 
@@ -2123,7 +2126,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '(' + docid.toString() + ')';
     return this.http
@@ -2166,7 +2169,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + `/PostDPDocument`;
 
@@ -2181,7 +2184,7 @@ export class FinanceOdataService {
     }
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
-    acntobj.OwnerId = this.authService.authSubject.getValue().getUserId();
+    acntobj.OwnerId = this.authService.authSubject().getUserId();
     for (const tmpitem of acntExtraObject.dpTmpDocs) {
       tmpitem.ControlCenterId = docObj.Items[0].ControlCenterId;
       tmpitem.OrderId = docObj.Items[0].OrderId ?? 0;
@@ -2234,7 +2237,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '/PostLoanDocument';
 
@@ -2288,7 +2291,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = environment.ApiUrl + `/FinanceTmpLoanDocuments/PostRepayDocument`;
 
@@ -2336,7 +2339,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '/PostAssetBuyDocument';
     const jobj = apidetail.writeJSONObject();
@@ -2378,7 +2381,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '/PostAssetSellDocument';
     const jobj = apidetail.writeJSONObject();
@@ -2420,7 +2423,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '/PostAssetValueChangeDocument';
     const jinfo = apidetail.writeJSONObject();
@@ -2464,7 +2467,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl = `${this.documentAPIUrl}(${docid})/IsChangable()`;
     return this.http
@@ -2500,7 +2503,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const targetUrl = `${this.documentAPIUrl}/${objDetail.Id}`;
     const jdata: string = objDetail.writeJSONString();
@@ -2539,7 +2542,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const objcontent = {
       TranDate: format(docdate, dateFormat),
@@ -2579,7 +2582,7 @@ export class FinanceOdataService {
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
       .append('Prefer', 'return=representation')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const objcontent = {
       Desp: docdesp,
@@ -2624,7 +2627,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const arsent: SafeAny[] = [];
     items.forEach((doc) => {
@@ -2675,7 +2678,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata = {
       HomeID: this.homeService.ChosedHome?.ID,
@@ -2731,7 +2734,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: SafeAny = {
       HomeID: this.homeService.ChosedHome?.ID,
@@ -2785,7 +2788,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       const jdata = {
         HomeID: this.homeService.ChosedHome?.ID,
@@ -2838,7 +2841,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata = {
       HomeID: this.homeService.ChosedHome?.ID,
@@ -2889,7 +2892,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       const jdata = {
         HomeID: this.homeService.ChosedHome?.ID,
@@ -2947,7 +2950,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata: SafeAny = {
       HomeID: this.homeService.ChosedHome?.ID,
@@ -3002,7 +3005,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       const jdata: { HomeID: number; OrderID?: number } = {
         HomeID: this.homeService.ChosedHome?.ID ?? 0,
@@ -3071,7 +3074,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const today = new Date();
 
@@ -3123,7 +3126,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const today = new Date();
 
@@ -3181,7 +3184,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       const today = new Date();
 
@@ -3241,7 +3244,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       const jdata: SafeAny = {
         HomeID: this.homeService.ChosedHome?.ID,
@@ -3306,7 +3309,7 @@ export class FinanceOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
       const jdata: SafeAny = {
         HomeID: this.homeService.ChosedHome?.ID,
@@ -3376,7 +3379,7 @@ export class FinanceOdataService {
         headers = headers
           .append('Content-Type', 'application/json')
           .append('Accept', 'application/json')
-          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+          .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
         const jdata: SafeAny = {
           HomeID: this.homeService.ChosedHome?.ID,
@@ -3435,7 +3438,7 @@ export class FinanceOdataService {
         headers = headers
           .append('Content-Type', 'application/json')
           .append('Accept', 'application/json')
-          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+          .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
         const jdata: SafeAny = {
           HomeID: this.homeService.ChosedHome?.ID,
@@ -3510,7 +3513,7 @@ export class FinanceOdataService {
         headers = headers
           .append('Content-Type', 'application/json')
           .append('Accept', 'application/json')
-          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+          .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
         const jdata: SafeAny = {
           HomeID: this.homeService.ChosedHome?.ID,
@@ -3572,7 +3575,7 @@ export class FinanceOdataService {
         headers = headers
           .append('Content-Type', 'application/json')
           .append('Accept', 'application/json')
-          .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+          .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
         const jdata: SafeAny = {
           HomeID: this.homeService.ChosedHome?.ID,
@@ -3633,7 +3636,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = environment.ApiUrl + '/GetRepeatedDatesWithAmount';
     const jobject: SafeAny = {
@@ -3692,7 +3695,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = environment.ApiUrl + '/GetRepeatedDatesWithAmountAndInterest';
     const jobject: SafeAny = {
@@ -3768,7 +3771,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = environment.ApiUrl + '/GetRepeatedDates';
     const jobject: SafeAny = {
@@ -3985,7 +3988,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append(
@@ -4055,7 +4058,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiurl: string = this.documentAPIUrl + '/PostAssetDepreciationDocument';
     const jdata: string = JSON && JSON.stringify(dprecdoc);
@@ -4097,7 +4100,7 @@ export class FinanceOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const hid = this.homeService.ChosedHome?.ID ?? 0;
     const jdata = {

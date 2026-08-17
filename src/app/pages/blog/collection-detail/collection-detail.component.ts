@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -19,6 +19,7 @@ import { BlogOdataService } from '@services/index';
   selector: 'hih-blog-collection-detail',
   templateUrl: './collection-detail.component.html',
   styleUrls: ['./collection-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzSpinModule,
@@ -43,6 +44,7 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
   readonly activateRoute = inject(ActivatedRoute);
   readonly router = inject(Router);
   readonly modalService = inject(NzModalService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -65,74 +67,80 @@ export class CollectionDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering CollectionDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug,
-      );
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering CollectionDetailComponent ngOnInit activateRoute: ${x}`,
+          ConsoleLogTypeEnum.debug,
+        );
 
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
-        }
-        this.currentMode = getUIModeString(this.uiMode);
-      }
-
-      switch (this.uiMode) {
-        case UIMode.Update:
-        case UIMode.Display: {
-          this.isLoadingResults = true;
-          this.odataService
-            .readCollection(this.routerID)
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (e) => {
-                this.detailFormGroup.get('idControl')?.setValue(e.id);
-                this.detailFormGroup.get('nameControl')?.setValue(e.name);
-                this.detailFormGroup.get('commentControl')?.setValue(e.comment);
-
-                if (this.uiMode === UIMode.Display) {
-                  this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
-                  this.detailFormGroup.enable();
-                  this.detailFormGroup.get('idControl')?.disable();
-                }
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
-                  ConsoleLogTypeEnum.error,
-                );
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
+            this.uiMode = UIMode.Display;
+          }
+          this.currentMode = getUIModeString(this.uiMode);
         }
 
-        case UIMode.Create:
-        default: {
-          // Do nothing
-          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-          break;
+        switch (this.uiMode) {
+          case UIMode.Update:
+          case UIMode.Display: {
+            this.isLoadingResults = true;
+            this.odataService
+              .readCollection(this.routerID)
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => {
+                  this.isLoadingResults = false;
+                  this.cdr.markForCheck();
+                }),
+              )
+              .subscribe({
+                next: (e) => {
+                  this.detailFormGroup.get('idControl')?.setValue(e.id);
+                  this.detailFormGroup.get('nameControl')?.setValue(e.name);
+                  this.detailFormGroup.get('commentControl')?.setValue(e.comment);
+
+                  if (this.uiMode === UIMode.Display) {
+                    this.detailFormGroup.disable();
+                  } else if (this.uiMode === UIMode.Update) {
+                    this.detailFormGroup.enable();
+                    this.detailFormGroup.get('idControl')?.disable();
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering CollectionDetailComponent ngOnInit readCollection failed ${err}...`,
+                    ConsoleLogTypeEnum.error,
+                  );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
+
+          case UIMode.Create:
+          default: {
+            // Do nothing
+            this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+            break;
+          }
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {

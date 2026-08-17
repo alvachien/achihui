@@ -1,8 +1,17 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { addYears } from 'date-fns';
@@ -43,6 +52,7 @@ import { UIAccountStatusFilterPipe } from '../../pipes';
   selector: 'hih-plan-detail',
   templateUrl: './plan-detail.component.html',
   styleUrls: ['./plan-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -60,18 +70,17 @@ import { UIAccountStatusFilterPipe } from '../../pipes';
     UIAccountStatusFilterPipe,
   ],
 })
-export class PlanDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean;
-  public routerID = -1; // Current object ID in routing
-  public currentMode: string | null = null;
-  public uiMode: UIMode = UIMode.Create;
-  public arControlCenters: ControlCenter[] = [];
+export class PlanDetailComponent implements OnInit {
+  isLoadingResults = signal(false);
+  public routerID = signal(-1); // Current object ID in routing
+  public currentMode = signal<string | null>(null);
+  public uiMode = signal<UIMode>(UIMode.Create);
+  public arControlCenters = signal<ControlCenter[]>([]);
   arFinPlanTypes: UIDisplayString[] = [];
-  arAccountCategories: AccountCategory[] = [];
-  arTranType: TranType[] = [];
-  arUIAccounts: UIAccountForSelection[] = [];
-  arCurrencies: Currency[] = [];
+  arAccountCategories = signal<AccountCategory[]>([]);
+  arTranType = signal<TranType[]>([]);
+  arUIAccounts = signal<UIAccountForSelection[]>([]);
+  arCurrencies = signal<Currency[]>([]);
   // Form: detail
   public detailFormGroup: UntypedFormGroup;
   // Submitting
@@ -81,10 +90,10 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   objectSavedFailed = '';
 
   get isFieldChangable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
   get isCreateMode(): boolean {
-    return this.uiMode === UIMode.Create;
+    return this.uiMode() === UIMode.Create;
   }
   get saveButtonEnabled(): boolean {
     if (this.isFieldChangable) {
@@ -132,6 +141,10 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
 
   private readonly modalService = inject(NzModalService);
 
+  private readonly destroyedRef = inject(DestroyRef);
+
+  private readonly cdr = inject(ChangeDetectorRef);
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent constructor...',
@@ -139,7 +152,6 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     );
 
     this.arFinPlanTypes = UIDisplayStringUtil.getFinancePlanTypeEnumDisplayStrings();
-    this.isLoadingResults = false;
     this.detailFormGroup = new UntypedFormGroup(
       {
         idControl: new UntypedFormControl({ value: undefined, disabled: true }),
@@ -175,152 +187,132 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
-      .subscribe((x) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`,
-          ConsoleLogTypeEnum.debug,
-        );
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
+      ModelUtility.writeConsoleLog(
+        `AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, fetchAllControlCenters, activateRoute: ${x}`,
+        ConsoleLogTypeEnum.debug,
+      );
 
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode.set(UIMode.Create);
+        } else if (x[0].path === 'edit') {
+          this.routerID.set(+x[1].path);
 
-            this.uiMode = UIMode.Update;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
+          this.uiMode.set(UIMode.Update);
+        } else if (x[0].path === 'display') {
+          this.routerID.set(+x[1].path);
 
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
+          this.uiMode.set(UIMode.Display);
+        }
+        this.currentMode.set(getUIModeString(this.uiMode()));
+      }
+
+      switch (this.uiMode()) {
+        case UIMode.Update:
+        case UIMode.Display: {
+          this.isLoadingResults.set(true);
+          forkJoin([
+            this.odataService.fetchAllCurrencies(),
+            this.odataService.fetchAllTranTypes(),
+            this.odataService.fetchAllAccountCategories(),
+            this.odataService.fetchAllAccounts(),
+            this.odataService.fetchAllControlCenters(),
+            this.odataService.readPlan(this.routerID()),
+          ])
+            .pipe(
+              takeUntilDestroyed(this.destroyedRef),
+              finalize(() => this.isLoadingResults.set(false)),
+            )
+            .subscribe({
+              next: (rsts) => {
+                this.arCurrencies.set(rsts[0]);
+                this.arTranType.set(rsts[1]);
+                this.arAccountCategories.set(rsts[2]);
+                this.arUIAccounts.set(BuildupAccountForSelection(rsts[3], rsts[2]));
+                this.arControlCenters.set(rsts[4]);
+
+                const planObj = rsts[5] as Plan;
+                this.detailFormGroup.get('idControl')?.setValue(planObj.ID);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate!);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate!);
+                this.detailFormGroup.get('despControl')?.setValue(planObj.Description);
+                this.detailFormGroup.get('accountControl')?.setValue(planObj.AccountID);
+                this.detailFormGroup.get('acntCtgyControl')?.setValue(planObj.AccountCategoryID);
+                this.detailFormGroup.get('tranTypeControl')?.setValue(planObj.TranTypeID);
+                this.detailFormGroup.get('controlCenterControl')?.setValue(planObj.ControlCenterID);
+                this.detailFormGroup.get('amountControl')?.setValue(planObj.TargetBalance);
+                this.detailFormGroup.get('currControl')?.setValue(planObj.TranCurrency);
+                this.detailFormGroup.get('typeControl')?.setValue(planObj.PlanType);
+
+                // Disable the form
+                if (this.uiMode() === UIMode.Display) {
+                  this.detailFormGroup.disable();
+                }
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin : ${err}`,
+                  ConsoleLogTypeEnum.error,
+                );
+                this.uiMode.set(UIMode.Invalid);
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
+          break;
         }
 
-        switch (this.uiMode) {
-          case UIMode.Update:
-          case UIMode.Display: {
-            this.isLoadingResults = true;
-            forkJoin([
-              this.odataService.fetchAllCurrencies(),
-              this.odataService.fetchAllTranTypes(),
-              this.odataService.fetchAllAccountCategories(),
-              this.odataService.fetchAllAccounts(),
-              this.odataService.fetchAllControlCenters(),
-              this.odataService.readPlan(this.routerID),
-            ])
-              .pipe(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                takeUntil(this._destroyed$!),
-                finalize(() => {
-                  this.isLoadingResults = false;
-                }),
-              )
-              .subscribe({
-                next: (rsts) => {
-                  this.arCurrencies = rsts[0];
-                  this.arTranType = rsts[1];
-                  this.arAccountCategories = rsts[2];
-                  this.arUIAccounts = BuildupAccountForSelection(rsts[3], rsts[2]);
-                  this.arControlCenters = rsts[4];
+        case UIMode.Create:
+        default: {
+          this.isLoadingResults.set(true);
 
-                  const planObj = rsts[5] as Plan;
-                  this.detailFormGroup.get('idControl')?.setValue(planObj.ID);
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  this.detailFormGroup.get('startDateControl')?.setValue(planObj.StartDate!);
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  this.detailFormGroup.get('endDateControl')?.setValue(planObj.TargetDate!);
-                  this.detailFormGroup.get('despControl')?.setValue(planObj.Description);
-                  this.detailFormGroup.get('accountControl')?.setValue(planObj.AccountID);
-                  this.detailFormGroup.get('acntCtgyControl')?.setValue(planObj.AccountCategoryID);
-                  this.detailFormGroup.get('tranTypeControl')?.setValue(planObj.TranTypeID);
-                  this.detailFormGroup.get('controlCenterControl')?.setValue(planObj.ControlCenterID);
-                  this.detailFormGroup.get('amountControl')?.setValue(planObj.TargetBalance);
-                  this.detailFormGroup.get('currControl')?.setValue(planObj.TranCurrency);
-                  this.detailFormGroup.get('typeControl')?.setValue(planObj.PlanType);
+          forkJoin([
+            this.odataService.fetchAllCurrencies(),
+            this.odataService.fetchAllTranTypes(),
+            this.odataService.fetchAllAccountCategories(),
+            this.odataService.fetchAllAccounts(),
+            this.odataService.fetchAllControlCenters(),
+          ])
+            .pipe(
+              takeUntilDestroyed(this.destroyedRef),
+              finalize(() => this.isLoadingResults.set(false)),
+            )
+            .subscribe({
+              next: (rsts) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, forkJoin`,
+                  ConsoleLogTypeEnum.debug,
+                );
 
-                  // Disable the form
-                  if (this.uiMode === UIMode.Display) {
-                    this.detailFormGroup.disable();
-                  }
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin : ${err}`,
-                    ConsoleLogTypeEnum.error,
-                  );
-                  this.uiMode = UIMode.Invalid;
-                  this.modalService.create({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
-                  });
-                },
-              });
-            break;
-          }
-
-          case UIMode.Create:
-          default: {
-            this.isLoadingResults = true;
-
-            forkJoin([
-              this.odataService.fetchAllCurrencies(),
-              this.odataService.fetchAllTranTypes(),
-              this.odataService.fetchAllAccountCategories(),
-              this.odataService.fetchAllAccounts(),
-              this.odataService.fetchAllControlCenters(),
-            ])
-              .pipe(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                takeUntil(this._destroyed$!),
-                finalize(() => (this.isLoadingResults = false)),
-              )
-              .subscribe({
-                next: (rsts) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnInit, forkJoin`,
-                    ConsoleLogTypeEnum.debug,
-                  );
-
-                  this.arCurrencies = rsts[0];
-                  this.arTranType = rsts[1];
-                  this.arAccountCategories = rsts[2];
-                  this.arUIAccounts = BuildupAccountForSelection(rsts[3], rsts[2]);
-                  this.arControlCenters = rsts[4];
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin: ${err}`,
-                    ConsoleLogTypeEnum.error,
-                  );
-                  this.modalService.create({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
-                  });
-                },
-              });
-            break;
-          }
+                this.arCurrencies.set(rsts[0]);
+                this.arTranType.set(rsts[1]);
+                this.arAccountCategories.set(rsts[2]);
+                this.arUIAccounts.set(BuildupAccountForSelection(rsts[3], rsts[2]));
+                this.arControlCenters.set(rsts[4]);
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering PlanDetailComponent ngOninit, forkJoin: ${err}`,
+                  ConsoleLogTypeEnum.error,
+                );
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
+          break;
         }
-      });
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering PlanDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
+      }
+    });
   }
 
   public onSubmit(): void {
@@ -330,9 +322,9 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
     );
 
     this.isObjectSubmitting = true;
-    if (this.uiMode === UIMode.Create) {
+    if (this.uiMode() === UIMode.Create) {
       this.onCreatePlan();
-    } else if (this.uiMode === UIMode.Update) {
+    } else if (this.uiMode() === UIMode.Update) {
       this.onChangePlan();
     }
   }
@@ -359,6 +351,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.isObjectSubmitting = false;
           this.isObjectSubmitted = true;
+          this.cdr.markForCheck();
         }),
       )
       .subscribe({
@@ -501,7 +494,7 @@ export class PlanDetailComponent implements OnInit, OnDestroy {
   private _generatePlan(): Plan {
     const dataInstance: Plan = new Plan();
     dataInstance.HID = this.homeService.ChosedHome?.ID ?? 0;
-    if (this.uiMode === UIMode.Update) {
+    if (this.uiMode() === UIMode.Update) {
       dataInstance.ID = this.detailFormGroup.get('idControl')?.value;
     }
     dataInstance.StartDate = this.detailFormGroup.get('startDateControl')?.value as Date;

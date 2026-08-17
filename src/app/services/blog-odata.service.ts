@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { effect, inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -32,7 +32,8 @@ export class BlogOdataService {
 
     // Blog data is user-scoped: clear the cache on logout so a different
     // user logging in afterwards never sees the previous user's posts/settings.
-    this.authService.authSubject.subscribe((info) => {
+    effect(() => {
+      const info = this.authService.authSubject();
       if (!info.isAuthorized) {
         this.isCollectionlistLoaded = false;
         this.listCollection = [];
@@ -70,11 +71,11 @@ export class BlogOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append(
         '$filter',
-        `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`,
+        `Owner eq '${this.escapeODataString(this.authService.authSubject().getUserId())}'`,
       );
 
       return this.http
@@ -120,7 +121,7 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const jdata = newset.writeAPIJson();
     return this.http
@@ -159,7 +160,7 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiUrl: string = environment.ApiUrl + `/BlogUserSettings('${owner}')/Deploy()`;
     return this.http
@@ -197,12 +198,12 @@ export class BlogOdataService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append(
         '$filter',
-        `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`,
+        `Owner eq '${this.escapeODataString(this.authService.authSubject().getUserId())}'`,
       );
 
       return this.http
@@ -256,10 +257,10 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiUrl: string = environment.ApiUrl + '/BlogCollections';
-    coll.owner = this.authService.authSubject.getValue().getUserId() ?? '';
+    coll.owner = this.authService.authSubject().getUserId() ?? '';
     const jdata = coll.writeAPIJson();
     return this.http
       .post(apiUrl, jdata, {
@@ -298,12 +299,12 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append(
       '$filter',
-      `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}' and ID eq ${id}`,
+      `Owner eq '${this.escapeODataString(this.authService.authSubject().getUserId())}' and ID eq ${id}`,
     );
     return this.http
       .get(apiUrl, {
@@ -358,13 +359,13 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
     let params: HttpParams = new HttpParams();
     params = params.append('$count', 'true');
     params = params.append('$select', 'ID,Owner,Title,Status,Brief,CreatedAt');
     params = params.append(
       '$filter',
-      `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`,
+      `Owner eq '${this.escapeODataString(this.authService.authSubject().getUserId())}'`,
     );
     params = params.append('$top', `${top}`);
     params = params.append('$skip', `${skip}`);
@@ -417,10 +418,10 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiUrl: string = environment.ApiUrl + '/BlogPosts';
-    post.owner = this.authService.authSubject.getValue().getUserId();
+    post.owner = this.authService.authSubject().getUserId();
     const jdata = post.writeAPIJson();
     return this.http
       .post(apiUrl, jdata, {
@@ -457,10 +458,10 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiUrl: string = environment.ApiUrl + '/BlogPosts/' + (post.id ?? 0).toString();
-    post.owner = this.authService.authSubject.getValue().getUserId();
+    post.owner = this.authService.authSubject().getUserId();
     const jdata = post.writeAPIJson();
     return this.http
       .put(apiUrl, jdata, {
@@ -492,7 +493,7 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/Deploy()';
     return this.http
@@ -523,7 +524,7 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     const apiUrl: string = environment.ApiUrl + '/BlogPosts(' + postid.toString() + ')/ClearDeploy()';
     return this.http
@@ -561,12 +562,12 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append(
       '$filter',
-      `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}' and ID eq ${id}`,
+      `Owner eq '${this.escapeODataString(this.authService.authSubject().getUserId())}' and ID eq ${id}`,
     );
     params = params.append('$expand', 'BlogPostCollections,BlogPostTags');
 
@@ -613,10 +614,10 @@ export class BlogOdataService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this.authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
     let params: HttpParams = new HttpParams();
     params = params.append('$count', 'true');
-    // params = params.append('$filter', `Owner eq '${this.escapeODataString(this.authService.authSubject.getValue().getUserId())}'`);
+    // params = params.append('$filter', `Owner eq '${this.escapeODataString(this.authService.authSubject().getUserId())}'`);
     params = params.append('$top', `${top}`);
     params = params.append('$skip', `${skip}`);
 

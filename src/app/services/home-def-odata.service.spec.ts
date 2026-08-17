@@ -1,12 +1,12 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { BehaviorSubject } from 'rxjs';
 
 import { HomeDefOdataService } from './home-def-odata.service';
 import { AuthService } from './auth.service';
 import { FakeDataHelper } from '../../testing';
 import { environment } from '../../environments/environment';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 
@@ -21,14 +21,14 @@ describe('HomeDefOdataService', () => {
     fakeData.buildCurrentUser();
 
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
+    authServiceStub.authSubject = signal(fakeData.currentUser);
 
     TestBed.configureTestingModule({
       imports: [],
       providers: [
         HomeDefOdataService,
         { provide: AuthService, useValue: authServiceStub },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

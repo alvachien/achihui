@@ -8,7 +8,7 @@
   <nz-page-header-title>{{ 'Finance.Activities' | transloco }}</nz-page-header-title>
   <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button nz-button nzType="primary" [disabled]="isChildMode" (click)="onCreate()">
+    <button nz-button nzType="primary" [disabled]="isChildMode()" (click)="onCreate()">
       {{ 'Common.Create' | transloco }}
     </button>
     <nz-divider nzType="vertical"></nz-divider>
@@ -17,7 +17,7 @@
       <label nz-radio-button nzValue="2">{{'Common.CurrentYear' | transloco}}</label>
     </nz-radio-group> -->
 
-    @if (!isChildMode) {
+    @if (!isChildMode()) {
       <nz-switch
         [(ngModel)]="validOrderOnly"
         [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco"
@@ -28,7 +28,7 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-@if (isChildMode) {
+@if (isChildMode()) {
   <div>
     <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
       <div nz-result-extra>
@@ -37,10 +37,10 @@
     </nz-result>
   </div>
 }
-@if (!isChildMode) {
+@if (!isChildMode()) {
   <div>
-    <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-      <nz-table #basicTable [nzData]="dataSet | orderValidityFilter: validOrderOnly">
+    <nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
+      <nz-table #basicTable [nzData]="dataSet() | orderValidityFilter: validOrderOnly">
         <thead>
           <tr>
             <th>ID</th>

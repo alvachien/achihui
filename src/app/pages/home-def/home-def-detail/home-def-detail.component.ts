@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -33,6 +34,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   selector: 'hih-home-def-detail',
   templateUrl: './home-def-detail.component.html',
   styleUrls: ['./home-def-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -49,17 +51,15 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzButtonModule,
   ],
 })
-export class HomeDefDetailComponent implements OnInit, OnDestroy {
-  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  private routerID = -1; // Current object ID in routing
+export class HomeDefDetailComponent implements OnInit {
+  private readonly routerID = signal(-1); // Current object ID in routing
 
-  public isLoadingResults: boolean;
-  public currentMode: string | null = null;
-  public uiMode: UIMode = UIMode.Create;
-  public arCurrencies: Currency[] = [];
+  public isLoadingResults = signal(false);
+  public currentMode = signal<string | null>(null);
+  public uiMode = signal<UIMode>(UIMode.Create);
+  public arCurrencies = signal<Currency[]>([]);
   public detailFormGroup: UntypedFormGroup;
-  public listMembers: HomeMember[] = [];
+  public listMembers = signal<HomeMember[]>([]);
   public listMemRel: UIDisplayString[] = [];
 
   private readonly authService = inject(AuthService);
@@ -68,12 +68,13 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activateRoute = inject(ActivatedRoute);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   get IsCreateMode(): boolean {
-    return this.uiMode === UIMode.Create;
+    return this.uiMode() === UIMode.Create;
   }
   get isFieldChangable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
   get isSaveAllowed(): boolean {
     if (this.isFieldChangable) {
@@ -88,10 +89,10 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     return false;
   }
   get isItemsValid(): boolean {
-    if (this.listMembers.length > 0) {
+    if (this.listMembers().length > 0) {
       let bvalid = true;
       let selfitem = 0;
-      this.listMembers.forEach((val: HomeMember) => {
+      this.listMembers().forEach((val: HomeMember) => {
         if (!val.isValid) {
           bvalid = false;
         }
@@ -111,7 +112,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     const hdobj = new HomeDef();
     hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
     hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
-    this.listMembers.forEach((val) => {
+    this.listMembers().forEach((val) => {
       hdobj.Members.push(val);
     });
 
@@ -133,13 +134,12 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       baseCurrControl: new UntypedFormControl('', Validators.required),
       hostControl: new UntypedFormControl(
         {
-          value: this.authService.authSubject.getValue().getUserId(),
+          value: this.authService.authSubject().getUserId(),
           disabled: true,
         },
         Validators.required,
       ),
     });
-    this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
@@ -148,38 +148,35 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
     // Distinguish current mode
-    this.activateRoute.url.subscribe((x) => {
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
+          this.uiMode.set(UIMode.Create);
         } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Update;
+          this.uiMode.set(UIMode.Update);
         } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Display;
+          this.uiMode.set(UIMode.Display);
         }
-        this.currentMode = getUIModeString(this.uiMode);
+        this.currentMode.set(getUIModeString(this.uiMode()));
       }
 
-      switch (this.uiMode) {
+      switch (this.uiMode()) {
         case UIMode.Update:
         case UIMode.Display: {
-          this.isLoadingResults = true;
-          forkJoin([this.finService.fetchAllCurrencies(), this.storageService.readHomeDef(this.routerID)])
+          this.isLoadingResults.set(true);
+          forkJoin([this.finService.fetchAllCurrencies(), this.storageService.readHomeDef(this.routerID())])
             .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
+              takeUntilDestroyed(this.destroyedRef),
+              finalize(() => this.isLoadingResults.set(false)),
             )
             .subscribe({
               next: (rsts) => {
-                this.arCurrencies = rsts[0];
+                this.arCurrencies.set(rsts[0]);
 
                 this.detailFormGroup.get('idControl')?.setValue(rsts[1].ID);
                 this.detailFormGroup.get('nameControl')?.setValue(rsts[1].Name);
@@ -189,14 +186,14 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
                 this.detailFormGroup.markAsUntouched();
                 this.detailFormGroup.markAsPristine();
 
-                if (this.uiMode === UIMode.Display) {
+                if (this.uiMode() === UIMode.Display) {
                   this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
+                } else if (this.uiMode() === UIMode.Update) {
                   this.detailFormGroup.enable();
                   this.detailFormGroup.get('idControl')?.disable();
                 }
 
-                this.listMembers = rsts[1].Members.slice();
+                this.listMembers.set(rsts[1].Members.slice());
               },
               error: (err) => {
                 // Show error dialog
@@ -212,25 +209,23 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
         case UIMode.Create:
         default: {
-          this.isLoadingResults = true;
+          this.isLoadingResults.set(true);
           this.finService
             .fetchAllCurrencies()
             .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
+              takeUntilDestroyed(this.destroyedRef),
+              finalize(() => this.isLoadingResults.set(false)),
             )
             .subscribe({
               next: (curries: Currency[]) => {
-                this.arCurrencies = curries;
+                this.arCurrencies.set(curries);
 
                 // Insert one home member by default
-                this.listMembers = [];
                 const nm = new HomeMember();
-                nm.User = this.authService.authSubject.getValue().getUserId() ?? '';
+                nm.User = this.authService.authSubject().getUserId() ?? '';
                 nm.Relation = HomeMemberRelationEnum.Self;
                 nm.DisplayAs = nm.User;
-                this.listMembers.push(nm);
+                this.listMembers.set([nm]);
               },
               error: (err) => {
                 // Show error dialog
@@ -247,18 +242,6 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   onChange() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefDetailComponent onChange...',
@@ -268,7 +251,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   onSave() {
     // Save the data
-    if (this.uiMode === UIMode.Create) {
+    if (this.uiMode() === UIMode.Create) {
       // Create mode
       const hdobj = new HomeDef();
       hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
@@ -276,7 +259,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
       hdobj.Host = this.detailFormGroup.get('hostControl')?.value;
       hdobj.Details = this.detailFormGroup.get('detailControl')?.value;
 
-      this.listMembers.forEach((val) => hdobj.Members.push(val));
+      this.listMembers().forEach((val) => hdobj.Members.push(val));
       if (!hdobj.isValid) {
         this.modalService.error({
           nzTitle: translate('Common.Error'),
@@ -289,8 +272,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
       this.storageService
         .createHomeDef(hdobj)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
             // Shall create successfully.
@@ -305,16 +287,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
             });
           },
         });
-    } else if (this.uiMode === UIMode.Update) {
+    } else if (this.uiMode() === UIMode.Update) {
       // Change mode
       const hdobj = new HomeDef();
-      hdobj.ID = +this.routerID;
+      hdobj.ID = +this.routerID();
       hdobj.Name = this.detailFormGroup.get('nameControl')?.value;
       hdobj.BaseCurrency = this.detailFormGroup.get('baseCurrControl')?.value;
       hdobj.Host = this.detailFormGroup.get('hostControl')?.value;
       hdobj.Details = this.detailFormGroup.get('detailControl')?.value;
 
-      this.listMembers.forEach((val) => hdobj.Members.push(val));
+      this.listMembers().forEach((val) => hdobj.Members.push(val));
       if (!hdobj.isValid) {
         this.modalService.error({
           nzTitle: translate('Common.Error'),
@@ -327,8 +309,7 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
       this.storageService
         .changeHomeDef(hdobj)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: () => {
             // Shall create successfully.
@@ -348,16 +329,16 @@ export class HomeDefDetailComponent implements OnInit, OnDestroy {
 
   onCreateMember() {
     const nmem = new HomeMember();
-    const memes = this.listMembers.slice();
-    if (this.routerID) {
-      nmem.HomeID = +this.routerID;
+    const memes = this.listMembers().slice();
+    if (this.routerID()) {
+      nmem.HomeID = +this.routerID();
     }
     memes.push(nmem);
-    this.listMembers = memes;
+    this.listMembers.set(memes);
   }
   onDeleteMember(idx: number) {
-    const memes = this.listMembers.slice();
+    const memes = this.listMembers().slice();
     memes.splice(idx, 1);
-    this.listMembers = memes;
+    this.listMembers.set(memes);
   }
 }

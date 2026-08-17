@@ -20,7 +20,7 @@ export function checkAuthentication(uiService: UIStatusService, authService: Aut
     return true;
   }
 
-  if (authService.authSubject.getValue().isAuthorized) {
+  if (authService.authSubject().isAuthorized) {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: checkAuthentication — authorized', ConsoleLogTypeEnum.debug);
     return true;
   }

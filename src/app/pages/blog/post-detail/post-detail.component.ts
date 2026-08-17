@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
@@ -35,6 +35,7 @@ import { MarkdownEditorComponent } from '../../reusable-components/markdown-edit
   selector: 'hih-blog-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzSpinModule,
@@ -69,6 +70,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   private readonly activateRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -102,123 +104,134 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    this.activateRoute.url.subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        `AC_HIH_UI [Debug]: Entering PostDetailComponent ngOnInit activateRoute: ${x}`,
-        ConsoleLogTypeEnum.debug,
-      );
+    this.activateRoute.url
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe((x) => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering PostDetailComponent ngOnInit activateRoute: ${x}`,
+          ConsoleLogTypeEnum.debug,
+        );
 
-      if (x instanceof Array && x.length > 0) {
-        if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
-        } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+        if (x instanceof Array && x.length > 0) {
+          if (x[0].path === 'create') {
+            this.uiMode = UIMode.Create;
+          } else if (x[0].path === 'edit') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Update;
-        } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+            this.uiMode = UIMode.Update;
+          } else if (x[0].path === 'display') {
+            this.routerID = +x[1].path;
 
-          this.uiMode = UIMode.Display;
+            this.uiMode = UIMode.Display;
+          }
+
+          this.currentMode = getUIModeString(this.uiMode);
         }
 
-        this.currentMode = getUIModeString(this.uiMode);
-      }
+        switch (this.uiMode) {
+          case UIMode.Update:
+          case UIMode.Display: {
+            this.isLoadingResults = true;
+            forkJoin([
+              this.odataService.fetchAllCollections(),
+              this.odataService.readPost(this.routerID),
+              // this.odataService.fetchAllPostTags(10, 0),
+            ])
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => {
+                  this.isLoadingResults = false;
+                  this.cdr.markForCheck();
+                }),
+              )
+              .subscribe({
+                next: (rtns) => {
+                  this.listOfCollection = rtns[0];
 
-      switch (this.uiMode) {
-        case UIMode.Update:
-        case UIMode.Display: {
-          this.isLoadingResults = true;
-          forkJoin([
-            this.odataService.fetchAllCollections(),
-            this.odataService.readPost(this.routerID),
-            // this.odataService.fetchAllPostTags(10, 0),
-          ])
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (rtns) => {
-                this.listOfCollection = rtns[0];
+                  this.instancePost = rtns[1] as BlogPost;
+                  this.detailFormGroup.get('idControl')?.setValue(this.instancePost.id);
+                  this.detailFormGroup.get('titleControl')?.setValue(this.instancePost.title);
+                  this.detailFormGroup.get('briefControl')?.setValue(this.instancePost.brief);
+                  this.detailFormGroup.get('contentControl')?.setValue(this.instancePost.content);
+                  this.detailFormGroup
+                    .get('collectionControl')
+                    ?.setValue(this.instancePost.BlogPostCollections.map((val) => val.CollectionID));
+                  this.detailFormGroup
+                    .get('tagControl')
+                    ?.setValue(this.instancePost.BlogPostTags.map((val) => val.Tag));
+                  switch (this.instancePost.status) {
+                    case BlogPostStatus_PublishAsPublic:
+                      this.detailFormGroup.get('statusControl')?.setValue('PublicPublish');
+                      break;
+                    case BlogPostStatus_PublishAsPrivate:
+                      this.detailFormGroup.get('statusControl')?.setValue('PrivatePublish');
+                      break;
+                    case BlogPostStatus_Draft:
+                    default:
+                      this.detailFormGroup.get('statusControl')?.setValue('Draft');
+                      break;
+                  }
 
-                this.instancePost = rtns[1] as BlogPost;
-                this.detailFormGroup.get('idControl')?.setValue(this.instancePost.id);
-                this.detailFormGroup.get('titleControl')?.setValue(this.instancePost.title);
-                this.detailFormGroup.get('briefControl')?.setValue(this.instancePost.brief);
-                this.detailFormGroup.get('contentControl')?.setValue(this.instancePost.content);
-                this.detailFormGroup
-                  .get('collectionControl')
-                  ?.setValue(this.instancePost.BlogPostCollections.map((val) => val.CollectionID));
-                this.detailFormGroup.get('tagControl')?.setValue(this.instancePost.BlogPostTags.map((val) => val.Tag));
-                switch (this.instancePost.status) {
-                  case BlogPostStatus_PublishAsPublic:
-                    this.detailFormGroup.get('statusControl')?.setValue('PublicPublish');
-                    break;
-                  case BlogPostStatus_PublishAsPrivate:
-                    this.detailFormGroup.get('statusControl')?.setValue('PrivatePublish');
-                    break;
-                  case BlogPostStatus_Draft:
-                  default:
-                    this.detailFormGroup.get('statusControl')?.setValue('Draft');
-                    break;
-                }
+                  if (this.uiMode === UIMode.Display) {
+                    this.detailFormGroup.disable();
+                  } else if (this.uiMode === UIMode.Update) {
+                    this.detailFormGroup.enable();
+                    this.detailFormGroup.get('idControl')?.disable();
+                  }
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering PostDetailComponent ngOnInit forkJoin failed: ${err}`,
+                    ConsoleLogTypeEnum.error,
+                  );
 
-                if (this.uiMode === UIMode.Display) {
-                  this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
-                  this.detailFormGroup.enable();
-                  this.detailFormGroup.get('idControl')?.disable();
-                }
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering PostDetailComponent ngOnInit forkJoin failed: ${err}`,
-                  ConsoleLogTypeEnum.error,
-                );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
 
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
+          case UIMode.Create:
+          default: {
+            this.isLoadingResults = true;
+            this.odataService
+              .fetchAllCollections()
+              .pipe(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                takeUntil(this._destroyed$!),
+                finalize(() => {
+                  this.isLoadingResults = false;
+                  this.cdr.markForCheck();
+                }),
+              )
+              .subscribe({
+                next: (val) => {
+                  // Do nothing
+                  this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+                  this.listOfCollection = val;
+                },
+                error: (err) => {
+                  ModelUtility.writeConsoleLog(
+                    `AC_HIH_UI [Error]: Entering PostDetailComponent fetchAllCollections failed: ${err}`,
+                    ConsoleLogTypeEnum.error,
+                  );
+                  this.modalService.error({
+                    nzTitle: translate('Common.Error'),
+                    nzContent: err.toString(),
+                    nzClosable: true,
+                  });
+                },
+              });
+            break;
+          }
         }
-
-        case UIMode.Create:
-        default: {
-          this.isLoadingResults = true;
-          this.odataService
-            .fetchAllCollections()
-            .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
-            )
-            .subscribe({
-              next: (val) => {
-                // Do nothing
-                this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-                this.listOfCollection = val;
-              },
-              error: (err) => {
-                ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering PostDetailComponent fetchAllCollections failed: ${err}`,
-                  ConsoleLogTypeEnum.error,
-                );
-                this.modalService.error({
-                  nzTitle: translate('Common.Error'),
-                  nzContent: err.toString(),
-                  nzClosable: true,
-                });
-              },
-            });
-          break;
-        }
-      }
-    });
+      });
   }
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
@@ -299,31 +312,35 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                   nzOkText: 'OK',
                   nzCancelText: translate('Common.Cancel'),
                   nzOnOk: () => {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.odataService.deployPost(e.id!).subscribe({
-                      next: () => {
-                        // Show success dialog
-                        const ref: NzModalRef = this.modalService.success({
-                          nzTitle: translate('Blog.DeploySuccess'),
-                          nzContent: translate('Common.WillCloseIn1Second'),
-                        });
-                        ref.afterClose.subscribe({
-                          next: () => {
-                            this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
-                          },
-                        });
-                        setTimeout(() => {
-                          ref.close();
-                        }, 1000);
-                      },
-                      error: (derr) => {
-                        // Popup another dialog
-                        this.modalService.error({
-                          nzTitle: translate('Common.Error'),
-                          nzContent: derr.toString(),
-                        });
-                      },
-                    });
+                    this.odataService
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      .deployPost(e.id!)
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      .pipe(takeUntil(this._destroyed$!))
+                      .subscribe({
+                        next: () => {
+                          // Show success dialog
+                          const ref: NzModalRef = this.modalService.success({
+                            nzTitle: translate('Blog.DeploySuccess'),
+                            nzContent: translate('Common.WillCloseIn1Second'),
+                          });
+                          ref.afterClose.subscribe({
+                            next: () => {
+                              this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
+                            },
+                          });
+                          setTimeout(() => {
+                            ref.close();
+                          }, 1000);
+                        },
+                        error: (derr) => {
+                          // Popup another dialog
+                          this.modalService.error({
+                            nzTitle: translate('Common.Error'),
+                            nzContent: derr.toString(),
+                          });
+                        },
+                      });
                   },
                   nzOnCancel: () => {
                     this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
@@ -364,31 +381,35 @@ export class PostDetailComponent implements OnInit, OnDestroy {
                   nzOkText: 'OK',
                   nzCancelText: translate('Common.Cancel'),
                   nzOnOk: () => {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.odataService.deployPost(e.id!).subscribe({
-                      next: () => {
-                        // Show success dialog
-                        const ref: NzModalRef = this.modalService.success({
-                          nzTitle: translate('Blog.DeploySuccess'),
-                          nzContent: translate('Common.WillCloseIn1Second'),
-                        });
-                        ref.afterClose.subscribe({
-                          next: () => {
-                            this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
-                          },
-                        });
-                        setTimeout(() => {
-                          ref.close();
-                        }, 1000);
-                      },
-                      error: (derr) => {
-                        // Popup another dialog
-                        this.modalService.error({
-                          nzTitle: translate('Common.Error'),
-                          nzContent: derr.toString(),
-                        });
-                      },
-                    });
+                    this.odataService
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      .deployPost(e.id!)
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      .pipe(takeUntil(this._destroyed$!))
+                      .subscribe({
+                        next: () => {
+                          // Show success dialog
+                          const ref: NzModalRef = this.modalService.success({
+                            nzTitle: translate('Blog.DeploySuccess'),
+                            nzContent: translate('Common.WillCloseIn1Second'),
+                          });
+                          ref.afterClose.subscribe({
+                            next: () => {
+                              this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);
+                            },
+                          });
+                          setTimeout(() => {
+                            ref.close();
+                          }, 1000);
+                        },
+                        error: (derr) => {
+                          // Popup another dialog
+                          this.modalService.error({
+                            nzTitle: translate('Common.Error'),
+                            nzContent: derr.toString(),
+                          });
+                        },
+                      });
                   },
                   nzOnCancel: () => {
                     this.router.navigate(['/blog/post/display/' + (e.id ?? 0).toString()]);

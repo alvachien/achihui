@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   UntypedFormGroup,
   UntypedFormControl,
@@ -60,6 +61,7 @@ import { UIAccountCtgyFilterExPipe } from '../../pipes';
   selector: 'hih-fin-document-asset-sold-create',
   templateUrl: './document-asset-sold-create.component.html',
   styleUrls: ['./document-asset-sold-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -80,9 +82,8 @@ import { UIAccountCtgyFilterExPipe } from '../../pipes';
     UIAccountCtgyFilterExPipe,
   ],
 })
-export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
+export class DocumentAssetSoldCreateComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _docDate: Date;
   public baseCurrency: string;
 
@@ -98,23 +99,23 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   // Step: Result
   public docIdCreated?: number;
   public docPostingFailed?: string;
-  currentStep = 0;
+  currentStep = signal(0);
 
   public curMode: UIMode = UIMode.Create;
-  public arUIAccount: UIAccountForSelection[] = [];
+  public arUIAccount = signal<UIAccountForSelection[]>([]);
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
-  public arUIOrder: UIOrderForSelection[] = [];
+  public arUIOrder = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter: boolean | undefined;
   // Step: Extra info
   public uiRevAccountCtgyFilterEx: IAccountCategoryFilterEx | undefined;
-  arMembersInChosedHome: HomeMember[] = [];
-  arControlCenters: ControlCenter[] = [];
-  arOrders: Order[] = [];
-  arTranTypes: TranType[] = [];
-  arAccounts: Account[] = [];
-  arDocTypes: DocumentType[] = [];
-  arCurrencies: Currency[] = [];
+  arMembersInChosedHome = signal<HomeMember[]>([]);
+  arControlCenters = signal<ControlCenter[]>([]);
+  arOrders = signal<Order[]>([]);
+  arTranTypes = signal<TranType[]>([]);
+  arAccounts = signal<Account[]>([]);
+  arDocTypes = signal<DocumentType[]>([]);
+  arCurrencies = signal<Currency[]>([]);
   get curDocDate(): Date {
     return this._docDate;
   }
@@ -124,6 +125,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   private readonly homeService = inject(HomeDefOdataService);
   private readonly _router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -131,7 +133,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this.arMembersInChosedHome = this.homeService.ChosedHome?.Members.slice() ?? [];
+    this.arMembersInChosedHome.set(this.homeService.ChosedHome?.Members.slice() ?? []);
     this._docDate = new Date();
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
 
@@ -159,8 +161,6 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllAssetCategories(),
@@ -171,8 +171,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
     ])
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rst) => {
           ModelUtility.writeConsoleLog(
@@ -180,19 +179,19 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.arDocTypes = rst[2];
-          this.arTranTypes = rst[3];
-          this.arAccounts = rst[4];
-          this.arControlCenters = rst[5];
-          this.arOrders = rst[6];
-          this.arCurrencies = rst[7];
+          this.arDocTypes.set(rst[2]);
+          this.arTranTypes.set(rst[3]);
+          this.arAccounts.set(rst[4]);
+          this.arControlCenters.set(rst[5]);
+          this.arOrders.set(rst[6]);
+          this.arCurrencies.set(rst[7]);
 
           // Tran. type
           // this.arTranTypes = this.arTranTypes.filter(val => {
           //   val.Id === financeTranTypeAssetSoldoutIncome;
           // });
           // Accounts
-          this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+          this.arUIAccount.set(BuildupAccountForSelection(rst[4], rst[0]));
           this.uiAccountStatusFilter = undefined;
           this.uiAccountCtgyFilterEx = {
             includedCategories: [financeAccountCategoryAsset],
@@ -203,7 +202,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
             excludedCategories: [financeAccountCategoryAsset],
           };
           // Orders
-          this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+          this.arUIOrder.set(BuildupOrderForSelection(rst[6], true));
           this.uiOrderFilter = undefined;
         },
         error: (err) => {
@@ -221,21 +220,9 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentAssetSoldoutCreateComponent ngOnInit',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   get nextButtonEnabled(): boolean {
     let isEnabled = false;
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
         isEnabled = this.firstFormGroup.valid;
         break;
@@ -257,17 +244,17 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
   }
 
   pre(): void {
-    this.currentStep -= 1;
+    this.currentStep.update((s) => s - 1);
   }
 
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 1: {
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         this._updateConfirmInfo();
         break;
       }
@@ -293,12 +280,12 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     const docobj: Document = this._generateDoc();
     if (
       !docobj.onVerify({
-        ControlCenters: this.arControlCenters,
-        Orders: this.arOrders,
-        Accounts: this.arAccounts,
-        DocumentTypes: this.arDocTypes,
-        TransactionTypes: this.arTranTypes,
-        Currencies: this.arCurrencies,
+        ControlCenters: this.arControlCenters(),
+        Orders: this.arOrders(),
+        Accounts: this.arAccounts(),
+        DocumentTypes: this.arDocTypes(),
+        TransactionTypes: this.arTranTypes(),
+        Currencies: this.arCurrencies(),
         BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
       })
     ) {
@@ -331,10 +318,9 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createAssetSoldoutDocument(this.detailObject)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => {
-          this.currentStep = 3;
+          this.currentStep.set(3);
           this.isDocPosting = false;
         }),
       )
@@ -376,7 +362,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.tranCurrency = doc.TranCurr;
     this.confirmInfo.soldoutAssetAccountID = this.firstFormGroup.get('accountControl')?.value;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.confirmInfo.soldOutAssetAccountName = this.arAccounts.find(
+    this.confirmInfo.soldOutAssetAccountName = this.arAccounts().find(
       (val) => val.Id === this.confirmInfo.soldoutAssetAccountID,
     )!.Name;
   }
@@ -419,7 +405,7 @@ export class DocumentAssetSoldCreateComponent implements OnInit, OnDestroy {
       for (const item of items) {
         if (item.TranType) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const bExpense: boolean = this.arTranTypes.find((valtt) => valtt.Id === item.TranType)!.Expense;
+          const bExpense: boolean = this.arTranTypes().find((valtt) => valtt.Id === item.TranType)!.Expense;
           if (bExpense) {
             totalAmt -= item.TranAmount;
           } else {

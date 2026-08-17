@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
@@ -9,7 +9,7 @@ import { EChartsOption } from 'echarts';
 import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzListModule } from 'ng-zorro-antd/list';
@@ -43,10 +43,11 @@ import { SafeAny } from '@common/any';
   selector: 'hih-finance-report',
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
-    NzDropDownModule,
+    NzDropdownModule,
     NzSpinModule,
     NzResultModule,
     NzListModule,
@@ -99,6 +100,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly drawerService = inject(NzDrawerService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -179,7 +181,10 @@ export class ReportComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        finalize(() => {
+          this.isLoadingResults = false;
+          this.cdr.markForCheck();
+        }),
       )
       .subscribe({
         next: (val) => {
@@ -255,6 +260,8 @@ export class ReportComponent implements OnInit, OnDestroy {
           if (this.reportByMostOutgoInLastMonth.length > 3) {
             this.reportByMostOutgoInLastMonth.splice(3);
           }
+
+          this.cdr.markForCheck();
         },
         error: (err) => {
           this.modalService.error({

@@ -1,8 +1,18 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ChangeDetectorRef,
+  AfterViewInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode, isUIEditable } from 'actslib';
@@ -66,6 +76,7 @@ import { AccountExtraAssetComponent } from '../account-extra-asset';
   selector: 'hih-fin-account-detail',
   templateUrl: './account-detail.component.html',
   styleUrls: ['./account-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzSpinModule,
@@ -87,24 +98,23 @@ import { AccountExtraAssetComponent } from '../account-extra-asset';
     NzModalModule,
   ],
 })
-export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AccountDetailComponent implements OnInit, AfterViewInit {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  public routerID = -1; // Current object ID in routing
-  public currentMode = '';
-  public uiMode: UIMode = UIMode.Create;
+  isLoadingResults = signal(false);
+  public routerID = signal(-1); // Current object ID in routing
+  public currentMode = signal('');
+  public uiMode = signal<UIMode>(UIMode.Create);
   arStatusDisplayStrings: UIDisplayString[] = [];
   arMembers: HomeMember[] = [];
-  arAccountCategories: AccountCategory[] = [];
-  arAssetCategories: AssetCategory[] = [];
+  arAccountCategories = signal<AccountCategory[]>([]);
+  arAssetCategories = signal<AssetCategory[]>([]);
   // Header forum
   public headerFormGroup: UntypedFormGroup;
   // Amount form
   public isInitAmountRequired = false;
   public amountFormGroup: UntypedFormGroup;
-  private _arControlCenters: ControlCenter[] = [];
-  private _arUIOrders: UIOrderForSelection[] = [];
+  private _arControlCenters = signal<ControlCenter[]>([]);
+  private _arUIOrders = signal<UIOrderForSelection[]>([]);
   // Extra form group
   public extraADPFormGroup: UntypedFormGroup;
   public extraAssetFormGroup: UntypedFormGroup;
@@ -114,7 +124,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   public controlCenterID?: number;
   public orderID?: number;
   public arUIAccount: UIAccountForSelection[] = [];
-  public arTranTypes: TranType[] = [];
+  public arTranTypes = signal<TranType[]>([]);
   public tranType?: number;
 
   @ViewChild('extraADP', { static: false })
@@ -125,10 +135,10 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   compExtraAsset?: AccountExtraAssetComponent;
 
   get isFieldChangable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
   get isCreateMode(): boolean {
-    return this.uiMode === UIMode.Create;
+    return this.uiMode() === UIMode.Create;
   }
   get currentCategory(): number {
     return this.headerFormGroup.get('ctgyControl')?.value;
@@ -161,10 +171,10 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     return false;
   }
   get arControlCenters(): ControlCenter[] {
-    return this._arControlCenters;
+    return this._arControlCenters();
   }
   get arUIOrders(): UIOrderForSelection[] {
-    return this._arUIOrders;
+    return this._arUIOrders();
   }
 
   private readonly odataService = inject(FinanceOdataService);
@@ -173,6 +183,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   private readonly modalService = inject(NzModalService);
   private readonly router = inject(Router);
   private readonly changeDetectRef = inject(ChangeDetectorRef);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -220,7 +231,6 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       `AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnInit`,
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
     this.headerFormGroup.get('idControl')?.disable();
   }
 
@@ -230,198 +240,179 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       ConsoleLogTypeEnum.debug,
     );
 
-    this.activateRoute.url
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
-      .subscribe((x) => {
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode.set(UIMode.Create);
+        } else if (x[0].path === 'edit') {
+          this.routerID.set(+x[1].path);
 
-            this.uiMode = UIMode.Update;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
+          this.uiMode.set(UIMode.Update);
+        } else if (x[0].path === 'display') {
+          this.routerID.set(+x[1].path);
 
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
-          this.changeDetectRef.detectChanges();
+          this.uiMode.set(UIMode.Display);
         }
+        this.currentMode.set(getUIModeString(this.uiMode()));
+        this.changeDetectRef.detectChanges();
+      }
 
-        switch (this.uiMode) {
-          case UIMode.Update:
-          case UIMode.Display: {
-            forkJoin([
-              this.odataService.fetchAllAccountCategories(),
-              this.odataService.fetchAllAssetCategories(),
-              this.odataService.fetchAllTranTypes(),
-              this.odataService.readAccount(this.routerID),
-            ])
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              .pipe(takeUntil(this._destroyed$!))
-              .subscribe({
-                next: (rst: SafeAny[]) => {
-                  this.arAccountCategories = rst[0];
-                  this.arAssetCategories = rst[1];
-                  this.arTranTypes = rst[2];
-                  const acnt = rst[3] as Account;
+      switch (this.uiMode()) {
+        case UIMode.Update:
+        case UIMode.Display: {
+          forkJoin([
+            this.odataService.fetchAllAccountCategories(),
+            this.odataService.fetchAllAssetCategories(),
+            this.odataService.fetchAllTranTypes(),
+            this.odataService.readAccount(this.routerID()),
+          ])
+            .pipe(takeUntilDestroyed(this.destroyedRef))
+            .subscribe({
+              next: (rst: SafeAny[]) => {
+                this.arAccountCategories.set(rst[0]);
+                this.arAssetCategories.set(rst[1]);
+                this.arTranTypes.set(rst[2]);
+                const acnt = rst[3] as Account;
 
-                  if (acnt.CategoryId === financeAccountCategoryAdvancePayment) {
-                    this.odataService
-                      .fetchAllDPTmpDocs({ AccountID: this.routerID })
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      .pipe(takeUntil(this._destroyed$!))
-                      .subscribe({
-                        next: (val) => {
-                          (acnt.ExtraInfo as AccountExtraAdvancePayment).dpTmpDocs = val;
-                          this._displayAccountContent(acnt);
+                if (acnt.CategoryId === financeAccountCategoryAdvancePayment) {
+                  this.odataService
+                    .fetchAllDPTmpDocs({ AccountID: this.routerID() })
+                    .pipe(takeUntilDestroyed(this.destroyedRef))
+                    .subscribe({
+                      next: (val) => {
+                        (acnt.ExtraInfo as AccountExtraAdvancePayment).dpTmpDocs = val;
+                        this._displayAccountContent(acnt);
 
-                          this.headerFormGroup.markAsPristine();
-                          this.extraADPFormGroup.markAsPristine();
-                          this.extraAssetFormGroup.markAsPristine();
-                          this.extraLoanFormGroup.markAsPristine();
+                        this.headerFormGroup.markAsPristine();
+                        this.extraADPFormGroup.markAsPristine();
+                        this.extraAssetFormGroup.markAsPristine();
+                        this.extraLoanFormGroup.markAsPristine();
 
-                          if (this.uiMode === UIMode.Display) {
-                            this.headerFormGroup.disable();
-                            this.extraADPFormGroup.disable();
-                            this.extraAssetFormGroup.disable();
-                            this.extraLoanFormGroup.disable();
-                          }
-                        },
-                        error: (err) => {
-                          this.modalService.error({
-                            nzTitle: translate('Common.Error'),
-                            nzContent: err.toString(),
-                            nzClosable: true,
-                          });
-                        },
-                      });
-                  } else if (acnt.CategoryId === financeAccountCategoryBorrowFrom) {
-                    this.odataService
-                      .fetchAllLoanTmpDocs({ AccountID: this.routerID })
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      .pipe(takeUntil(this._destroyed$!))
-                      .subscribe({
-                        next: (val) => {
-                          (acnt.ExtraInfo as AccountExtraLoan).loanTmpDocs = val;
-                          this._displayAccountContent(acnt);
+                        if (this.uiMode() === UIMode.Display) {
+                          this.headerFormGroup.disable();
+                          this.extraADPFormGroup.disable();
+                          this.extraAssetFormGroup.disable();
+                          this.extraLoanFormGroup.disable();
+                        }
+                      },
+                      error: (err) => {
+                        this.modalService.error({
+                          nzTitle: translate('Common.Error'),
+                          nzContent: err.toString(),
+                          nzClosable: true,
+                        });
+                      },
+                    });
+                } else if (acnt.CategoryId === financeAccountCategoryBorrowFrom) {
+                  this.odataService
+                    .fetchAllLoanTmpDocs({ AccountID: this.routerID() })
+                    .pipe(takeUntilDestroyed(this.destroyedRef))
+                    .subscribe({
+                      next: (val) => {
+                        (acnt.ExtraInfo as AccountExtraLoan).loanTmpDocs = val;
+                        this._displayAccountContent(acnt);
 
-                          this.headerFormGroup.markAsPristine();
-                          this.extraADPFormGroup.markAsPristine();
-                          this.extraAssetFormGroup.markAsPristine();
-                          this.extraLoanFormGroup.markAsPristine();
+                        this.headerFormGroup.markAsPristine();
+                        this.extraADPFormGroup.markAsPristine();
+                        this.extraAssetFormGroup.markAsPristine();
+                        this.extraLoanFormGroup.markAsPristine();
 
-                          if (this.uiMode === UIMode.Display) {
-                            this.headerFormGroup.disable();
-                            this.extraADPFormGroup.disable();
-                            this.extraAssetFormGroup.disable();
-                            this.extraLoanFormGroup.disable();
-                          }
-                        },
-                        error: (err) => {
-                          this.modalService.error({
-                            nzTitle: translate('Common.Error'),
-                            nzContent: err.toString(),
-                            nzClosable: true,
-                          });
-                        },
-                      });
-                  } else if (acnt.CategoryId === financeAccountCategoryAsset) {
-                    this._displayAccountContent(acnt);
-                    this.headerFormGroup.markAsPristine();
-                    this.extraADPFormGroup.markAsPristine();
-                    this.extraAssetFormGroup.markAsPristine();
-                    this.extraLoanFormGroup.markAsPristine();
+                        if (this.uiMode() === UIMode.Display) {
+                          this.headerFormGroup.disable();
+                          this.extraADPFormGroup.disable();
+                          this.extraAssetFormGroup.disable();
+                          this.extraLoanFormGroup.disable();
+                        }
+                      },
+                      error: (err) => {
+                        this.modalService.error({
+                          nzTitle: translate('Common.Error'),
+                          nzContent: err.toString(),
+                          nzClosable: true,
+                        });
+                      },
+                    });
+                } else if (acnt.CategoryId === financeAccountCategoryAsset) {
+                  this._displayAccountContent(acnt);
+                  this.headerFormGroup.markAsPristine();
+                  this.extraADPFormGroup.markAsPristine();
+                  this.extraAssetFormGroup.markAsPristine();
+                  this.extraLoanFormGroup.markAsPristine();
 
-                    if (this.uiMode === UIMode.Display) {
-                      this.headerFormGroup.disable();
-                      this.extraADPFormGroup.disable();
-                      this.extraAssetFormGroup.disable();
-                      this.extraLoanFormGroup.disable();
-                    }
-                  } else {
-                    this._displayAccountContent(acnt);
-                    this.headerFormGroup.markAsPristine();
-                    this.extraADPFormGroup.markAsPristine();
-                    this.extraAssetFormGroup.markAsPristine();
-                    this.extraLoanFormGroup.markAsPristine();
-
-                    if (this.uiMode === UIMode.Display) {
-                      this.headerFormGroup.disable();
-                      this.extraADPFormGroup.disable();
-                      this.extraAssetFormGroup.disable();
-                      this.extraLoanFormGroup.disable();
-                    }
+                  if (this.uiMode() === UIMode.Display) {
+                    this.headerFormGroup.disable();
+                    this.extraADPFormGroup.disable();
+                    this.extraAssetFormGroup.disable();
+                    this.extraLoanFormGroup.disable();
                   }
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${err}`,
-                    ConsoleLogTypeEnum.error,
-                  );
+                } else {
+                  this._displayAccountContent(acnt);
+                  this.headerFormGroup.markAsPristine();
+                  this.extraADPFormGroup.markAsPristine();
+                  this.extraAssetFormGroup.markAsPristine();
+                  this.extraLoanFormGroup.markAsPristine();
 
-                  this.uiMode = UIMode.Invalid;
-                  this.modalService.error({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
-                  });
-                },
-              });
-            break;
-          }
+                  if (this.uiMode() === UIMode.Display) {
+                    this.headerFormGroup.disable();
+                    this.extraADPFormGroup.disable();
+                    this.extraAssetFormGroup.disable();
+                    this.extraLoanFormGroup.disable();
+                  }
+                }
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOninit, readAccount failed: ${err}`,
+                  ConsoleLogTypeEnum.error,
+                );
 
-          case UIMode.Create:
-          default: {
-            forkJoin([
-              this.odataService.fetchAllAccountCategories(),
-              this.odataService.fetchAllControlCenters(),
-              this.odataService.fetchAllOrders(),
-            ])
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              .pipe(takeUntil(this._destroyed$!))
-              .subscribe({
-                next: (rst) => {
-                  this.arAccountCategories = rst[0];
-                  this._arControlCenters = rst[1];
-                  this._arUIOrders = BuildupOrderForSelection(rst[2]);
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${err.toString()}`,
-                    ConsoleLogTypeEnum.error,
-                  );
-
-                  this.modalService.error({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
-                  });
-                },
-              });
-            break;
-          }
+                this.uiMode.set(UIMode.Invalid);
+                this.modalService.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
+          break;
         }
-      });
-  }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering AccountDetailComponent ngOnDestroy`,
-      ConsoleLogTypeEnum.debug,
-    );
+        case UIMode.Create:
+        default: {
+          forkJoin([
+            this.odataService.fetchAllAccountCategories(),
+            this.odataService.fetchAllControlCenters(),
+            this.odataService.fetchAllOrders(),
+          ])
+            .pipe(takeUntilDestroyed(this.destroyedRef))
+            .subscribe({
+              next: (rst) => {
+                this.arAccountCategories.set(rst[0]);
+                this._arControlCenters.set(rst[1]);
+                this._arUIOrders.set(BuildupOrderForSelection(rst[2]));
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering AccountDetailComponent ngOnInit, failed with activateRoute: ${err.toString()}`,
+                  ConsoleLogTypeEnum.error,
+                );
 
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
+                this.modalService.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
+          break;
+        }
+      }
+    });
   }
 
   public isCategoryDisabled(ctgyid: number): boolean {
     if (
-      this.uiMode === UIMode.Create &&
+      this.uiMode() === UIMode.Create &&
       (ctgyid === financeAccountCategoryAsset ||
         ctgyid === financeAccountCategoryBorrowFrom ||
         ctgyid === financeAccountCategoryLendTo ||
@@ -437,7 +428,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   get canEnterInitialAmount(): boolean {
     const ctgyid = this.currentCategory;
     if (
-      this.uiMode === UIMode.Create &&
+      this.uiMode() === UIMode.Create &&
       (ctgyid === financeAccountCategoryCash ||
         ctgyid === financeAccountCategoryDeposit ||
         ctgyid === financeAccountCategoryCreditCard ||
@@ -463,9 +454,9 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   public onSave(): void {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering AccountDetailComponent onSave`, ConsoleLogTypeEnum.debug);
-    if (this.uiMode === UIMode.Create) {
+    if (this.uiMode() === UIMode.Create) {
       this.onCreateImpl();
-    } else if (this.uiMode === UIMode.Update) {
+    } else if (this.uiMode() === UIMode.Update) {
       this.onUpdateImpl();
     }
   }
@@ -477,7 +468,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     if (
       !acntobj.onVerify({
-        Categories: this.arAccountCategories,
+        Categories: this.arAccountCategories(),
       })
     ) {
       popupDialog(this.modalService, 'Common.Error', acntobj.VerifiedMsgs);
@@ -487,8 +478,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // Save it
     this.odataService
       .createAccount(acntobj)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val) => {
           const nacntid = val.Id;
@@ -506,7 +496,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             docitem.ItemId = 1;
             docitem.TranAmount = this.amountFormGroup.get('amountControl')?.value;
             let assetflag = false;
-            this.arAccountCategories.find((ctgy) => {
+            this.arAccountCategories().find((ctgy) => {
               if (ctgy.ID === val.CategoryId) {
                 assetflag = ctgy.AssetFlag;
               }
@@ -522,8 +512,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
             this.odataService
               .createDocument(doc)
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              .pipe(takeUntil(this._destroyed$!))
+              .pipe(takeUntilDestroyed(this.destroyedRef))
               .subscribe({
                 next: (crtdoc) => {
                   // Navigate to display mode
@@ -557,7 +546,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       return;
     }
 
-    if (!acntobj.onVerify({ Categories: this.arAccountCategories })) {
+    if (!acntobj.onVerify({ Categories: this.arAccountCategories() })) {
       popupDialog(this.modalService, 'Common.Error', acntobj.VerifiedMsgs);
       return;
     }
@@ -588,8 +577,7 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // Save it
     this.odataService
       .changeAccountByPatch(acntobj.Id ?? 0, arcontent)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val) => {
           // Navigate to display mode
@@ -631,8 +619,8 @@ export class AccountDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   private _generateAccount(): Account {
     const acntObj: Account = new Account();
     acntObj.HID = this.homeSevice.ChosedHome?.ID ?? 0;
-    if (this.uiMode === UIMode.Update) {
-      acntObj.Id = this.routerID;
+    if (this.uiMode() === UIMode.Update) {
+      acntObj.Id = this.routerID();
     }
 
     acntObj.Name = this.headerFormGroup.get('nameControl')?.value;

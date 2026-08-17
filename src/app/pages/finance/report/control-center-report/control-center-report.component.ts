@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -30,6 +31,7 @@ import { DecimalPipe } from '@angular/common';
   selector: 'hih-finance-report-controlcenter',
   templateUrl: './control-center-report.component.html',
   styleUrls: ['./control-center-report.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -41,13 +43,11 @@ import { DecimalPipe } from '@angular/common';
     TranslocoModule,
   ],
 })
-export class ControlCenterReportComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  dataSet: SafeAny[] = [];
-  arReportByControlCenter: FinanceReportByControlCenter[] = [];
-  arControlCenter: ControlCenter[] = [];
+export class ControlCenterReportComponent implements OnInit {
+  isLoadingResults = signal(false);
+  dataSet = signal<SafeAny[]>([]);
+  arReportByControlCenter = signal<FinanceReportByControlCenter[]>([]);
+  arControlCenter = signal<ControlCenter[]>([]);
   baseCurrency: string;
 
   public readonly odataService = inject(FinanceOdataService);
@@ -60,13 +60,14 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
 
   private readonly router = inject(Router);
 
+  private readonly destroyedRef = inject(DestroyRef);
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
 
-    this.isLoadingResults = false;
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
@@ -77,20 +78,7 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
     );
 
     // Load data
-    this._destroyed$ = new ReplaySubject(1);
     this.onLoadData();
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering ControlCenterReportComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   onDisplayMasterData(ccid: number) {
@@ -228,17 +216,16 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
       `AC_HIH_UI [Debug]: Entering ControlCenterReportComponent onLoadData(${forceReload})...`,
       ConsoleLogTypeEnum.debug,
     );
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     forkJoin([this.odataService.fetchReportByControlCenter(forceReload), this.odataService.fetchAllControlCenters()])
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x) => {
-          this.arReportByControlCenter = x[0];
-          this.arControlCenter = x[1];
+          this.arReportByControlCenter.set(x[0]);
+          this.arControlCenter.set(x[1]);
 
           this.buildReportList();
         },
@@ -258,13 +245,13 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
   }
 
   private buildReportList(): void {
-    this.dataSet = [];
-    this.arReportByControlCenter.forEach((bal: FinanceReportByControlCenter) => {
-      const ccobj = this.arControlCenter.find((cc: ControlCenter) => {
+    const ds: SafeAny[] = [];
+    this.arReportByControlCenter().forEach((bal: FinanceReportByControlCenter) => {
+      const ccobj = this.arControlCenter().find((cc: ControlCenter) => {
         return cc.Id === bal.ControlCenterId;
       });
       if (ccobj) {
-        this.dataSet.push({
+        ds.push({
           ControlCenterId: bal.ControlCenterId,
           ControlCenterName: ccobj.Name,
           DebitBalance: bal.DebitBalance,
@@ -273,5 +260,6 @@ export class ControlCenterReportComponent implements OnInit, OnDestroy {
         });
       }
     });
+    this.dataSet.set(ds);
   }
 }

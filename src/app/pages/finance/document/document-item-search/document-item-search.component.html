@@ -10,7 +10,7 @@
   <nz-page-header-extra> </nz-page-header-extra>
 </nz-page-header>
 
-@if (isChildMode) {
+@if (isChildMode()) {
   <div>
     <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
       <div nz-result-extra>
@@ -20,10 +20,10 @@
   </div>
 }
 
-@if (!isChildMode) {
+@if (!isChildMode()) {
   <div>
     <div class="control-full-width">
-      @for (filter of filters; track filter; let idxfilter = $index) {
+      @for (filter of filters(); track filter; let idxfilter = $index) {
         <div nz-row class="control-full-width">
           <div nz-row [nzGutter]="24" class="control-full-width" style="clear: both">
             <div nz-col [nzSpan]="6">
@@ -127,7 +127,7 @@
     </div>
 
     <div class="control-full-width">
-      <hih-fin-document-item-view [filterDocItem]="realFilters"></hih-fin-document-item-view>
+      <hih-fin-document-item-view [filterDocItem]="realFilters()"></hih-fin-document-item-view>
     </div>
   </div>
 }

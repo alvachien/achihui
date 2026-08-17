@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer, Overlay } from '@angular/cdk/overlay';
 import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -16,7 +14,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../testing';
 import { LanguageComponent } from './language.component';
 import { LanguageOdataService } from '../../services';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -41,8 +39,6 @@ describe('LanguageComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         NzSpinModule,
         NzTableModule,
         NzBreadCrumbModule,
@@ -54,12 +50,12 @@ describe('LanguageComponent', () => {
         { provide: LanguageOdataService, useValue: langService },
         Overlay,
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -82,7 +78,7 @@ describe('LanguageComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.dataSource.length).toEqual(0);
+      expect(component.dataSource().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -90,8 +86,8 @@ describe('LanguageComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.dataSource.length).toBeGreaterThan(0);
-      expect(component.dataSource.length).toEqual(fakeData.appLanguages.length);
+      expect(component.dataSource().length).toBeGreaterThan(0);
+      expect(component.dataSource().length).toEqual(fakeData.appLanguages.length);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

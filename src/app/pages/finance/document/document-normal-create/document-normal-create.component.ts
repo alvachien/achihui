@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
@@ -50,6 +51,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
   selector: 'hih-fin-document-normal-create',
   templateUrl: './document-normal-create.component.html',
   styleUrls: ['./document-normal-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -69,23 +71,21 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     TranslocoModule,
   ],
 })
-export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
+export class DocumentNormalCreateComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
-  public arUIOrders: UIOrderForSelection[] = [];
+  public arUIOrders = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter: boolean | undefined;
-  public arCurrencies: Currency[] = [];
-  public arDocTypes: DocumentType[] = [];
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arAccounts: Account[] = [];
-  public arUIAccounts: UIAccountForSelection[] = [];
-  public arOrders: Order[] = [];
+  public arCurrencies = signal<Currency[]>([]);
+  public arDocTypes = signal<DocumentType[]>([]);
+  public arTranType = signal<TranType[]>([]);
+  public arControlCenters = signal<ControlCenter[]>([]);
+  public arAccounts = signal<Account[]>([]);
+  public arUIAccounts = signal<UIAccountForSelection[]>([]);
+  public arOrders = signal<Order[]>([]);
   public baseCurrency: string;
-  public currentStep = 0;
+  public currentStep = signal(0);
   // Step: Header
   public headerForm: UntypedFormGroup;
   // Step: Item
@@ -107,6 +107,8 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   private readonly modalService = inject(NzModalService);
 
   private readonly router = inject(Router);
+
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -137,8 +139,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllTranTypes(),
@@ -148,25 +148,25 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllCurrencies(),
       this.odataService.fetchAllDocTypes(),
     ])
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rst) => {
           // Accounts
-          this.arAccounts = rst[2];
-          this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+          this.arAccounts.set(rst[2]);
+          this.arUIAccounts.set(BuildupAccountForSelection(rst[2], rst[0]));
           // this.uiAccountStatusFilter = undefined;
           // this.uiAccountCtgyFilter = undefined;
           // Orders
-          this.arOrders = rst[4];
-          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+          this.arOrders.set(rst[4]);
+          this.arUIOrders.set(BuildupOrderForSelection(rst[4]));
           // Tran. type
-          this.arTranType = rst[1];
+          this.arTranType.set(rst[1]);
           // Control Centers
-          this.arControlCenters = rst[3];
+          this.arControlCenters.set(rst[3]);
           // Currencies
-          this.arCurrencies = rst[5];
+          this.arCurrencies.set(rst[5]);
           // Doc. type
-          this.arDocTypes = rst[6];
+          this.arDocTypes.set(rst[6]);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -182,19 +182,6 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
-
   onSave(): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalCreateComponent onSave...',
@@ -205,12 +192,12 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     const detailObject: Document = this._generateDocObject();
     if (
       !detailObject.onVerify({
-        ControlCenters: this.arControlCenters,
-        Orders: this.arOrders,
-        Accounts: this.arAccounts,
-        DocumentTypes: this.arDocTypes,
-        TransactionTypes: this.arTranType,
-        Currencies: this.arCurrencies,
+        ControlCenters: this.arControlCenters(),
+        Orders: this.arOrders(),
+        Accounts: this.arAccounts(),
+        DocumentTypes: this.arDocTypes(),
+        TransactionTypes: this.arTranType(),
+        Currencies: this.arCurrencies(),
         BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
       })
     ) {
@@ -229,11 +216,10 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createDocument(detailObject)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => {
           this.isDocPosting = false;
-          this.currentStep = 3;
+          this.currentStep.set(3);
         }),
       )
       .subscribe({
@@ -274,13 +260,13 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
   }
 
   pre(): void {
-    this.currentStep -= 1;
+    this.currentStep.update((s) => s - 1);
   }
 
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
         this.doccur = detailObject.TranCurr;
         this.doccur2 = detailObject.TranCurr2;
@@ -301,9 +287,9 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     }
   }
   get nextButtonEnabled(): boolean {
-    if (this.currentStep === 0) {
+    if (this.currentStep() === 0) {
       return this.headerForm.valid;
-    } else if (this.currentStep === 1) {
+    } else if (this.currentStep() === 1) {
       return this.itemsForm.valid;
     } else {
       return true;
@@ -333,11 +319,11 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
           aracntid.push(val.AccountId);
         }
       }
-      const ttid: number = this.arTranType.findIndex((tt: TranType) => {
+      const ttid: number = this.arTranType().findIndex((tt: TranType) => {
         return tt.Id === val.TranType;
       });
       if (ttid !== -1) {
-        if (this.arTranType[ttid].Expense) {
+        if (this.arTranType()[ttid].Expense) {
           this.confirmInfo.outAmount += val.TranAmount;
         } else {
           this.confirmInfo.inAmount += val.TranAmount;
@@ -358,7 +344,7 @@ export class DocumentNormalCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.duplicatedItems = [];
     this.odataService
       .searchDocItem(filters)
-      .pipe(finalize(() => this.currentStep++))
+      .pipe(finalize(() => this.currentStep.update((s) => s + 1)))
       .subscribe({
         next: (val) => {
           this.arDocItem = val.contentList;

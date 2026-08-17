@@ -157,7 +157,7 @@
               </nz-dropdown-menu>
             </div>
           </li>
-          @if (!isLoggedIn) {
+          @if (!isLoggedIn()) {
             <li>
               <div class="app-header-nav-item">
                 <a (click)="onLogon()">
@@ -166,12 +166,12 @@
               </div>
             </li>
           }
-          @if (isLoggedIn) {
+          @if (isLoggedIn()) {
             <li>
               <div class="app-header-nav-item">
                 <a nz-dropdown [nzDropdownMenu]="menuUser">
                   <i nz-icon nzType="user" nzTheme="outline" class="app-header-icon"></i>
-                  <span class="header-nav-label header-nav-item-active">{{ titleLogin }}</span>
+                  <span class="header-nav-label header-nav-item-active">{{ titleLogin() }}</span>
                 </a>
                 <nz-dropdown-menu #menuUser="nzDropdownMenu">
                   <ul nz-menu nzSelectable>
@@ -187,7 +187,7 @@
               </div>
             </li>
           }
-          @if (!selectedHomeName) {
+          @if (!selectedHomeName()) {
             <li>
               <div class="app-header-nav-item">
                 <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
@@ -206,12 +206,12 @@
               </div>
             </li>
           }
-          @if (selectedHomeName) {
+          @if (selectedHomeName()) {
             <li>
               <div class="app-header-nav-item">
                 <a nz-dropdown [nzDropdownMenu]="menuHomeDef">
                   <i nz-icon nzType="apartment" nzTheme="outline" class="app-header-icon"></i>
-                  <span class="header-nav-label header-nav-item-active">{{ selectedHomeName }}</span>
+                  <span class="header-nav-label header-nav-item-active">{{ selectedHomeName() }}</span>
                 </a>
                 <nz-dropdown-menu #menuHomeDef="nzDropdownMenu">
                   <ul nz-menu nzSelectable>

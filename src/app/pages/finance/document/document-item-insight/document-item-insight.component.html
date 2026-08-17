@@ -14,13 +14,13 @@
 
 <div>
   <div>{{ 'Common.DateRange' | transloco }}: {{ insideDateRangeString }}</div>
-  @if (insightOption?.TransactionDirection !== undefined) {
+  @if ($safeNavigationMigration(insightOption?.TransactionDirection) !== undefined) {
     <div>{{ 'Finance.Income' | transloco }}: {{ insightOption?.TransactionDirection }}</div>
   }
   <div
     [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco"
     nz-tooltip
-    *ngIf="insightOption?.ExcludeTransfer !== undefined"
+    *ngIf="$safeNavigationMigration(insightOption?.ExcludeTransfer) !== undefined"
   >
     {{ 'Finance.ExcludeTransfer' | transloco }}: {{ insightOption?.ExcludeTransfer }}
   </div>
@@ -42,8 +42,8 @@
   #resultTable
   nzBordered
   nzShowSizeChanger
-  [nzData]="listDisplayData"
-  [nzLoading]="isLoadingData"
+  [nzData]="listDisplayData()"
+  [nzLoading]="isLoadingData()"
   [nzFooter]="footerTpl"
 >
   <thead>
@@ -81,10 +81,10 @@
 <ng-template #footerTpl let-control>
   <div nz-row>
     <div nz-col nzFlex="3">
-      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number: '1.2-2' }} ({{ baseCurrency }})
+      {{ 'Finance.In' | transloco }}: {{ incomeAmount() | number: '1.2-2' }} ({{ baseCurrency }})
     </div>
     <div nz-col nzFlex="3">
-      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number: '1.2-2' }} ({{ baseCurrency }})
+      {{ 'Finance.Out' | transloco }}: {{ outgoAmount() | number: '1.2-2' }} ({{ baseCurrency }})
     </div>
   </div>
 </ng-template>

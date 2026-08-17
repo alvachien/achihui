@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -9,6 +9,7 @@ import { ModelUtility, ConsoleLogTypeEnum } from '@model/index';
   selector: 'hih-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzResultModule, NzButtonModule, TranslocoModule],
 })
 export class SearchComponent {

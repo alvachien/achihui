@@ -1,26 +1,22 @@
+import { signal } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject } from 'rxjs';
 
 import { UserAuthInfo } from '@model/index';
 import { AuthService, HomeDefOdataService, UIStatusService } from '@services/index';
-import { SafeAny } from '@common/any';
 import { FakeDataHelper, getTranslocoModule } from 'testing';
 
 import { LocationSelectionDlgComponent } from './location-selection-dlg.component';
-import { LibraryUIModule } from '../library-ui.module';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('LocationSelectionDlgComponent', () => {
   let component: LocationSelectionDlgComponent;
   let fixture: ComponentFixture<LocationSelectionDlgComponent>;
   let fakeData: FakeDataHelper;
   //let storageService: any;
-  let readBookSpy: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
   //const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -33,7 +29,7 @@ describe('LocationSelectionDlgComponent', () => {
   });
 
   beforeEach(async () => {
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -44,8 +40,6 @@ describe('LocationSelectionDlgComponent', () => {
       // declarations moved to imports
       imports: [
         FormsModule,
-        LibraryUIModule,
-        NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
@@ -65,7 +59,7 @@ describe('LocationSelectionDlgComponent', () => {
             }),
           deps: [NzModalService],
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -79,10 +73,5 @@ describe('LocationSelectionDlgComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-
-    const btest = false;
-    if (btest) {
-      expect(readBookSpy).not.toHaveBeenCalled();
-    }
   });
 });

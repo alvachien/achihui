@@ -1,4 +1,12 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -8,10 +16,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
@@ -50,6 +59,7 @@ import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-c
   selector: 'hih-document-normal-mass-create',
   templateUrl: './document-normal-mass-create.component.html',
   styleUrls: ['./document-normal-mass-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -65,23 +75,21 @@ import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-c
     RouterModule,
   ],
 })
-export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
+export class DocumentNormalMassCreateComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$?: ReplaySubject<boolean> | null = null;
-
   public curDocType: number = financeDocTypeNormal;
   public curMode: UIMode = UIMode.Create;
-  public arUIOrders: UIOrderForSelection[] = [];
+  public arUIOrders = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter: boolean | undefined;
-  public arCurrencies: Currency[] = [];
-  public arDocTypes: DocumentType[] = [];
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arAccounts: Account[] = [];
-  public arUIAccounts: UIAccountForSelection[] = [];
-  public arOrders: Order[] = [];
+  public arCurrencies = signal<Currency[]>([]);
+  public arDocTypes = signal<DocumentType[]>([]);
+  public arTranType = signal<TranType[]>([]);
+  public arControlCenters = signal<ControlCenter[]>([]);
+  public arAccounts = signal<Account[]>([]);
+  public arUIAccounts = signal<UIAccountForSelection[]>([]);
+  public arOrders = signal<Order[]>([]);
   public baseCurrency: string;
-  public currentStep = 0;
+  public currentStep = signal(0);
   // Step: Item
   public itemsFormGroup?: UntypedFormGroup;
   // Step: Confirm
@@ -104,6 +112,9 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
   private readonly router = inject(Router);
 
+  private readonly destroyedRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent constructor...',
@@ -121,7 +132,6 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
     this.itemsFormGroup = this.fb.group({
       items: this.fb.array([]),
     });
@@ -135,25 +145,25 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllCurrencies(),
       this.odataService.fetchAllDocTypes(),
     ])
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rst: SafeAny) => {
           // Accounts
-          this.arAccounts = rst[2];
-          this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+          this.arAccounts.set(rst[2]);
+          this.arUIAccounts.set(BuildupAccountForSelection(rst[2], rst[0]));
           // this.uiAccountStatusFilter = undefined;
           // this.uiAccountCtgyFilter = undefined;
           // Orders
-          this.arOrders = rst[4];
-          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+          this.arOrders.set(rst[4]);
+          this.arUIOrders.set(BuildupOrderForSelection(this.arOrders()));
           // Tran. type
-          this.arTranType = rst[1];
+          this.arTranType.set(rst[1]);
           // Control Centers
-          this.arControlCenters = rst[3];
+          this.arControlCenters.set(rst[3]);
           // Currencies
-          this.arCurrencies = rst[5];
+          this.arCurrencies.set(rst[5]);
           // Doc. type
-          this.arDocTypes = rst[6];
+          this.arDocTypes.set(rst[6]);
 
           // Create first item
           this.createItem();
@@ -170,18 +180,6 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentNormalMassCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   onCreateNewItem(event?: MouseEvent): number {
@@ -211,15 +209,15 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
   }
 
   pre(): void {
-    this.currentStep -= 1;
+    this.currentStep.update((s) => s - 1);
   }
 
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
         this._generateItems();
         this._updateConfirmInfo();
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 1: {
@@ -232,38 +230,38 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     }
   }
   get nextButtonEnabled(): boolean {
-    if (this.currentStep === 0) {
+    if (this.currentStep() === 0) {
       const controlArray: UntypedFormArray = this.itemsFormGroup?.controls['items'] as UntypedFormArray;
       if (controlArray.length <= 0) {
         return false;
       }
       return controlArray.valid;
-    } else if (this.currentStep === 1) {
+    } else if (this.currentStep() === 1) {
       return this.itemsFormGroup?.valid ?? false;
     } else {
       return true;
     }
   }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find((acnt) => {
+    const acntObj = this.arAccounts().find((acnt) => {
       return acnt.Id === acntid;
     });
     return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find((cc) => {
+    const ccObj = this.arControlCenters().find((cc) => {
       return cc.Id === ccid;
     });
     return ccObj ? ccObj.Name : '';
   }
   public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find((ord) => {
+    const orderObj = this.arOrders().find((ord) => {
       return ord.Id === ordid;
     });
     return orderObj ? orderObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find((tt) => {
+    const tranTypeObj = this.arTranType().find((tt) => {
       return tt.Id === ttid;
     });
 
@@ -414,12 +412,12 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.forEach((doc) => {
       if (
         !doc.onVerify({
-          ControlCenters: this.arControlCenters,
-          Orders: this.arOrders,
-          Accounts: this.arAccounts,
-          DocumentTypes: this.arDocTypes,
-          TransactionTypes: this.arTranType,
-          Currencies: this.arCurrencies,
+          ControlCenters: this.arControlCenters(),
+          Orders: this.arOrders(),
+          Accounts: this.arAccounts(),
+          DocumentTypes: this.arDocTypes(),
+          TransactionTypes: this.arTranType(),
+          Currencies: this.arCurrencies(),
           BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
@@ -432,13 +430,12 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.currentStep = 2; // Jump to the result page
+    this.currentStep.set(2); // Jump to the result page
 
     this.odataService
       .massCreateNormalDocument(this.confirmInfo)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => (this.isDocPosting = false)),
       )
       .subscribe({
@@ -450,6 +447,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
           this.docIdCreated = rsts.PostedDocuments;
           this.docIdFailed = rsts.FailedDocuments;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -468,8 +466,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .massCreateNormalDocument(this.docIdFailed)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => (this.isDocPosting = false)),
       )
       .subscribe({
@@ -481,6 +478,7 @@ export class DocumentNormalMassCreateComponent implements OnInit, OnDestroy {
 
           this.docIdCreated.push(...rsts.PostedDocuments);
           this.docIdFailed = rsts.FailedDocuments;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

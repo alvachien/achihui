@@ -1,7 +1,7 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { BehaviorSubject } from 'rxjs';
 
 import { BlogOdataService } from './blog-odata.service';
 import { AuthService } from '.';
@@ -25,14 +25,14 @@ describe('BlogOdataService', () => {
     fakeData.buildBlogPostAPI();
 
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
+    authServiceStub.authSubject = signal(fakeData.currentUser);
 
     TestBed.configureTestingModule({
       imports: [],
       providers: [
         BlogOdataService,
         { provide: AuthService, useValue: authServiceStub },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

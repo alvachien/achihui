@@ -17,7 +17,7 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
   <div nz-row [nzGutter]="8">
     <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
       <nz-card [nzTitle]="'Finance.Assets' | transloco">
@@ -75,7 +75,7 @@
   <nz-divider></nz-divider>
 
   <div nz-row style="padding-top: 30px">
-    <nz-table #basicTable nzBordered [nzData]="dataSet" nzShowSizeChanger>
+    <nz-table #basicTable nzBordered [nzData]="dataSet()" nzShowSizeChanger>
       <thead>
         <tr>
           <th>#</th>

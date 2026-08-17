@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults">
+<nz-spin [nzSpinning]="isLoadingResults()">
   <nz-page-header nzBackIcon [nzTitle]="'Common.Languages' | transloco">
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>
@@ -12,7 +12,7 @@
           {{ 'Common.Languages' | transloco }}
         </p>
         <div>
-          <nz-table #langTable [nzData]="dataSource">
+          <nz-table #langTable [nzData]="dataSource()">
             <thead>
               <tr>
                 <th></th>

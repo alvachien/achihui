@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
+<nz-spin [nzSpinning]="isLoadingResults()" *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item
@@ -9,7 +9,7 @@
     <nz-page-header-title>{{ 'Finance.ControlCenter' | transloco }}</nz-page-header-title>
     <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/controlcenter/create">{{
+      <a nz-button nzType="link" [disabled]="isChildMode()" routerLink="/finance/controlcenter/create">{{
         'Common.Create' | transloco
       }}</a>
       <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">{{
@@ -19,7 +19,7 @@
   </nz-page-header>
 
   <div nz-row>
-    <nz-table #basicTable [nzData]="dataSet">
+    <nz-table #basicTable [nzData]="dataSet()">
       <thead>
         <tr>
           <th>ID</th>
@@ -36,11 +36,11 @@
               <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
                 {{ 'Common.Display' | transloco }}
               </button>
-              <button nz-button nzType="link" [disabled]="isChildMode" (click)="onEdit(data.Id!)">
+              <button nz-button nzType="link" [disabled]="isChildMode()" (click)="onEdit(data.Id!)">
                 {{ 'Common.Edit' | transloco }}
               </button>
 
-              @if (!isChildMode) {
+              @if (!isChildMode()) {
                 <a
                   nz-button
                   nz-popconfirm

@@ -1,5 +1,13 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { EChartsOption } from 'echarts';
 import { format, subMonths, parse } from 'date-fns';
@@ -34,6 +42,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   selector: 'hih-tran-type-month-on-month-report',
   templateUrl: './tran-type-month-on-month-report.component.html',
   styleUrls: ['./tran-type-month-on-month-report.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -45,11 +54,12 @@ import { NgxEchartsModule } from 'ngx-echarts';
     TranslocoModule,
   ],
 })
-export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class TranTypeMonthOnMonthReportComponent implements OnInit {
   private readonly oDataService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly drawerService = inject(NzDrawerService);
+  private readonly destroyedRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent constructor...',
@@ -57,7 +67,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
     );
   }
 
-  availableTranTypes: NzCascaderOption[] = [];
+  availableTranTypes = signal<NzCascaderOption[]>([]);
   selectedTranTypes: number[] | null = null;
   arTranType: TranType[] = [];
   selectedPeriod = financePeriodLast3Months;
@@ -79,20 +89,18 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering TranTypeMonthOnMonthReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
-
     this.oDataService
       .fetchAllTranTypes()
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val: TranType[]) => {
           this.arTranType = val.slice();
-          this.availableTranTypes = [];
+          const arAvailable: NzCascaderOption[] = [];
 
           val.forEach((tt) => {
             if (!tt.ParId) {
               // Root
-              this.availableTranTypes.push({
+              arAvailable.push({
                 value: tt.Id,
                 label: tt.Name,
                 children: [],
@@ -100,7 +108,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
             }
           });
 
-          this.availableTranTypes.forEach((root) => {
+          arAvailable.forEach((root) => {
             val.forEach((tt) => {
               if (tt.ParId === root.value) {
                 const level2node: NzCascaderOption = {
@@ -125,6 +133,8 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
               }
             });
           });
+
+          this.availableTranTypes.set(arAvailable);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -165,7 +175,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
     const isexpense = this.arTranType.find((p) => p.Id === trantype)?.Expense;
     this.oDataService
       .fetchReportByTransactionTypeMoM(trantype, this.selectedPeriod, true)
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val: FinanceReportEntryByTransactionTypeMoM[]) => {
           // Fetch out data
@@ -323,6 +333,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
             ],
             series: arSeries,
           };
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -339,13 +350,6 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
   onChartClick(event: SafeAny) {
     console.log(event);
     // Month

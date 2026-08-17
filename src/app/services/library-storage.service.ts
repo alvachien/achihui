@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { effect, inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -100,9 +100,12 @@ export class LibraryStorageService {
     this._listLocation = [];
 
     // Invalidate all cached library data when the selected home changes.
-    // Optional chaining keeps the service robust to partial DI mocks in tests.
-    this._homeService.curHomeSelected?.subscribe(() => {
-      this.resetCaches();
+    // Skip the no-op run when curHomeSelected is absent (partial DI mocks in tests);
+    // reset caches on every real home change (incl. initial null).
+    effect(() => {
+      if (this._homeService.curHomeSelected?.() !== undefined) {
+        this.resetCaches();
+      }
     });
   }
 
@@ -121,6 +124,13 @@ export class LibraryStorageService {
     this._listOrganization = [];
   }
 
+  /// Home ID of the currently selected home (undefined while no home is chosen).
+  /// Fetched lists are cached per home; a response issued for a previous home
+  /// must not repopulate the caches after the user switches homes.
+  private _currentHomeID(): number | undefined {
+    return this._homeService.curHomeSelected?.()?.ID;
+  }
+
   ///
   /// Person roles
   ///
@@ -130,11 +140,12 @@ export class LibraryStorageService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`);
+      const reqHomeID = this._currentHomeID();
       return this._http
         .get(this.personRoleAPIURL, {
           headers: headers,
@@ -148,19 +159,22 @@ export class LibraryStorageService {
             );
 
             const rjs: any = <any>response;
-            this._listPersonRole = [];
+            const roles: PersonRole[] = [];
 
             if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: PersonRole = new PersonRole();
                 rst.onSetData(si);
-                this._listPersonRole.push(rst);
+                roles.push(rst);
               }
             }
 
-            this._isPersonRoleLoaded = true;
+            if (this._currentHomeID() === reqHomeID) {
+              this._listPersonRole = roles;
+              this._isPersonRoleLoaded = true;
+            }
 
-            return this._listPersonRole;
+            return roles;
           }),
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
@@ -168,10 +182,12 @@ export class LibraryStorageService {
               ConsoleLogTypeEnum.error,
             );
 
-            this._isPersonRoleLoaded = false;
-            this._listPersonRole = [];
+            if (this._currentHomeID() === reqHomeID) {
+              this._isPersonRoleLoaded = false;
+              this._listPersonRole = [];
+            }
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            return throwError(() => new Error(this._buildHttpErrorMessage(error)));
           }),
         );
     } else {
@@ -188,11 +204,12 @@ export class LibraryStorageService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`);
+      const reqHomeID = this._currentHomeID();
       return this._http
         .get(this.orgTypeAPIURL, {
           headers: headers,
@@ -206,19 +223,22 @@ export class LibraryStorageService {
             );
 
             const rjs: any = <any>response;
-            this._listOrganizationType = [];
+            const types: OrganizationType[] = [];
 
             if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: OrganizationType = new OrganizationType();
                 rst.onSetData(si);
-                this._listOrganizationType.push(rst);
+                types.push(rst);
               }
             }
 
-            this._isOrganizationTypeLoaded = true;
+            if (this._currentHomeID() === reqHomeID) {
+              this._listOrganizationType = types;
+              this._isOrganizationTypeLoaded = true;
+            }
 
-            return this._listOrganizationType;
+            return types;
           }),
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
@@ -226,10 +246,12 @@ export class LibraryStorageService {
               ConsoleLogTypeEnum.error,
             );
 
-            this._isOrganizationTypeLoaded = false;
-            this._listOrganizationType = [];
+            if (this._currentHomeID() === reqHomeID) {
+              this._isOrganizationTypeLoaded = false;
+              this._listOrganizationType = [];
+            }
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            return throwError(() => new Error(this._buildHttpErrorMessage(error)));
           }),
         );
     } else {
@@ -244,11 +266,12 @@ export class LibraryStorageService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} or HomeID eq null`);
+      const reqHomeID = this._currentHomeID();
       return this._http
         .get(this.bookCategoryAPIURL, {
           headers: headers,
@@ -262,26 +285,29 @@ export class LibraryStorageService {
             );
 
             const rjs: any = <any>response;
-            this._listBookCategories = [];
+            const ctgies: BookCategory[] = [];
 
             if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: BookCategory = new BookCategory();
                 rst.onSetData(si);
-                this._listBookCategories.push(rst);
+                ctgies.push(rst);
               }
             }
 
             // Prepare for the hierarchy
-            this._buildBookCategoryHierarchy(this._listBookCategories);
+            this._buildBookCategoryHierarchy(ctgies);
             // Sort it
-            this._listBookCategories.sort((a: any, b: any) => {
+            ctgies.sort((a: any, b: any) => {
               return a.FullDisplayText.localeCompare(b.FullDisplayText);
             });
 
-            this._isBookCtgyListLoaded = true;
+            if (this._currentHomeID() === reqHomeID) {
+              this._listBookCategories = ctgies;
+              this._isBookCtgyListLoaded = true;
+            }
 
-            return this._listBookCategories;
+            return ctgies;
           }),
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
@@ -289,10 +315,12 @@ export class LibraryStorageService {
               ConsoleLogTypeEnum.error,
             );
 
-            this._isBookCtgyListLoaded = false;
-            this._listBookCategories = [];
+            if (this._currentHomeID() === reqHomeID) {
+              this._isBookCtgyListLoaded = false;
+              this._listBookCategories = [];
+            }
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            return throwError(() => new Error(this._buildHttpErrorMessage(error)));
           }),
         );
     } else {
@@ -307,11 +335,12 @@ export class LibraryStorageService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
+      const reqHomeID = this._currentHomeID();
       return this._http
         .get(this.personAPIURL, {
           headers: headers,
@@ -325,19 +354,22 @@ export class LibraryStorageService {
             );
 
             const rjs: any = <any>response;
-            this._listPerson = [];
+            const persons: Person[] = [];
 
             if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: Person = new Person();
                 rst.onSetData(si);
-                this._listPerson.push(rst);
+                persons.push(rst);
               }
             }
 
-            this._isPersonLoaded = true;
+            if (this._currentHomeID() === reqHomeID) {
+              this._listPerson = persons;
+              this._isPersonLoaded = true;
+            }
 
-            return this._listPerson;
+            return persons;
           }),
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
@@ -345,10 +377,12 @@ export class LibraryStorageService {
               ConsoleLogTypeEnum.error,
             );
 
-            this._isPersonLoaded = false;
-            this._listPerson = [];
+            if (this._currentHomeID() === reqHomeID) {
+              this._isPersonLoaded = false;
+              this._listPerson = [];
+            }
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            return throwError(() => new Error(this._buildHttpErrorMessage(error)));
           }),
         );
     } else {
@@ -360,7 +394,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`);
@@ -392,7 +426,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -401,7 +435,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -428,7 +462,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -437,10 +471,10 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     return this._http
-      .delete(`${this.personAPIURL}/${pid}`, {
+      .delete(`${this.personAPIURL}(${pid})`, {
         headers: headers,
       })
       .pipe(
@@ -463,7 +497,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -475,11 +509,12 @@ export class LibraryStorageService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
+      const reqHomeID = this._currentHomeID();
       return this._http
         .get(this.organizationAPIURL, {
           headers: headers,
@@ -493,19 +528,22 @@ export class LibraryStorageService {
             );
 
             const rjs: any = <any>response;
-            this._listOrganization = [];
+            const orgs: Organization[] = [];
 
             if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: Organization = new Organization();
                 rst.onSetData(si);
-                this._listOrganization.push(rst);
+                orgs.push(rst);
               }
             }
 
-            this._isOrganizationLoaded = true;
+            if (this._currentHomeID() === reqHomeID) {
+              this._listOrganization = orgs;
+              this._isOrganizationLoaded = true;
+            }
 
-            return this._listOrganization;
+            return orgs;
           }),
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
@@ -513,10 +551,12 @@ export class LibraryStorageService {
               ConsoleLogTypeEnum.error,
             );
 
-            this._isOrganizationLoaded = false;
-            this._listOrganization = [];
+            if (this._currentHomeID() === reqHomeID) {
+              this._isOrganizationLoaded = false;
+              this._listOrganization = [];
+            }
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            return throwError(() => new Error(this._buildHttpErrorMessage(error)));
           }),
         );
     } else {
@@ -528,7 +568,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${pid}`);
@@ -560,7 +600,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -569,7 +609,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -596,7 +636,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -605,10 +645,10 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     return this._http
-      .delete(`${this.organizationAPIURL}/${pid}`, {
+      .delete(`${this.organizationAPIURL}(${pid})`, {
         headers: headers,
       })
       .pipe(
@@ -631,7 +671,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -643,11 +683,12 @@ export class LibraryStorageService {
       headers = headers
         .append('Content-Type', 'application/json')
         .append('Accept', 'application/json')
-        .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+        .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
       let params: HttpParams = new HttpParams();
       params = params.append('$count', 'true');
       params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
+      const reqHomeID = this._currentHomeID();
       return this._http
         .get(this.locationAPIURL, {
           headers: headers,
@@ -661,19 +702,22 @@ export class LibraryStorageService {
             );
 
             const rjs: any = <any>response;
-            this._listLocation = [];
+            const locations: Location[] = [];
 
             if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
               for (const si of rjs.value) {
                 const rst: Location = new Location();
                 rst.onSetData(si);
-                this._listLocation.push(rst);
+                locations.push(rst);
               }
             }
 
-            this._isLocationListLoaded = true;
+            if (this._currentHomeID() === reqHomeID) {
+              this._listLocation = locations;
+              this._isLocationListLoaded = true;
+            }
 
-            return this._listLocation;
+            return locations;
           }),
           catchError((error: HttpErrorResponse) => {
             ModelUtility.writeConsoleLog(
@@ -681,10 +725,12 @@ export class LibraryStorageService {
               ConsoleLogTypeEnum.error,
             );
 
-            this._isLocationListLoaded = false;
-            this._listLocation = [];
+            if (this._currentHomeID() === reqHomeID) {
+              this._isLocationListLoaded = false;
+              this._listLocation = [];
+            }
 
-            return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+            return throwError(() => new Error(this._buildHttpErrorMessage(error)));
           }),
         );
     } else {
@@ -696,7 +742,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${lid}`);
@@ -727,7 +773,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -736,7 +782,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -768,7 +814,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -777,10 +823,10 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     return this._http
-      .delete(`${this.locationAPIURL}/${pid}`, {
+      .delete(`${this.locationAPIURL}(${pid})`, {
         headers: headers,
       })
       .pipe(
@@ -804,7 +850,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -819,10 +865,10 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'ID,HomeID,NativeName,ChineseName,Detail');
+    params = params.append('$select', 'Id,HomeID,NativeName,ChineseName,Detail');
     // params = params.append('$filter', filterstr);
     if (orderby) {
       params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
@@ -869,7 +915,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -878,7 +924,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0} and Id eq ${bid}`);
@@ -910,7 +956,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -919,7 +965,7 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -944,7 +990,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -953,10 +999,10 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     return this._http
-      .delete(`${this.bookAPIURL}/${bkid}`, {
+      .delete(`${this.bookAPIURL}(${bkid})`, {
         headers: headers,
       })
       .pipe(
@@ -974,7 +1020,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -987,10 +1033,10 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'ID,HomeID,BookId,FromOrganization,FromDate,ToDate,Comment');
+    params = params.append('$select', 'Id,HomeID,BookId,User,FromOrganization,FromDate,ToDate,IsReturned,Comment');
     const filterstr = `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`;
     params = params.append('$filter', filterstr);
     if (orderby) {
@@ -1037,7 +1083,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -1046,9 +1092,9 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
-    objtbc.User = this._authService.authSubject.getValue().getUserId() ?? '';
+    objtbc.User = this._authService.authSubject().getUserId() ?? '';
     objtbc.HID = this._homeService.ChosedHome?.ID ?? 0;
     const jdata = objtbc.writeJSONObject();
 
@@ -1073,7 +1119,7 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
   }
@@ -1082,10 +1128,10 @@ export class LibraryStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     return this._http
-      .delete(`${this.bookBorrowRecordAPIURL}/${bkid}`, {
+      .delete(`${this.bookBorrowRecordAPIURL}(${bkid})`, {
         headers: headers,
       })
       .pipe(
@@ -1103,9 +1149,16 @@ export class LibraryStorageService {
             ConsoleLogTypeEnum.error,
           );
 
-          return throwError(() => new Error(error.statusText + '; ' + error.error + '; ' + error.message));
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
+  }
+
+  /// Build a readable message from an HTTP error response.
+  /// `error.error` may be a parsed JSON object, so it must be stringified explicitly.
+  private _buildHttpErrorMessage(error: HttpErrorResponse): string {
+    const body = typeof error.error === 'string' ? error.error : JSON.stringify(error.error ?? '');
+    return `${error.status} ${error.statusText}: ${body}; ${error.message}`;
   }
 
   private _buildBookCategoryHierarchy(listCtgy: BookCategory[]): void {

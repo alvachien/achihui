@@ -2,13 +2,12 @@ import { vi } from 'vitest';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject } from 'rxjs';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { signal } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -17,7 +16,7 @@ import { AppComponent } from './app.component';
 import { getTranslocoModule } from '../testing';
 import { AuthService, UIStatusService } from '../app/services';
 import { UserAuthInfo } from './model';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -32,7 +31,7 @@ describe('AppComponent', () => {
       accessToken: 'user1_access_token',
     };
     authinfo.setContent(usrvalue);
-    authServiceStub.authContent = new BehaviorSubject(authinfo);
+    authServiceStub.authSubject = signal(authinfo);
     authServiceStub.doLogin = () => {
       // Do nothing
     };
@@ -50,17 +49,16 @@ describe('AppComponent', () => {
         NzMenuModule,
         NzIconModule,
         NzInputModule,
-        NzDropDownModule,
+        NzDropdownModule,
         NzTableModule,
         NzModalModule,
-        NoopAnimationsModule,
         getTranslocoModule(),
       ],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService },
         { provide: NZ_I18N, useValue: en_US },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -82,7 +80,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
-    expect(component.isLoggedIn).toBeTruthy();
+    expect(component.isLoggedIn()).toBeTruthy();
 
     await new Promise<void>((r) => setTimeout(r, 0));
   });

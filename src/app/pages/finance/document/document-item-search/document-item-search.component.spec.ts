@@ -2,19 +2,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, HomeMember } from '../../../../model';
 import { DocumentItemSearchComponent } from './document-item-search.component';
-import { FinanceUIModule } from '../../finance-ui.module';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentItemSearchComponent', () => {
   let component: DocumentItemSearchComponent;
@@ -63,27 +61,20 @@ describe('DocumentItemSearchComponent', () => {
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
     searchDocItemSpy = storageService.searchDocItem.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
 
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+      curHomeMember: signal<HomeMember | null>(fakeData.chosedHome.Members[0] ?? null),
     };
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-        FinanceUIModule,
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -91,7 +82,7 @@ describe('DocumentItemSearchComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -133,7 +124,7 @@ describe('DocumentItemSearchComponent', () => {
       expect(fetchAllOrdersSpy).not.toHaveBeenCalled();
       expect(fetchAllDocumentsSpy).not.toHaveBeenCalled();
       expect(searchDocItemSpy).not.toHaveBeenCalled();
-      expect(component.filters.length).toBe(1); // Default 1
+      expect(component.filters().length).toBe(1); // Default 1
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -13,6 +13,7 @@ import { environment } from '@environments/environment';
   selector: 'hih-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzGridModule, NzDividerModule, NzTypographyModule, NzCardModule, NzImageModule, TranslocoModule],
 })
 export class WelcomeComponent {

@@ -6,10 +6,10 @@
     <nz-breadcrumb-item
       ><a routerLink="/finance/document/list">{{ 'Finance.Documents' | transloco }}</a>
     </nz-breadcrumb-item>
-    <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+    <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Document' | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <button nz-button [disabled]="isFieldChangable" (click)="onChangeToEditMode()">
       {{ 'Common.Edit' | transloco }}
@@ -33,9 +33,9 @@
   <hih-fin-document-header
     formControlName="headerControl"
     [docType]="currentDocument.DocType"
-    [currentUIMode]="uiMode"
-    [arDocTypes]="arDocTypes"
-    [arCurrencies]="arCurrencies"
+    [currentUIMode]="uiMode()"
+    [arDocTypes]="arDocTypes()"
+    [arCurrencies]="arCurrencies()"
     [baseCurrency]="baseCurrency"
   >
   </hih-fin-document-header>
@@ -43,13 +43,13 @@
   <!-- Items -->
   <hih-fin-document-items
     formControlName="itemsControl"
-    [currentUIMode]="uiMode"
+    [currentUIMode]="uiMode()"
     [docDate]="currentDocument.TranDate"
-    [arCurrencies]="arCurrencies"
-    [arUIAccounts]="arUIAccounts"
-    [arControlCenters]="arControlCenters"
-    [arTranType]="arTranType"
-    [arUIOrders]="arUIOrders"
+    [arCurrencies]="arCurrencies()"
+    [arUIAccounts]="arUIAccounts()"
+    [arControlCenters]="arControlCenters()"
+    [arTranType]="arTranType()"
+    [arUIOrders]="arUIOrders()"
     [docType]="currentDocument.DocType"
   >
   </hih-fin-document-items>

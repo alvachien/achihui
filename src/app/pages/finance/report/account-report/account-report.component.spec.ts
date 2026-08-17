@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
@@ -23,7 +22,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportByAccount } from '../../../../model';
 import { AccountReportComponent } from './account-report.component';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
@@ -56,7 +55,7 @@ describe('AccountReportComponent', () => {
     fetchReportByAccountSpy = storageService.fetchReportByAccount.and.returnValue(of([]));
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -67,8 +66,6 @@ describe('AccountReportComponent', () => {
         NgxEchartsModule.forRoot({ echarts }),
         NzButtonModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
       providers: [
@@ -78,12 +75,12 @@ describe('AccountReportComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
         NzDrawerService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -126,7 +123,7 @@ describe('AccountReportComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.dataSet.length).toEqual(0);
+      expect(component.dataSet().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -136,9 +133,9 @@ describe('AccountReportComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.arReportByAccount.length).toBeGreaterThan(0);
-      expect(component.arReportByAccount.length).toEqual(arRptData.length);
-      expect(component.dataSet.length).toBeGreaterThan(0);
+      expect(component.arReportByAccount().length).toBeGreaterThan(0);
+      expect(component.arReportByAccount().length).toEqual(arRptData.length);
+      expect(component.dataSet().length).toBeGreaterThan(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -149,7 +146,7 @@ describe('AccountReportComponent', () => {
       // fixture.detectChanges();
       // await new Promise<void>(r => setTimeout(r, 0));
       // fixture.detectChanges();
-      // expect(component.dataSet.length).toBeGreaterThan(0);
+      // expect(component.dataSet().length).toBeGreaterThan(0);
       // const ctgyid = fakeData.finAccounts[0].CategoryId;
       // component.onAssetsClicked({
       //   data: {
@@ -168,7 +165,7 @@ describe('AccountReportComponent', () => {
       //     expamt ++;
       //   }
       // });
-      // expect(component.dataSet.length).toEqual(expamt);
+      // expect(component.dataSet().length).toEqual(expamt);
       //
       // await new Promise<void>(r => setTimeout(r, 0));
     });

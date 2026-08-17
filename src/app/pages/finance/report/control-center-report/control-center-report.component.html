@@ -17,8 +17,8 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-  <nz-table #basicTable [nzData]="dataSet">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
+  <nz-table #basicTable [nzData]="dataSet()">
     <thead>
       <tr>
         <th>ID</th>

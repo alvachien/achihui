@@ -1,4 +1,13 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  forwardRef,
+  Input,
+  OnDestroy,
+  HostListener,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -40,6 +49,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzFormModule,
     FormsModule,

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { effect, inject, Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -52,10 +52,13 @@ export class EventStorageService {
     this.bufferedRecurEvents = new Map<number, RecurEvent>();
 
     // Invalidate buffered events when the selected home changes.
-    // Optional chaining keeps the service robust to partial DI mocks in tests.
-    this._homeService.curHomeSelected?.subscribe(() => {
-      this.bufferedGeneralEvents.clear();
-      this.bufferedRecurEvents.clear();
+    // Skip the no-op run when curHomeSelected is absent (partial DI mocks in tests);
+    // clear buffers on every real home change (incl. initial null).
+    effect(() => {
+      if (this._homeService.curHomeSelected?.() !== undefined) {
+        this.bufferedGeneralEvents.clear();
+        this.bufferedRecurEvents.clear();
+      }
     });
   }
 
@@ -77,7 +80,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     // params = params.append('$select', 'ID,HomeID,NativeName,ChineseName,Detail');
@@ -141,7 +144,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = this.generalEventUrl + '/' + eventid.toString();
     return this._http
@@ -181,7 +184,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const jdata = objtbc.writeJSONObject();
 
@@ -225,7 +228,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     return this._http
       .delete(`${this.generalEventUrl}/${eventid}`, {
@@ -262,7 +265,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = this.generalEventUrl + '/MarkAsCompleted';
     const hid = this._homeService.ChosedHome?.ID ?? 0;
@@ -311,7 +314,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
     // params = params.append('$select', 'ID,HomeID,NativeName,ChineseName,Detail');
@@ -367,7 +370,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = this.recurEventUrl + '/' + eventid.toString();
     let params: HttpParams = new HttpParams();
@@ -426,7 +429,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const params: HttpParams = new HttpParams();
     const jdata = objtbc.writeJSONObject();
@@ -469,7 +472,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = this.recurEventUrl + '/' + rid.toString();
     const params: HttpParams = new HttpParams();
@@ -511,7 +514,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
     let params: HttpParams = new HttpParams();
     params = params.append('hid', (this._homeService.ChosedHome?.ID ?? 0).toString());
     params = params.append('top', top.toString());
@@ -555,7 +558,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     return this._http.get<SafeAny>(requestUrl, { headers: headers }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -578,7 +581,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = this.eventHabitUrl + '/' + eid.toString();
     let params: HttpParams = new HttpParams();
@@ -619,7 +622,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = this.eventHabitUrl + '?geneMode=true';
     const jdata: string = hevnt.writeJSONString();
@@ -665,7 +668,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const jdata: string = hevnt.writeJSONString();
     let params: HttpParams = new HttpParams();
@@ -702,7 +705,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = this.eventHabitUrl + '/' + (hevnt.ID ?? 0).toString();
     const jdata: string = hevnt.writeJSONString();
@@ -740,7 +743,7 @@ export class EventStorageService {
     headers = headers
       .append('Content-Type', 'application/json')
       .append('Accept', 'application/json')
-      .append('Authorization', 'Bearer ' + this._authService.authSubject.getValue().getAccessToken());
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     const apiurl: string = environment.ApiUrl + '/eventhabitcheckin';
     const jdata: string = JSON && JSON.stringify(hevnt.writeJSONObject());

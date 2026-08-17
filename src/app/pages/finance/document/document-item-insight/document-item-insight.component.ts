@@ -1,6 +1,6 @@
 import { DecimalPipe, NgIf } from '@angular/common';
 import { SafeAny } from '@common/any';
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -9,8 +9,8 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzTransferModule, TransferItem } from 'ng-zorro-antd/transfer';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { format } from 'date-fns';
 import { dateFormat } from '@model/index';
 
@@ -47,6 +47,7 @@ interface InsightRecord {
   selector: 'hih-document-item-insight',
   templateUrl: './document-item-insight.component.html',
   styleUrls: ['./document-item-insight.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -61,12 +62,11 @@ interface InsightRecord {
     NgIf,
   ],
 })
-export class DocumentItemInsightComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class DocumentItemInsightComponent implements OnInit {
   listGroupFields: TransferItem[] = [];
-  isLoadingData = false;
-  arTranType: TranType[] = [];
-  arAccounts: Account[] = [];
+  isLoadingData = signal(false);
+  arTranType = signal<TranType[]>([]);
+  arAccounts = signal<Account[]>([]);
   incomeCurrency = '';
   outgoCurrency = '';
   baseCurrency: string;
@@ -75,17 +75,18 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
   // UI service
   insightOption: DocInsightOption | null = null;
   // Buffer data
-  totalDataCount = 0;
-  listData: DocumentItemView[] = [];
-  incomeAmount = 0;
-  outgoAmount = 0;
+  totalDataCount = signal(0);
+  listData = signal<DocumentItemView[]>([]);
+  incomeAmount = signal(0);
+  outgoAmount = signal(0);
   // Display
-  listDisplayData: InsightRecord[] = [];
+  listDisplayData = signal<InsightRecord[]>([]);
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly uiStatusService = inject(UIStatusService);
   private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -110,13 +111,13 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
   }
 
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find((acnt) => {
+    const acntObj = this.arAccounts().find((acnt) => {
       return acnt.Id === acntid;
     });
     return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find((tt) => {
+    const tranTypeObj = this.arTranType().find((tt) => {
       return tt.Id === ttid;
     });
 
@@ -147,7 +148,6 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
       `AC_HIH_UI [Debug]: Entering DocumentItemInsightComponent ngOnInit...`,
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
     // Options
     this.insightOption = this.uiStatusService.docInsightOption ? this.uiStatusService.docInsightOption : null;
     // Read accounts and tran. types
@@ -156,12 +156,11 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllTranTypes(),
       this.odataService.fetchAllAccounts(),
     ])
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (returnResults) => {
-          this.arAccounts = returnResults[2];
-          this.arTranType = returnResults[1];
+          this.arAccounts.set(returnResults[2]);
+          this.arTranType.set(returnResults[1]);
 
           this.fetchData();
         },
@@ -178,13 +177,6 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy(): void {
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   onTransferChanged(ret: SafeAny): void {
@@ -217,19 +209,18 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
         valueType: GeneralFilterValueType.date,
       });
 
-      this.isLoadingData = true;
+      this.isLoadingData.set(true);
       this.odataService
         .searchDocItem(fltrs, 90, 0)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
-            this.totalDataCount = val.totalCount;
-            this.listData.push(...val.contentList);
+            this.totalDataCount.set(val.totalCount);
+            this.listData.update((arr) => [...arr, ...val.contentList]);
 
-            if (this.totalDataCount > 90) {
-              let ntimes = Math.floor(this.totalDataCount / 90);
-              const nlef = this.totalDataCount % 90;
+            if (this.totalDataCount() > 90) {
+              let ntimes = Math.floor(this.totalDataCount() / 90);
+              const nlef = this.totalDataCount() % 90;
               if (nlef > 0) {
                 ntimes++;
               }
@@ -239,13 +230,12 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
               while (ntimes > 0) {
                 this.odataService
                   .searchDocItem(fltrs, 90, nskip)
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  .pipe(takeUntil(this._destroyed$!))
+                  .pipe(takeUntilDestroyed(this.destroyedRef))
                   .subscribe({
                     next: (val) => {
-                      this.listData.push(...val.contentList);
+                      this.listData.update((arr) => [...arr, ...val.contentList]);
 
-                      if (this.listData.length === this.totalDataCount) {
+                      if (this.listData().length === this.totalDataCount()) {
                         this.buildDisplayList();
                       }
                     },
@@ -267,7 +257,7 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
                 ntimes--;
               }
             } else {
-              if (this.listData.length === this.totalDataCount) {
+              if (this.listData().length === this.totalDataCount()) {
                 this.buildDisplayList();
               }
             }
@@ -289,17 +279,17 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
   }
 
   buildDisplayList(): void {
-    this.isLoadingData = false;
+    this.isLoadingData.set(false);
 
-    this.incomeAmount = 0;
-    this.outgoAmount = 0;
+    let incomeAmt = 0;
+    let outgoAmt = 0;
 
     const needdate = this.isTranDateVisible;
     const needacnt = this.isAccountVisible;
     const needtype = this.isTranTypeVisible;
-    this.listDisplayData = [];
+    const displayData: InsightRecord[] = [];
 
-    this.listData.forEach((p) => {
+    this.listData().forEach((p) => {
       let bcont = true;
       if (this.insightOption?.ExcludeTransfer === true) {
         if (
@@ -317,14 +307,14 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
       }
 
       if (bcont) {
-        const isexps = this.arTranType.find((tt) => tt.Id === p.TransactionType)?.Expense;
+        const isexps = this.arTranType().find((tt) => tt.Id === p.TransactionType)?.Expense;
         if (isexps) {
-          this.outgoAmount += p.Amount;
+          outgoAmt += p.Amount;
         } else {
-          this.incomeAmount += p.Amount;
+          incomeAmt += p.Amount;
         }
 
-        const idx = this.listDisplayData.findIndex((data) => {
+        const idx = displayData.findIndex((data) => {
           if (needdate && data.TransactionDate !== p.TransactionDate) {
             return false;
           }
@@ -338,7 +328,7 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
         });
 
         if (idx !== -1) {
-          this.listDisplayData[idx].Amount += p.Amount;
+          displayData[idx].Amount += p.Amount;
         } else {
           const ndata: InsightRecord = {
             Amount: p.Amount,
@@ -354,12 +344,12 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
             ndata.TransactionType = p.TransactionType;
           }
 
-          this.listDisplayData.push(ndata);
+          displayData.push(ndata);
         }
       }
     });
 
-    this.listDisplayData.sort((item1, item2) => {
+    displayData.sort((item1, item2) => {
       let ndatecmp = 0;
       if (needdate) {
         const date1 = typeof item1.TransactionDate === 'string' ? item1.TransactionDate : '';
@@ -385,5 +375,9 @@ export class DocumentItemInsightComponent implements OnInit, OnDestroy {
       }
       return ndatecmp;
     });
+
+    this.listDisplayData.set(displayData);
+    this.incomeAmount.set(incomeAmt);
+    this.outgoAmount.set(outgoAmt);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { SafeAny } from '@common/any';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -25,6 +25,7 @@ import { BlogOdataService } from '@services/index';
   selector: 'hih-blog-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     TranslocoModule,
@@ -48,6 +49,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   private readonly odataService = inject(BlogOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -97,7 +99,10 @@ export class PostListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        finalize(() => {
+          this.isLoadingResults = false;
+          this.cdr.markForCheck();
+        }),
       )
       .subscribe({
         next: (revdata: SafeAny) => {
@@ -143,43 +148,51 @@ export class PostListComponent implements OnInit, OnDestroy {
     }
   }
   onDeploy(rid: number) {
-    this.odataService.deployPost(rid).subscribe({
-      next: () => {
-        const modalRef = this.modalService.success({
-          nzTitle: translate('Blog.DeploySuccess'),
-          nzContent: translate('Common.WillCloseIn1Second'),
-        });
-        setTimeout(() => {
-          modalRef.close();
-        }, 1000);
-      },
-      error: (err: SafeAny) => {
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+    this.odataService
+      .deployPost(rid)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: () => {
+          const modalRef = this.modalService.success({
+            nzTitle: translate('Blog.DeploySuccess'),
+            nzContent: translate('Common.WillCloseIn1Second'),
+          });
+          setTimeout(() => {
+            modalRef.close();
+          }, 1000);
+        },
+        error: (err: SafeAny) => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
   onRevokeDeploy(rid: number) {
-    this.odataService.revokeDeployPost(rid).subscribe({
-      next: () => {
-        const modalRef = this.modalService.success({
-          nzTitle: translate('Blog.RevokeDeploySuccess'),
-          nzContent: translate('Common.WillCloseIn1Second'),
-        });
-        setTimeout(() => {
-          modalRef.close();
-        }, 1000);
-      },
-      error: (err: SafeAny) => {
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+    this.odataService
+      .revokeDeployPost(rid)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: () => {
+          const modalRef = this.modalService.success({
+            nzTitle: translate('Blog.RevokeDeploySuccess'),
+            nzContent: translate('Common.WillCloseIn1Second'),
+          });
+          setTimeout(() => {
+            modalRef.close();
+          }, 1000);
+        },
+        error: (err: SafeAny) => {
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
 }

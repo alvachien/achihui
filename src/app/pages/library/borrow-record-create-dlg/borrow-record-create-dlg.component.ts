@@ -1,19 +1,32 @@
-import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { Component, OnInit, ViewContainerRef, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NZ_MODAL_DATA, NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { map } from 'rxjs';
 
 import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
 import { LibraryStorageService } from '@services/index';
+import { BookSelectionDlgComponent } from '../book-selection-dlg';
 import { OrganizationSelectionDlgComponent } from '../organization-selection-dlg';
+import { toSignal } from '@angular/core/rxjs-interop';
+
+interface BorrowRecordCreateDlgModalData {
+  selectedBook?: Book | null;
+}
 
 @Component({
   selector: 'hih-borrow-record-create-dlg',
   templateUrl: './borrow-record-create-dlg.component.html',
   styleUrls: ['./borrow-record-create-dlg.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzFormModule,
     NzDividerModule,
@@ -22,20 +35,39 @@ import { OrganizationSelectionDlgComponent } from '../organization-selection-dlg
     FormsModule,
     ReactiveFormsModule,
     NzModalModule,
+    NzDatePickerModule,
+    NzSwitchModule,
+    NzInputModule,
+    NzTypographyModule,
+    NzGridModule,
   ],
 })
 export class BorrowRecordCreateDlgComponent implements OnInit {
-  detailFormGroup: UntypedFormGroup;
-  @Input() selectedBook: Book | null = null;
-  selectedOrg: Organization | null = null;
+  detailFormGroup = new UntypedFormGroup({
+    dateRangeControl: new UntypedFormControl([new Date(), new Date()], [Validators.required]),
+    // A newly created borrow record is by definition not yet returned.
+    hasRtnedControl: new UntypedFormControl(false),
+    cmtControl: new UntypedFormControl(''),
+  });
+
+  private readonly modalData = inject<BorrowRecordCreateDlgModalData | null>(NZ_MODAL_DATA, { optional: true });
+  selectedBook = signal<Book | null>(this.modalData?.selectedBook ?? null);
+  selectedOrg = signal<Organization | null>(null);
+
+  private readonly formValid = toSignal(
+    this.detailFormGroup.statusChanges.pipe(map(() => this.detailFormGroup.valid)),
+    { initialValue: this.detailFormGroup.valid },
+  );
+
+  selectedBookName = computed(() => this.selectedBook()?.NativeName ?? '');
+  selectOrgName = computed(() => this.selectedOrg()?.NativeName ?? '');
+  isSubmittedAllowed = computed(() => this.formValid() && this.selectedBook() !== null && this.selectedOrg() !== null);
 
   private readonly modalService = inject(NzModalService);
 
   private readonly modal = inject(NzModalRef);
 
   private readonly viewContainerRef = inject(ViewContainerRef);
-
-  private readonly changeDetect = inject(ChangeDetectorRef);
 
   private readonly storageService = inject(LibraryStorageService);
 
@@ -44,31 +76,6 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
       'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
-
-    this.detailFormGroup = new UntypedFormGroup({
-      //idControl: new FormControl({value: undefined, disabled: true}),
-      //bookControl: new FormControl({ value: undefined, disabled: true }, [Validators.required]),
-      //fromOrgControl: new FormControl({ value: undefined, disabled: true },),
-      dateRangeControl: new UntypedFormControl([new Date(), new Date()]),
-      hasRtnedControl: new UntypedFormControl(true),
-      cmtControl: new UntypedFormControl(''),
-    });
-  }
-
-  get selectedBookName(): string {
-    if (this.selectedBook) {
-      return this.selectedBook.NativeName;
-    }
-    return '';
-  }
-  get selectOrgName(): string {
-    if (this.selectedOrg) {
-      return this.selectedOrg.NativeName;
-    }
-    return '';
-  }
-  get isSubmittedAllowed(): boolean {
-    return this.detailFormGroup.valid && this.selectedBook !== null && this.selectedOrg !== null;
   }
 
   ngOnInit(): void {
@@ -79,60 +86,75 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
   }
 
   onChooseBook(): void {
-    // Choose a book
+    const initial = new Set<number>();
+    if (this.selectedBook()) {
+      initial.add(this.selectedBook()!.ID);
+    }
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: translate('Library.ChooseBook'),
+      nzWidth: 900,
+      nzContent: BookSelectionDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzData: {
+        setOfCheckedId: initial,
+        singleSelection: true,
+      },
+      nzOnOk: () => {
+        const inst = modal.getContentComponent() as BookSelectionDlgComponent | null;
+        if (!inst) {
+          return;
+        }
+        const chosen = inst.setOfCheckedId();
+        if (chosen.size === 1) {
+          const bk = inst.selectedBooks()[0];
+          if (bk) {
+            this.selectedBook.set(bk);
+          }
+        }
+      },
+    });
   }
 
   onSelectOrganization(): void {
-    // Select an organization
-    const setPress: Set<number> = new Set<number>();
-    const selectSingle = true;
-    if (this.selectedOrg) {
-      setPress.add(this.selectedOrg.ID);
+    const initial = new Set<number>();
+    if (this.selectedOrg()) {
+      initial.add(this.selectedOrg()!.ID);
     }
-    // let selorg: Organization | null = null;
     const modal: NzModalRef = this.modalService.create({
-      nzTitle: translate('Library.SelectPress'),
+      nzTitle: translate('Library.SelectOrganization'),
       nzWidth: 900,
       nzContent: OrganizationSelectionDlgComponent,
       nzViewContainerRef: this.viewContainerRef,
       nzData: {
-        setOfCheckedId: setPress,
-        singleSelection: selectSingle,
+        setOfCheckedId: initial,
+        singleSelection: true,
       },
       nzOnOk: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, OK button...',
-          ConsoleLogTypeEnum.debug,
-        );
-        this.storageService.Organizations.forEach((org) => {
-          if (setPress.has(org.ID)) {
-            this.selectedOrg = org;
+        const inst = modal.getContentComponent() as OrganizationSelectionDlgComponent | null;
+        if (!inst) {
+          return;
+        }
+        const chosen = inst.setOfCheckedId();
+        if (chosen.size === 1) {
+          const org = this.storageService.Organizations.find((o) => chosen.has(o.ID));
+          if (org) {
+            this.selectedOrg.set(org);
           }
-        });
-        this.changeDetect.detectChanges();
+        }
       },
-      nzOnCancel: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, cancelled...',
-          ConsoleLogTypeEnum.debug,
-        );
-      },
-    });
-    //const instance = modal.getContentComponent();
-    // Return a result when closed
-    modal.afterClose.subscribe(() => {
-      // Do nothing by now.
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...',
-        ConsoleLogTypeEnum.debug,
-      );
     });
   }
 
   handleOk() {
+    if (!this.isSubmittedAllowed()) {
+      // Surface the validation state in the template.
+      this.detailFormGroup.markAllAsTouched();
+      return;
+    }
+
     const record: BookBorrowRecord = new BookBorrowRecord();
-    record.BookID = this.selectedBook?.ID ?? 0;
-    record.BorrowFrom = this.selectedOrg?.ID ?? 0;
+    record.BookID = this.selectedBook()?.ID ?? 0;
+    record.BorrowFrom = this.selectedOrg()?.ID ?? 0;
     record.Comment = this.detailFormGroup.get('cmtControl')?.value;
     // eslint-disable-next-line no-unsafe-optional-chaining
     const [startdt, enddt] = this.detailFormGroup.get('dateRangeControl')?.value;
@@ -140,13 +162,21 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     record.ToDate = new Date(enddt);
     record.HasReturned = this.detailFormGroup.get('hasRtnedControl')?.value;
 
+    if (!record.onVerify()) {
+      ModelUtility.writeConsoleLog(
+        'AC_HIH_UI [Error]: Entering BorrowRecordCreateDlgComponent handleOk, validation failed...',
+        ConsoleLogTypeEnum.error,
+      );
+      return;
+    }
+
     this.storageService.createBookBorrowRecord(record).subscribe({
       next: () => {
         this.modal.triggerOk();
       },
-      error: () => {
+      error: (err) => {
         ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Error]: Entering BorrowRecordCreateDlgComponent onSelectOrganization, dialog closed...',
+          `AC_HIH_UI [Error]: Entering BorrowRecordCreateDlgComponent handleOk failed: ${err}`,
           ConsoleLogTypeEnum.error,
         );
       },

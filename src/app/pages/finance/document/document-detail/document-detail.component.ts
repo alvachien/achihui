@@ -1,6 +1,15 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -39,6 +48,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   selector: 'hih-fin-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -54,30 +64,28 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzModalModule,
   ],
 })
-export class DocumentDetailComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class DocumentDetailComponent implements OnInit {
   private _modalCloseTimer?: ReturnType<typeof setTimeout>;
   private _modeSwitchTimer?: ReturnType<typeof setTimeout>;
-  isLoadingResults = false;
-  public routerID = -1; // Current object ID in routing
-  public currentMode = '';
-  public uiMode: UIMode = UIMode.Create;
+  isLoadingResults = signal(false);
+  public routerID = signal(-1); // Current object ID in routing
+  public currentMode = signal('');
+  public uiMode = signal<UIMode>(UIMode.Create);
   public currentDocument: Document;
   // Attributes
   baseCurrency: string;
-  arControlCenters: ControlCenter[] = [];
-  arAccountCategories: AccountCategory[] = [];
-  arDocTypes: DocumentType[] = [];
-  arTranType: TranType[] = [];
-  arUIAccounts: UIAccountForSelection[] = [];
-  arUIOrders: UIOrderForSelection[] = [];
-  arCurrencies: Currency[] = [];
+  arControlCenters = signal<ControlCenter[]>([]);
+  arAccountCategories = signal<AccountCategory[]>([]);
+  arDocTypes = signal<DocumentType[]>([]);
+  arTranType = signal<TranType[]>([]);
+  arUIAccounts = signal<UIAccountForSelection[]>([]);
+  arUIOrders = signal<UIOrderForSelection[]>([]);
+  arCurrencies = signal<Currency[]>([]);
   // Form group
   docFormGroup: UntypedFormGroup;
 
   get isFieldChangable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
 
   private readonly homeService = inject(HomeDefOdataService);
@@ -86,6 +94,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   private readonly modalService = inject(NzModalService);
   private readonly router = inject(Router);
   private readonly cd = inject(ChangeDetectorRef);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -100,6 +109,15 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       headerControl: new UntypedFormControl(this.currentDocument, Validators.required),
       itemsControl: new UntypedFormControl(),
     });
+
+    this.destroyedRef.onDestroy(() => {
+      if (this._modalCloseTimer) {
+        clearTimeout(this._modalCloseTimer);
+      }
+      if (this._modeSwitchTimer) {
+        clearTimeout(this._modeSwitchTimer);
+      }
+    });
   }
 
   ngOnInit() {
@@ -107,158 +125,132 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
     this.cd.detectChanges();
 
-    this.activateRoute.url
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
-      .subscribe((x) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
-          ConsoleLogTypeEnum.debug,
-        );
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
+      ModelUtility.writeConsoleLog(
+        `AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
+        ConsoleLogTypeEnum.debug,
+      );
 
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode.set(UIMode.Create);
+        } else if (x[0].path === 'edit') {
+          this.routerID.set(+x[1].path);
 
-            this.uiMode = UIMode.Update;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
+          this.uiMode.set(UIMode.Update);
+        } else if (x[0].path === 'display') {
+          this.routerID.set(+x[1].path);
 
-            this.uiMode = UIMode.Display;
-          }
-
-          this.currentMode = getUIModeString(this.uiMode);
+          this.uiMode.set(UIMode.Display);
         }
 
-        switch (this.uiMode) {
-          case UIMode.Update:
-          case UIMode.Display: {
-            this.isLoadingResults = true;
+        this.currentMode.set(getUIModeString(this.uiMode()));
+      }
 
-            // Read the document
-            forkJoin([
-              this.odataService.fetchAllCurrencies(),
-              this.odataService.fetchAllDocTypes(),
-              this.odataService.fetchAllTranTypes(),
-              this.odataService.fetchAllAccountCategories(),
-              this.odataService.fetchAllAccounts(),
-              this.odataService.fetchAllControlCenters(),
-              this.odataService.fetchAllOrders(),
-              this.odataService.readDocument(this.routerID),
-            ])
-              .pipe(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                takeUntil(this._destroyed$!),
-                finalize(() => {
-                  this.isLoadingResults = false;
-                }),
-              )
-              .subscribe({
-                next: (rsts) => {
-                  this.arCurrencies = rsts[0] as Currency[];
-                  this.arDocTypes = rsts[1] as DocumentType[];
-                  this.arTranType = rsts[2] as TranType[];
-                  this.arAccountCategories = rsts[3] as AccountCategory[];
-                  this.arUIAccounts = BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]);
-                  this.arControlCenters = rsts[5] as ControlCenter[];
-                  this.currentDocument = rsts[7] as Document;
-                  const arorders = rsts[6] as Order[];
-                  this.arUIOrders = BuildupOrderForSelectionEx(arorders, this.currentDocument.TranDate);
+      switch (this.uiMode()) {
+        case UIMode.Update:
+        case UIMode.Display: {
+          this.isLoadingResults.set(true);
 
-                  // Check the accounts in use
-                  const listAcntIDs = this.currentDocument.Items.map((item) => {
-                    return item.AccountId;
-                  });
-                  const listNIDs: number[] = [];
-                  listAcntIDs.forEach((acntid) => {
-                    if (this.arUIAccounts.findIndex((acnt) => acnt.Id === acntid) === -1) {
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      listNIDs.push(acntid!);
-                    }
-                  });
+          // Read the document
+          forkJoin([
+            this.odataService.fetchAllCurrencies(),
+            this.odataService.fetchAllDocTypes(),
+            this.odataService.fetchAllTranTypes(),
+            this.odataService.fetchAllAccountCategories(),
+            this.odataService.fetchAllAccounts(),
+            this.odataService.fetchAllControlCenters(),
+            this.odataService.fetchAllOrders(),
+            this.odataService.readDocument(this.routerID()),
+          ])
+            .pipe(
+              takeUntilDestroyed(this.destroyedRef),
+              finalize(() => {
+                this.isLoadingResults.set(false);
+              }),
+            )
+            .subscribe({
+              next: (rsts) => {
+                this.arCurrencies.set(rsts[0] as Currency[]);
+                this.arDocTypes.set(rsts[1] as DocumentType[]);
+                this.arTranType.set(rsts[2] as TranType[]);
+                this.arAccountCategories.set(rsts[3] as AccountCategory[]);
+                this.arUIAccounts.set(BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]));
+                this.arControlCenters.set(rsts[5] as ControlCenter[]);
+                this.currentDocument = rsts[7] as Document;
+                const arorders = rsts[6] as Order[];
+                this.arUIOrders.set(BuildupOrderForSelectionEx(arorders, this.currentDocument.TranDate));
 
-                  if (listNIDs.length > 0) {
-                    const listRst: SafeAny = [];
-                    listNIDs.forEach((nid) => {
-                      listRst.push(this.odataService.readAccount(nid));
-                    });
-
-                    // Read the account
-                    forkJoin(listRst)
-                      .pipe(
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        takeUntil(this._destroyed$!),
-                        finalize(() => {
-                          this.onSetData();
-                        }),
-                      )
-                      .subscribe({
-                        next: () => {
-                          this.arUIAccounts = [];
-                          this.arUIAccounts = BuildupAccountForSelection(
-                            this.odataService.Accounts,
-                            this.odataService.AccountCategories,
-                          );
-                        },
-                        error: (err) => {
-                          this.uiMode = UIMode.Invalid;
-                          this.modalService.create({
-                            nzTitle: translate('Common.Error'),
-                            nzContent: err.toString(),
-                            nzClosable: true,
-                          });
-                        },
-                      });
-                  } else {
-                    this.onSetData();
+                // Check the accounts in use
+                const listAcntIDs = this.currentDocument.Items.map((item) => {
+                  return item.AccountId;
+                });
+                const listNIDs: number[] = [];
+                listAcntIDs.forEach((acntid) => {
+                  if (this.arUIAccounts().findIndex((acnt) => acnt.Id === acntid) === -1) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    listNIDs.push(acntid!);
                   }
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Failed in DocumentDetailComponent ngOninit, forkJoin : ${err}`,
-                    ConsoleLogTypeEnum.error,
-                  );
+                });
 
-                  this.uiMode = UIMode.Invalid;
-                  this.modalService.create({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
+                if (listNIDs.length > 0) {
+                  const listRst: SafeAny = [];
+                  listNIDs.forEach((nid) => {
+                    listRst.push(this.odataService.readAccount(nid));
                   });
-                },
-              });
-            break;
-          }
 
-          case UIMode.Create:
-          default:
-            break;
+                  // Read the account
+                  forkJoin(listRst)
+                    .pipe(
+                      takeUntilDestroyed(this.destroyedRef),
+                      finalize(() => {
+                        this.onSetData();
+                      }),
+                    )
+                    .subscribe({
+                      next: () => {
+                        this.arUIAccounts.set([]);
+                        this.arUIAccounts.set(
+                          BuildupAccountForSelection(this.odataService.Accounts, this.odataService.AccountCategories),
+                        );
+                      },
+                      error: (err) => {
+                        this.uiMode.set(UIMode.Invalid);
+                        this.modalService.create({
+                          nzTitle: translate('Common.Error'),
+                          nzContent: err.toString(),
+                          nzClosable: true,
+                        });
+                      },
+                    });
+                } else {
+                  this.onSetData();
+                }
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Failed in DocumentDetailComponent ngOninit, forkJoin : ${err}`,
+                  ConsoleLogTypeEnum.error,
+                );
+
+                this.uiMode.set(UIMode.Invalid);
+                this.modalService.create({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
+          break;
         }
-      });
-  }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-
-    if (this._modalCloseTimer) {
-      clearTimeout(this._modalCloseTimer);
-    }
-    if (this._modeSwitchTimer) {
-      clearTimeout(this._modeSwitchTimer);
-    }
+        case UIMode.Create:
+        default:
+          break;
+      }
+    });
   }
 
   private onSetData() {
@@ -266,13 +258,12 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
     this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
 
-    if (this.uiMode === UIMode.Display) {
+    if (this.uiMode() === UIMode.Display) {
       this.docFormGroup.disable();
     } else {
       this.odataService
-        .isDocumentChangable(this.routerID)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .isDocumentChangable(this.routerID())
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
             if (val) {
@@ -290,13 +281,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
               }, 1000);
 
               this._modeSwitchTimer = setTimeout(() => {
-                this.uiMode = UIMode.Display;
+                this.uiMode.set(UIMode.Display);
                 this.docFormGroup.disable();
               });
             }
           },
           error: (err) => {
-            this.uiMode = UIMode.Display;
+            this.uiMode.set(UIMode.Display);
             this.docFormGroup.disable();
             this.modalService.create({
               nzTitle: translate('Common.Error'),
@@ -313,7 +304,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...',
       ConsoleLogTypeEnum.debug,
     );
-    if (this.uiMode === UIMode.Update) {
+    if (this.uiMode() === UIMode.Update) {
       // Update mode.
       const detailObject = this.docFormGroup.get('headerControl')?.value as Document;
       detailObject.HID = this.currentDocument.HID;
@@ -326,8 +317,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
       this.odataService
         .changeDocument(detailObject)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
             const ref: NzModalRef = this.modalService.success({
@@ -354,15 +344,14 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   }
 
   onChangeToEditMode(): void {
-    if (this.routerID) {
+    if (this.routerID()) {
       this.odataService
-        .isDocumentChangable(this.routerID)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .isDocumentChangable(this.routerID())
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
             if (val) {
-              this.router.navigate(['/finance/document/edit/', this.routerID]);
+              this.router.navigate(['/finance/document/edit/', this.routerID()]);
             } else {
               const ref: NzModalRef = this.modalService.info({
                 nzTitle: translate('Common.Error'),
@@ -375,13 +364,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
               }, 1000);
 
               this._modeSwitchTimer = setTimeout(() => {
-                this.uiMode = UIMode.Display;
+                this.uiMode.set(UIMode.Display);
                 this.docFormGroup.disable();
               });
             }
           },
           error: (err) => {
-            this.uiMode = UIMode.Display;
+            this.uiMode.set(UIMode.Display);
             this.docFormGroup.disable();
             this.modalService.create({
               nzTitle: translate('Common.Error'),

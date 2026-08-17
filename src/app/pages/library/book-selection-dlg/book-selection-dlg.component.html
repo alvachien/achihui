@@ -1,0 +1,29 @@
+<div>
+  <nz-table
+    #tableBook
+    nzShowPagination
+    nzShowSizeChanger
+    [nzData]="listAllBook()"
+    [nzLoading]="loading()"
+    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+  >
+    <thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>{{ 'Common.Name' | transloco }}</th>
+        <th>{{ 'Common.NativeName' | transloco }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of tableBook.data; track data.ID) {
+        <tr>
+          <td [nzChecked]="setOfCheckedId().has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
+          <td>{{ data.ID }}</td>
+          <td>{{ data.ChineseName }}</td>
+          <td>{{ data.NativeName }}</td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</div>

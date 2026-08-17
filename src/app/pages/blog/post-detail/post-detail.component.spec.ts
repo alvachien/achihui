@@ -1,9 +1,8 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of, BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -20,11 +19,10 @@ import {
   asyncData,
 } from '../../../../testing';
 import { PostDetailComponent } from './post-detail.component';
-import { BlogUIModule } from '../blog-ui.module';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('PostDetailComponent', () => {
   let component: PostDetailComponent;
@@ -47,7 +45,7 @@ describe('PostDetailComponent', () => {
     readPostSpy = storageService.readPost.and.returnValue(of({}));
     fetchAllCollectionsSpy = storageService.fetchAllCollections.and.returnValue(of([]));
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -56,13 +54,10 @@ describe('PostDetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         PostDetailComponent,
-        BlogUIModule,
         getTranslocoModule(),
         FormsModule,
         ReactiveFormsModule,
-        NoopAnimationsModule,
         RouterTestingModule,
-        BrowserDynamicTestingModule,
         NzResizableModule,
         NzCodeEditorModule,
         MarkdownModule.forRoot(),
@@ -73,7 +68,7 @@ describe('PostDetailComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: BlogOdataService, useValue: storageService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

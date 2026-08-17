@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import {
@@ -18,10 +17,10 @@ import {
   ElementClass_DialogCloseButton,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, Plan } from '../../../../model';
+import { UserAuthInfo, Plan, HomeMember } from '../../../../model';
 import { PlanListComponent } from './plan-list.component';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('PlanListComponent', () => {
   let component: PlanListComponent;
@@ -44,38 +43,31 @@ describe('PlanListComponent', () => {
     storageService = createSpyObj('FinanceOdataService', ['fetchAllPlans', 'fetchAllAccounts', 'fetchAccountBalance']);
     fetchAllPlansSpy = storageService.fetchAllPlans.and.returnValue(of([]));
     fetchAllAccountSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+      curHomeMember: signal<HomeMember | null>(fakeData.chosedHome.Members[0] ?? null),
     };
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -93,23 +85,23 @@ describe('PlanListComponent', () => {
   });
 
   it('should return false for isChildMode when member is not a child', () => {
-    expect(component.isChildMode).toBe(false);
+    expect(component.isChildMode()).toBe(false);
   });
 
   it('should return true for isChildMode when member is a child', () => {
     homeService.CurrentMemberInChosedHome!['IsChild'] = true;
-    expect(component.isChildMode).toBe(true);
+    expect(component.isChildMode()).toBe(true);
     homeService.CurrentMemberInChosedHome!['IsChild'] = false;
   });
 
   it('should return account name for valid id', () => {
-    component.arAccounts = fakeData.finAccounts;
+    component.arAccounts.set(fakeData.finAccounts);
     const name = component.getAccountName(fakeData.finAccounts[0].Id as number);
     expect(name).toBe(fakeData.finAccounts[0].Name as string);
   });
 
   it('should return empty string for invalid id', () => {
-    component.arAccounts = fakeData.finAccounts;
+    component.arAccounts.set(fakeData.finAccounts);
     expect(component.getAccountName(9999)).toBe('');
   });
 
@@ -119,7 +111,7 @@ describe('PlanListComponent', () => {
     plan.AccountID = 1;
     component.onCheckProgress(plan);
     expect(component.isProgressDlgVisible).toBe(true);
-    expect(component.currentPlan).toBe(plan);
+    expect(component.currentPlan()).toBe(plan);
   });
 
   it('should not set progress modal when plan is null', () => {
@@ -128,16 +120,16 @@ describe('PlanListComponent', () => {
   });
 
   it('should return 0 for currentDifferenceWithTarget when no plan', () => {
-    component.currentPlan = undefined;
-    expect(component.currentDifferenceWithTarget).toBe(0);
+    component.currentPlan.set(undefined);
+    expect(component.currentDifferenceWithTarget()).toBe(0);
   });
 
   it('should return difference for currentDifferenceWithTarget', () => {
     const plan = new Plan();
     plan.TargetBalance = 1000;
-    component.currentPlan = plan;
-    component.currentPlanActualBalance = 800;
-    expect(component.currentDifferenceWithTarget).toBe(-200);
+    component.currentPlan.set(plan);
+    component.currentPlanActualBalance.set(800);
+    expect(component.currentDifferenceWithTarget()).toBe(-200);
   });
 
   it('should hide progress modal on handleProgressModalCancel', () => {
@@ -153,7 +145,7 @@ describe('PlanListComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.dataSet.length).toEqual(0);
+      expect(component.dataSet().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -161,8 +153,8 @@ describe('PlanListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.dataSet.length).toBeGreaterThan(0);
-      expect(component.dataSet.length).toEqual(fakeData.finPlans.length);
+      expect(component.dataSet().length).toBeGreaterThan(0);
+      expect(component.dataSet().length).toEqual(fakeData.finPlans.length);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

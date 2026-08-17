@@ -22,14 +22,14 @@
   <p nz-paragraph>
     API (Built with Odata) Version:
     <span nz-text>
-      <strong>{{ resultVersion!.APIVersion }} </strong>
+      <strong>{{ resultVersion()!.APIVersion }} </strong>
     </span>
   </p>
   <nz-divider></nz-divider>
   <p nz-paragraph>
     Database Schema Version:
     <span nz-text>
-      <strong>{{ resultVersion!.StorageVersion }} </strong>
+      <strong>{{ resultVersion()!.StorageVersion }} </strong>
     </span>
   </p>
 </article>

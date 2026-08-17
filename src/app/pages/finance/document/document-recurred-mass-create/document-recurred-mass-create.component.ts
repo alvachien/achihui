@@ -1,5 +1,13 @@
 import { NgFor } from '@angular/common';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   UntypedFormGroup,
   UntypedFormControl,
@@ -10,10 +18,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReplaySubject, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { format, isWithinInterval, addDays } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
@@ -83,6 +92,7 @@ class DocumentCountByDateRange {
   selector: 'hih-document-recurred-mass-create',
   templateUrl: './document-recurred-mass-create.component.html',
   styleUrls: ['./document-recurred-mass-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -105,22 +115,20 @@ class DocumentCountByDateRange {
     NgFor,
   ],
 })
-export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
+export class DocumentRecurredMassCreateComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-
   public arFrequencies: UIDisplayString[] = UIDisplayStringUtil.getRepeatFrequencyDisplayStrings();
-  public arUIOrders: UIOrderForSelection[] = [];
+  public arUIOrders = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter: boolean | undefined;
-  public arCurrencies: Currency[] = [];
-  public arDocTypes: DocumentType[] = [];
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arAccounts: Account[] = [];
-  public arUIAccounts: UIAccountForSelection[] = [];
-  public arOrders: Order[] = [];
+  public arCurrencies = signal<Currency[]>([]);
+  public arDocTypes = signal<DocumentType[]>([]);
+  public arTranType = signal<TranType[]>([]);
+  public arControlCenters = signal<ControlCenter[]>([]);
+  public arAccounts = signal<Account[]>([]);
+  public arUIAccounts = signal<UIAccountForSelection[]>([]);
+  public arOrders = signal<Order[]>([]);
   public baseCurrency: string;
-  public currentStep = 0;
+  public currentStep = signal(0);
   // Step 0: Search Criteria
   public searchFormGroup: UntypedFormGroup;
   // Step 1: Existing documents
@@ -148,6 +156,9 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
   private readonly fb = inject(UntypedFormBuilder);
 
   private readonly router = inject(Router);
+
+  private readonly destroyedRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -193,8 +204,6 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
       this.odataService.fetchAllTranTypes(),
@@ -204,25 +213,25 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllCurrencies(),
       this.odataService.fetchAllDocTypes(),
     ])
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rst) => {
           // Accounts
-          this.arAccounts = rst[2];
-          this.arUIAccounts = BuildupAccountForSelection(rst[2], rst[0]);
+          this.arAccounts.set(rst[2]);
+          this.arUIAccounts.set(BuildupAccountForSelection(rst[2], rst[0]));
           // this.uiAccountStatusFilter = undefined;
           // this.uiAccountCtgyFilter = undefined;
           // Orders
-          this.arOrders = rst[4];
-          this.arUIOrders = BuildupOrderForSelection(this.arOrders);
+          this.arOrders.set(rst[4]);
+          this.arUIOrders.set(BuildupOrderForSelection(this.arOrders()));
           // Tran. type
-          this.arTranType = rst[1];
+          this.arTranType.set(rst[1]);
           // Control Centers
-          this.arControlCenters = rst[3];
+          this.arControlCenters.set(rst[3]);
           // Currencies
-          this.arCurrencies = rst[5];
+          this.arCurrencies.set(rst[5]);
           // Doc. type
-          this.arDocTypes = rst[6];
+          this.arDocTypes.set(rst[6]);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -238,43 +247,31 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentRecurredMassCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   pre(): void {
-    this.currentStep -= 1;
+    this.currentStep.update((s) => s - 1);
   }
 
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         this.fetchAllDocItemView();
         break;
       }
       case 1: {
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         this.prepareDefaultValue();
         break;
       }
       case 2: {
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         this.generateItems();
         break;
       }
       case 3: {
         this.generateMassDocumentItems();
         this.updateConfirmInfo();
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 4: {
@@ -287,15 +284,15 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     }
   }
   get nextButtonEnabled(): boolean {
-    if (this.currentStep === 0) {
+    if (this.currentStep() === 0) {
       return this.searchFormGroup.valid;
-    } else if (this.currentStep === 1) {
+    } else if (this.currentStep() === 1) {
       return true;
-    } else if (this.currentStep === 2) {
+    } else if (this.currentStep() === 2) {
       return this.defaultValueFormGroup.valid;
-    } else if (this.currentStep === 3) {
+    } else if (this.currentStep() === 3) {
       return this.itemsFormGroup?.valid ?? false;
-    } else if (this.currentStep === 4) {
+    } else if (this.currentStep() === 4) {
       return true;
     } else {
       return true;
@@ -305,25 +302,25 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     return translate('Finance.Document') + ' #' + (idx + 1);
   }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find((acnt) => {
+    const acntObj = this.arAccounts().find((acnt) => {
       return acnt.Id === acntid;
     });
     return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find((cc) => {
+    const ccObj = this.arControlCenters().find((cc) => {
       return cc.Id === ccid;
     });
     return ccObj ? ccObj.Name : '';
   }
   public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find((ord) => {
+    const orderObj = this.arOrders().find((ord) => {
       return ord.Id === ordid;
     });
     return orderObj ? orderObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find((tt) => {
+    const tranTypeObj = this.arTranType().find((tt) => {
       return tt.Id === ttid;
     });
 
@@ -401,9 +398,11 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
     forkJoin([this.odataService.getRepeatedDates(datinput), this.odataService.searchDocItem(filters)])
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isReadingExistingItem = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => {
+          this.isReadingExistingItem = false;
+          this.cdr.markForCheck();
+        }),
       )
       .subscribe({
         next: (x: SafeAny[]) => {
@@ -430,6 +429,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
             itm.Items = aritems ? aritems : [];
             this.listExistingDocItems.push(itm);
           });
+          this.listExistingDocItems = [...this.listExistingDocItems];
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -655,12 +656,12 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.confirmInfo.forEach((doc) => {
       if (
         !doc.onVerify({
-          ControlCenters: this.arControlCenters,
-          Orders: this.arOrders,
-          Accounts: this.arAccounts,
-          DocumentTypes: this.arDocTypes,
-          TransactionTypes: this.arTranType,
-          Currencies: this.arCurrencies,
+          ControlCenters: this.arControlCenters(),
+          Orders: this.arOrders(),
+          Accounts: this.arAccounts(),
+          DocumentTypes: this.arDocTypes(),
+          TransactionTypes: this.arTranType(),
+          Currencies: this.arCurrencies(),
           BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
@@ -673,13 +674,12 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.currentStep = 5; // Result page
+    this.currentStep.set(5); // Result page
 
     this.odataService
       .massCreateNormalDocument(this.confirmInfo)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => (this.isDocPosting = false)),
       )
       .subscribe({
@@ -691,6 +691,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
           this.docIdCreated = rsts.PostedDocuments;
           this.docIdFailed = rsts.FailedDocuments;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -709,8 +710,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .massCreateNormalDocument(this.docIdFailed)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => (this.isDocPosting = false)),
       )
       .subscribe({
@@ -722,6 +722,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit, OnDestroy {
 
           this.docIdCreated.push(...rsts.PostedDocuments);
           this.docIdFailed = rsts.FailedDocuments;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

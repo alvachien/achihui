@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
@@ -17,6 +17,7 @@ import { BlogOdataService } from '@services/index';
   selector: 'hih-blog-collection-list',
   templateUrl: './collection-list.component.html',
   styleUrls: ['./collection-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzSpinModule,
@@ -36,6 +37,7 @@ export class CollectionListComponent implements OnInit, OnDestroy {
   readonly odataService = inject(BlogOdataService);
   readonly modalService = inject(NzModalService);
   readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -60,7 +62,10 @@ export class CollectionListComponent implements OnInit, OnDestroy {
       .pipe(
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
         takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        finalize(() => {
+          this.isLoadingResults = false;
+          this.cdr.markForCheck();
+        }),
       )
       .subscribe({
         next: (x: BlogCollection[]) => {

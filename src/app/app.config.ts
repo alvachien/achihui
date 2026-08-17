@@ -1,6 +1,6 @@
 import {
   ApplicationConfig,
-  provideZoneChangeDetection,
+  provideZonelessChangeDetection,
   importProvidersFrom,
   isDevMode,
   provideAppInitializer,
@@ -16,27 +16,26 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import zh from '@angular/common/locales/zh';
 import { FormsModule } from '@angular/forms';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { authInterceptor } from './services/auth.interceptor';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
 import { LogLevel, provideAuth } from 'angular-auth-oidc-client';
 import { environment } from '@environments/environment';
 import { ThemeService } from '@services/theme.service';
+import { provideNzDateFnsAdapter } from 'ng-zorro-antd/core/time';
 
 registerLocaleData(en);
 registerLocaleData(zh, 'zh-cn');
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZonelessChangeDetection(),
     provideRouter(routeConfig),
     provideNzIcons(icons),
     provideNzI18n(en_US),
     importProvidersFrom(FormsModule),
-    provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     provideTransloco({
       config: {
         availableLangs: ['en', 'zh'],
@@ -76,5 +75,6 @@ export const appConfig: ApplicationConfig = {
         logLevel: LogLevel.Warn,
       },
     }),
+    provideNzDateFnsAdapter(),
   ],
 };

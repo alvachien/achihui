@@ -9,6 +9,8 @@ import {
   HostListener,
   ChangeDetectorRef,
   inject,
+  signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -18,7 +20,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { KatexOptions, MarkdownModule } from 'ngx-markdown';
+import { MarkedKatexOptions, MarkdownModule } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -58,6 +60,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzButtonModule,
     NzDividerModule,
@@ -74,11 +77,11 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   previewElement: ElementRef | null = null;
 
   editor: editor.ICodeEditor | null = null; // | editor.IEditor;
-  content = '';
+  content = signal('');
   readOnly = false;
   uploadAPI: string;
 
-  public katexOptions: KatexOptions = {
+  public katexOptions: MarkedKatexOptions = {
     // displayMode: true,
     throwOnError: false,
     errorColor: '#cc0000',
@@ -87,7 +90,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   get uploadHeader(): SafeAny {
     return {
       Accept: 'application/json',
-      Authorization: 'Bearer ' + this.authService.authSubject.getValue().getAccessToken(),
+      Authorization: 'Bearer ' + this.authService.authSubject().getAccessToken(),
     };
   }
 
@@ -101,20 +104,19 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
       ConsoleLogTypeEnum.debug,
     );
-    if (this.editor) {
-      this.content = this.editor.getValue();
-    }
-
-    return this.content || '';
+    // Pure read: the editor->signal sync is handled by the onDidChangeModelContent
+    // callback in onEditorInit. Writing the signal here (a read side-effect) would
+    // risk NG0600 / CD loops under zoneless change detection.
+    return this.content() || '';
   }
   set value(value: string) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value setter...',
       ConsoleLogTypeEnum.debug,
     );
-    this.content = value;
+    this.content.set(value);
     if (this.editor) {
-      this.editor.setValue(this.content);
+      this.editor.setValue(this.content());
     }
 
     if (this._onChange) {
@@ -189,9 +191,9 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.editor!.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
     this.setEditorReadOnly();
-    if (this.content) {
+    if (this.content()) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.editor!.setValue(this.content);
+      this.editor!.setValue(this.content());
     }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -203,7 +205,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
         );
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.content = this.editor!.getValue();
+        this.content.set(this.editor!.getValue());
         this.changeDetect.detectChanges();
 
         this.onChange();

@@ -3,12 +3,12 @@
     #tableCategory
     nzShowPagination
     nzShowSizeChanger
-    [nzData]="listAllBookCategory"
+    [nzData]="listAllBookCategory()"
     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
   >
     <thead>
       <tr>
-        <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
+        <th [nzChecked]="checked()" [nzIndeterminate]="indeterminate()" (nzCheckedChange)="onAllChecked($event)"></th>
         <th>ID</th>
         <th>Name</th>
       </tr>
@@ -16,9 +16,9 @@
     <tbody>
       @for (data of tableCategory.data; track data.ID) {
         <tr>
-          <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
+          <td [nzChecked]="setOfCheckedId().has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
           <td>{{ data.ID }}</td>
-          <td>{{ data.Name | transloco }}</td>
+          <td>{{ data.Name }}</td>
         </tr>
       }
     </tbody>

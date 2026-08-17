@@ -18,7 +18,7 @@ import { environment } from '@environments/environment';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url.startsWith(environment.ApiUrl)) {
     const authService = inject(AuthService);
-    const token = authService.authSubject.getValue().getAccessToken();
+    const token = authService.authSubject().getAccessToken();
     if (token) {
       req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
     }

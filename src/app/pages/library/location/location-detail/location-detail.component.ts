@@ -1,8 +1,8 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
@@ -28,6 +28,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
   selector: 'hih-location-detail',
   templateUrl: './location-detail.component.html',
   styleUrls: ['./location-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -42,12 +43,11 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     RouterModule,
   ],
 })
-export class LocationDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  public routerID = -1; // Current object ID in routing
-  public currentMode = '';
-  public uiMode: UIMode = UIMode.Create;
+export class LocationDetailComponent implements OnInit {
+  isLoadingResults = signal(false);
+  public routerID = signal(-1); // Current object ID in routing
+  public currentMode = signal('');
+  public uiMode = signal<UIMode>(UIMode.Create);
   detailFormGroup: UntypedFormGroup;
   arLocationStrings: UIDisplayString[] = [];
 
@@ -56,6 +56,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -73,7 +74,7 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
   }
 
   get isEditable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
 
   ngOnInit() {
@@ -82,92 +83,74 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
+      ModelUtility.writeConsoleLog(
+        `AC_HIH_UI [Debug]: Entering LocationDetailComponent ngOnInit activateRoute: ${x}`,
+        ConsoleLogTypeEnum.debug,
+      );
 
-    this.activateRoute.url
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
-      .subscribe((x) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Debug]: Entering LocationDetailComponent ngOnInit activateRoute: ${x}`,
-          ConsoleLogTypeEnum.debug,
-        );
+      if (x instanceof Array && x.length > 0) {
+        if (x[0].path === 'create') {
+          this.uiMode.set(UIMode.Create);
+        } else if (x[0].path === 'edit') {
+          this.routerID.set(+x[1].path);
 
-        if (x instanceof Array && x.length > 0) {
-          if (x[0].path === 'create') {
-            this.uiMode = UIMode.Create;
-          } else if (x[0].path === 'edit') {
-            this.routerID = +x[1].path;
+          this.uiMode.set(UIMode.Update);
+        } else if (x[0].path === 'display') {
+          this.routerID.set(+x[1].path);
 
-            this.uiMode = UIMode.Update;
-          } else if (x[0].path === 'display') {
-            this.routerID = +x[1].path;
+          this.uiMode.set(UIMode.Display);
+        }
+        this.currentMode.set(getUIModeString(this.uiMode()));
+      }
 
-            this.uiMode = UIMode.Display;
-          }
-          this.currentMode = getUIModeString(this.uiMode);
+      switch (this.uiMode()) {
+        case UIMode.Update:
+        case UIMode.Display: {
+          this.isLoadingResults.set(true);
+          this.storageService
+            .readLocation(this.routerID())
+            .pipe(
+              finalize(() => this.isLoadingResults.set(false)),
+              takeUntilDestroyed(this.destroyedRef),
+            )
+            .subscribe({
+              next: (e: Location) => {
+                this.detailFormGroup.get('idControl')?.setValue(e.ID);
+                this.detailFormGroup.get('nameControl')?.setValue(e.Name);
+                this.detailFormGroup.get('cmtControl')?.setValue(e.Comment);
+                this.detailFormGroup.get('locTypeControl')?.setValue(e.LocType);
+
+                if (this.uiMode() === UIMode.Display) {
+                  this.detailFormGroup.disable();
+                } else if (this.uiMode() === UIMode.Update) {
+                  this.detailFormGroup.enable();
+                  this.detailFormGroup.get('idControl')?.disable();
+                }
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering LocationDetailComponent ngOnInit readLocation failed ${err}...`,
+                  ConsoleLogTypeEnum.error,
+                );
+                this.modalService.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
+          break;
         }
 
-        switch (this.uiMode) {
-          case UIMode.Update:
-          case UIMode.Display: {
-            this.isLoadingResults = true;
-            this.storageService
-              .readLocation(this.routerID)
-              .pipe(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                takeUntil(this._destroyed$!),
-                finalize(() => (this.isLoadingResults = false)),
-              )
-              .subscribe({
-                next: (e: Location) => {
-                  this.detailFormGroup.get('idControl')?.setValue(e.ID);
-                  this.detailFormGroup.get('nameControl')?.setValue(e.Name);
-                  this.detailFormGroup.get('cmtControl')?.setValue(e.Comment);
-                  this.detailFormGroup.get('locTypeControl')?.setValue(e.LocType);
+        case UIMode.Create:
+        default: {
+          this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
 
-                  if (this.uiMode === UIMode.Display) {
-                    this.detailFormGroup.disable();
-                  } else if (this.uiMode === UIMode.Update) {
-                    this.detailFormGroup.enable();
-                    this.detailFormGroup.get('idControl')?.disable();
-                  }
-                },
-                error: (err) => {
-                  ModelUtility.writeConsoleLog(
-                    `AC_HIH_UI [Error]: Entering LocationDetailComponent ngOnInit readLocation failed ${err}...`,
-                    ConsoleLogTypeEnum.error,
-                  );
-                  this.modalService.error({
-                    nzTitle: translate('Common.Error'),
-                    nzContent: err.toString(),
-                    nzClosable: true,
-                  });
-                },
-              });
-            break;
-          }
-
-          case UIMode.Create:
-          default: {
-            this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
-
-            break;
-          }
+          break;
         }
-      });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering LocationDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
+      }
+    });
   }
 
   onSave(): void {
@@ -182,11 +165,10 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
     objtbo.LocType = this.detailFormGroup.get('locTypeControl')?.value as LocationTypeEnum;
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
 
-    if (this.uiMode === UIMode.Create) {
+    if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createLocation(objtbo)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (e) => {
             // Succeed.
@@ -204,8 +186,8 @@ export class LocationDetailComponent implements OnInit, OnDestroy {
             });
           },
         });
-    } else if (this.uiMode === UIMode.Update) {
-      objtbo.ID = this.routerID;
+    } else if (this.uiMode() === UIMode.Update) {
+      objtbo.ID = this.routerID();
       // TBD.
     }
   }

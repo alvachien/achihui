@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -33,6 +34,7 @@ import { DecimalPipe } from '@angular/common';
   selector: 'hih-finance-report-order',
   templateUrl: './order-report.component.html',
   styleUrls: ['./order-report.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -46,13 +48,11 @@ import { DecimalPipe } from '@angular/common';
     TranslocoModule,
   ],
 })
-export class OrderReportComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  dataSet: SafeAny[] = [];
-  arReportByOrder: FinanceReportByOrder[] = [];
-  arOrder: Order[] = [];
+export class OrderReportComponent implements OnInit {
+  isLoadingResults = signal(false);
+  dataSet = signal<SafeAny[]>([]);
+  arReportByOrder = signal<FinanceReportByOrder[]>([]);
+  arOrder = signal<Order[]>([]);
   baseCurrency: string;
   // Filters
   validOrderOnly = false;
@@ -67,13 +67,14 @@ export class OrderReportComponent implements OnInit, OnDestroy {
 
   private readonly router = inject(Router);
 
+  private readonly destroyedRef = inject(DestroyRef);
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering OrderReportComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
 
-    this.isLoadingResults = false;
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
   }
 
@@ -84,18 +85,16 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     );
 
     // Load data
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     forkJoin([this.odataService.fetchReportByOrder(), this.odataService.fetchAllOrders()])
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x) => {
-          this.arReportByOrder = x[0] as FinanceReportByOrder[];
-          this.arOrder = x[1] as Order[];
+          this.arReportByOrder.set(x[0] as FinanceReportByOrder[]);
+          this.arOrder.set(x[1] as Order[]);
 
           this.buildReportList();
         },
@@ -112,18 +111,6 @@ export class OrderReportComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering OrderReportComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   onOrderValidityChanged(): void {
@@ -266,18 +253,18 @@ export class OrderReportComponent implements OnInit, OnDestroy {
     });
   }
   private buildReportList(): void {
-    this.dataSet = [];
+    const ds: SafeAny[] = [];
     const dt = new Date();
-    const ords = this.arOrder.filter((value) => {
+    const ords = this.arOrder().filter((value) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return this.validOrderOnly ? isBefore(value.ValidFrom!, dt) && isAfter(value.ValidTo!, dt) : true;
     });
-    this.arReportByOrder.forEach((bal: FinanceReportByOrder) => {
+    this.arReportByOrder().forEach((bal: FinanceReportByOrder) => {
       const ordobj = ords.find((cc: Order) => {
         return cc.Id === bal.OrderId;
       });
       if (ordobj) {
-        this.dataSet.push({
+        ds.push({
           OrderId: bal.OrderId,
           OrderName: ordobj.Name,
           ValidFrom: ordobj.ValidFrom,
@@ -288,5 +275,6 @@ export class OrderReportComponent implements OnInit, OnDestroy {
         });
       }
     });
+    this.dataSet.set(ds);
   }
 }

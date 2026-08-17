@@ -1,6 +1,5 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { EventTypes, OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
@@ -9,8 +8,12 @@ import { UserAuthInfo, ModelUtility, ConsoleLogTypeEnum } from '../model';
   providedIn: 'root',
 })
 export class AuthService {
-  public authSubject: BehaviorSubject<UserAuthInfo> = new BehaviorSubject(new UserAuthInfo());
-  public authContent: Observable<UserAuthInfo> = this.authSubject.asObservable();
+  // Auth state held as a signal. `equal: () => false` is essential: checkAuth()
+  // and doLogout() read the current UserAuthInfo, mutate it in place
+  // (setContent/cleanContent), then re-set the SAME reference. BehaviorSubject
+  // always notified on next(); a plain signal would skip the update on reference
+  // equality. Forcing inequality preserves that always-notify semantics.
+  public authSubject = signal<UserAuthInfo>(new UserAuthInfo(), { equal: () => false });
 
   // Deep link to restore after a successful OIDC login (saved by the route guard
   // before triggering login, consumed by the SignInCallbackComponent).
@@ -98,9 +101,9 @@ export class AuthService {
     // Clear local auth state in both next and error paths: if the server-side
     // token revocation fails, the user still intended to log out locally.
     const clearLocal = () => {
-      const usrAuthInfo = this.authSubject.value;
+      const usrAuthInfo = this.authSubject();
       usrAuthInfo.cleanContent();
-      this.authSubject.next(usrAuthInfo);
+      this.authSubject.set(usrAuthInfo);
     };
     this.authService.logoffAndRevokeTokens().subscribe({
       next: () => clearLocal(),
@@ -170,17 +173,17 @@ export class AuthService {
             ConsoleLogTypeEnum.debug,
           );
           if (isAuthenticated && accessToken) {
-            const usrAuthInfo = this.authSubject.value;
+            const usrAuthInfo = this.authSubject();
             usrAuthInfo.setContent({
               userId: userData?.sub ?? '',
               userName: userData?.name ?? '',
               accessToken: accessToken,
             });
-            this.authSubject.next(usrAuthInfo);
+            this.authSubject.set(usrAuthInfo);
           } else {
-            const usrAuthInfo = this.authSubject.value;
+            const usrAuthInfo = this.authSubject();
             usrAuthInfo.cleanContent();
-            this.authSubject.next(usrAuthInfo);
+            this.authSubject.set(usrAuthInfo);
           }
         },
         error: () => {

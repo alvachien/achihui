@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { getTranslocoModule } from '../../testing';
 import { UIStatusService } from './uistatus.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('UIStatusService', () => {
   beforeEach(() => {
@@ -14,7 +14,7 @@ describe('UIStatusService', () => {
       providers: [
         UIStatusService,
         TranslocoService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

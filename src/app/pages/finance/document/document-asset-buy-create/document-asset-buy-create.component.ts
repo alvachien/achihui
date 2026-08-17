@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
   UntypedFormGroup,
@@ -10,8 +10,9 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { startOfDay, isBefore } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -61,6 +62,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
   selector: 'hih-fin-document-asset-buy-create',
   templateUrl: './document-asset-buy-create.component.html',
   styleUrls: ['./document-asset-buy-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -82,9 +84,8 @@ import { NzResultModule } from 'ng-zorro-antd/result';
     NzModalModule,
   ],
 })
-export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
+export class DocumentAssetBuyCreateComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _docDate: Date;
 
   // Step: Generic info
@@ -99,24 +100,24 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   // Step: Result
   public docIdCreated?: number;
   public docPostingFailed?: string;
-  currentStep = 0;
+  currentStep = signal(0);
 
   public curMode: UIMode = UIMode.Create;
-  public arUIAccount: UIAccountForSelection[] = [];
+  public arUIAccount = signal<UIAccountForSelection[]>([]);
   public uiAccountStatusFilter?: string;
   public uiAccountCtgyFilter?: IAccountCategoryFilter;
-  public arUIOrder: UIOrderForSelection[] = [];
+  public arUIOrder = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter?: boolean;
   public baseCurrency = '';
   // Buffered variables
-  arAssetCategories: AssetCategory[] = [];
-  arMembers: HomeMember[] = [];
-  arControlCenters: ControlCenter[] = [];
-  arOrders: Order[] = [];
-  arTranTypes: TranType[] = [];
-  arAccounts: Account[] = [];
-  arDocTypes: DocumentType[] = [];
-  arCurrencies: Currency[] = [];
+  arAssetCategories = signal<AssetCategory[]>([]);
+  arMembers = signal<HomeMember[]>([]);
+  arControlCenters = signal<ControlCenter[]>([]);
+  arOrders = signal<Order[]>([]);
+  arTranTypes = signal<TranType[]>([]);
+  arAccounts = signal<Account[]>([]);
+  arDocTypes = signal<DocumentType[]>([]);
+  arCurrencies = signal<Currency[]>([]);
   get curDocDate(): Date {
     return this._docDate;
   }
@@ -133,6 +134,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   private readonly homeService = inject(HomeDefOdataService);
   private readonly odataService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -143,7 +145,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     this._docDate = new Date();
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
     // this.assetAccount = new AccountExtraAsset();
-    this.arMembers = this.homeService.ChosedHome?.Members.slice() ?? [];
+    this.arMembers.set(this.homeService.ChosedHome?.Members.slice() ?? []);
 
     this.firstFormGroup = new UntypedFormGroup(
       {
@@ -170,7 +172,6 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnInit',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -182,7 +183,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
     ])
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rst) => {
           ModelUtility.writeConsoleLog(
@@ -190,19 +191,19 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.arAssetCategories = rst[1];
-          this.arDocTypes = rst[2];
-          this.arTranTypes = rst[3];
-          this.arAccounts = rst[4];
-          this.arControlCenters = rst[5];
-          this.arOrders = rst[6];
-          this.arCurrencies = rst[7];
+          this.arAssetCategories.set(rst[1]);
+          this.arDocTypes.set(rst[2]);
+          this.arTranTypes.set(rst[3]);
+          this.arAccounts.set(rst[4]);
+          this.arControlCenters.set(rst[5]);
+          this.arOrders.set(rst[6]);
+          this.arCurrencies.set(rst[7]);
           // Accounts
-          this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+          this.arUIAccount.set(BuildupAccountForSelection(rst[4], rst[0]));
           this.uiAccountStatusFilter = undefined;
           this.uiAccountCtgyFilter = undefined;
           // Orders
-          this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+          this.arUIOrder.set(BuildupOrderForSelection(rst[6], true));
           this.uiOrderFilter = undefined;
         },
         error: (err) => {
@@ -220,18 +221,6 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentAssetBuyCreateComponent ngOnDestroy',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   public onIsLegacyChecked(checked: boolean): void {
     const chked = checked;
 
@@ -243,7 +232,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   }
   get nextButtonEnabled(): boolean {
     let isEnabled = false;
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
         isEnabled = this.firstFormGroup.valid;
         break;
@@ -265,18 +254,18 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
   }
 
   pre(): void {
-    this.currentStep -= 1;
+    this.currentStep.update((s) => s - 1);
   }
 
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
-        this.currentStep += 1;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 1: {
         this._updateConfirmInfo();
-        this.currentStep += 1;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 2: {
@@ -306,12 +295,12 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     if (!this.IsLegacyAsset) {
       if (
         !docobj.onVerify({
-          ControlCenters: this.arControlCenters,
-          Orders: this.arOrders,
-          Accounts: this.arAccounts,
-          DocumentTypes: this.arDocTypes,
-          TransactionTypes: this.arTranTypes,
-          Currencies: this.arCurrencies,
+          ControlCenters: this.arControlCenters(),
+          Orders: this.arOrders(),
+          Accounts: this.arAccounts(),
+          DocumentTypes: this.arDocTypes(),
+          TransactionTypes: this.arTranTypes(),
+          Currencies: this.arCurrencies(),
           BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
@@ -343,11 +332,10 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
     this.odataService
       .createAssetBuyinDocument(apidetail)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => {
           this.isDocPosting = false;
-          this.currentStep = 3;
+          this.currentStep.set(3);
         }),
       )
       .subscribe({
@@ -443,7 +431,7 @@ export class DocumentAssetBuyCreateComponent implements OnInit, OnDestroy {
         if (aritems) {
           aritems.forEach((val: DocumentItem) => {
             if (val.TranType) {
-              const ttobj = this.arTranTypes.find((t: TranType) => {
+              const ttobj = this.arTranTypes().find((t: TranType) => {
                 return t.Id === val.TranType;
               });
               if (ttobj) {

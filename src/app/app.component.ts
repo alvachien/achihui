@@ -1,12 +1,12 @@
-import { Component, OnInit, NgZone, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { Component, OnInit, DestroyRef, inject, computed, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Router, RouterModule } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 
 import { environment } from '../environments/environment';
 import { ModelUtility, ConsoleLogTypeEnum } from './model';
@@ -16,17 +16,15 @@ import { AuthService, UIStatusService, HomeDefOdataService, ThemeService } from 
   selector: 'hih-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less'],
-  imports: [TranslocoModule, NzLayoutModule, NzMenuModule, NzIconModule, NzDropDownModule, RouterModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslocoModule, NzLayoutModule, NzMenuModule, NzIconModule, NzDropdownModule, RouterModule],
 })
-export class AppComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class AppComponent implements OnInit {
   isCollapsed = false;
   currentYear = 0;
   searchContent?: string;
-  public isLoggedIn?: boolean;
-  public titleLogin?: string;
   public userDisplayAs?: string;
-  public selectedHomeName: string | null = null;
+
   private readonly i18n = inject(NzI18nService);
   private readonly translocoService = inject(TranslocoService);
   private readonly _authService = inject(AuthService);
@@ -34,7 +32,14 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly uiService = inject(UIStatusService);
   private readonly router = inject(Router);
   private readonly themeService = inject(ThemeService);
-  private readonly _zone = inject(NgZone);
+  private readonly destroyedRef = inject(DestroyRef);
+
+  // Auth state read directly from AuthService.authSubject (now a signal, route b).
+  private readonly authContentSig = this._authService.authSubject;
+  public readonly isLoggedIn = computed(() => this.authContentSig().isAuthorized);
+  public readonly titleLogin = computed(() => this.authContentSig().getUserName());
+  // Selected home state (read directly from HomeDefOdataService.curHomeSelected signal)
+  public readonly selectedHomeName = computed(() => this._homeService.curHomeSelected()?.Name ?? null);
 
   constructor() {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent constructor', ConsoleLogTypeEnum.debug);
@@ -48,29 +53,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnInit', ConsoleLogTypeEnum.debug);
-    this._destroyed$ = new ReplaySubject(1);
 
-    this._authService.authContent.pipe(takeUntil(this._destroyed$)).subscribe((x) => {
-      ModelUtility.writeConsoleLog(
-        'AC HIH UI [Debug]: Entering AppComponent authService.authContent subscribe',
-        ConsoleLogTypeEnum.debug,
-      );
-      this._zone.run(() => {
-        this.isLoggedIn = x.isAuthorized;
-        if (this.isLoggedIn) {
-          this.titleLogin = x.getUserName();
-        }
-      });
-    });
-
-    this._homeService.curHomeSelected.pipe(takeUntil(this._destroyed$)).subscribe((hd) => {
-      this.selectedHomeName = hd?.Name ?? null;
-    });
-
-    if (this._authService.authSubject?.getValue()?.isAuthorized) {
+    if (this._authService.authSubject?.()?.isAuthorized) {
       this._homeService
         .checkDBVersion()
-        .pipe(takeUntil(this._destroyed$))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (val) => {
             this.uiService.versionResult = val;
@@ -79,15 +66,6 @@ export class AppComponent implements OnInit, OnDestroy {
             ModelUtility.writeConsoleLog(`AC HIH UI [Error]: checkDBVersion failed: ${err}`, ConsoleLogTypeEnum.error);
           },
         });
-    }
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent ngOnDestroy', ConsoleLogTypeEnum.debug);
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
     }
   }
 
