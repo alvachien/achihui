@@ -19,7 +19,7 @@ describe('BorrowRecordListComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let storageService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let fetchAllOrganizationTypesSpy: any;
+  let fetchAllOrganizationsSpy: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let fetchBookBorrowRecordsSpy: any;
   const authServiceStub: Partial<AuthService> = {};
@@ -32,8 +32,8 @@ describe('BorrowRecordListComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = createSpyObj('LibraryStorageService', ['fetchAllOrganizationTypes', 'fetchBookBorrowRecords']);
-    fetchAllOrganizationTypesSpy = storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
+    storageService = createSpyObj('LibraryStorageService', ['fetchAllOrganizations', 'fetchBookBorrowRecords']);
+    fetchAllOrganizationsSpy = storageService.fetchAllOrganizations.and.returnValue(of([]));
     fetchBookBorrowRecordsSpy = storageService.fetchBookBorrowRecords.and.returnValue(
       of({ totalCount: 0, contentList: [] }),
     );
@@ -74,7 +74,7 @@ describe('BorrowRecordListComponent', () => {
 
   describe('2. shall work with data', () => {
     beforeEach(() => {
-      fetchAllOrganizationTypesSpy.and.returnValue(asyncData([]));
+      fetchAllOrganizationsSpy.and.returnValue(asyncData([]));
       fetchBookBorrowRecordsSpy.and.returnValue(asyncData({ totalCount: 0, contentList: [] }));
     });
 
@@ -83,7 +83,7 @@ describe('BorrowRecordListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.dataSet.length).toEqual(0);
+      expect(component.dataSet().length).toEqual(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

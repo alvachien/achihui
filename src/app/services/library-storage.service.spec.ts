@@ -699,7 +699,7 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}(2)`;
       });
 
       // Respond with the mock data
@@ -718,7 +718,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}(2)`;
       });
 
       // respond with a 404 and the error message in the body
@@ -989,7 +989,7 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}(2)`;
       });
 
       // Respond with the mock data
@@ -1008,7 +1008,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}(2)`;
       });
 
       // respond with a 404 and the error message in the body
@@ -1388,7 +1388,7 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}(2)`;
       });
 
       // Respond with the mock data
@@ -1407,7 +1407,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}(2)`;
       });
 
       // respond with a 404 and the error message in the body

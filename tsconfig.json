@@ -5,6 +5,7 @@
   "compilerOptions": {
     "baseUrl": "src",
     "ignoreDeprecations": "6.0",
+    "experimentalDecorators": true,
     "paths": {
       "@common/*": ["common/*"],
       "@model/*": ["app/model/*"],
