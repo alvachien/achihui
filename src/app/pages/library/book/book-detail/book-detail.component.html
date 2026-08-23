@@ -1,10 +1,10 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>{{ 'Nav.LibraryTrace' | transloco }}</nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-title>{{ 'Library.Book' | transloco }}</nz-page-header-title>
-    <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+    <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
       <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{ 'Common.Save' | transloco }}</a>
     </nz-page-header-extra>
@@ -65,143 +65,23 @@
   </form>
 
   <nz-divider></nz-divider>
-  <nz-tabs>
-    <nz-tab [nzTitle]="'Library.Authors' | transloco">
-      <div>
-        <div class="toolbar_buttons">
-          <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignAuthor()">
-            {{ 'Library.SelectAuthor' | transloco }}
-          </button>
-        </div>
-        <nz-table #authorTable [nzData]="listAuthors">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>{{ 'Common.Name' | transloco }}</th>
-              <th>{{ 'Common.NativeName' | transloco }}</th>
-              <th>{{ 'Common.Comment' | transloco }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (data of authorTable.data; track $index) {
-              <tr>
-                <td>{{ data.ID }}</td>
-                <td>{{ data.NativeName }}</td>
-                <td>{{ data.ChineseName }}</td>
-                <td>{{ data.Detail }}</td>
-              </tr>
-            }
-          </tbody>
-        </nz-table>
-      </div>
-    </nz-tab>
-    <nz-tab [nzTitle]="'Library.Translators' | transloco">
-      <div class="toolbar_buttons">
-        <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignTranslator()">
-          {{ 'Library.SelectTranslator' | transloco }}
-        </button>
-      </div>
-      <div>
-        <nz-table #tranTable [nzData]="listTranslators">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>{{ 'Common.Name' | transloco }}</th>
-              <th>{{ 'Common.NativeName' | transloco }}</th>
-              <th>{{ 'Common.Comment' | transloco }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (data of tranTable.data; track $index) {
-              <tr>
-                <td>{{ data.ID }}</td>
-                <td>{{ data.NativeName }}</td>
-                <td>{{ data.ChineseName }}</td>
-                <td>{{ data.Detail }}</td>
-              </tr>
-            }
-          </tbody>
-        </nz-table>
-      </div>
-    </nz-tab>
-    <nz-tab [nzTitle]="'Common.Categories' | transloco">
-      <div>
-        <div class="toolbar_buttons">
-          <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignCategory()">
-            {{ 'Library.SelectCategory' | transloco }}
-          </button>
-        </div>
-        <nz-table #ctgyTable [nzData]="listCategories">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>{{ 'Common.Name' | transloco }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (data of ctgyTable.data; track $index) {
-              <tr>
-                <td>{{ data.ID }}</td>
-                <td>{{ data.Name | transloco }}</td>
-              </tr>
-            }
-          </tbody>
-        </nz-table>
-      </div>
-    </nz-tab>
-    <nz-tab [nzTitle]="'Library.Presses' | transloco">
-      <div>
-        <div class="toolbar_buttons">
-          <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignPress()">
-            {{ 'Library.SelectPress' | transloco }}
-          </button>
-        </div>
-        <nz-table #pressTable [nzData]="listPresses">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>{{ 'Common.Name' | transloco }}</th>
-              <th>{{ 'Common.NativeName' | transloco }}</th>
-              <th>{{ 'Common.Comment' | transloco }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (data of pressTable.data; track $index) {
-              <tr>
-                <td>{{ data.ID }}</td>
-                <td>{{ data.NativeName }}</td>
-                <td>{{ data.ChineseName }}</td>
-                <td>{{ data.Detail }}</td>
-              </tr>
-            }
-          </tbody>
-        </nz-table>
-      </div>
-    </nz-tab>
-    <nz-tab [nzTitle]="'Library.Locations' | transloco">
-      <div>
-        <div class="toolbar_buttons">
-          <button nz-button nzType="primary" [disabled]="!isEditable" (click)="onAssignLocation()">
-            {{ 'Library.SelectLocation' | transloco }}
-          </button>
-        </div>
-        <nz-table #locTable [nzData]="listLocations">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>{{ 'Common.Name' | transloco }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (data of locTable.data; track $index) {
-              <tr>
-                <td>{{ data.ID }}</td>
-                <td>{{ data.Name }}</td>
-              </tr>
-            }
-          </tbody>
-        </nz-table>
-      </div>
-    </nz-tab>
-  </nz-tabs>
+
+  <hih-book-associations
+    [disabled]="!isEditable"
+    [authors]="listAuthors()"
+    [translators]="listTranslators()"
+    [categories]="listCategories()"
+    [presses]="listPresses()"
+    [locations]="listLocations()"
+    (assignAuthor)="onAssignAuthor()"
+    (assignTranslator)="onAssignTranslator()"
+    (assignCategory)="onAssignCategory()"
+    (assignPress)="onAssignPress()"
+    (assignLocation)="onAssignLocation()"
+    (removeAuthor)="onRemoveAuthor($event)"
+    (removeTranslator)="onRemoveTranslator($event)"
+    (removeCategory)="onRemoveCategory($event)"
+    (removePress)="onRemovePress($event)"
+    (removeLocation)="onRemoveLocation($event)"
+  ></hih-book-associations>
 </nz-spin>

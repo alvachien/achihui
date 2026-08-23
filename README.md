@@ -6,6 +6,8 @@
 
 ## Key Features
 
+> **Note (2026-08-02):** The **Blog** and **Event Trace** features are temporarily disabled. UI menu entries, routes, and (for Event) the welcome-dashboard section are hidden in `achihui`; the OData API endpoints return 404 in `achihapi` (entity-set registrations commented out in `Models/EdmModelBuilder.cs`). Database content is preserved. This is reversible; see `CLAUDE.md` for re-enable steps.
+
 ### Finance Traces
 
 A complete personal/family finance system that tracks all financial activities:
@@ -18,7 +20,7 @@ A complete personal/family finance system that tracks all financial activities:
 - **Recurring Documents** — Automate recurring financial entries.
 - **Multi-currency Support** — Handle transactions in different currencies with exchange rate management.
 
-### Event Management
+### Event Management _(temporarily disabled, 2026-08-02)_
 
 Track and manage events and activities:
 
@@ -37,7 +39,7 @@ Organize and manage personal collections:
 - **Person & Organization Management** — Manage people and organizations associated with your library.
 - **Search** — Full-text search across library contents.
 
-### Blog System
+### Blog System _(temporarily disabled, 2026-08-02)_
 
 A built-in blogging platform:
 

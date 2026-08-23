@@ -1,5 +1,14 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject, forkJoin, takeUntil } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
@@ -32,6 +41,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   selector: 'hih-account-month-on-month-report',
   templateUrl: './account-month-on-month-report.component.html',
   styleUrls: ['./account-month-on-month-report.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -43,10 +53,11 @@ import { NgxEchartsModule } from 'ngx-echarts';
     TranslocoModule,
   ],
 })
-export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class AccountMonthOnMonthReportComponent implements OnInit {
   private readonly oDataService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent constructor...',
@@ -54,7 +65,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
     );
   }
 
-  arUIAccounts: UIAccountForSelection[] = [];
+  arUIAccounts = signal<UIAccountForSelection[]>([]);
   selectedAccountID: number | null = null;
   selectedPeriod = financePeriodLast3Months;
   chartOption: EChartsOption | null = null;
@@ -72,13 +83,11 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering AccountMonthOnMonthReportComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
-
     forkJoin([this.oDataService.fetchAllAccountCategories(), this.oDataService.fetchAllAccounts()])
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rsts) => {
-          this.arUIAccounts = BuildupAccountForSelection(rsts[1] as Account[], rsts[0] as AccountCategory[]);
+          this.arUIAccounts.set(BuildupAccountForSelection(rsts[1] as Account[], rsts[0] as AccountCategory[]));
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -117,7 +126,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
 
     this.oDataService
       .fetchReportByAccountMoM(this.selectedAccountID, this.selectedPeriod)
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val: FinanceReportByAccountMOM[]) => {
           // Fetch out data
@@ -261,6 +270,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
               },
             ],
           };
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -275,12 +285,5 @@ export class AccountMonthOnMonthReportComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-  ngOnDestroy(): void {
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
   }
 }

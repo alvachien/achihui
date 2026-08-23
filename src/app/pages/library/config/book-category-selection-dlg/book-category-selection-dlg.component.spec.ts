@@ -1,17 +1,16 @@
+import { signal } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject } from 'rxjs';
 
 import { UserAuthInfo } from '@model/index';
 import { AuthService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { FakeDataHelper, getTranslocoModule } from 'testing';
 
 import { BookCategorySelectionDlgComponent } from './book-category-selection-dlg.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('BookCategorySelectionDlgComponent', () => {
   let component: BookCategorySelectionDlgComponent;
@@ -33,7 +32,7 @@ describe('BookCategorySelectionDlgComponent', () => {
   });
 
   beforeEach(async () => {
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -42,7 +41,7 @@ describe('BookCategorySelectionDlgComponent', () => {
 
     await TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [FormsModule, NoopAnimationsModule, RouterTestingModule, ReactiveFormsModule, getTranslocoModule()],
+      imports: [FormsModule, RouterTestingModule, ReactiveFormsModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -57,7 +56,7 @@ describe('BookCategorySelectionDlgComponent', () => {
             }),
           deps: [NzModalService],
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

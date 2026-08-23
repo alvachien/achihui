@@ -75,6 +75,7 @@ describe('Unit test for ModelUtility in Model', () => {
   });
 
   it('#11. Utility.getDateDisplayString', () => {
+    // eslint-disable-next-line prefer-const -- curdate is reassigned below (prefer-const misflags no-initializer let)
     let curdate: Date | undefined;
     let tgtstr = ModelUtility.getDateDisplayString(curdate);
     expect(tgtstr).toEqual('');

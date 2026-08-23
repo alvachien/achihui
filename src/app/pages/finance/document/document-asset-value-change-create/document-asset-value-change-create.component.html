@@ -14,20 +14,20 @@
     <nz-page-header-extra> </nz-page-header-extra>
   </nz-page-header>
 
-  <nz-steps [nzCurrent]="currentStep">
+  <nz-steps [nzCurrent]="currentStep()">
     <nz-step [nzTitle]="'Common.Header' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.ReviewForSubmit' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
   </nz-steps>
 
   <div class="steps-content">
-    <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep !== 0">
+    <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep() !== 0">
       <hih-fin-document-header
         [docType]="curDocType"
         [currentUIMode]="curMode"
         formControlName="headerControl"
-        [arDocTypes]="arDocTypes"
-        [arCurrencies]="arCurrencies"
+        [arDocTypes]="arDocTypes()"
+        [arCurrencies]="arCurrencies()"
         [baseCurrency]="baseCurrency"
       >
       </hih-fin-document-header>
@@ -39,7 +39,7 @@
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Account' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" [nzErrorTip]="accountErrorTpl">
           <nz-select formControlName="accountControl">
-            @for (acnt of arUIAccount | uiAccountCtgyFilterEx: uiAccountCtgyFilterEx; track acnt.Id) {
+            @for (acnt of arUIAccount() | uiAccountCtgyFilterEx: uiAccountCtgyFilterEx; track acnt.Id) {
               <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
             }
           </nz-select>
@@ -75,7 +75,7 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="ccControl" nzAllowClear>
-            @for (cc of arControlCenters; track cc.Id) {
+            @for (cc of arControlCenters(); track cc.Id) {
               <nz-option [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
             }
           </nz-select>
@@ -87,7 +87,7 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="orderControl" nzAllowClear>
-            @for (ord of arUIOrder; track ord.Id) {
+            @for (ord of arUIOrder(); track ord.Id) {
               <nz-option [nzValue]="ord.Id" [nzLabel]="ord.Name"></nz-option>
             }
           </nz-select>
@@ -96,7 +96,7 @@
     </form>
 
     <!-- Review and Confirm -->
-    <div [hidden]="currentStep !== 1">
+    <div [hidden]="currentStep() !== 1">
       <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
         <div>
           <h2 nz-title>
@@ -123,7 +123,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of extDocItemTable.data; track $index) {
+          @for (data of extDocItemTable.data; track data) {
             <tr>
               <td>{{ data.docId }}</td>
               <td>{{ data.tranDate }}</td>
@@ -138,7 +138,7 @@
     </div>
 
     <!-- Result -->
-    <div [hidden]="currentStep !== 2">
+    <div [hidden]="currentStep() !== 2">
       @if (docIdCreated) {
         <div>
           <nz-result
@@ -185,10 +185,10 @@
   </div>
 
   <div class="steps-action">
-    @if (currentStep > 0 && currentStep < 2) {
+    @if (currentStep() > 0 && currentStep() < 2) {
       <button nz-button (click)="pre()"><i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}</button>
     }
-    @if (currentStep < 2) {
+    @if (currentStep() < 2) {
       <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled">
         {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
       </button>

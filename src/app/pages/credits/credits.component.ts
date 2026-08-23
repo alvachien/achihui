@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzListModule } from 'ng-zorro-antd/list';
@@ -8,6 +8,7 @@ import { SafeAny } from '@common/any';
   selector: 'hih-credits',
   templateUrl: './credits.component.html',
   styleUrls: ['./credits.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, NzListModule, NzButtonModule],
 })
 export class CreditsComponent {

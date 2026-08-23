@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NzCalendarModule, NzCalendarMode } from 'ng-zorro-antd/calendar';
 
 @Component({
@@ -7,6 +7,7 @@ import { NzCalendarModule, NzCalendarMode } from 'ng-zorro-antd/calendar';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.less'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzCalendarModule, FormsModule],
 })
 export class OverviewComponent {

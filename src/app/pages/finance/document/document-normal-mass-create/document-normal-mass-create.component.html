@@ -13,7 +13,7 @@
 </nz-page-header>
 
 <div *transloco="let t">
-  <nz-steps [nzCurrent]="currentStep">
+  <nz-steps [nzCurrent]="currentStep()">
     <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.Result' | transloco"></nz-step>
@@ -21,19 +21,19 @@
 
   <div class="steps-content">
     <!-- Step 0: Item -->
-    <div nz-row [hidden]="currentStep !== 0">
+    <div nz-row [hidden]="currentStep() !== 0">
       <form nz-form [formGroup]="itemsFormGroup!" class="item-form-group">
         <div formArrayName="items">
           <nz-collapse [nzBordered]="false">
-            @for (item of getItemControls; track $index; let i = $index, isFirst = $first, isLast = $last) {
+            @for (item of getItemControls; track item; let i = $index, isFirst = $first, isLast = $last) {
               <nz-collapse-panel [nzHeader]="headerTpl" [nzActive]="true">
                 <hih-document-normal-mass-create-item
                   [itemFormGroup]="getItemControls[i]"
-                  [arUIAccounts]="arUIAccounts"
-                  [arUIOrders]="arUIOrders"
-                  [arControlCenters]="arControlCenters"
+                  [arUIAccounts]="arUIAccounts()"
+                  [arUIOrders]="arUIOrders()"
+                  [arControlCenters]="arControlCenters()"
                   [baseCurrency]="baseCurrency"
-                  [arTranType]="arTranType"
+                  [arTranType]="arTranType()"
                 >
                 </hih-document-normal-mass-create-item>
                 <ng-template #headerTpl>
@@ -55,14 +55,14 @@
     </div>
 
     <!-- Step 1: Confirm -->
-    <div nz-row [hidden]="currentStep !== 1">
-      @for (docinfo of confirmInfo; track $index; let isConfirmLast = $last, confirmIndex = $index) {
+    <div nz-row [hidden]="currentStep() !== 1">
+      @for (docinfo of confirmInfo; track docinfo; let isConfirmLast = $last, confirmIndex = $index) {
         <div style="width: 100%">
           <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)" nzBordered [nzColumn]="4">
             <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
               {{ docinfo.TranDateFormatString }}
             </nz-descriptions-item>
-            @for (iteminfo of docinfo.Items; track $index) {
+            @for (iteminfo of docinfo.Items; track iteminfo) {
               <div>
                 <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
                   {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
@@ -91,7 +91,7 @@
     </div>
 
     <!-- Step 2: Result -->
-    <div nz-row [hidden]="currentStep !== 2">
+    <div nz-row [hidden]="currentStep() !== 2">
       @if (docIdFailed.length <= 0) {
         <div>
           <nz-result
@@ -100,7 +100,7 @@
             [nzSubTitle]="'Finance.DocumentPosted' | transloco"
           >
             <div nz-result-content>
-              @for (pdocinfo of docIdCreated; track $index; let isPostDocLast = $last, postDocIndex = $index) {
+              @for (pdocinfo of docIdCreated; track pdocinfo.Id; let isPostDocLast = $last, postDocIndex = $index) {
                 <div>
                   <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
                     <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
@@ -132,7 +132,7 @@
             [nzSubTitle]="'Common.ResubmissionHint' | transloco"
           >
             <div nz-result-content>
-              @for (pdocinfo of docIdCreated; track $index; let isPostDocLast = $last, postDocIndex = $index) {
+              @for (pdocinfo of docIdCreated; track pdocinfo.Id; let isPostDocLast = $last, postDocIndex = $index) {
                 <div>
                   <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + pdocinfo.Id" nzBordered [nzColumn]="4">
                     <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="3">
@@ -150,7 +150,7 @@
                 </div>
               }
               <nz-divider></nz-divider>
-              @for (fdocinfo of docIdFailed; track $index; let isFailedDocLast = $last, failDocIndex = $index) {
+              @for (fdocinfo of docIdFailed; track fdocinfo; let isFailedDocLast = $last, failDocIndex = $index) {
                 <div>
                   <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + failDocIndex" nzBordered [nzColumn]="4">
                     <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
@@ -174,10 +174,10 @@
   </div>
 
   <div class="steps-action">
-    @if (currentStep > 0 && currentStep < 2) {
+    @if (currentStep() > 0 && currentStep() < 2) {
       <button nz-button (click)="pre()"><i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}</button>
     }
-    @if (currentStep < 2) {
+    @if (currentStep() < 2) {
       <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled">
         {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
       </button>

@@ -13,7 +13,7 @@
 </nz-page-header>
 
 <div>
-  <nz-steps [nzCurrent]="currentStep">
+  <nz-steps [nzCurrent]="currentStep()">
     <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
     <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.Confirm' | transloco"></nz-step>
@@ -22,38 +22,38 @@
 
   <div class="steps-content">
     <!-- Header -->
-    <form nz-form [formGroup]="headerForm" [hidden]="currentStep !== 0">
+    <form nz-form [formGroup]="headerForm" [hidden]="currentStep() !== 0">
       <hih-fin-document-header
         formControlName="headerControl"
         [docType]="curDocType"
         [currentUIMode]="curMode"
-        [arDocTypes]="arDocTypes"
-        [arCurrencies]="arCurrencies"
+        [arDocTypes]="arDocTypes()"
+        [arCurrencies]="arCurrencies()"
         [baseCurrency]="baseCurrency"
       >
       </hih-fin-document-header>
     </form>
 
     <!-- Items -->
-    <form nz-form [formGroup]="itemsForm" [hidden]="currentStep !== 1">
+    <form nz-form [formGroup]="itemsForm" [hidden]="currentStep() !== 1">
       <hih-fin-document-items
         formControlName="itemControl"
         [currentUIMode]="curMode"
         [docDate]="curDocDate"
-        [arCurrencies]="arCurrencies"
+        [arCurrencies]="arCurrencies()"
         [tranCurr]="doccur"
         [tranCurr2]="doccur2"
-        [arUIAccounts]="arUIAccounts"
-        [arControlCenters]="arControlCenters"
-        [arTranType]="arTranType"
-        [arUIOrders]="arUIOrders"
+        [arUIAccounts]="arUIAccounts()"
+        [arControlCenters]="arControlCenters()"
+        [arTranType]="arTranType()"
+        [arUIOrders]="arUIOrders()"
         [docType]="curDocType"
       >
       </hih-fin-document-items>
     </form>
 
     <!-- Review and Confirm -->
-    <div [hidden]="currentStep !== 2">
+    <div [hidden]="currentStep() !== 2">
       <div>
         @if (confirmInfo?.warningExist) {
           <nz-alert
@@ -70,18 +70,18 @@
         <h2 nz-title>{{ 'Common.Description' | transloco }}: {{ confirmInfo?.tranDesp }}</h2>
         <h2 nz-title>
           {{ 'Finance.Incoming' | transloco }}:
-          {{ confirmInfo?.inAmount | number: '1.2-2' }}
+          {{ $safeNavigationMigration(confirmInfo?.inAmount) | number: '1.2-2' }}
           {{ confirmInfo?.tranCurrency }}
         </h2>
         <h2 nz-title>
           {{ 'Finance.Outgoing' | transloco }}:
-          {{ confirmInfo?.outAmount | number: '1.2-2' }}
+          {{ $safeNavigationMigration(confirmInfo?.outAmount) | number: '1.2-2' }}
           {{ confirmInfo?.tranCurrency }}
         </h2>
         @if (confirmInfo?.warningExist) {
           <div>
             <nz-divider></nz-divider>
-            @for (item of confirmInfo?.duplicatedItems; track $index) {
+            @for (item of confirmInfo?.duplicatedItems; track item) {
               <p nz-paragraph>
                 <i nz-icon nzType="right-circle" nzTheme="outline"></i>
                 <span nz-typography nzType="warning">{{ item }}</span>
@@ -93,7 +93,7 @@
     </div>
 
     <!-- Result -->
-    <div [hidden]="currentStep !== 3">
+    <div [hidden]="currentStep() !== 3">
       <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
         @if (docIdCreated) {
           <div>
@@ -142,10 +142,10 @@
   </div>
 
   <div class="steps-action">
-    @if (currentStep > 0 && currentStep < 3) {
+    @if (currentStep() > 0 && currentStep() < 3) {
       <button nz-button (click)="pre()"><i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}</button>
     }
-    @if (currentStep < 3) {
+    @if (currentStep() < 3) {
       <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled">
         {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
       </button>

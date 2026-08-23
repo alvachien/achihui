@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
@@ -13,9 +12,8 @@ import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { DocumentItemViewComponent } from './document-item-view.component';
-import { FinanceUIModule } from '../../finance-ui.module';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentItemViewComponent', () => {
   let component: DocumentItemViewComponent;
@@ -63,33 +61,25 @@ describe('DocumentItemViewComponent', () => {
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     // fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
     searchDocItemSpy = storageService.searchDocItem.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-        FinanceUIModule,
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -136,7 +126,7 @@ describe('DocumentItemViewComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.listDocItem.length).toEqual(0);
+      expect(component.listDocItem().length).toEqual(0);
       expect(searchDocItemSpy).not.toHaveBeenCalled();
     });
 

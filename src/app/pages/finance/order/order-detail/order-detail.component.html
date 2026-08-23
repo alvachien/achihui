@@ -6,7 +6,7 @@
     <nz-breadcrumb-item>{{ 'Finance.Activities' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Activity' | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <button nz-button nzType="primary" (click)="onSubmit()" [disabled]="!saveButtonEnabled">
       {{ 'Common.Save' | transloco }}
@@ -15,7 +15,7 @@
 </nz-page-header>
 
 @if (!(isOrderSubmitting || isOrderSubmitted)) {
-  <nz-spin [nzSpinning]="isLoadingResults">
+  <nz-spin [nzSpinning]="isLoadingResults()">
     <form nz-form [formGroup]="detailFormGroup">
       <!-- ID -->
       <nz-form-item>
@@ -87,7 +87,7 @@
       </button>
     </div>
 
-    <nz-table #basicTable nzBordered [nzData]="listRules">
+    <nz-table #basicTable nzBordered [nzData]="listRules()">
       <thead>
         <tr>
           <th nz-width="50">#</th>
@@ -97,14 +97,14 @@
         </tr>
       </thead>
       <tbody>
-        @for (data of basicTable.data; track $index) {
+        @for (data of basicTable.data; track data.RuleId) {
           <tr>
             <td>
               {{ data.RuleId }}
             </td>
             <td>
               <nz-select [(ngModel)]="data.ControlCenterId" [disabled]="!isFieldChangable" style="width: 100%">
-                @for (cc of arControlCenters; track cc.Id) {
+                @for (cc of arControlCenters(); track cc.Id) {
                   <nz-option [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
                 }
               </nz-select>

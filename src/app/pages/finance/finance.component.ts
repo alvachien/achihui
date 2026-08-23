@@ -1,7 +1,18 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, Input, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewContainerRef,
+  Input,
+  ChangeDetectorRef,
+  inject,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -56,6 +67,7 @@ class DateCellData {
   selector: 'hih-finance',
   templateUrl: './finance.component.html',
   styleUrls: ['./finance.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -81,6 +93,7 @@ class DateCellData {
 export class FinanceComponent implements OnInit, OnDestroy {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
   private _destroyed$: ReplaySubject<boolean> | null = null;
+  private _modalOkTimer?: ReturnType<typeof setTimeout>;
   private _selectedYear: number | null = null;
   private _selectedMonth: number | null = null;
 
@@ -108,6 +121,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   private readonly modal = inject(NzModalService);
   private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly messageService = inject(NzMessageService);
+  private readonly changeDetectRef = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -141,6 +155,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
     if (this._destroyed$) {
       this._destroyed$.next(true);
       this._destroyed$.complete();
+    }
+
+    if (this._modalOkTimer) {
+      clearTimeout(this._modalOkTimer);
     }
   }
 
@@ -209,42 +227,44 @@ export class FinanceComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
       this.odataService.getAssetDepreciationResult(year, month),
-    ]).subscribe({
-      next: (returnResults) => {
-        const arItems: FinanceAssetDepreciationCreationItem[] = [];
-        returnResults[8].forEach((rst) => {
-          arItems.push({
-            AssetAccountId: rst.AssetAccountID,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            TranAmount: rst.TranAmount!,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            TranCurr: rst.TranCurr!,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            TranDate: format(rst.TranDate!, dateFormat),
-            HID: rst.HID,
-            Desp: '',
+    ])
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: (returnResults) => {
+          const arItems: FinanceAssetDepreciationCreationItem[] = [];
+          returnResults[8].forEach((rst) => {
+            arItems.push({
+              AssetAccountId: rst.AssetAccountID,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              TranAmount: rst.TranAmount!,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              TranCurr: rst.TranCurr!,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              TranDate: format(rst.TranDate!, dateFormat),
+              HID: rst.HID,
+              Desp: '',
+            });
           });
-        });
-        this.createAssetDepreciationDlg(
-          arItems,
-          returnResults[4],
-          returnResults[5],
-          BuildupOrderForSelection(returnResults[6], true),
-        );
-      },
-      error: (err) => {
-        ModelUtility.writeConsoleLog(
-          `AC_HIH_UI [Error]: Entering FinanceComponent onAssetDeprec forkJoin failed ${err}...`,
-          ConsoleLogTypeEnum.error,
-        );
+          this.createAssetDepreciationDlg(
+            arItems,
+            returnResults[4],
+            returnResults[5],
+            BuildupOrderForSelection(returnResults[6], true),
+          );
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering FinanceComponent onAssetDeprec forkJoin failed ${err}...`,
+            ConsoleLogTypeEnum.error,
+          );
 
-        this.modalService.error({
-          nzTitle: translate('Common.Error'),
-          nzContent: err.toString(),
-          nzClosable: true,
-        });
-      },
-    });
+          this.modalService.error({
+            nzTitle: translate('Common.Error'),
+            nzContent: err.toString(),
+            nzClosable: true,
+          });
+        },
+      });
   }
 
   createAssetDepreciationDlg(
@@ -264,7 +284,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
         arControlCenters: controlCenters,
         accounts: accounts,
       },
-      nzOnOk: () => new Promise((resolve) => setTimeout(resolve, 1000)),
+      nzOnOk: () =>
+        new Promise((resolve) => {
+          this._modalOkTimer = setTimeout(resolve, 1000);
+        }),
       nzFooter: [
         {
           label: translate('Common.Close'),
@@ -279,11 +302,6 @@ export class FinanceComponent implements OnInit, OnDestroy {
         //   }
       ],
     });
-    //const instance = modal.getContentComponent();
-    modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
-    // Return a result when closed
-    modal.afterClose.subscribe((result: SafeAny) => console.log('[afterClose] The result is:', result));
-
     // delay until modal instance created
     // setTimeout(() => {
     //   instance.subtitle = 'sub title is changed';
@@ -355,6 +373,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
           }
           // Key figure
           this.keyfigure = rsts[2];
+
+          this.changeDetectRef.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -395,6 +415,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
               this.listDate.splice(idx, 1);
             }
           }
+
+          this.changeDetectRef.markForCheck();
         },
         error: () => {
           this.messageService.error('Document failed to post');
@@ -467,6 +489,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
   selector: 'hih-finance-asset-deprec-dlg',
   templateUrl: './finance-asset-deprec.dlg.html',
   styleUrls: ['./finance-asset-deprec.dlg.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzTableModule,
     FormsModule,
@@ -497,6 +520,7 @@ export class FinanceAssetDepreciationDlgComponent {
   private readonly odataSrv = inject(FinanceOdataService);
   private readonly messageService = inject(NzMessageService);
   private readonly changeDetectRef = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {}
 
@@ -535,24 +559,27 @@ export class FinanceAssetDepreciationDlgComponent {
   }
   createDoc(docitem: FinanceAssetDepreciationCreationItem): void {
     if (this.isValid(docitem)) {
-      this.odataSrv.createAssetDepreciationDoc(docitem).subscribe({
-        next: () => {
-          this.messageService.success(translate('Finance.DocumentPosted'));
-          const idx = this.listItems.findIndex((p) => p.AssetAccountId === docitem.AssetAccountId);
-          if (idx !== -1) {
-            this.listItems.splice(idx, 1);
-            this.changeDetectRef.detectChanges();
-          }
-        },
-        error: (err) => {
-          ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering FinanceAssetDepreciationDlgComponent createDoc failed ${err}...`,
-            ConsoleLogTypeEnum.error,
-          );
+      this.odataSrv
+        .createAssetDepreciationDoc(docitem)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.messageService.success(translate('Finance.DocumentPosted'));
+            const idx = this.listItems.findIndex((p) => p.AssetAccountId === docitem.AssetAccountId);
+            if (idx !== -1) {
+              this.listItems.splice(idx, 1);
+              this.changeDetectRef.detectChanges();
+            }
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering FinanceAssetDepreciationDlgComponent createDoc failed ${err}...`,
+              ConsoleLogTypeEnum.error,
+            );
 
-          this.messageService.error(err);
-        },
-      });
+            this.messageService.error(err);
+          },
+        });
     }
   }
 }

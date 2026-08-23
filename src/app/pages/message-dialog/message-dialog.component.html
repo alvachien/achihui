@@ -1,6 +1,6 @@
 <div>
-  <h2>{{ title | transloco }}</h2>
-  <nz-table #basicTable [nzData]="infoMessages">
+  <h2>{{ title() | transloco }}</h2>
+  <nz-table #basicTable [nzData]="infoMessages()">
     <thead>
       <tr>
         <th>Type</th>
@@ -9,7 +9,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (item of basicTable.data; track $index) {
+      @for (item of basicTable.data; track item) {
         <tr>
           <td>{{ item.MsgType }}</td>
           <td>{{ item.MsgTitle | transloco }}</td>

@@ -1,6 +1,15 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -39,6 +48,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   selector: 'hih-fin-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -54,28 +64,28 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzModalModule,
   ],
 })
-export class DocumentDetailComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  public routerID = -1; // Current object ID in routing
-  public currentMode = '';
-  public uiMode: UIMode = UIMode.Create;
+export class DocumentDetailComponent implements OnInit {
+  private _modalCloseTimer?: ReturnType<typeof setTimeout>;
+  private _modeSwitchTimer?: ReturnType<typeof setTimeout>;
+  isLoadingResults = signal(false);
+  public routerID = signal(-1); // Current object ID in routing
+  public currentMode = signal('');
+  public uiMode = signal<UIMode>(UIMode.Create);
   public currentDocument: Document;
   // Attributes
   baseCurrency: string;
-  arControlCenters: ControlCenter[] = [];
-  arAccountCategories: AccountCategory[] = [];
-  arDocTypes: DocumentType[] = [];
-  arTranType: TranType[] = [];
-  arUIAccounts: UIAccountForSelection[] = [];
-  arUIOrders: UIOrderForSelection[] = [];
-  arCurrencies: Currency[] = [];
+  arControlCenters = signal<ControlCenter[]>([]);
+  arAccountCategories = signal<AccountCategory[]>([]);
+  arDocTypes = signal<DocumentType[]>([]);
+  arTranType = signal<TranType[]>([]);
+  arUIAccounts = signal<UIAccountForSelection[]>([]);
+  arUIOrders = signal<UIOrderForSelection[]>([]);
+  arCurrencies = signal<Currency[]>([]);
   // Form group
   docFormGroup: UntypedFormGroup;
 
   get isFieldChangable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
 
   private readonly homeService = inject(HomeDefOdataService);
@@ -84,6 +94,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
   private readonly modalService = inject(NzModalService);
   private readonly router = inject(Router);
   private readonly cd = inject(ChangeDetectorRef);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -98,6 +109,15 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       headerControl: new UntypedFormControl(this.currentDocument, Validators.required),
       itemsControl: new UntypedFormControl(),
     });
+
+    this.destroyedRef.onDestroy(() => {
+      if (this._modalCloseTimer) {
+        clearTimeout(this._modalCloseTimer);
+      }
+      if (this._modeSwitchTimer) {
+        clearTimeout(this._modeSwitchTimer);
+      }
+    });
   }
 
   ngOnInit() {
@@ -105,10 +125,9 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
     this.cd.detectChanges();
 
-    this.activateRoute.url.subscribe((x) => {
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnInit, activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug,
@@ -116,24 +135,24 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
+          this.uiMode.set(UIMode.Create);
         } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Update;
+          this.uiMode.set(UIMode.Update);
         } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Display;
+          this.uiMode.set(UIMode.Display);
         }
 
-        this.currentMode = getUIModeString(this.uiMode);
+        this.currentMode.set(getUIModeString(this.uiMode()));
       }
 
-      switch (this.uiMode) {
+      switch (this.uiMode()) {
         case UIMode.Update:
         case UIMode.Display: {
-          this.isLoadingResults = true;
+          this.isLoadingResults.set(true);
 
           // Read the document
           forkJoin([
@@ -144,26 +163,25 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             this.odataService.fetchAllAccounts(),
             this.odataService.fetchAllControlCenters(),
             this.odataService.fetchAllOrders(),
-            this.odataService.readDocument(this.routerID),
+            this.odataService.readDocument(this.routerID()),
           ])
             .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
+              takeUntilDestroyed(this.destroyedRef),
               finalize(() => {
-                this.isLoadingResults = false;
+                this.isLoadingResults.set(false);
               }),
             )
             .subscribe({
               next: (rsts) => {
-                this.arCurrencies = rsts[0] as Currency[];
-                this.arDocTypes = rsts[1] as DocumentType[];
-                this.arTranType = rsts[2] as TranType[];
-                this.arAccountCategories = rsts[3] as AccountCategory[];
-                this.arUIAccounts = BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]);
-                this.arControlCenters = rsts[5] as ControlCenter[];
+                this.arCurrencies.set(rsts[0] as Currency[]);
+                this.arDocTypes.set(rsts[1] as DocumentType[]);
+                this.arTranType.set(rsts[2] as TranType[]);
+                this.arAccountCategories.set(rsts[3] as AccountCategory[]);
+                this.arUIAccounts.set(BuildupAccountForSelection(rsts[4] as Account[], rsts[3] as AccountCategory[]));
+                this.arControlCenters.set(rsts[5] as ControlCenter[]);
                 this.currentDocument = rsts[7] as Document;
                 const arorders = rsts[6] as Order[];
-                this.arUIOrders = BuildupOrderForSelectionEx(arorders, this.currentDocument.TranDate);
+                this.arUIOrders.set(BuildupOrderForSelectionEx(arorders, this.currentDocument.TranDate));
 
                 // Check the accounts in use
                 const listAcntIDs = this.currentDocument.Items.map((item) => {
@@ -171,7 +189,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                 });
                 const listNIDs: number[] = [];
                 listAcntIDs.forEach((acntid) => {
-                  if (this.arUIAccounts.findIndex((acnt) => acnt.Id === acntid) === -1) {
+                  if (this.arUIAccounts().findIndex((acnt) => acnt.Id === acntid) === -1) {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     listNIDs.push(acntid!);
                   }
@@ -186,22 +204,20 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                   // Read the account
                   forkJoin(listRst)
                     .pipe(
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      takeUntil(this._destroyed$!),
+                      takeUntilDestroyed(this.destroyedRef),
                       finalize(() => {
                         this.onSetData();
                       }),
                     )
                     .subscribe({
                       next: () => {
-                        this.arUIAccounts = [];
-                        this.arUIAccounts = BuildupAccountForSelection(
-                          this.odataService.Accounts,
-                          this.odataService.AccountCategories,
+                        this.arUIAccounts.set([]);
+                        this.arUIAccounts.set(
+                          BuildupAccountForSelection(this.odataService.Accounts, this.odataService.AccountCategories),
                         );
                       },
                       error: (err) => {
-                        this.uiMode = UIMode.Invalid;
+                        this.uiMode.set(UIMode.Invalid);
                         this.modalService.create({
                           nzTitle: translate('Common.Error'),
                           nzContent: err.toString(),
@@ -219,7 +235,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                   ConsoleLogTypeEnum.error,
                 );
 
-                this.uiMode = UIMode.Invalid;
+                this.uiMode.set(UIMode.Invalid);
                 this.modalService.create({
                   nzTitle: translate('Common.Error'),
                   nzContent: err.toString(),
@@ -237,58 +253,49 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentDetailComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   private onSetData() {
     this.docFormGroup.get('idControl')?.setValue(this.currentDocument.Id);
     this.docFormGroup.get('headerControl')?.setValue(this.currentDocument);
     this.docFormGroup.get('itemsControl')?.setValue(this.currentDocument.Items);
 
-    if (this.uiMode === UIMode.Display) {
+    if (this.uiMode() === UIMode.Display) {
       this.docFormGroup.disable();
     } else {
-      this.odataService.isDocumentChangable(this.routerID).subscribe({
-        next: (val) => {
-          if (val) {
-            this.docFormGroup.enable();
-            this.docFormGroup.get('idControl')?.disable();
-          } else {
-            const ref: NzModalRef = this.modalService.info({
-              nzTitle: translate('Common.Error'),
-              nzContent: translate('Finance.EditDocumentNotAllowed'),
-              nzClosable: false,
-            });
-            setTimeout(() => {
-              ref.close();
-              ref.destroy();
-            }, 1000);
+      this.odataService
+        .isDocumentChangable(this.routerID())
+        .pipe(takeUntilDestroyed(this.destroyedRef))
+        .subscribe({
+          next: (val) => {
+            if (val) {
+              this.docFormGroup.enable();
+              this.docFormGroup.get('idControl')?.disable();
+            } else {
+              const ref: NzModalRef = this.modalService.info({
+                nzTitle: translate('Common.Error'),
+                nzContent: translate('Finance.EditDocumentNotAllowed'),
+                nzClosable: false,
+              });
+              this._modalCloseTimer = setTimeout(() => {
+                ref.close();
+                ref.destroy();
+              }, 1000);
 
-            setTimeout(() => {
-              this.uiMode = UIMode.Display;
-              this.docFormGroup.disable();
+              this._modeSwitchTimer = setTimeout(() => {
+                this.uiMode.set(UIMode.Display);
+                this.docFormGroup.disable();
+              });
+            }
+          },
+          error: (err) => {
+            this.uiMode.set(UIMode.Display);
+            this.docFormGroup.disable();
+            this.modalService.create({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
             });
-          }
-        },
-        error: (err) => {
-          this.uiMode = UIMode.Display;
-          this.docFormGroup.disable();
-          this.modalService.create({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
-          });
-        },
-      });
+          },
+        });
     }
   }
 
@@ -297,7 +304,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentDetailComponent onSave...',
       ConsoleLogTypeEnum.debug,
     );
-    if (this.uiMode === UIMode.Update) {
+    if (this.uiMode() === UIMode.Update) {
       // Update mode.
       const detailObject = this.docFormGroup.get('headerControl')?.value as Document;
       detailObject.HID = this.currentDocument.HID;
@@ -308,64 +315,70 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         item.DocId = detailObject.Id;
       });
 
-      this.odataService.changeDocument(detailObject).subscribe({
-        next: (val) => {
-          const ref: NzModalRef = this.modalService.success({
-            nzTitle: translate('Common.Success'),
-            nzContent: translate('Finance.EditDocumentSuccessfully'),
-          });
-          setTimeout(() => {
-            ref.close();
-            ref.destroy();
-          }, 1000);
-
-          this.router.navigate(['/finance/document/display', val.Id]);
-        },
-        error: (err) => {
-          console.error(err);
-          this.modalService.create({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
-          });
-        },
-      });
-    }
-  }
-
-  onChangeToEditMode(): void {
-    if (this.routerID) {
-      this.odataService.isDocumentChangable(this.routerID).subscribe({
-        next: (val) => {
-          if (val) {
-            this.router.navigate(['/finance/document/edit/', this.routerID]);
-          } else {
-            const ref: NzModalRef = this.modalService.info({
-              nzTitle: translate('Common.Error'),
-              nzContent: translate('Finance.EditDocumentNotAllowed'),
-              nzClosable: false,
+      this.odataService
+        .changeDocument(detailObject)
+        .pipe(takeUntilDestroyed(this.destroyedRef))
+        .subscribe({
+          next: (val) => {
+            const ref: NzModalRef = this.modalService.success({
+              nzTitle: translate('Common.Success'),
+              nzContent: translate('Finance.EditDocumentSuccessfully'),
             });
-            setTimeout(() => {
+            this._modalCloseTimer = setTimeout(() => {
               ref.close();
               ref.destroy();
             }, 1000);
 
-            setTimeout(() => {
-              this.uiMode = UIMode.Display;
-              this.docFormGroup.disable();
+            this.router.navigate(['/finance/document/display', val.Id]);
+          },
+          error: (err) => {
+            console.error(err);
+            this.modalService.create({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
             });
-          }
-        },
-        error: (err) => {
-          this.uiMode = UIMode.Display;
-          this.docFormGroup.disable();
-          this.modalService.create({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
-          });
-        },
-      });
+          },
+        });
+    }
+  }
+
+  onChangeToEditMode(): void {
+    if (this.routerID()) {
+      this.odataService
+        .isDocumentChangable(this.routerID())
+        .pipe(takeUntilDestroyed(this.destroyedRef))
+        .subscribe({
+          next: (val) => {
+            if (val) {
+              this.router.navigate(['/finance/document/edit/', this.routerID()]);
+            } else {
+              const ref: NzModalRef = this.modalService.info({
+                nzTitle: translate('Common.Error'),
+                nzContent: translate('Finance.EditDocumentNotAllowed'),
+                nzClosable: false,
+              });
+              this._modalCloseTimer = setTimeout(() => {
+                ref.close();
+                ref.destroy();
+              }, 1000);
+
+              this._modeSwitchTimer = setTimeout(() => {
+                this.uiMode.set(UIMode.Display);
+                this.docFormGroup.disable();
+              });
+            }
+          },
+          error: (err) => {
+            this.uiMode.set(UIMode.Display);
+            this.docFormGroup.disable();
+            this.modalService.create({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
+            });
+          },
+        });
     }
   }
 }

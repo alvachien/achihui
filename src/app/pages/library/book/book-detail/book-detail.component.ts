@@ -1,8 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewContainerRef,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+  Type,
+} from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
@@ -12,8 +21,6 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
@@ -28,6 +35,7 @@ import {
   Location,
 } from '@model/index';
 import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { BookAssociationsComponent } from '../book-associations';
 import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
 import { OrganizationSelectionDlgComponent } from '../../organization-selection-dlg';
 import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
@@ -37,6 +45,7 @@ import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
   selector: 'hih-book-detail',
   templateUrl: './book-detail.component.html',
   styleUrls: ['./book-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzSpinModule,
@@ -47,26 +56,24 @@ import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
     ReactiveFormsModule,
     NzButtonModule,
     NzDividerModule,
-    NzTabsModule,
-    NzTableModule,
     NzInputModule,
     NzCheckboxModule,
     RouterModule,
     NzModalModule,
+    BookAssociationsComponent,
   ],
 })
-export class BookDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  public routerID = -1; // Current object ID in routing
-  public currentMode = '';
-  public uiMode: UIMode = UIMode.Create;
+export class BookDetailComponent implements OnInit {
+  isLoadingResults = signal(false);
+  public routerID = signal(-1); // Current object ID in routing
+  public currentMode = signal('');
+  public uiMode = signal<UIMode>(UIMode.Create);
   detailFormGroup: UntypedFormGroup;
-  listAuthors: Person[] = [];
-  listTranslators: Person[] = [];
-  listPresses: Organization[] = [];
-  listCategories: BookCategory[] = [];
-  listLocations: Location[] = [];
+  listAuthors = signal<Person[]>([]);
+  listTranslators = signal<Person[]>([]);
+  listPresses = signal<Organization[]>([]);
+  listCategories = signal<BookCategory[]>([]);
+  listLocations = signal<Location[]>([]);
 
   private readonly storageService = inject(LibraryStorageService);
   private readonly activateRoute = inject(ActivatedRoute);
@@ -74,6 +81,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   private readonly modal = inject(NzModalService);
   private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly homeService = inject(HomeDefOdataService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -90,7 +98,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
   }
 
   get isEditable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
 
   ngOnInit() {
@@ -99,9 +107,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.activateRoute.url.subscribe((x) => {
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering BookDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug,
@@ -109,29 +115,28 @@ export class BookDetailComponent implements OnInit, OnDestroy {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
+          this.uiMode.set(UIMode.Create);
         } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Update;
+          this.uiMode.set(UIMode.Update);
         } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Display;
+          this.uiMode.set(UIMode.Display);
         }
-        this.currentMode = getUIModeString(this.uiMode);
+        this.currentMode.set(getUIModeString(this.uiMode()));
       }
 
-      switch (this.uiMode) {
+      switch (this.uiMode()) {
         case UIMode.Update:
         case UIMode.Display: {
-          this.isLoadingResults = true;
+          this.isLoadingResults.set(true);
           this.storageService
-            .readBook(this.routerID)
+            .readBook(this.routerID())
             .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
+              finalize(() => this.isLoadingResults.set(false)),
+              takeUntilDestroyed(this.destroyedRef),
             )
             .subscribe({
               next: (e: Book) => {
@@ -139,15 +144,15 @@ export class BookDetailComponent implements OnInit, OnDestroy {
                 this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
                 this.detailFormGroup.get('cnameControl')?.setValue(e.ChineseName);
                 this.detailFormGroup.get('chnIsNativeControl')?.setValue(e.ChineseIsNative);
-                this.listAuthors = e.Authors;
-                this.listCategories = e.Categories;
-                this.listLocations = e.Locations;
-                this.listPresses = e.Presses;
-                this.listTranslators = e.Translators;
+                this.listAuthors.set(e.Authors);
+                this.listCategories.set(e.Categories);
+                this.listLocations.set(e.Locations);
+                this.listPresses.set(e.Presses);
+                this.listTranslators.set(e.Translators);
 
-                if (this.uiMode === UIMode.Display) {
+                if (this.uiMode() === UIMode.Display) {
                   this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
+                } else if (this.uiMode() === UIMode.Update) {
                   this.detailFormGroup.enable();
                   this.detailFormGroup.get('idControl')?.disable();
                 }
@@ -177,196 +182,109 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering BookDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
+  // Opens a selection dialog. `nzData` reaches the dialog only via the NZ_MODAL_DATA
+  // injection token, and the user's checks live in the dialog component's own state -
+  // so the selection is read back from the content component in nzOnOk (which runs
+  // before the content is destroyed).
+  private openSelectionDlg(
+    title: string,
+    content: Type<{ setOfCheckedId: () => Set<number> }>,
+    setOfCheckedId: Set<number>,
+    nzDataExtra: Record<string, unknown>,
+    onOk: (setOfCheckedId: Set<number>) => void,
+  ): void {
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: title,
+      nzWidth: 900,
+      nzContent: content,
+      nzViewContainerRef: this.viewContainerRef,
+      nzData: {
+        setOfCheckedId: setOfCheckedId,
+        ...nzDataExtra,
+      },
+      nzOnOk: () => {
+        ModelUtility.writeConsoleLog(
+          `AC_HIH_UI [Debug]: Entering BookDetailComponent selection dlg, OK button...`,
+          ConsoleLogTypeEnum.debug,
+        );
+        const inst = modal.getContentComponent() as { setOfCheckedId: () => Set<number> } | null;
+        if (inst) {
+          onOk(inst.setOfCheckedId());
+        }
+      },
+    });
+    modal.afterClose.subscribe(() => {
+      ModelUtility.writeConsoleLog(
+        'AC_HIH_UI [Debug]: Entering BookDetailComponent selection dlg, dialog closed...',
+        ConsoleLogTypeEnum.debug,
+      );
+    });
   }
 
   onAssignAuthor(): void {
-    const setPerson: Set<number> = new Set<number>();
-    this.listAuthors.forEach((prn) => {
-      setPerson.add(prn.ID);
-    });
-    const modal: NzModalRef = this.modal.create({
-      nzTitle: translate('Library.SelectAuthor'),
-      nzWidth: 900,
-      nzContent: PersonSelectionDlgComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzData: {
-        setOfCheckedId: setPerson,
-      },
-      nzOnOk: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, OK button...',
-          ConsoleLogTypeEnum.debug,
-        );
-        this.listAuthors = [];
-        setPerson.forEach((pid) => {
-          this.storageService.Persons.forEach((person) => {
-            if (person.ID === pid) {
-              this.listAuthors.push(person);
-            }
-          });
-        });
-      },
-      nzOnCancel: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, cancelled...',
-          ConsoleLogTypeEnum.debug,
-        );
-      },
-    });
-    //const instance = modal.getContentComponent();
-    // Return a result when closed
-    modal.afterClose.subscribe(() => {
-      // Donothing by now.
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignAuthor, dialog closed...',
-        ConsoleLogTypeEnum.debug,
-      );
-    });
+    this.openSelectionDlg(
+      translate('Library.SelectAuthor'),
+      PersonSelectionDlgComponent,
+      new Set<number>(this.listAuthors().map((prn) => prn.ID)),
+      {},
+      (checked) => this.listAuthors.set(this.storageService.Persons.filter((prn) => checked.has(prn.ID))),
+    );
   }
-  onAssignTranslator() {
-    // TBD.
+  onAssignTranslator(): void {
+    this.openSelectionDlg(
+      translate('Library.SelectTranslator'),
+      PersonSelectionDlgComponent,
+      new Set<number>(this.listTranslators().map((prn) => prn.ID)),
+      {},
+      (checked) => this.listTranslators.set(this.storageService.Persons.filter((prn) => checked.has(prn.ID))),
+    );
   }
   onAssignPress(): void {
-    const setPress: Set<number> = new Set<number>();
-    this.listPresses.forEach((prs) => {
-      setPress.add(prs.ID);
-    });
-    const modal: NzModalRef = this.modal.create({
-      nzTitle: translate('Library.SelectPress'),
-      nzWidth: 900,
-      nzContent: OrganizationSelectionDlgComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzData: {
-        setOfCheckedId: setPress,
-      },
-      nzOnOk: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, OK button...',
-          ConsoleLogTypeEnum.debug,
-        );
-        this.listPresses = [];
-        setPress.forEach((pid) => {
-          this.storageService.Organizations.forEach((org) => {
-            if (org.ID === pid) {
-              this.listPresses.push(org);
-            }
-          });
-        });
-      },
-      nzOnCancel: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, cancelled...',
-          ConsoleLogTypeEnum.debug,
-        );
-      },
-    });
-    //const instance = modal.getContentComponent();
-    // Return a result when closed
-    modal.afterClose.subscribe(() => {
-      // Donothing by now.
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignPress, dialog closed...',
-        ConsoleLogTypeEnum.debug,
-      );
-    });
+    this.openSelectionDlg(
+      translate('Library.SelectPress'),
+      OrganizationSelectionDlgComponent,
+      new Set<number>(this.listPresses().map((prs) => prs.ID)),
+      {},
+      (checked) => this.listPresses.set(this.storageService.Organizations.filter((org) => checked.has(org.ID))),
+    );
   }
   onAssignCategory(): void {
-    const setCategory: Set<number> = new Set<number>();
-    this.listCategories.forEach((ctg) => {
-      setCategory.add(ctg.ID);
-    });
-    const modal: NzModalRef = this.modal.create({
-      nzTitle: translate('Library.SelectCategory'),
-      nzWidth: 900,
-      nzContent: BookCategorySelectionDlgComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzData: {
-        setOfCheckedId: setCategory,
-      },
-      nzOnOk: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, OK button...',
-          ConsoleLogTypeEnum.debug,
-        );
-        this.listCategories = [];
-        setCategory.forEach((pid) => {
-          this.storageService.BookCategories.forEach((ctgy) => {
-            if (ctgy.ID === pid) {
-              this.listCategories.push(ctgy);
-            }
-          });
-        });
-      },
-      nzOnCancel: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, cancelled...',
-          ConsoleLogTypeEnum.debug,
-        );
-      },
-    });
-    //const instance = modal.getContentComponent();
-    // Return a result when closed
-    modal.afterClose.subscribe(() => {
-      // Donothing by now.
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignCategory, dialog closed...',
-        ConsoleLogTypeEnum.debug,
-      );
-    });
+    this.openSelectionDlg(
+      translate('Library.SelectCategory'),
+      BookCategorySelectionDlgComponent,
+      new Set<number>(this.listCategories().map((ctg) => ctg.ID)),
+      {},
+      (checked) => this.listCategories.set(this.storageService.BookCategories.filter((ctgy) => checked.has(ctgy.ID))),
+    );
   }
   onAssignLocation(): void {
-    const setLocation: Set<number> = new Set<number>();
-    this.listLocations.forEach((loc) => {
-      setLocation.add(loc.ID);
-    });
-    const modal: NzModalRef = this.modal.create({
-      nzTitle: translate('Library.SelectLocation'),
-      nzWidth: 900,
-      nzContent: LocationSelectionDlgComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzData: {
-        setOfCheckedId: setLocation,
-      },
-      nzOnOk: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, OK button...',
-          ConsoleLogTypeEnum.debug,
-        );
-        this.listLocations = [];
-        setLocation.forEach((pid) => {
-          this.storageService.Locations.forEach((loc) => {
-            if (loc.ID === pid) {
-              this.listLocations.push(loc);
-            }
-          });
-        });
-      },
-      nzOnCancel: () => {
-        ModelUtility.writeConsoleLog(
-          'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, cancelled...',
-          ConsoleLogTypeEnum.debug,
-        );
-      },
-    });
-    //const instance = modal.getContentComponent();
-    // Return a result when closed
-    modal.afterClose.subscribe(() => {
-      // Do nothing by now.
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering BookDetailComponent onAssignLocation, dialog closed...',
-        ConsoleLogTypeEnum.debug,
-      );
-    });
+    this.openSelectionDlg(
+      translate('Library.SelectLocation'),
+      LocationSelectionDlgComponent,
+      new Set<number>(this.listLocations().map((loc) => loc.ID)),
+      {},
+      (checked) => this.listLocations.set(this.storageService.Locations.filter((loc) => checked.has(loc.ID))),
+    );
+  }
+
+  onRemoveAuthor(id: number): void {
+    this.listAuthors.update((arr) => arr.filter((p) => p.ID !== id));
+  }
+
+  onRemoveTranslator(id: number): void {
+    this.listTranslators.update((arr) => arr.filter((p) => p.ID !== id));
+  }
+
+  onRemoveCategory(id: number): void {
+    this.listCategories.update((arr) => arr.filter((c) => c.ID !== id));
+  }
+
+  onRemovePress(id: number): void {
+    this.listPresses.update((arr) => arr.filter((p) => p.ID !== id));
+  }
+
+  onRemoveLocation(id: number): void {
+    this.listLocations.update((arr) => arr.filter((l) => l.ID !== id));
   }
 
   onSave(): void {
@@ -377,17 +295,16 @@ export class BookDetailComponent implements OnInit, OnDestroy {
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
-    objtbo.Authors = this.listAuthors.slice();
-    objtbo.Translators = this.listTranslators.slice();
-    objtbo.Categories = this.listCategories.slice();
-    objtbo.Locations = this.listLocations.slice();
-    objtbo.Presses = this.listPresses.slice();
+    objtbo.Authors = this.listAuthors().slice();
+    objtbo.Translators = this.listTranslators().slice();
+    objtbo.Categories = this.listCategories().slice();
+    objtbo.Locations = this.listLocations().slice();
+    objtbo.Presses = this.listPresses().slice();
 
-    if (this.uiMode === UIMode.Create) {
+    if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createBook(objtbo)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (e) => {
             // Succeed.
@@ -405,7 +322,7 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             });
           },
         });
-    } else if (this.uiMode === UIMode.Update) {
+    } else if (this.uiMode() === UIMode.Update) {
       // Do nothing for now.
     }
   }

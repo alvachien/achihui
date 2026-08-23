@@ -2,11 +2,9 @@ export * from './auth.service';
 export * from './auth.interceptor';
 export * from './auth-guard.service';
 export * from './auth-check.util';
-export * from './can-deactivate-guard.service';
 
 export * from './home-chose-guard.service';
 export * from './library-storage.service';
-export * from './tags.service';
 export * from './event-storage.service';
 
 export * from './uistatus.service';

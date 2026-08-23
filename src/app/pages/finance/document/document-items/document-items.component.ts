@@ -1,4 +1,4 @@
-import { Component, forwardRef, HostListener, Input } from '@angular/core';
+import { Component, forwardRef, HostListener, Input, signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -48,6 +48,7 @@ import { RouterModule } from '@angular/router';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzAlertModule,
     NzTableModule,
@@ -80,7 +81,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   private _arTranType: TranType[] = [];
   private _arControlCenters: ControlCenter[] = [];
   private _arUIAccounts: UIAccountForSelection[] = [];
-  public listItems: DocumentItem[] = [];
+  public listItems = signal<DocumentItem[]>([]);
   get controlError(): SafeAny {
     const err = this.validate();
     if (err) {
@@ -102,7 +103,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
   }
 
   get value(): DocumentItem[] {
-    return this.listItems;
+    return this.listItems();
   }
 
   @Input()
@@ -188,7 +189,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     return this._docDate;
   }
   get documentItems(): DocumentItem[] {
-    return this.listItems;
+    return this.listItems();
   }
   get isFieldChangable(): boolean {
     return this._isChangable && (this.currentUIMode === UIMode.Create || this.currentUIMode === UIMode.Update);
@@ -262,7 +263,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       ConsoleLogTypeEnum.debug,
     );
     if (val) {
-      this.listItems = val;
+      this.listItems.set(val);
     }
   }
 
@@ -297,32 +298,32 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     // ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering DocumentItemsComponent validate...', ConsoleLogTypeEnum.debug);
 
     // Check 1: Have items
-    if (this.listItems.length <= 0) {
+    if (this.listItems().length <= 0) {
       return { noitems: true };
     }
     // Check 2: Each item has account
-    let erridx: number = this.listItems.findIndex((val: DocumentItem) => {
+    let erridx: number = this.listItems().findIndex((val: DocumentItem) => {
       return val.AccountId === undefined;
     });
     if (erridx !== -1) {
       return { itemwithoutaccount: true };
     }
     // Check 3. Each item has tran type
-    erridx = this.listItems.findIndex((val: DocumentItem) => {
+    erridx = this.listItems().findIndex((val: DocumentItem) => {
       return val.TranType === undefined;
     });
     if (erridx !== -1) {
       return { itemwithouttrantype: true };
     }
     // Check 4. Amount
-    erridx = this.listItems.findIndex((val: DocumentItem) => {
+    erridx = this.listItems().findIndex((val: DocumentItem) => {
       return val.TranAmount <= 0;
     });
     if (erridx !== -1) {
       return { itemwithoutamount: true };
     }
     // Check 5. Each item has control center or order
-    erridx = this.listItems.findIndex((val: DocumentItem) => {
+    erridx = this.listItems().findIndex((val: DocumentItem) => {
       return (
         (val.ControlCenterId !== undefined && val.OrderId !== undefined) ||
         (val.ControlCenterId === undefined && val.OrderId === undefined)
@@ -332,14 +333,14 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
       return { itemwithwrongcostobject: true };
     }
     // Check 6. Each item has description
-    erridx = this.listItems.findIndex((val: DocumentItem) => {
+    erridx = this.listItems().findIndex((val: DocumentItem) => {
       return val.Desp === undefined || val.Desp.length === 0;
     });
     if (erridx !== -1) {
       return { itemwithoutdesp: true };
     }
     // Item ID
-    erridx = this.listItems.findIndex((val: DocumentItem) => {
+    erridx = this.listItems().findIndex((val: DocumentItem) => {
       return val.ItemId === undefined || val.ItemId <= 0;
     });
     if (erridx !== -1) {
@@ -352,35 +353,35 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
 
   public onCreateDocItem(): void {
     const di: DocumentItem = new DocumentItem();
-    di.ItemId = ModelUtility.getFinanceNextItemID(this.listItems);
+    di.ItemId = ModelUtility.getFinanceNextItemID(this.listItems());
     if (this.arUIAccounts.length === 1) {
       di.AccountId = this.arUIAccounts[0].Id;
     }
     if (this.arControlCenters.length === 1) {
       di.ControlCenterId = this.arControlCenters[0].Id;
     }
-    this.listItems = [...this.listItems, di];
+    this.listItems.update((arr) => [...arr, di]);
 
     this.onChange();
   }
 
   public onDeleteDocItem(di: SafeAny): void {
     let idx = -1;
-    const exitems: DocumentItem[] = this.listItems.slice();
+    const exitems: DocumentItem[] = this.listItems().slice();
     idx = exitems.findIndex((di2: DocumentItem) => {
       return di2.ItemId === di.ItemId;
     });
 
     if (idx !== -1) {
       exitems.splice(idx, 1);
-      this.listItems = exitems;
+      this.listItems.set(exitems);
 
       this.onChange();
     }
   }
   public onCopyCurrentItem(di: DocumentItem): void {
     const di2: DocumentItem = new DocumentItem();
-    di2.ItemId = ModelUtility.getFinanceNextItemID(this.listItems);
+    di2.ItemId = ModelUtility.getFinanceNextItemID(this.listItems());
     di2.AccountId = di.AccountId;
     di2.ControlCenterId = di.ControlCenterId;
     di2.Desp = di.Desp;
@@ -388,7 +389,7 @@ export class DocumentItemsComponent implements ControlValueAccessor, Validator {
     di2.TranAmount = di.TranAmount;
     di2.TranType = di.TranType;
     di2.UseCurr2 = di.UseCurr2;
-    this.listItems = [...this.listItems, di2];
+    this.listItems.update((arr) => [...arr, di2]);
 
     this.onChange();
   }

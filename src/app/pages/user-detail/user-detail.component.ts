@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ReplaySubject, takeUntil } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 import { UIDisplayStringUtil } from '../../model';
 import { AuthService, HomeDefOdataService } from '../../services';
@@ -16,6 +17,7 @@ import { TranslocoModule } from '@jsverse/transloco';
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.less'],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -40,17 +42,20 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   private readonly authService = inject(AuthService);
   private readonly homeService = inject(HomeDefOdataService);
+  private readonly authContent$ = toObservable(this.authService.authSubject);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {}
 
   ngOnInit() {
     this._destroyed$ = new ReplaySubject(1);
 
-    this.authService.authContent.pipe(takeUntil(this._destroyed$)).subscribe({
+    this.authContent$.pipe(takeUntil(this._destroyed$)).subscribe({
       next: (val) => {
         this.userID = val.getUserId() ?? '';
         this.userName = val.getUserName() ?? '';
         this.userMail = val.getUserMailbox() ?? '';
+        this.cdr.markForCheck();
       },
     });
 

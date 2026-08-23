@@ -1,10 +1,9 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -14,7 +13,7 @@ import { createSpyObj, getTranslocoModule, FakeDataHelper } from '../../../../..
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { OrganizationDetailComponent } from './organization-detail.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('OrganizationDetailComponent', () => {
   let component: OrganizationDetailComponent;
@@ -23,7 +22,7 @@ describe('OrganizationDetailComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let storageService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let readOrganizationSpy: any;
+  let _readOrganizationSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -35,14 +34,14 @@ describe('OrganizationDetailComponent', () => {
     fakeData.buildChosedHome();
 
     storageService = createSpyObj('LibraryStorageService', ['readOrganization']);
-    readOrganizationSpy = storageService.readOrganization.and.returnValue(of([]));
+    _readOrganizationSpy = storageService.readOrganization.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -52,8 +51,6 @@ describe('OrganizationDetailComponent', () => {
 
         ReactiveFormsModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         NzInputModule,
         NzCheckboxModule,
         NzSelectModule,
@@ -65,7 +62,7 @@ describe('OrganizationDetailComponent', () => {
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -79,10 +76,5 @@ describe('OrganizationDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-
-    const btest = false;
-    if (btest) {
-      expect(readOrganizationSpy).not.toHaveBeenCalled();
-    }
   });
 });

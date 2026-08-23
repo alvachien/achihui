@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
+<nz-spin [nzSpinning]="isLoadingResults()" *transloco="let t">
   <nz-page-header nzBackIcon [nzTitle]="t('Nav.Home')">
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>{{ 'Nav.HomeList' | transloco }}</nz-breadcrumb-item>
@@ -12,7 +12,7 @@
       {{ 'Common.RequireChooseHome' | transloco }}
     </p>
     <div>
-      <nz-table #basicTable [nzData]="dataSource">
+      <nz-table #basicTable [nzData]="dataSource()">
         <thead>
           <tr>
             <th>ID</th>
@@ -23,21 +23,21 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of basicTable.data; track $index) {
+          @for (row of basicTable.data; track row.ID) {
             <tr>
               <td>
                 <span>{{ row.ID }}</span>
                 <nz-divider nzType="vertical"></nz-divider>
-                @if (!IsCurrentHomeChosed) {
+                @if (!IsCurrentHomeChosed()) {
                   <a (click)="onChooseHome(row)">{{ 'Common.ChooseThisHome' | transloco }}</a>
                 }
 
-                @if (IsCurrentHomeChosed) {
+                @if (IsCurrentHomeChosed()) {
                   <a nz-button nzType="link" routerLink="/homedef/display/{{ row.ID }}">
                     {{ 'Common.Display' | transloco }}
                   </a>
                 }
-                @if (IsCurrentHomeChosed && !IsChildMode) {
+                @if (IsCurrentHomeChosed() && !IsChildMode()) {
                   <a nz-button nzType="link" routerLink="/homedef/edit/{{ row.ID }}">
                     {{ 'Common.Edit' | transloco }}
                   </a>

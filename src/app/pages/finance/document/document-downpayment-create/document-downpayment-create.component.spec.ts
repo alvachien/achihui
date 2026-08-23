@@ -1,10 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { addMonths } from 'date-fns';
@@ -29,7 +29,7 @@ import {
   TemplateDocADP,
 } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentDownpaymentCreateComponent', () => {
   let component: DocumentDownpaymentCreateComponent;
@@ -87,7 +87,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -95,7 +95,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [RouterTestingModule, FormsModule, ReactiveFormsModule, NoopAnimationsModule, getTranslocoModule()],
+      imports: [RouterTestingModule, FormsModule, ReactiveFormsModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -104,12 +104,12 @@ describe('DocumentDownpaymentCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -163,7 +163,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -174,7 +174,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -206,7 +206,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -254,7 +254,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -302,7 +302,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -350,7 +350,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -406,7 +406,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -445,14 +445,14 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Go back to step 0
       component.pre();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -462,7 +462,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -501,7 +501,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add extra info.
@@ -529,7 +529,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -568,7 +568,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add extra info.
@@ -591,7 +591,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -601,7 +601,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -640,7 +640,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add extra info.
@@ -664,7 +664,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       // Fake an error in generated doc
       dochead.Desp = '';
       component.headerFormGroup.get('headerControl')?.setValue(dochead);
@@ -691,7 +691,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
 
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -709,7 +709,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -748,7 +748,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add extra info.
@@ -772,7 +772,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -783,7 +783,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       expect(createADPDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBe(1);
-      expect(component.currentStep).toBe(3);
+      expect(component.currentStep()).toBe(3);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -794,7 +794,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.headerFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -833,7 +833,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.nextButtonEnabled).toBeFalsy();
 
       // Add extra info.
@@ -857,7 +857,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
@@ -868,7 +868,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       expect(createADPDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeUndefined();
-      expect(component.currentStep).toBe(3);
+      expect(component.currentStep()).toBe(3);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

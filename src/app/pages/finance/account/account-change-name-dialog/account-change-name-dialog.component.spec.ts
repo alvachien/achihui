@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper } from '../../../../../testing';
@@ -14,7 +13,7 @@ import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService 
 import { UserAuthInfo } from '@model/index';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('AccountChangeNameDialogComponent', () => {
   let component: AccountChangeNameDialogComponent;
@@ -36,22 +35,14 @@ describe('AccountChangeNameDialogComponent', () => {
 
     storageService = createSpyObj('FinanceOdataService', ['changeAccountByPatch']);
     changeAccountByPatchSpy = storageService.changeAccountByPatch.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        RouterTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
@@ -68,7 +59,7 @@ describe('AccountChangeNameDialogComponent', () => {
             }),
           deps: [NzModalService],
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -85,9 +76,9 @@ describe('AccountChangeNameDialogComponent', () => {
   });
 
   it('should set form values from inputs on init', () => {
-    component.accountid = 100;
-    component.name = 'Test Account';
-    component.comment = 'Test Comment';
+    fixture.componentRef.setInput('accountid', 100);
+    fixture.componentRef.setInput('name', 'Test Account');
+    fixture.componentRef.setInput('comment', 'Test Comment');
     fixture.detectChanges();
     expect(component.headerFormGroup.get('nameControl')?.value).toBe('Test Account');
     expect(component.headerFormGroup.get('cmtControl')?.value).toBe('Test Comment');
@@ -100,12 +91,12 @@ describe('AccountChangeNameDialogComponent', () => {
 
   it('should return true for isSubmittedDisabled when isSubmitting is true', () => {
     component.headerFormGroup.get('nameControl')?.setValue('Valid Name');
-    component.isSubmitting = true;
+    component.isSubmitting.set(true);
     expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should call changeAccountByPatch on valid submit', () => {
-    component.accountid = 100;
+    fixture.componentRef.setInput('accountid', 100);
     component.headerFormGroup.get('nameControl')?.setValue('New Name');
     component.headerFormGroup.get('nameControl')?.markAsDirty();
     component.onSubmit();
@@ -119,13 +110,13 @@ describe('AccountChangeNameDialogComponent', () => {
   });
 
   it('should reset isSubmitting on submit error', () => {
-    component.accountid = 100;
+    fixture.componentRef.setInput('accountid', 100);
     component.headerFormGroup.get('nameControl')?.setValue('New Name');
     component.headerFormGroup.get('nameControl')?.markAsDirty();
     changeAccountByPatchSpy.and.returnValue({
       subscribe: (callbacks: SafeAny) => callbacks.error?.('server error'),
     });
     component.onSubmit();
-    expect(component.isSubmitting).toBe(false);
+    expect(component.isSubmitting()).toBe(false);
   });
 });

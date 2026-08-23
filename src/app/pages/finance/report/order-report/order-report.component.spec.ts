@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import {
@@ -21,7 +20,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo, FinanceReportByOrder } from '../../../../model';
 import { OrderReportComponent } from './order-report.component';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('OrderReportComponent', () => {
   let component: OrderReportComponent;
@@ -46,19 +45,13 @@ describe('OrderReportComponent', () => {
     storageService = createSpyObj('FinanceOdataService', ['fetchReportByOrder', 'fetchAllOrders']);
     fetchReportByOrderSpy = storageService.fetchReportByOrder.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        OrderReportComponent,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [OrderReportComponent, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -66,12 +59,12 @@ describe('OrderReportComponent', () => {
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
         NzDrawerService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -111,7 +104,7 @@ describe('OrderReportComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.dataSet.length).toEqual(0);
+      expect(component.dataSet().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -121,8 +114,8 @@ describe('OrderReportComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.dataSet.length).toBeGreaterThan(0);
-      expect(component.dataSet.length).toEqual(arRptData.length);
+      expect(component.dataSet().length).toBeGreaterThan(0);
+      expect(component.dataSet().length).toEqual(arRptData.length);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

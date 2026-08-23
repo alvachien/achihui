@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults" *transloco="let t">
+<nz-spin [nzSpinning]="isLoadingResults()" *transloco="let t">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>
@@ -11,17 +11,17 @@
     <nz-page-header-extra>
       <a nz-button nzType="link" (click)="onRefresh(true)">{{ 'Common.Refresh' | transloco }}</a>
       <nz-divider nzType="vertical"></nz-divider>
-      <a nz-button nzType="link" [disabled]="isChildMode" routerLink="/finance/account/create">{{
+      <a nz-button nzType="link" [disabled]="isChildMode()" routerLink="/finance/account/create">{{
         'Common.Create' | transloco
       }}</a>
       <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{ 'Common.HierarchyView' | transloco }}</a>
     </nz-page-header-extra>
   </nz-page-header>
   <div nz-row>
-    <nz-table #basicTable [nzLoading]="isLoadingResults" [nzData]="dataSet" nzTableLayout="fixed">
+    <nz-table #basicTable [nzLoading]="isLoadingResults()" [nzData]="dataSet()" nzTableLayout="fixed">
       <thead>
         <tr>
-          @for (column of listOfColumns; track $index) {
+          @for (column of listOfColumns; track column) {
             <th
               [nzSortOrder]="column.sortOrder"
               [nzSortFn]="column.sortFn"
@@ -36,7 +36,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (data of basicTable.data; track $index) {
+        @for (data of basicTable.data; track data.Id) {
           <tr>
             <td>
               <span [ngClass]="{ 'closed-account': data.isClosed }">{{ data.Id }}</span>
@@ -53,7 +53,7 @@
                 nz-button
                 nz-popconfirm
                 [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
-                *ngIf="!isChildMode"
+                *ngIf="!isChildMode()"
                 nzPopconfirmPlacement="bottom"
                 (nzOnConfirm)="onDelete(data.Id!)"
                 nzType="link"

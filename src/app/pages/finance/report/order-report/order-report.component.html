@@ -20,8 +20,8 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-  <nz-table #basicTable [nzData]="dataSet">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
+  <nz-table #basicTable [nzData]="dataSet()">
     <thead>
       <tr>
         <th>#</th>
@@ -32,7 +32,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.OrderId) {
         <tr>
           <td>
             {{ data.OrderId }}

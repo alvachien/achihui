@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -36,6 +37,7 @@ import { DecimalPipe } from '@angular/common';
   selector: 'hih-finance-report-trantype',
   templateUrl: './tran-type-report.component.html',
   styleUrls: ['./tran-type-report.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -51,18 +53,17 @@ import { DecimalPipe } from '@angular/common';
     TranslocoModule,
   ],
 })
-export class TranTypeReportComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  reportIncome: FinanceReportMostExpenseEntry[] = [];
-  reportExpense: FinanceReportMostExpenseEntry[] = [];
+export class TranTypeReportComponent implements OnInit {
+  isLoadingResults = signal(false);
+  reportIncome = signal<FinanceReportMostExpenseEntry[]>([]);
+  reportExpense = signal<FinanceReportMostExpenseEntry[]>([]);
   baseCurrency: string;
   totalIncome = 0;
   totalExpense = 0;
   selectedScope = '2'; // '1': Preview year, '2': Current Year, '3': Preview month, '4': Current month
   groupLevel = '3'; // '3': Group level is 3; '2': Group level is 2; '1': Group level is 1
-  arTranType: TranType[] = [];
-  arReportData: FinanceReportEntryByTransactionType[] = [];
+  arTranType = signal<TranType[]>([]);
+  arReportData = signal<FinanceReportEntryByTransactionType[]>([]);
 
   public readonly odataService = inject(FinanceOdataService);
 
@@ -71,6 +72,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
   private readonly modalService = inject(NzModalService);
 
   private readonly drawerService = inject(NzDrawerService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -87,21 +89,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
     this.onLoadData();
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering TranTypeReportComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
   }
 
   onLoadData() {
@@ -110,7 +98,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     let tnow = new Date();
     let year = tnow.getFullYear();
     let month: number | undefined = undefined;
@@ -134,9 +122,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
 
     forkJoin([this.odataService.fetchReportByTransactionType(year, month), this.odataService.fetchAllTranTypes()])
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (val) => {
@@ -145,8 +132,8 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.arReportData = val[0];
-          this.arTranType = val[1];
+          this.arReportData.set(val[0]);
+          this.arTranType.set(val[1]);
 
           this.onRebuildData();
         },
@@ -165,12 +152,12 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       });
   }
   public onRebuildData(): void {
-    this.reportExpense = [];
-    this.reportIncome = [];
+    const ri: FinanceReportMostExpenseEntry[] = [];
+    const re: FinanceReportMostExpenseEntry[] = [];
     this.totalExpense = 0;
     this.totalIncome = 0;
 
-    this.arReportData.forEach((item) => {
+    this.arReportData().forEach((item) => {
       if (item.InAmount !== 0) {
         this.totalIncome += item.InAmount;
       }
@@ -184,7 +171,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
     if (this.groupLevel === '3') {
       // TBD.
     } else if (this.groupLevel === '2') {
-      this.arTranType.forEach((trantype) => {
+      this.arTranType().forEach((trantype) => {
         if (trantype.HierLevel === 2) {
           armaps.set(trantype.Id ?? 0, trantype.ParId ?? -1);
         } else {
@@ -193,7 +180,7 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       });
     } else if (this.groupLevel === '1') {
       const armaps2: Map<number, number> = new Map<number, number>();
-      this.arTranType.forEach((trantype) => {
+      this.arTranType().forEach((trantype) => {
         if (trantype.HierLevel === 2) {
           // Level 3:
           armaps2.set(trantype.Id ?? 0, trantype.ParId ?? -1);
@@ -212,34 +199,32 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.arReportData.forEach((item: FinanceReportEntryByTransactionType) => {
+    this.arReportData().forEach((item: FinanceReportEntryByTransactionType) => {
       if (item.InAmount !== 0) {
         const entry: FinanceReportMostExpenseEntry = new FinanceReportMostExpenseEntry();
         if (armaps.size > 0 && armaps.get(item.TransactionType)) {
           entry.TransactionType = armaps.get(item.TransactionType) ?? 0;
           // Exist already?
-          const rptindex = this.reportIncome.findIndex((val) => val.TransactionType === entry.TransactionType);
+          const rptindex = ri.findIndex((val) => val.TransactionType === entry.TransactionType);
           if (rptindex === -1) {
             // Not exist
-            const ttObj = this.arTranType.find((val) => val.Id === entry.TransactionType);
+            const ttObj = this.arTranType().find((val) => val.Id === entry.TransactionType);
             if (ttObj) {
               entry.TransactionTypeName = ttObj.Name;
             }
             entry.Amount = item.InAmount;
             entry.Precentage = NumberUtility.Round2Two((100 * item.InAmount) / this.totalIncome);
-            this.reportIncome.push(entry);
+            ri.push(entry);
           } else {
-            this.reportIncome[rptindex].Amount += item.InAmount;
-            this.reportIncome[rptindex].Precentage = NumberUtility.Round2Two(
-              (100 * this.reportIncome[rptindex].Amount) / this.totalIncome,
-            );
+            ri[rptindex].Amount += item.InAmount;
+            ri[rptindex].Precentage = NumberUtility.Round2Two((100 * ri[rptindex].Amount) / this.totalIncome);
           }
         } else {
           entry.TransactionType = item.TransactionType;
           entry.TransactionTypeName = item.TransactionTypeName;
           entry.Amount = item.InAmount;
           entry.Precentage = NumberUtility.Round2Two((100 * item.InAmount) / this.totalIncome);
-          this.reportIncome.push(entry);
+          ri.push(entry);
         }
       }
       if (item.OutAmount !== 0) {
@@ -248,33 +233,34 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
         if (armaps.size > 0 && armaps.get(item.TransactionType)) {
           entry.TransactionType = armaps.get(item.TransactionType) ?? 0;
           // Exist already?
-          const rptindex = this.reportExpense.findIndex((val) => val.TransactionType === entry.TransactionType);
+          const rptindex = re.findIndex((val) => val.TransactionType === entry.TransactionType);
           if (rptindex === -1) {
-            const ttObj = this.arTranType.find((val) => val.Id === entry.TransactionType);
+            const ttObj = this.arTranType().find((val) => val.Id === entry.TransactionType);
             if (ttObj) {
               entry.TransactionTypeName = ttObj.Name;
             }
             entry.Amount = item.OutAmount;
             entry.Precentage = NumberUtility.Round2Two((100 * item.OutAmount) / this.totalExpense);
-            this.reportExpense.push(entry);
+            re.push(entry);
           } else {
-            this.reportExpense[rptindex].Amount += item.OutAmount;
-            this.reportExpense[rptindex].Precentage = NumberUtility.Round2Two(
-              (100 * this.reportExpense[rptindex].Amount) / this.totalExpense,
-            );
+            re[rptindex].Amount += item.OutAmount;
+            re[rptindex].Precentage = NumberUtility.Round2Two((100 * re[rptindex].Amount) / this.totalExpense);
           }
         } else {
           entry.TransactionType = item.TransactionType;
           entry.TransactionTypeName = item.TransactionTypeName;
           entry.Amount = item.OutAmount;
           entry.Precentage = NumberUtility.Round2Two((100 * item.OutAmount) / this.totalExpense);
-          this.reportExpense.push(entry);
+          re.push(entry);
         }
       }
     });
 
-    this.reportIncome.sort((a, b) => b.Precentage - a.Precentage);
-    this.reportExpense.sort((a, b) => b.Precentage - a.Precentage);
+    ri.sort((a, b) => b.Precentage - a.Precentage);
+    re.sort((a, b) => b.Precentage - a.Precentage);
+
+    this.reportIncome.set(ri);
+    this.reportExpense.set(re);
   }
 
   public onDisplayDocumentItem(trantype: number) {
@@ -287,10 +273,10 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       valueType: GeneralFilterValueType.number,
     });
     if (this.groupLevel === '2') {
-      this.arTranType.forEach((tt) => {
+      this.arTranType().forEach((tt) => {
         if (tt.ParId === trantype) {
           // Ensure it appears in report data
-          const rptidx = this.arReportData.findIndex((rp) => rp.TransactionType === tt.Id);
+          const rptidx = this.arReportData().findIndex((rp) => rp.TransactionType === tt.Id);
           if (rptidx !== -1) {
             fltrs.push({
               fieldName: 'TransactionType',
@@ -305,11 +291,11 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
     } else if (this.groupLevel === '1') {
       // Level 2
       const tts: number[] = [];
-      this.arTranType.forEach((tt) => {
+      this.arTranType().forEach((tt) => {
         if (tt.ParId === trantype) {
           tts.push(tt.Id ?? 0);
           // Ensure it appears in report data
-          const rptidx = this.arReportData.findIndex((rp) => rp.TransactionType === tt.Id);
+          const rptidx = this.arReportData().findIndex((rp) => rp.TransactionType === tt.Id);
           if (rptidx !== -1) {
             fltrs.push({
               fieldName: 'TransactionType',
@@ -323,11 +309,11 @@ export class TranTypeReportComponent implements OnInit, OnDestroy {
       });
 
       // Level 3
-      this.arTranType.forEach((tt) => {
+      this.arTranType().forEach((tt) => {
         if (tt.ParId) {
           const level2idx = tts.findIndex((val) => tt.ParId === val);
           if (level2idx !== -1) {
-            const rptidx = this.arReportData.findIndex((rp) => rp.TransactionType === tt.Id);
+            const rptidx = this.arReportData().findIndex((rp) => rp.TransactionType === tt.Id);
             if (rptidx !== -1) {
               fltrs.push({
                 fieldName: 'TransactionType',

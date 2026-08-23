@@ -10,13 +10,13 @@
   <nz-page-header-extra>
     <a nz-button nzType="link" (click)="onRefresh(true)">{{ 'Common.Refresh' | transloco }}</a>
     <nz-divider nzType="vertical"></nz-divider>
-    <button nz-button nzType="primary" [disabled]="isChildMode" (click)="onCreate()">
+    <button nz-button nzType="primary" [disabled]="isChildMode()" (click)="onCreate()">
       {{ 'Common.Create' | transloco }}
     </button>
   </nz-page-header-extra>
 </nz-page-header>
 
-@if (isChildMode) {
+@if (isChildMode()) {
   <div>
     <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
       <div nz-result-extra>
@@ -26,10 +26,10 @@
   </div>
 }
 
-@if (!isChildMode) {
+@if (!isChildMode()) {
   <div>
-    <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-      <nz-table #basicTable [nzData]="dataSet">
+    <nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
+      <nz-table #basicTable [nzData]="dataSet()">
         <thead>
           <tr>
             <th>ID</th>
@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of basicTable.data; track $index) {
+          @for (data of basicTable.data; track data.ID) {
             <tr>
               <td>
                 {{ data.ID }}
@@ -86,15 +86,18 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ID' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.ID" />
+          <input nz-input nzBorderless readonly [ngModel]="$safeNavigationMigration(currentPlan()?.ID)" />
         </nz-form-control>
       </nz-form-item>
 
       <!-- Type -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Type' | transloco }}</nz-form-label>
-        <nz-form-control [nzSpan]="12" [nzExtra]="getPlanTypeDisplayString(currentPlan?.PlanType!) | transloco">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.PlanType" />
+        <nz-form-control
+          [nzSpan]="12"
+          [nzExtra]="getPlanTypeDisplayString($safeNavigationMigration(currentPlan()?.PlanType)!) | transloco"
+        >
+          <input nz-input nzBorderless readonly [ngModel]="$safeNavigationMigration(currentPlan()?.PlanType)" />
         </nz-form-control>
       </nz-form-item>
 
@@ -102,7 +105,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidFrom' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.StartDateString" />
+          <input nz-input nzBorderless readonly [ngModel]="$safeNavigationMigration(currentPlan()?.StartDateString)" />
         </nz-form-control>
       </nz-form-item>
 
@@ -110,7 +113,7 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.ValidTo' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.TargetDateString" />
+          <input nz-input nzBorderless readonly [ngModel]="$safeNavigationMigration(currentPlan()?.TargetDateString)" />
         </nz-form-control>
       </nz-form-item>
 
@@ -118,23 +121,23 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Common.Description' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.Description" />
+          <input nz-input nzBorderless readonly [ngModel]="$safeNavigationMigration(currentPlan()?.Description)" />
         </nz-form-control>
       </nz-form-item>
 
       <!-- Account -->
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.Account' | transloco }}</nz-form-label>
-        <nz-form-control [nzSpan]="12" [nzExtra]="getAccountName(currentPlan?.AccountID!)">
-          <input nz-input nzBorderless readonly [ngModel]="currentPlan?.AccountID" />
+        <nz-form-control [nzSpan]="12" [nzExtra]="getAccountName($safeNavigationMigration(currentPlan()?.AccountID)!)">
+          <input nz-input nzBorderless readonly [ngModel]="$safeNavigationMigration(currentPlan()?.AccountID)" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.ExpectedResult' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlan?.TargetBalance">
-            <span nzInputAddonAfter [ngModel]="currentPlan?.TranCurrency"></span>
+          <nz-input-number nzBorderless nzDisabled [ngModel]="$safeNavigationMigration(currentPlan()?.TargetBalance)">
+            <span nzInputAddonAfter [ngModel]="$safeNavigationMigration(currentPlan()?.TranCurrency)"></span>
           </nz-input-number>
         </nz-form-control>
       </nz-form-item>
@@ -144,8 +147,8 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.Amount' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlanActualBalance">
-            <span nzInputAddonAfter [ngModel]="currentPlan?.TranCurrency"></span>
+          <nz-input-number nzBorderless nzDisabled [ngModel]="currentPlanActualBalance()">
+            <span nzInputAddonAfter [ngModel]="$safeNavigationMigration(currentPlan()?.TranCurrency)"></span>
           </nz-input-number>
         </nz-form-control>
       </nz-form-item>
@@ -156,8 +159,8 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.Difference' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <nz-input-number nzBorderless nzDisabled [ngModel]="currentDifferenceWithTarget">
-            <span nzInputAddonAfter [ngModel]="currentPlan?.TranCurrency"></span>
+          <nz-input-number nzBorderless nzDisabled [ngModel]="currentDifferenceWithTarget()">
+            <span nzInputAddonAfter [ngModel]="$safeNavigationMigration(currentPlan()?.TranCurrency)"></span>
           </nz-input-number>
         </nz-form-control>
       </nz-form-item>

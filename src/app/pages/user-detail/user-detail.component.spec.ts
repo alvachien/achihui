@@ -2,17 +2,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { signal, WritableSignal } from '@angular/core';
 
 import { UserDetailComponent } from './user-detail.component';
 import { AuthService, HomeDefOdataService } from '../../services';
 import { FakeDataHelper, getTranslocoModule } from '../../../testing';
-import { BehaviorSubject } from 'rxjs';
 import { UserAuthInfo } from '../../model';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('UserDetailComponent', () => {
   let component: UserDetailComponent;
@@ -26,8 +25,7 @@ describe('UserDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
-    authServiceStub.authContent = authServiceStub.authSubject.asObservable();
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     authServiceStub.doLogout = vi.fn();
     homeServiceStub.ChosedHome = fakeData.chosedHome;
     homeServiceStub.CurrentMemberInChosedHome = fakeData.chosedHome.Members[0];
@@ -37,7 +35,6 @@ describe('UserDetailComponent', () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
       imports: [
-        NoopAnimationsModule,
         NzDescriptionsModule,
         FormsModule,
         ReactiveFormsModule,
@@ -49,7 +46,7 @@ describe('UserDetailComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -73,7 +70,7 @@ describe('UserDetailComponent', () => {
       userName: 'Test User',
       accessToken: 'test-token',
     });
-    (authServiceStub.authSubject as BehaviorSubject<UserAuthInfo>).next(authorizedUser);
+    (authServiceStub.authSubject as WritableSignal<UserAuthInfo>).set(authorizedUser);
     fixture.detectChanges();
     await new Promise<void>((r) => setTimeout(r, 0));
     expect(component.userID).toBe('test-user-id');

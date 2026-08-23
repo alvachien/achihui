@@ -1,7 +1,7 @@
-<nz-spin [nzSpinning]="isLoadingResults">
+<nz-spin [nzSpinning]="isLoadingResults()">
   <nz-page-header nzBackIcon>
     <nz-page-header-title>{{ 'Finance.Account' | transloco }}</nz-page-header-title>
-    <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+    <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
     <nz-page-header-tags> </nz-page-header-tags>
     <nz-page-header-extra>
       <button nz-button nzType="primary" (click)="onSave()" [disabled]="!isSaveEnabled">
@@ -45,7 +45,7 @@
         <nz-form-label [nzSpan]="7">{{ 'Common.Category' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ctgyTpl">
           <nz-select formControlName="ctgyControl">
-            @for (cc of arAccountCategories; track cc.ID) {
+            @for (cc of arAccountCategories(); track cc.ID) {
               <nz-option
                 [nzValue]="cc.ID"
                 [nzLabel]="cc.Name | transloco"
@@ -184,7 +184,7 @@
           formControlName="extADPControl"
           [tranAmount]="tranAmount"
           [tranType]="tranType"
-          [allTranTypes]="arTranTypes"
+          [allTranTypes]="arTranTypes()"
         >
         </hih-finance-account-extra-downpayment>
       </form>
@@ -192,7 +192,7 @@
 
     @if (isAssetAccount) {
       <form nz-form #extraAsset [formGroup]="extraAssetFormGroup">
-        <hih-finance-account-extra-asset formControlName="extAssetControl" [arAssetCategories]="arAssetCategories">
+        <hih-finance-account-extra-asset formControlName="extAssetControl" [arAssetCategories]="arAssetCategories()">
         </hih-finance-account-extra-asset>
       </form>
     }

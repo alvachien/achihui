@@ -1,17 +1,16 @@
+import { signal } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject } from 'rxjs';
 
 import { UserAuthInfo } from '@model/index';
 import { AuthService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { FakeDataHelper, getTranslocoModule } from 'testing';
 
 import { OrganizationTypeSelectionDlgComponent } from './organization-type-selection-dlg.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('OrganizationTypeSelectionDlgComponent', () => {
   let component: OrganizationTypeSelectionDlgComponent;
@@ -19,8 +18,6 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
   let fakeData: FakeDataHelper;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   //let storageService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let readBookSpy: any;
   const authServiceStub: Partial<AuthService> = {};
   //const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -33,7 +30,7 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
   });
 
   beforeEach(async () => {
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -42,7 +39,7 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
 
     await TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [FormsModule, NoopAnimationsModule, RouterTestingModule, ReactiveFormsModule, getTranslocoModule()],
+      imports: [FormsModule, RouterTestingModule, ReactiveFormsModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -57,7 +54,7 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
             }),
           deps: [NzModalService],
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -71,10 +68,5 @@ describe('OrganizationTypeSelectionDlgComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-
-    const btest = false;
-    if (btest) {
-      expect(readBookSpy).not.toHaveBeenCalled();
-    }
   });
 });

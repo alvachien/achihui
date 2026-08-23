@@ -1,4 +1,14 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  forwardRef,
+  Input,
+  HostListener,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -12,8 +22,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
@@ -57,6 +66,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzFormModule,
     FormsModule,
@@ -75,9 +85,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     RouterModule,
   ],
 })
-export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
+export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _isChangable = true; // Default is changable
   private _onTouched?: () => void;
   private _onChange?: (val: SafeAny) => void;
@@ -85,7 +94,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
   isLoadingTmpDocs = false;
   isLegalLoan = false;
-  public listTmpDocs: TemplateDocLoan[] = [];
+  public listTmpDocs = signal<TemplateDocLoan[]>([]);
   public arRepaymentMethods = UIDisplayStringUtil.getRepaymentMethodStrings();
 
   public uiAccountStatusFilter: string | undefined;
@@ -144,7 +153,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
 
     objrst.loanTmpDocs = [];
-    objrst.loanTmpDocs = this.listTmpDocs.slice();
+    objrst.loanTmpDocs = this.listTmpDocs().slice();
 
     return objrst;
   }
@@ -225,6 +234,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
   private readonly uiStatusService = inject(UIStatusService);
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -272,25 +282,12 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
     this.uiAccountStatusFilter = undefined;
     this.uiAccountCtgyFilter = {
       skipADP: true,
       skipLoan: true,
       skipAsset: true,
     };
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering AccountExtraLoanComponent ngOnDestroy`,
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   public onRepaymentMethodChanged(selectedOption: SafeAny) {
@@ -362,7 +359,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     );
 
     let tmpdocs: TemplateDocLoan[] = [];
-    tmpdocs = this.listTmpDocs.slice();
+    tmpdocs = this.listTmpDocs().slice();
     let amtTotal = 0;
     let amtPaid = 0;
     let monthPaid = 0;
@@ -407,8 +404,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     }
     this.odataService
       .calcLoanTmpDocs(di)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (x) => {
           let rstidx: number = arKeepItems.length;
@@ -432,7 +428,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
             arKeepItems.push(tmpdoc);
           }
 
-          this.listTmpDocs = arKeepItems;
+          this.listTmpDocs.set(arKeepItems);
 
           this.onChange();
         },
@@ -479,7 +475,7 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
       this.loanInfoForm.get('cmtControl')?.setValue(val.Comment);
       this._refDocID = val.RefDocId ?? 0;
 
-      this.listTmpDocs = val.loanTmpDocs.slice();
+      this.listTmpDocs.set(val.loanTmpDocs.slice());
     }
   }
 

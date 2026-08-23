@@ -1,9 +1,8 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -21,7 +20,7 @@ import {
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('TranTypeHierarchyComponent', () => {
   let component: TranTypeHierarchyComponent;
@@ -41,32 +40,24 @@ describe('TranTypeHierarchyComponent', () => {
     storageService = createSpyObj('FinanceOdataService', ['fetchAllTranTypes']);
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
         { provide: FinanceOdataService, useValue: storageService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -89,7 +80,7 @@ describe('TranTypeHierarchyComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.ttTreeNodes.length).toEqual(0);
+      expect(component.ttTreeNodes().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -97,7 +88,7 @@ describe('TranTypeHierarchyComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.ttTreeNodes.length).toBeGreaterThan(0);
+      expect(component.ttTreeNodes().length).toBeGreaterThan(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

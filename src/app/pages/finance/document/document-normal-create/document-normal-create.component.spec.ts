@@ -1,9 +1,9 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
@@ -27,7 +27,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentNormalCreateComponent', () => {
   let component: DocumentNormalCreateComponent;
@@ -58,7 +58,7 @@ describe('DocumentNormalCreateComponent', () => {
 
   beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
@@ -88,7 +88,6 @@ describe('DocumentNormalCreateComponent', () => {
       imports: [
         FormsModule,
 
-        NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
@@ -111,12 +110,12 @@ describe('DocumentNormalCreateComponent', () => {
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -186,7 +185,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       // Shall not allow go the next page
       expect(component.nextButtonEnabled).toBe(false);
 
@@ -212,7 +211,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Event call the next
       component.next();
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -241,7 +240,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Event call the next
       component.next();
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -265,7 +264,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       // Event call the next
       component.next();
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
 
       expect(component.nextButtonEnabled).toBe(false);
 
@@ -306,7 +305,7 @@ describe('DocumentNormalCreateComponent', () => {
       component.next();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -347,7 +346,7 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2.
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
       // Fake an error in generated doc
       docheader.Desp = '';
       component.headerForm.get('headerControl')?.setValue(docheader);
@@ -374,7 +373,7 @@ describe('DocumentNormalCreateComponent', () => {
 
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -397,7 +396,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       component.next();
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
 
       // Items
       const aritems: DocumentItem[] = [];
@@ -416,7 +415,7 @@ describe('DocumentNormalCreateComponent', () => {
       component.next();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       // Save the document
       component.next();
@@ -453,7 +452,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       component.next();
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
 
       // Items
       const aritems: DocumentItem[] = [];
@@ -470,7 +469,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       component.next();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       // Save the document
       component.next();
@@ -504,7 +503,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       component.next();
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
 
       // Items
       const aritems: DocumentItem[] = [];
@@ -523,7 +522,7 @@ describe('DocumentNormalCreateComponent', () => {
       component.next();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       // Save the document
       component.next();

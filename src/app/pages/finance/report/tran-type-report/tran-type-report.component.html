@@ -26,10 +26,10 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
   <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
     <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <nz-table #incomeTable nzSize="small" [nzData]="reportIncome" [nzFooter]="incomeFooterTemplate">
+      <nz-table #incomeTable nzSize="small" [nzData]="reportIncome()" [nzFooter]="incomeFooterTemplate">
         <thead>
           <tr>
             <th>ID</th>
@@ -39,7 +39,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of incomeTable.data; track $index) {
+          @for (data of incomeTable.data; track data.TransactionType) {
             <tr>
               <td>{{ data.TransactionType }}</td>
               <td>{{ data.TransactionTypeName }}</td>
@@ -72,7 +72,7 @@
       </ng-template>
     </div>
     <div nz-col style="margin-bottom: 8px" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
-      <nz-table #expenseTable nzSize="small" [nzData]="reportExpense" [nzFooter]="outgoFooterTemplate">
+      <nz-table #expenseTable nzSize="small" [nzData]="reportExpense()" [nzFooter]="outgoFooterTemplate">
         <thead>
           <tr>
             <th>ID</th>
@@ -82,7 +82,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of expenseTable.data; track $index) {
+          @for (data of expenseTable.data; track data.TransactionType) {
             <tr>
               <td>{{ data.TransactionType }}</td>
               <td>{{ data.TransactionTypeName }}</td>

@@ -1,10 +1,9 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
@@ -13,7 +12,7 @@ import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('TranTypeListComponent', () => {
   let component: TranTypeListComponent;
@@ -34,27 +33,18 @@ describe('TranTypeListComponent', () => {
     storageService = createSpyObj('FinanceOdataService', ['fetchAllTranTypes']);
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        NzModalModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, NzModalModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -78,7 +68,7 @@ describe('TranTypeListComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.dataSet.length).toEqual(0);
+      expect(component.dataSet().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -86,8 +76,8 @@ describe('TranTypeListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
 
-      expect(component.dataSet.length).toBeGreaterThan(0);
-      expect(component.dataSet.length).toEqual(fakeData.finTranTypes.length);
+      expect(component.dataSet().length).toBeGreaterThan(0);
+      expect(component.dataSet().length).toEqual(fakeData.finTranTypes.length);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

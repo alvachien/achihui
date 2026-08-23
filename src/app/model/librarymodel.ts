@@ -1,5 +1,5 @@
 import { Dictionary } from 'actslib';
-import { format, parse, isAfter } from 'date-fns';
+import { format, isAfter } from 'date-fns';
 import { SafeAny } from '@common/any';
 import * as hih from './common';
 
@@ -1080,10 +1080,18 @@ export class BookBorrowRecord extends hih.BaseModel {
       this.BorrowFrom = data.FromOrganization;
     }
     if (data && data.FromDate) {
-      this.FromDate = parse(data.FromDate, hih.dateFormat, new Date());
+      // The API returns full ISO timestamps (e.g. 2026-08-17T00:00:00+08:00);
+      // the Date constructor accepts both those and plain yyyy-MM-dd strings.
+      const dt = new Date(data.FromDate);
+      if (!isNaN(dt.getTime())) {
+        this.FromDate = dt;
+      }
     }
     if (data && data.ToDate) {
-      this.ToDate = parse(data.ToDate, hih.dateFormat, new Date());
+      const dt = new Date(data.ToDate);
+      if (!isNaN(dt.getTime())) {
+        this.ToDate = dt;
+      }
     }
     if (data && data.IsReturned) {
       this.HasReturned = true;

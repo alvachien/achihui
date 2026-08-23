@@ -1,5 +1,14 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ChangeDetectorRef,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   UntypedFormGroup,
   Validators,
@@ -11,8 +20,9 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
@@ -66,6 +76,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
   selector: 'hih-document-loan-create',
   templateUrl: './document-loan-create.component.html',
   styleUrls: ['./document-loan-create.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -87,24 +98,23 @@ import { NzResultModule } from 'ng-zorro-antd/result';
     NgIf,
   ],
 })
-export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
+export class DocumentLoanCreateComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
   public curDocType: number;
 
   public documentTitle = '';
-  public arUIAccount: UIAccountForSelection[] = [];
+  public arUIAccount = signal<UIAccountForSelection[]>([]);
   public uiAccountStatusFilter: string | undefined;
   public uiAccountCtgyFilter: IAccountCategoryFilter | undefined;
-  public arUIOrder: UIOrderForSelection[] = [];
+  public arUIOrder = signal<UIOrderForSelection[]>([]);
   public uiOrderFilter: boolean | undefined;
   // Variables
-  arControlCenters: ControlCenter[] = [];
-  arOrders: Order[] = [];
-  arTranTypes: TranType[] = [];
-  arAccounts: Account[] = [];
-  arDocTypes: DocumentType[] = [];
-  arCurrencies: Currency[] = [];
+  arControlCenters = signal<ControlCenter[]>([]);
+  arOrders = signal<Order[]>([]);
+  arTranTypes = signal<TranType[]>([]);
+  arAccounts = signal<Account[]>([]);
+  arDocTypes = signal<DocumentType[]>([]);
+  arCurrencies = signal<Currency[]>([]);
   baseCurrency = '';
   curMode: UIMode = UIMode.Create;
   // Step: Generic info
@@ -119,7 +129,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   // Step: Result
   public docIdCreated?: number;
   public docPostingFailed = '';
-  currentStep = 0;
+  currentStep = signal(0);
 
   get tranAmount(): number {
     return this.firstFormGroup && this.firstFormGroup.get('amountControl')?.value;
@@ -146,6 +156,8 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   private readonly odataService = inject(FinanceOdataService);
 
   private readonly modalService = inject(NzModalService);
+
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -177,7 +189,6 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
 
     forkJoin([
       this.odataService.fetchAllAccountCategories(),
@@ -188,7 +199,7 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
       this.odataService.fetchAllCurrencies(),
     ])
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rst) => {
           ModelUtility.writeConsoleLog(
@@ -196,22 +207,22 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.arDocTypes = rst[1];
-          this.arTranTypes = rst[2];
-          this.arAccounts = rst[3];
-          this.arControlCenters = rst[4];
-          this.arOrders = rst[5];
-          this.arCurrencies = rst[6];
+          this.arDocTypes.set(rst[1]);
+          this.arTranTypes.set(rst[2]);
+          this.arAccounts.set(rst[3]);
+          this.arControlCenters.set(rst[4]);
+          this.arOrders.set(rst[5]);
+          this.arCurrencies.set(rst[6]);
 
           // Accounts
-          this.arUIAccount = BuildupAccountForSelection(this.arAccounts, rst[0]);
+          this.arUIAccount.set(BuildupAccountForSelection(rst[3], rst[0]));
           this.uiAccountStatusFilter = undefined;
           this.uiAccountCtgyFilter = undefined;
           // Orders
-          this.arUIOrder = BuildupOrderForSelection(this.arOrders, true);
+          this.arUIOrder.set(BuildupOrderForSelection(rst[5], true));
           this.uiOrderFilter = undefined;
 
-          this._activateRoute.url.subscribe((x: SafeAny) => {
+          this._activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x: SafeAny) => {
             if (x instanceof Array && x.length > 0) {
               if (x[0].path === 'createbrwfrm') {
                 this.curDocType = financeDocTypeBorrowFrom;
@@ -244,22 +255,9 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentLoanCreateComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
-
   get nextButtonEnabled(): boolean {
     let isEnabled = false;
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
         isEnabled = this.firstFormGroup.valid;
         break;
@@ -281,23 +279,23 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
   }
 
   pre(): void {
-    this.currentStep -= 1;
+    this.currentStep.update((s) => s - 1);
   }
 
   next(): void {
-    switch (this.currentStep) {
+    switch (this.currentStep()) {
       case 0: {
         if (this.accountExtraLoanCtrl) {
           this.accountExtraLoanCtrl.setLegacyLoanMode(
             this.firstFormGroup.get('headerControl')?.get('dateControl')?.value as Date,
           );
         }
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 1: {
         this._updateConfirmInfo();
-        this.currentStep++;
+        this.currentStep.update((s) => s + 1);
         break;
       }
       case 2: {
@@ -352,12 +350,12 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     if (!this.isLegacyLoan) {
       if (
         !docObj.onVerify({
-          ControlCenters: this.arControlCenters,
-          Orders: this.arOrders,
-          Accounts: this.arAccounts,
-          DocumentTypes: this.arDocTypes,
-          TransactionTypes: this.arTranTypes,
-          Currencies: this.arCurrencies,
+          ControlCenters: this.arControlCenters(),
+          Orders: this.arOrders(),
+          Accounts: this.arAccounts(),
+          DocumentTypes: this.arDocTypes(),
+          TransactionTypes: this.arTranTypes(),
+          Currencies: this.arCurrencies(),
           BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
         })
       ) {
@@ -379,16 +377,15 @@ export class DocumentLoanCreateComponent implements OnInit, OnDestroy {
     acntobj.Status = AccountStatusEnum.Normal;
     acntobj.Name = docObj.Desp;
     acntobj.Comment = docObj.Desp;
-    acntobj.OwnerId = this._authService.authSubject.getValue().getUserId();
+    acntobj.OwnerId = this._authService.authSubject().getUserId();
     acntobj.ExtraInfo = this.extraFormGroup.get('loanAccountControl')?.value as AccountExtraLoan;
 
     this.odataService
       .createLoanDocument(docObj, acntobj, this.isLegacyLoan, this.tranAmount, this.controlCenterID, this.orderID)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
+        takeUntilDestroyed(this.destroyedRef),
         finalize(() => {
-          this.currentStep = 3;
+          this.currentStep.set(3);
           this.isDocPosting = false;
         }),
       )

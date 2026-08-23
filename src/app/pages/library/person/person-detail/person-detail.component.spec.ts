@@ -1,13 +1,12 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -24,7 +23,7 @@ import {
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../../services';
 import { UserAuthInfo, Person } from '../../../../model';
 import { PersonDetailComponent } from './person-detail.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('PersonDetailComponent', () => {
   let component: PersonDetailComponent;
@@ -61,7 +60,7 @@ describe('PersonDetailComponent', () => {
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -74,8 +73,6 @@ describe('PersonDetailComponent', () => {
 
         ReactiveFormsModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         NzInputModule,
         NzCheckboxModule,
         NzSelectModule,
@@ -88,7 +85,7 @@ describe('PersonDetailComponent', () => {
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

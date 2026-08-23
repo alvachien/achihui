@@ -1,10 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { startOfMonth, endOfMonth, addMonths, addDays, addWeeks, format } from 'date-fns';
@@ -24,7 +24,7 @@ import { UserAuthInfo, RepeatedDatesAPIOutput, DocumentItemView } from '../../..
 import { DocumentRecurredMassCreateComponent } from './document-recurred-mass-create.component';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -68,7 +68,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
 
   beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     //const uiServiceStub: Partial<UIStatusService> = {};
     const homeService: Partial<HomeDefOdataService> = {};
     homeService.ChosedHome = fakeData.chosedHome;
@@ -104,7 +104,6 @@ describe('DocumentRecurredMassCreateComponent', () => {
       imports: [
         FormsModule,
 
-        NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
         getTranslocoModule(),
@@ -131,12 +130,12 @@ describe('DocumentRecurredMassCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -418,7 +417,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component).toBeTruthy();
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.searchFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
@@ -554,7 +553,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.listDates.length).toEqual(ardates.length);
       expect(component.listExistingDocItems.length).toBeGreaterThan(0);
 
@@ -587,7 +586,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
       expect(component.defaultValueFormGroup.valid).toBe(false);
       expect(component.nextButtonEnabled).toBe(false);
 
@@ -619,7 +618,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(undefined);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
@@ -659,7 +658,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(undefined);
@@ -699,7 +698,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
@@ -739,7 +738,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
@@ -779,7 +778,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
@@ -828,7 +827,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
@@ -845,7 +844,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 3. Items
-      expect(component.currentStep).toEqual(3);
+      expect(component.currentStep()).toEqual(3);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -875,7 +874,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
@@ -892,7 +891,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 3. Items
-      expect(component.currentStep).toEqual(3);
+      expect(component.currentStep()).toEqual(3);
 
       // Add item and delete it
       const nidx = component.onCreateNewItem(undefined);
@@ -911,7 +910,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 4. Confirm
-      expect(component.currentStep).toEqual(4);
+      expect(component.currentStep()).toEqual(4);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -941,7 +940,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(2);
+      expect(component.currentStep()).toEqual(2);
 
       component.defaultValueFormGroup.get('accountControl')?.setValue(fakeData.finAccounts[0].Id);
       component.defaultValueFormGroup.get('tranTypeControl')?.setValue(fakeData.finTranTypes[0].Id);
@@ -958,7 +957,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 3. Items
-      expect(component.currentStep).toEqual(3);
+      expect(component.currentStep()).toEqual(3);
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
@@ -966,7 +965,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 4. Confirm
-      expect(component.currentStep).toEqual(4);
+      expect(component.currentStep()).toEqual(4);
       expect(component.nextButtonEnabled).toBeTruthy();
       component.next();
       fixture.detectChanges();
@@ -974,7 +973,7 @@ describe('DocumentRecurredMassCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 5.
-      expect(component.currentStep).toEqual(5);
+      expect(component.currentStep()).toEqual(5);
       expect(component.docIdCreated.length).toBeGreaterThan(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));

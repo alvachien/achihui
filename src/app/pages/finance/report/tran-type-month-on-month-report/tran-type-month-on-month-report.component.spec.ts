@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
@@ -30,7 +29,7 @@ import {
 } from '../../../../model';
 import { TranTypeMonthOnMonthReportComponent } from './tran-type-month-on-month-report.component';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('TranTypeMonthOnMonthReportComponent', () => {
   let component: TranTypeMonthOnMonthReportComponent;
@@ -56,7 +55,7 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
     storageService = createSpyObj('FinanceOdataService', ['fetchReportByTransactionTypeMoM', 'fetchAllTranTypes']);
     fetchReportByTransactionTypeMoMSpy = storageService.fetchReportByTransactionTypeMoM.and.returnValue(of([]));
     fetchAllTranTypesSpy = storageService.fetchAllTranTypes.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -67,8 +66,6 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
         NgxEchartsModule.forRoot({ echarts }),
         NzCascaderModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         getTranslocoModule(),
       ],
       providers: [
@@ -78,7 +75,7 @@ describe('TranTypeMonthOnMonthReportComponent', () => {
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
         NzDrawerService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

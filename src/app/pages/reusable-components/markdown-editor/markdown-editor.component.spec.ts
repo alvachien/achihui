@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, ViewChild } from '@angular/core';
+import { signal, Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -13,17 +13,14 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzConfigService } from 'ng-zorro-antd/core/config';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MarkdownModule } from 'ngx-markdown';
-import { BehaviorSubject } from 'rxjs';
 
 import { getTranslocoModule } from '../../../../testing';
 import { MarkdownEditorComponent } from './markdown-editor.component';
 import { AuthService } from '../../../services';
 import { UserAuthInfo } from '../../../../app/model';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   template: ` <form [formGroup]="formGrp">
@@ -34,6 +31,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
     </nz-form-item>
   </form>`,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, NzFormModule, MarkdownEditorComponent],
 })
 export class MarkdownEditorTestFormComponent {
@@ -55,7 +53,7 @@ describe('MarkdownEditorComponent', () => {
 
   beforeAll(() => {
     authServiceStub = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -65,8 +63,6 @@ describe('MarkdownEditorComponent', () => {
         getTranslocoModule(),
         FormsModule,
         ReactiveFormsModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         NzResizableModule,
         NzCodeEditorModule,
         NzButtonModule,
@@ -84,7 +80,7 @@ describe('MarkdownEditorComponent', () => {
         NzConfigService,
         NzModalService,
         { provide: AuthService, useValue: authServiceStub },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

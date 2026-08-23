@@ -12,8 +12,12 @@ export class AuthGuardService {
   private readonly authService = inject(AuthService);
   private readonly uiService = inject(UIStatusService);
 
-  canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): boolean {
+  canActivate(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering AuthGuard canActivate', ConsoleLogTypeEnum.debug);
+    // Capture the attempted URL so it can be restored after OIDC login.
+    if (!this.authService.authSubject().isAuthorized) {
+      this.authService.redirectUrl = state.url;
+    }
     return checkAuthentication(this.uiService, this.authService);
   }
 }

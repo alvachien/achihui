@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -23,6 +24,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
   selector: 'hih-plan-list',
   templateUrl: './plan-list.component.html',
   styleUrls: ['./plan-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -40,23 +42,21 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     TranslocoModule,
   ],
 })
-export class PlanListComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | undefined;
-  isLoadingResults = false;
-  dataSet: Plan[] = [];
+export class PlanListComponent implements OnInit {
+  isLoadingResults = signal(false);
+  dataSet = signal<Plan[]>([]);
   // Progress dialog fields
   isProgressDlgVisible = false;
   progressModalTitle = '';
-  currentPlanActualBalance = 0;
-  currentPlan?: Plan;
-  public arAccounts: Account[] = [];
+  currentPlanActualBalance = signal(0);
+  currentPlan = signal<Plan | undefined>(undefined);
+  arAccounts = signal<Account[]>([]);
   getDateDisplayString = ModelUtility.getDateDisplayString;
   getPlanTypeDisplayString = UIDisplayStringUtil.getFinancePlanTypeEnumDisplayString;
 
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-  }
+  readonly currentDifferenceWithTarget = computed(() =>
+    this.currentPlan() ? this.currentPlanActualBalance() - this.currentPlan()!.TargetBalance : 0,
+  );
 
   public readonly odataService = inject(FinanceOdataService);
 
@@ -64,7 +64,14 @@ export class PlanListComponent implements OnInit, OnDestroy {
 
   private readonly homeService = inject(HomeDefOdataService);
 
+  // Read the service's curHomeMember signal directly (Tier F route (b)):
+  // isChildMode updates reactively without manual subscriptions.
+  private readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
+
   public readonly modalService = inject(NzModalService);
+
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -72,26 +79,13 @@ export class PlanListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this.isLoadingResults = false;
+    this.isLoadingResults.set(false);
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering PlanListComponent OnInit...', ConsoleLogTypeEnum.debug);
 
-    this._destroyed$ = new ReplaySubject(1);
     this.onRefresh(false);
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering PlanListComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   onCreate(): void {
@@ -114,25 +108,19 @@ export class PlanListComponent implements OnInit, OnDestroy {
 
   onCheckProgress(planData: Plan): void {
     if (planData && planData.AccountID) {
-      this.currentPlan = planData;
+      this.currentPlan.set(planData);
       this.isProgressDlgVisible = true;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, no-unsafe-optional-chaining, @typescript-eslint/no-non-null-asserted-optional-chain
-      this.odataService.fetchAccountBalance(this.currentPlan?.AccountID!).subscribe({
+      this.odataService.fetchAccountBalance(this.currentPlan()?.AccountID!).subscribe({
         next: (val) => {
-          this.currentPlanActualBalance = +val;
+          this.currentPlanActualBalance.set(+val);
         },
       });
     }
   }
 
-  get currentDifferenceWithTarget(): number {
-    if (this.currentPlan) {
-      return this.currentPlanActualBalance - this.currentPlan.TargetBalance;
-    }
-    return 0;
-  }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find((acnt) => {
+    const acntObj = this.arAccounts().find((acnt) => {
       return acnt.Id === acntid;
     });
     return acntObj && acntObj.Name ? acntObj.Name : '';
@@ -145,17 +133,16 @@ export class PlanListComponent implements OnInit, OnDestroy {
   onRefresh(refresh?: boolean) {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Error]: Entering PlanListComponent onRefresh`, ConsoleLogTypeEnum.debug);
 
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     forkJoin([this.odataService.fetchAllAccounts(), this.odataService.fetchAllPlans(refresh)])
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x) => {
-          this.arAccounts = x[0];
-          this.dataSet = x[1];
+          this.arAccounts.set(x[0]);
+          this.dataSet.set(x[1]);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

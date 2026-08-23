@@ -1,13 +1,12 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -36,7 +35,7 @@ import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { UserAuthInfo, financeAccountCategoryCash } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('AccountDetailComponent', () => {
   let component: AccountDetailComponent;
@@ -77,7 +76,7 @@ describe('AccountDetailComponent', () => {
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
 
@@ -89,8 +88,6 @@ describe('AccountDetailComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         RouterTestingModule,
         getTranslocoModule(),
         NzFormModule,
@@ -116,12 +113,12 @@ describe('AccountDetailComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },

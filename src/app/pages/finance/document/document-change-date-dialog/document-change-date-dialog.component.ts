@@ -1,4 +1,4 @@
-import { Component, inject, Input, NgZone, OnInit } from '@angular/core';
+import { Component, inject, input, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
   selector: 'hih-document-change-date-dialog',
   templateUrl: './document-change-date-dialog.component.html',
   styleUrls: ['./document-change-date-dialog.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -28,12 +29,11 @@ import { RouterModule } from '@angular/router';
 export class DocumentChangeDateDialogComponent implements OnInit {
   // Header forum
   public headerFormGroup: UntypedFormGroup;
-  @Input() documentid?: number;
-  @Input() documentdate?: Date;
-  isSubmitting = false;
+  readonly documentid = input<number>();
+  readonly documentdate = input<Date>();
+  isSubmitting = signal(false);
 
   private readonly modal = inject(NzModalRef);
-  private readonly _zone = inject(NgZone);
   private readonly odataService = inject(FinanceOdataService);
 
   constructor() {
@@ -44,34 +44,32 @@ export class DocumentChangeDateDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._zone.run(() => {
-      this.headerFormGroup.get('idControl')?.setValue(this.documentid);
+    this.headerFormGroup.get('idControl')?.setValue(this.documentid());
 
-      this.headerFormGroup.get('dateControl')?.setValue(this.documentdate);
-    });
+    this.headerFormGroup.get('dateControl')?.setValue(this.documentdate());
   }
 
   get isSubmittedDisabled(): boolean {
     if (!this.headerFormGroup.valid) {
       return true;
     }
-    if (this.isSubmitting) {
+    if (this.isSubmitting()) {
       return true;
     }
     return false;
   }
 
   onSubmit(): void {
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
     this.odataService
-      .changeDocumentDateViaPatch(this.documentid ?? 0, this.headerFormGroup.get('dateControl')?.value)
+      .changeDocumentDateViaPatch(this.documentid() ?? 0, this.headerFormGroup.get('dateControl')?.value)
       .subscribe({
         next: () => {
           this.modal.destroy();
         },
         error: () => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           // Show error
           // this.modalService.warning({
           //   nzTitle: translate('Common.Warning'),

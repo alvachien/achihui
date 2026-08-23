@@ -1,10 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
@@ -14,7 +14,7 @@ import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError
 import { AuthService, UIStatusService, HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { UserAuthInfo, Document, DocumentItem, Account, financeAccountCategoryAsset } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentAssetSoldCreateComponent', () => {
   let component: DocumentAssetSoldCreateComponent;
@@ -76,13 +76,13 @@ describe('DocumentAssetSoldCreateComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [FormsModule, ReactiveFormsModule, NoopAnimationsModule, getTranslocoModule(), RouterTestingModule],
+      imports: [FormsModule, ReactiveFormsModule, getTranslocoModule(), RouterTestingModule],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
@@ -90,12 +90,12 @@ describe('DocumentAssetSoldCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -152,7 +152,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -163,7 +163,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -209,7 +209,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -255,7 +255,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -301,7 +301,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -335,12 +335,12 @@ describe('DocumentAssetSoldCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.currentStep).toBe(1);
+      expect(component.currentStep()).toBe(1);
 
       // Previous
       component.pre();
       fixture.detectChanges();
-      expect(component.currentStep).toBe(0);
+      expect(component.currentStep()).toBe(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -385,7 +385,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toBe(1);
+      expect(component.currentStep()).toBe(1);
       expect(component.itemFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
@@ -449,7 +449,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1
-      expect(component.currentStep).toBe(1);
+      expect(component.currentStep()).toBe(1);
       expect(component.itemFormGroup.valid).toBeFalsy();
       expect(component.nextButtonEnabled).toBeFalsy();
 
@@ -529,7 +529,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       expect(component.nextButtonEnabled).toBeTruthy();
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -592,7 +592,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2.
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       fixture.detectChanges();
       // Fake an error in generated doc
       dochead.Desp = '';
@@ -621,7 +621,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
 
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeNull();
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -686,7 +686,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2.
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       fixture.detectChanges();
       // Click the next button
       nextButtonNativeEl.click();
@@ -764,7 +764,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2.
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       fixture.detectChanges();
       // Click the next button
       nextButtonNativeEl.click();

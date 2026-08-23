@@ -1,10 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { subYears } from 'date-fns';
@@ -34,7 +34,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentAssetBuyCreateComponent', () => {
   let component: DocumentAssetBuyCreateComponent;
@@ -95,7 +95,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -105,7 +105,6 @@ describe('DocumentAssetBuyCreateComponent', () => {
         FormsModule,
 
         ReactiveFormsModule,
-        NoopAnimationsModule,
         getTranslocoModule(),
         RouterTestingModule,
         NzFormModule,
@@ -129,12 +128,12 @@ describe('DocumentAssetBuyCreateComponent', () => {
         { provide: HomeDefOdataService, useValue: homeService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -188,7 +187,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -199,7 +198,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update document header - missed desp
@@ -234,7 +233,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -284,7 +283,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -334,7 +333,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -384,7 +383,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
       expect(component.firstFormGroup.valid).toBeFalsy();
 
       // Update a valid document header
@@ -439,7 +438,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       // Update a valid document header
       const dochead: Document = new Document();
@@ -478,13 +477,13 @@ describe('DocumentAssetBuyCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.itemFormGroup.enabled).toBe(true);
 
       // Shall go back to step 0
       component.pre();
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
@@ -530,7 +529,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.itemFormGroup.enabled).toBe(true);
 
       // No items
@@ -603,7 +602,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 1.
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.itemFormGroup.enabled).toBe(true);
 
       const aritems: DocumentItem[] = [];
@@ -690,7 +689,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       fixture.detectChanges();
 
       // Step 2.
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       expect(component.nextButtonEnabled).toBeTruthy();
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -771,7 +770,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       // Step 3.
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toBe(2);
+      expect(component.currentStep()).toBe(2);
       expect(component.isDocPosting).toBeFalsy();
 
       // Expect there is a dialog
@@ -868,7 +867,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.isDocPosting).toBeTruthy();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toBe(3);
+      expect(component.currentStep()).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toEqual(1);
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -948,7 +947,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       expect(component.isDocPosting).toBeTruthy();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
-      expect(component.currentStep).toBe(3);
+      expect(component.currentStep()).toBe(3);
       expect(component.isDocPosting).toBeFalsy();
       expect(component.docIdCreated).toBeUndefined();
       expect(component.docPostingFailed).toBeTruthy();
@@ -966,7 +965,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       // Update a valid document header
       const dochead: Document = new Document();
@@ -1005,13 +1004,13 @@ describe('DocumentAssetBuyCreateComponent', () => {
       nextButtonNativeEl.click();
       fixture.detectChanges();
 
-      expect(component.currentStep).toEqual(1);
+      expect(component.currentStep()).toEqual(1);
       expect(component.itemFormGroup.disabled).toBe(true);
 
       // Shall go back to step 0
       component.pre();
       fixture.detectChanges();
-      expect(component.currentStep).toEqual(0);
+      expect(component.currentStep()).toEqual(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });

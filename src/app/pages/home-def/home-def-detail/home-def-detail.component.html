@@ -6,7 +6,7 @@
       >
     </nz-breadcrumb>
     <nz-page-header-title>{{ 'Nav.Home' | transloco }}</nz-page-header-title>
-    <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+    <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
       <button nz-button nzType="primary" [disabled]="!isSaveAllowed" (click)="onSave()">
         {{ 'Common.Save' | transloco }}
@@ -63,7 +63,7 @@
       <nz-form-label [nzSpan]="7" nzRequired>{{ 'Finance.Currency' | transloco }}</nz-form-label>
       <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="currTpl">
         <nz-select formControlName="baseCurrControl">
-          @for (cr of arCurrencies; track cr.Currency) {
+          @for (cr of arCurrencies(); track cr.Currency) {
             <nz-option [nzValue]="cr.Currency" [nzLabel]="t(cr.Name!) + ' - ' + cr.Symbol"></nz-option>
           }
         </nz-select>
@@ -106,7 +106,7 @@
     </button>
   </div>
 
-  <nz-table #basicTable nzBordered [nzData]="listMembers">
+  <nz-table #basicTable nzBordered [nzData]="listMembers()">
     <thead>
       <tr>
         <th nz-width="150">{{ 'Login.User' | transloco }}</th>
@@ -116,19 +116,19 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index; let idx = $index) {
+      @for (data of basicTable.data; track data; let idx = $index) {
         <tr>
           <td>
             <nz-form-item>
               <nz-form-control nzHasFeedback [nzErrorTip]="usrTpl">
-                <nz-input-group [nzSuffix]="suffixTemplate">
+                <nz-input-wrapper>
                   <input nz-input [(ngModel)]="data.User" (ngModelChange)="onChange()" [disabled]="!isFieldChangable" />
-                </nz-input-group>
-                <ng-template #suffixTemplate>
-                  <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteMember(idx)">
-                    {{ 'Common.Delete' | transloco }}
-                  </button>
-                </ng-template>
+                  <span nzInputSuffix>
+                    <button nz-button nzType="link" [disabled]="!isDeleteItemAllowed" (click)="onDeleteMember(idx)">
+                      {{ 'Common.Delete' | transloco }}
+                    </button>
+                  </span>
+                </nz-input-wrapper>
                 <ng-template #usrTpl let-control>
                   @if (control.hasError('required')) {
                     <ng-container>

@@ -3,7 +3,7 @@
     <nz-breadcrumb-item>{{ 'Nav.LibraryTrace' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Library.Organization' | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{ currentMode | transloco }}</nz-page-header-subtitle>
+  <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
     <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{ 'Common.Save' | transloco }}</a>
   </nz-page-header-extra>
@@ -67,7 +67,7 @@
     </button>
   </div>
 
-  <nz-table #typeTable [nzData]="listTypes">
+  <nz-table #typeTable [nzData]="listTypes()">
     <thead>
       <tr>
         <th>ID</th>
@@ -76,11 +76,11 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of typeTable.data; track $index) {
+      @for (data of typeTable.data; track data.ID) {
         <tr>
           <td>
             <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable" (ngModelChange)="onTypeModeChanged($event)">
-              @for (coll of allTypes; track coll.ID) {
+              @for (coll of allTypes(); track coll.ID) {
                 <nz-option [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
               }
             </nz-select>

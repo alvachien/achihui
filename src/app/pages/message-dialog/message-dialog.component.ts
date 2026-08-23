@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from '@common/any';
 
@@ -32,11 +32,12 @@ export interface MessageDialogInfo {
   selector: 'hih-message-dialog',
   templateUrl: './message-dialog.component.html',
   styleUrls: ['./message-dialog.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzTableModule, TranslocoModule],
 })
 export class MessageDialogComponent {
-  @Input() title = '';
-  @Input() infoMessages: InfoMessage[] = [];
+  title = input<string>('');
+  infoMessages = input<InfoMessage[]>([]);
 
   private readonly modal = inject(NzModalRef);
 

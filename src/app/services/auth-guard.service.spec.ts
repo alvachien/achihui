@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { BehaviorSubject } from 'rxjs';
+import { signal } from '@angular/core';
 
 import { AuthGuardService } from './auth-guard.service';
 import { AuthService } from './auth.service';
@@ -10,7 +10,7 @@ import { UIStatusService } from './uistatus.service';
 describe('AuthGuardService', () => {
   const uiServiceStub: Partial<UIStatusService> = {};
   const authServiceStub: Partial<AuthService> = {};
-  const authSubject = new BehaviorSubject(new UserAuthInfo());
+  const authSubject = signal(new UserAuthInfo());
 
   beforeAll(() => {
     uiServiceStub.fatalError = false;
@@ -46,7 +46,7 @@ describe('AuthGuardService', () => {
       const service = TestBed.inject(AuthGuardService);
       const authorizedUser = new UserAuthInfo();
       authorizedUser.isAuthorized = true;
-      authSubject.next(authorizedUser);
+      authSubject.set(authorizedUser);
       const result = service.canActivate({} as any, { url: '/test' } as any);
       expect(result).toBe(true);
     });
@@ -55,7 +55,7 @@ describe('AuthGuardService', () => {
       const service = TestBed.inject(AuthGuardService);
       const unauthorizedUser = new UserAuthInfo();
       unauthorizedUser.isAuthorized = false;
-      authSubject.next(unauthorizedUser);
+      authSubject.set(unauthorizedUser);
       const result = service.canActivate({} as any, { url: '/test' } as any);
       expect(result).toBe(false);
       expect(authServiceStub.doLogin).toHaveBeenCalled();

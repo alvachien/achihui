@@ -1,9 +1,8 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of, BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,7 +13,7 @@ import { CollectionDetailComponent } from './collection-detail.component';
 import { AuthService, UIStatusService, BlogOdataService } from '@services/index';
 import { UserAuthInfo } from '@model/index';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('CollectionDetailComponent', () => {
   let component: CollectionDetailComponent;
@@ -35,7 +34,7 @@ describe('CollectionDetailComponent', () => {
     readCollectionSpy = storageService.readCollection.and.returnValue(of([]));
     createCollectionSpy = storageService.createCollection.and.returnValue(of({}));
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -43,23 +42,14 @@ describe('CollectionDetailComponent', () => {
 
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        CollectionDetailComponent,
-        getTranslocoModule(),
-        FormsModule,
-
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        RouterTestingModule,
-        BrowserDynamicTestingModule,
-      ],
+      imports: [CollectionDetailComponent, getTranslocoModule(), FormsModule, ReactiveFormsModule, RouterTestingModule],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         UIStatusService,
         { provide: BlogOdataService, useValue: storageService },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

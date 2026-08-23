@@ -9,6 +9,8 @@ import {
   HostListener,
   ChangeDetectorRef,
   inject,
+  signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -18,9 +20,10 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { KatexOptions, MarkdownModule } from 'ngx-markdown';
+import { MarkedKatexOptions, MarkdownModule } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { format } from 'date-fns';
 import { Observable, Observer } from 'rxjs';
 import { editor } from 'monaco-editor';
@@ -57,6 +60,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzButtonModule,
     NzDividerModule,
@@ -73,11 +77,11 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   previewElement: ElementRef | null = null;
 
   editor: editor.ICodeEditor | null = null; // | editor.IEditor;
-  content = '';
+  content = signal('');
   readOnly = false;
   uploadAPI: string;
 
-  public katexOptions: KatexOptions = {
+  public katexOptions: MarkedKatexOptions = {
     // displayMode: true,
     throwOnError: false,
     errorColor: '#cc0000',
@@ -86,7 +90,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   get uploadHeader(): SafeAny {
     return {
       Accept: 'application/json',
-      Authorization: 'Bearer ' + this.authService.authSubject.getValue().getAccessToken(),
+      Authorization: 'Bearer ' + this.authService.authSubject().getAccessToken(),
     };
   }
 
@@ -100,20 +104,19 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value getter...',
       ConsoleLogTypeEnum.debug,
     );
-    if (this.editor) {
-      this.content = this.editor.getValue();
-    }
-
-    return this.content || '';
+    // Pure read: the editor->signal sync is handled by the onDidChangeModelContent
+    // callback in onEditorInit. Writing the signal here (a read side-effect) would
+    // risk NG0600 / CD loops under zoneless change detection.
+    return this.content() || '';
   }
   set value(value: string) {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent value setter...',
       ConsoleLogTypeEnum.debug,
     );
-    this.content = value;
+    this.content.set(value);
     if (this.editor) {
-      this.editor.setValue(this.content);
+      this.editor.setValue(this.content());
     }
 
     if (this._onChange) {
@@ -147,6 +150,7 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
   private readonly authService = inject(AuthService);
 
   private readonly modalService = inject(NzModalService);
+  private readonly msg = inject(NzMessageService);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -164,11 +168,17 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     );
   }
 
+  private listenerDisposables: { dispose(): void }[] = [];
+
   ngOnDestroy() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent ngOnDestroy...',
       ConsoleLogTypeEnum.debug,
     );
+    // Dispose the Monaco listener registrations captured in onEditorInit.
+    this.listenerDisposables.forEach((d) => d.dispose());
+    this.listenerDisposables = [];
+    this.editor = null;
   }
 
   onEditorInit(e: SafeAny): void {
@@ -181,44 +191,48 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.editor!.setModel(monaco.editor.createModel('Enjoy writing', 'markdown'));
     this.setEditorReadOnly();
-    if (this.content) {
+    if (this.content()) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.editor!.setValue(this.content);
+      this.editor!.setValue(this.content());
     }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.editor!.onDidChangeModelContent(() => {
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
-        ConsoleLogTypeEnum.debug,
-      );
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.content = this.editor!.getValue();
-      this.changeDetect.detectChanges();
-
-      this.onChange();
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.editor!.onDidScrollChange((ec) => {
-      ModelUtility.writeConsoleLog(
-        'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
-        ConsoleLogTypeEnum.debug,
-      );
-
-      // Rework for the scroll
-      if (ec.scrollTop === 0) {
-        if (this.previewElement) {
-          this.previewElement.nativeElement.scrollTop = 0;
-        }
-      } else {
-        const percent = ec.scrollTop / ec.scrollHeight;
+    this.listenerDisposables.push(
+      this.editor!.onDidChangeModelContent(() => {
+        ModelUtility.writeConsoleLog(
+          'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onEditorInit/onDidChangeModelContent...',
+          ConsoleLogTypeEnum.debug,
+        );
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.previewElement!.nativeElement.scrollTop = percent * this.previewElement!.nativeElement.scrollHeight;
-      }
-    });
+        this.content.set(this.editor!.getValue());
+        this.changeDetect.detectChanges();
+
+        this.onChange();
+      }),
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.listenerDisposables.push(
+      this.editor!.onDidScrollChange((ec) => {
+        ModelUtility.writeConsoleLog(
+          'AC_HIH_UI [Debug]: Entering MarkdownEditorComponent onDidScrollChange...',
+          ConsoleLogTypeEnum.debug,
+        );
+
+        // Rework for the scroll
+        if (ec.scrollTop === 0) {
+          if (this.previewElement) {
+            this.previewElement.nativeElement.scrollTop = 0;
+          }
+        } else {
+          const percent = ec.scrollTop / ec.scrollHeight;
+
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.previewElement!.nativeElement.scrollTop = percent * this.previewElement!.nativeElement.scrollHeight;
+        }
+      }),
+    );
   }
 
   writeValue(val: SafeAny): void {
@@ -715,8 +729,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
     return new Observable((observer: Observer<boolean>) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
-        // TBD
-        // this.msg.error('You can only upload JPG file!');
+        this.msg.error('You can only upload JPG/PNG image!');
+        observer.next(false);
         observer.complete();
         return;
       }
@@ -724,8 +738,8 @@ export class MarkdownEditorComponent implements OnInit, OnDestroy, ControlValueA
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const isLt2M = file.size! / 1024 / 1024 < 2;
       if (!isLt2M) {
-        // TBD.
-        // this.msg.error('Image must smaller than 2MB!');
+        this.msg.error('Image must be smaller than 2MB!');
+        observer.next(false);
         observer.complete();
         return;
       }

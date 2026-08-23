@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults">
+<nz-spin [nzSpinning]="isLoadingResults()">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item
@@ -28,35 +28,35 @@
           <li nz-menu-item (click)="onCreateNormalDocument()">
             {{ 'Finance.Document' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateTransferDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateTransferDocument()">
             {{ 'Finance.TransferDocument' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateExgDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateExgDocument()">
             {{ 'Finance.CurrencyExchange' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateADPDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateADPDocument()">
             {{ 'Finance.AdvancePayment' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateADRDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateADRDocument()">
             {{ 'Sys.DocTy.AdvancedRecv' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateBorrowFromDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateBorrowFromDocument()">
             {{ 'Sys.DocTy.BorrowFrom' | transloco }}
           </li>
-          <!-- <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | transloco}}</li> -->
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateRepayDocument()">
+          <!-- <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | transloco}}</li> -->
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateRepayDocument()">
             {{ 'Sys.DocTy.Repay' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateAssetBuyInDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateAssetBuyInDocument()">
             {{ 'Sys.DocTy.AssetBuyIn' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateAssetSoldOutDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateAssetSoldOutDocument()">
             {{ 'Sys.DocTy.AssetSoldOut' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode" (click)="onCreateAssetValChgDocument()">
+          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateAssetValChgDocument()">
             {{ 'Sys.DocTy.AssetValChg' | transloco }}
           </li>
         </ul>
@@ -85,11 +85,11 @@
       #docTable
       nzShowSizeChanger
       [nzFrontPagination]="false"
-      [nzData]="listOfDocs"
-      [nzLoading]="isLoadingResults"
-      [nzTotal]="totalDocumentCount"
-      [nzPageIndex]="pageIndex"
-      [nzPageSize]="pageSize"
+      [nzData]="listOfDocs()"
+      [nzLoading]="isLoadingResults()"
+      [nzTotal]="totalDocumentCount()"
+      [nzPageIndex]="pageIndex()"
+      [nzPageSize]="pageSize()"
       (nzQueryParams)="onQueryParamsChange($event)"
     >
       <thead>
@@ -109,7 +109,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (data of docTable.data; track $index) {
+        @for (data of docTable.data; track data.Id) {
           <tr>
             <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id!]"></td>
             <td>
@@ -170,7 +170,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (itemdata of itemTable.data; track $index) {
+                  @for (itemdata of itemTable.data; track itemdata.ItemId) {
                     <tr>
                       <td>{{ itemdata.ItemId }}</td>
                       <td>{{ getAccountName(itemdata.AccountId!) }}</td>

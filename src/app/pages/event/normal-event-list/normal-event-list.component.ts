@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { Router, RouterModule } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
@@ -18,6 +18,7 @@ import { EventStorageService, UIStatusService } from '@services/index';
   selector: 'hih-normal-event-list',
   templateUrl: './normal-event-list.component.html',
   styleUrls: ['./normal-event-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -42,6 +43,7 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   private readonly uiStatusService = inject(UIStatusService);
   private readonly modalService = inject(NzModalService);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -90,7 +92,10 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
       .pipe(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        finalize(() => {
+          this.isLoadingResults = false;
+          this.cdr.markForCheck();
+        }),
       )
       .subscribe({
         next: (x: BaseListModel<GeneralEvent>) => {
@@ -125,14 +130,18 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
   }
 
   onMarkAsComplete(eventid: number): void {
-    this.odataService.completeGeneralEvent(eventid).subscribe({
-      next: (val) => {
-        console.log(val);
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
+    this.odataService
+      .completeGeneralEvent(eventid)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .pipe(takeUntil(this._destroyed$!))
+      .subscribe({
+        next: (val) => {
+          console.log(val);
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
   }
 
   onDisplay(eventid: number): void {
@@ -146,32 +155,36 @@ export class NormalEventListComponent implements OnInit, OnDestroy {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => {
-        this.odataService.deleteGeneralEvent(eventid).subscribe({
-          next: () => {
-            const sdlg = this.modalService.success({
-              nzTitle: translate('Common.Success'),
-            });
-            sdlg.afterClose.subscribe(() => {
-              const dix = this.dataSet.findIndex((p) => p.ID === eventid);
-              if (dix !== -1) {
-                this.dataSet.splice(dix, 1);
-                this.dataSet = [...this.dataSet];
-              }
-            });
-            setTimeout(() => sdlg.destroy(), 1000);
-          },
-          error: (err) => {
-            ModelUtility.writeConsoleLog(
-              `AC_HIH_UI [Error]: Entering BookListComponent onDelete failed ${err}`,
-              ConsoleLogTypeEnum.error,
-            );
-            this.modalService.error({
-              nzTitle: translate('Common.Error'),
-              nzContent: err.toString(),
-              nzClosable: true,
-            });
-          },
-        });
+        this.odataService
+          .deleteGeneralEvent(eventid)
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          .pipe(takeUntil(this._destroyed$!))
+          .subscribe({
+            next: () => {
+              const sdlg = this.modalService.success({
+                nzTitle: translate('Common.Success'),
+              });
+              sdlg.afterClose.subscribe(() => {
+                const dix = this.dataSet.findIndex((p) => p.ID === eventid);
+                if (dix !== -1) {
+                  this.dataSet.splice(dix, 1);
+                  this.dataSet = [...this.dataSet];
+                }
+              });
+              setTimeout(() => sdlg.destroy(), 1000);
+            },
+            error: (err) => {
+              ModelUtility.writeConsoleLog(
+                `AC_HIH_UI [Error]: Entering BookListComponent onDelete failed ${err}`,
+                ConsoleLogTypeEnum.error,
+              );
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err.toString(),
+                nzClosable: true,
+              });
+            },
+          });
       },
       nzCancelText: 'No',
       nzOnCancel: () => console.log('Cancel'),

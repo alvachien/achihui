@@ -14,7 +14,7 @@
     <nz-page-header-extra> </nz-page-header-extra>
   </nz-page-header>
 
-  <nz-steps [nzCurrent]="currentStep">
+  <nz-steps [nzCurrent]="currentStep()">
     <nz-step [nzTitle]="'Common.Header' | transloco"></nz-step>
     <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.ReviewForSubmit' | transloco"></nz-step>
@@ -22,13 +22,13 @@
   </nz-steps>
 
   <div class="steps-content">
-    <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep !== 0">
+    <form nz-form [formGroup]="firstFormGroup" [hidden]="currentStep() !== 0">
       <hih-fin-document-header
         [docType]="curDocType"
         [currentUIMode]="curMode"
         formControlName="headerControl"
-        [arDocTypes]="arDocTypes"
-        [arCurrencies]="arCurrencies"
+        [arDocTypes]="arDocTypes()"
+        [arCurrencies]="arCurrencies()"
         [baseCurrency]="baseCurrency"
       >
       </hih-fin-document-header>
@@ -36,7 +36,7 @@
       <nz-divider></nz-divider>
 
       <!-- Asset Accont -->
-      <hih-finance-account-extra-asset formControlName="assetAccountControl" [arAssetCategories]="arAssetCategories">
+      <hih-finance-account-extra-asset formControlName="assetAccountControl" [arAssetCategories]="arAssetCategories()">
       </hih-finance-account-extra-asset>
 
       <!-- Owner -->
@@ -44,7 +44,7 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.Owner' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="ownerTpl">
           <nz-select formControlName="ownerControl">
-            @for (usr of arMembers; track usr.User) {
+            @for (usr of arMembers(); track usr.User) {
               <nz-option [nzValue]="usr.User" [nzLabel]="usr.DisplayAs"></nz-option>
             }
           </nz-select>
@@ -90,7 +90,7 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="ccControl" nzAllowClear>
-            @for (cc of arControlCenters; track cc.Id) {
+            @for (cc of arControlCenters(); track cc.Id) {
               <nz-option [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
             }
           </nz-select>
@@ -102,7 +102,7 @@
         <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
           <nz-select formControlName="orderControl" nzAllowClear>
-            @for (ord of arUIOrder; track ord.Id) {
+            @for (ord of arUIOrder(); track ord.Id) {
               <nz-option [nzValue]="ord.Id" [nzLabel]="ord.Name"></nz-option>
             }
           </nz-select>
@@ -111,18 +111,18 @@
     </form>
 
     <!-- Items -->
-    <form nz-form [formGroup]="itemFormGroup" [hidden]="currentStep !== 1">
+    <form nz-form [formGroup]="itemFormGroup" [hidden]="currentStep() !== 1">
       @if (!IsLegacyAsset) {
         <div>
           <hih-fin-document-items
             formControlName="itemControl"
             [currentUIMode]="curMode"
             [docDate]="curDocDate"
-            [arCurrencies]="arCurrencies"
-            [arUIAccounts]="arUIAccount"
-            [arControlCenters]="arControlCenters"
-            [arTranType]="arTranTypes"
-            [arUIOrders]="arUIOrder"
+            [arCurrencies]="arCurrencies()"
+            [arUIAccounts]="arUIAccount()"
+            [arControlCenters]="arControlCenters()"
+            [arTranType]="arTranTypes()"
+            [arUIOrders]="arUIOrder()"
             [docType]="curDocType"
           >
           </hih-fin-document-items>
@@ -136,7 +136,7 @@
     </form>
 
     <!-- Review and Confirm -->
-    <div [hidden]="currentStep !== 2">
+    <div [hidden]="currentStep() !== 2">
       <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
         <div>
           <h2 nz-title>{{ 'Common.Name' | transloco }}: {{ confirmInfo?.assetName }}</h2>
@@ -149,7 +149,7 @@
     </div>
 
     <!-- Result -->
-    <div [hidden]="currentStep !== 3">
+    <div [hidden]="currentStep() !== 3">
       @if (docIdCreated) {
         <div>
           <nz-result
@@ -196,10 +196,10 @@
   </div>
 
   <div class="steps-action">
-    @if (currentStep > 0 && currentStep < 3) {
+    @if (currentStep() > 0 && currentStep() < 3) {
       <button nz-button (click)="pre()"><i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}</button>
     }
-    @if (currentStep < 3) {
+    @if (currentStep() < 3) {
       <button nz-button nzType="primary" id="button_next_step" (click)="next()" [disabled]="!nextButtonEnabled">
         {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>
       </button>

@@ -1,5 +1,5 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
-  <nz-table #basicTable [nzData]="dataSet">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
+  <nz-table #basicTable [nzData]="dataSet()">
     <thead>
       <tr>
         <th>ID</th>
@@ -8,7 +8,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.Id) {
         <tr>
           <td>{{ data.Id }}</td>
           <td>{{ data.Name | transloco }}</td>

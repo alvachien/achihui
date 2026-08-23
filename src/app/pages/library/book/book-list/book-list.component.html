@@ -1,4 +1,4 @@
-<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" nzTip="Loading...">
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'" nzTip="Loading...">
   <nz-page-header nzBackIcon>
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item>{{ 'Nav.LibraryTrace' | transloco }}</nz-breadcrumb-item>
@@ -12,11 +12,11 @@
   <nz-table
     #basicTable
     nzShowSizeChanger
-    [nzData]="listData"
+    [nzData]="listData()"
     [nzFrontPagination]="false"
-    [nzTotal]="totalCount"
-    [nzPageSize]="pageSize"
-    [nzPageIndex]="pageIndex"
+    [nzTotal]="totalCount()"
+    [nzPageSize]="pageSize()"
+    [nzPageIndex]="pageIndex()"
     (nzQueryParams)="onQueryParamsChange($event)"
   >
     <thead>
@@ -27,7 +27,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.ID) {
         <tr>
           <td>
             {{ data.ID }}

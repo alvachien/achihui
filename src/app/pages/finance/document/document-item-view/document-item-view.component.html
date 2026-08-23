@@ -1,12 +1,12 @@
 <nz-table
   #innerTable
   nzShowSizeChanger
-  [nzData]="listDocItem"
+  [nzData]="listDocItem()"
   [nzFrontPagination]="false"
-  [nzLoading]="isLoadingDocItems"
-  [nzTotal]="totalDocumentItemCount"
-  [nzPageIndex]="pageIndex"
-  [nzPageSize]="pageSize"
+  [nzLoading]="isLoadingDocItems()"
+  [nzTotal]="totalDocumentItemCount()"
+  [nzPageIndex]="pageIndex()"
+  [nzPageSize]="pageSize()"
   [nzFooter]="footerTpl"
   (nzQueryParams)="onQueryParamsChange($event)"
 >
@@ -38,7 +38,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (data of innerTable.data; track $index) {
+    @for (data of innerTable.data; track data) {
       <tr>
         <td>
           <button nz-button nzType="link" (click)="onDisplayDocument(data.DocumentID!)">
@@ -71,10 +71,10 @@
 <ng-template #footerTpl let-control>
   <div nz-row>
     <div nz-col nzFlex="3">
-      {{ 'Finance.In' | transloco }}: {{ incomeAmount | number: '1.2-2' }} ({{ incomeCurrency }})
+      {{ 'Finance.In' | transloco }}: {{ incomeAmount() | number: '1.2-2' }} ({{ incomeCurrency() }})
     </div>
     <div nz-col nzFlex="3">
-      {{ 'Finance.Out' | transloco }}: {{ outgoAmount | number: '1.2-2' }} ({{ outgoCurrency }})
+      {{ 'Finance.Out' | transloco }}: {{ outgoAmount() | number: '1.2-2' }} ({{ outgoCurrency() }})
     </div>
   </div>
 </ng-template>

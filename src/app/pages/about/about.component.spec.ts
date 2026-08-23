@@ -39,4 +39,17 @@ describe('AboutComponent', () => {
     const p = compiled.querySelector('#curversion');
     expect(p.textContent.trim()).toEqual(environment.CurrentVersion.trim());
   });
+
+  // Regression: versionResult is null until AppComponent's async checkDBVersion()
+  // resolves (or forever if the user isn't authorized). The template must not
+  // throw when the value is still null. Previously `resultVersion()!.APIVersion`
+  // threw TypeError: Cannot read properties of null (reading 'APIVersion').
+  it('renders without throwing when versionResult is null', () => {
+    const uisrv = TestBed.inject(UIStatusService);
+    uisrv.versionResult = null;
+    fixture.destroy();
+    fixture = TestBed.createComponent(AboutComponent);
+    component = fixture.componentInstance;
+    expect(() => fixture.detectChanges()).not.toThrow();
+  });
 });

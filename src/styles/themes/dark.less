@@ -2,3 +2,10 @@
 @import './base';
 // @layout-sider-background: @component-background;
 // @layout-header-background: @component-background;
+
+// NG-ZORRO ships disabled controls at fade(@white, 30%) on fade(@white, 8%),
+// which is ~2.6:1 contrast on the dark component background — below WCAG AA.
+// On the document detail page (opened in Display mode) the item buttons and
+// the description input are disabled, so that dim text is unreadable. Bump the
+// disabled text opacity so disabled state stays visually distinct yet legible.
+@disabled-color: fade(@white, 50%);

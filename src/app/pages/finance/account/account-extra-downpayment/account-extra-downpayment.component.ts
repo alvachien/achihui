@@ -1,4 +1,14 @@
-import { Component, OnInit, forwardRef, Input, OnDestroy, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  forwardRef,
+  Input,
+  HostListener,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -13,8 +23,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { addYears } from 'date-fns';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -54,6 +63,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzFormModule,
     FormsModule,
@@ -66,9 +76,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     NzModalModule,
   ],
 })
-export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator, OnDestroy {
+export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAccessor, Validator {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
   private _isChangable = true; // Default is changable
   private _onChange?: (val: SafeAny) => void;
   private _onTouched?: () => void;
@@ -80,7 +89,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
     return this._refDocID;
   }
   isLoadingTmpDocs = false;
-  public listTmpDocs: TemplateDocADP[] = [];
+  public listTmpDocs = signal<TemplateDocADP[]>([]);
 
   public adpInfoFormGroup: UntypedFormGroup;
 
@@ -112,7 +121,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       inst.RefDocId = this.refDocId;
     }
 
-    inst.dpTmpDocs = this.listTmpDocs.slice();
+    inst.dpTmpDocs = this.listTmpDocs().slice();
 
     return inst;
   }
@@ -135,6 +144,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
   private readonly odataService = inject(FinanceOdataService);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -174,19 +184,6 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
       'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering AccountExtADPExComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   public onGenerateTmpDocs(): void {
@@ -205,8 +202,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
 
     this.odataService
       .calcADPTmpDocs(datInput)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (rsts: RepeatedDatesWithAmountAPIOutput[]) => {
           if (rsts && rsts instanceof Array && rsts.length > 0) {
@@ -223,7 +219,7 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
               tmpDocs.push(item);
             });
 
-            this.listTmpDocs = tmpDocs.slice();
+            this.listTmpDocs.set(tmpDocs.slice());
 
             // Trigger the change.
             this.onChange();
@@ -273,9 +269,9 @@ export class AccountExtraDownpaymentComponent implements OnInit, ControlValueAcc
         this.adpInfoFormGroup.get('frqControl')?.setValue(val.RepeatType);
       }
       this.adpInfoFormGroup.get('cmtControl')?.setValue(val.Comment);
-      this.listTmpDocs = [];
+      this.listTmpDocs.set([]);
       if (val.dpTmpDocs) {
-        this.listTmpDocs = val.dpTmpDocs.slice();
+        this.listTmpDocs.set(val.dpTmpDocs.slice());
       }
 
       if (val.RefDocId) {

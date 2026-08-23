@@ -3,20 +3,20 @@
     #tableLocation
     nzShowPagination
     nzShowSizeChanger
-    [nzData]="listAllLocation"
+    [nzData]="listAllLocation()"
     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
   >
     <thead>
       <tr>
-        <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)"></th>
+        <th [nzChecked]="checked()" [nzIndeterminate]="indeterminate()" (nzCheckedChange)="onAllChecked($event)"></th>
         <th>ID</th>
         <th>Name</th>
       </tr>
     </thead>
     <tbody>
-      @for (data of tableLocation.data; track $index) {
+      @for (data of tableLocation.data; track data.ID) {
         <tr>
-          <td [nzChecked]="setOfCheckedId.has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
+          <td [nzChecked]="setOfCheckedId().has(data.ID)" (nzCheckedChange)="onItemChecked(data.ID, $event)"></td>
           <td>{{ data.ID }}</td>
           <td>{{ data.Name }}</td>
         </tr>

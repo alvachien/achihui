@@ -88,7 +88,7 @@
   </div>
 
   <!-- Template docs-->
-  <nz-table #basicTable [nzLoading]="isLoadingTmpDocs" [nzData]="listTmpDocs">
+  <nz-table #basicTable [nzLoading]="isLoadingTmpDocs" [nzData]="listTmpDocs()">
     <thead>
       <tr>
         <th>{{ 'Common.Date' | transloco }}</th>
@@ -98,7 +98,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of basicTable.data; track $index) {
+      @for (data of basicTable.data; track data.DocId) {
         <tr>
           <td>{{ data.TranDateFormatString }}</td>
           <td>{{ data.TranType }}</td>

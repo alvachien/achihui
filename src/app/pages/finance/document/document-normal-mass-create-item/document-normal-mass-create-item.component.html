@@ -85,9 +85,13 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="8" nzRequired>{{ 'Finance.Amount' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="16" nzHasFeedback [nzErrorTip]="amountTpl">
-          <nz-input-group nzAddOnBefore="{{ baseCurrency }}">
-            <nz-input-number [nzMin]="0.01" [nzStep]="0.01" formControlName="amountControl"> </nz-input-number>
-          </nz-input-group>
+          <nz-input-number
+            [nzMin]="0.01"
+            [nzStep]="0.01"
+            [nzAddonBefore]="baseCurrency"
+            formControlName="amountControl"
+          >
+          </nz-input-number>
           <ng-template #amountTpl let-control>
             @if (control.hasError('required')) {
               <ng-container>

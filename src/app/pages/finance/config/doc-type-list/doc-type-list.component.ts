@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -13,13 +13,12 @@ import { FinanceOdataService, UIStatusService } from '@services/index';
   selector: 'hih-fin-doc-type-list',
   templateUrl: './doc-type-list.component.html',
   styleUrls: ['./doc-type-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzSpinModule, NzTableModule, TranslocoModule],
 })
-export class DocTypeListComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean;
-  dataSet: DocumentType[] = [];
+export class DocTypeListComponent implements OnInit {
+  isLoadingResults = signal(false);
+  dataSet = signal<DocumentType[]>([]);
 
   public readonly odataService = inject(FinanceOdataService);
 
@@ -27,13 +26,13 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
 
   public readonly modalService = inject(NzModalService);
 
+  private readonly destroyedRef = inject(DestroyRef);
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocTypeListComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit() {
@@ -41,14 +40,13 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering DocTypeListComponent OnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
 
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     this.odataService
       .fetchAllDocTypes()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x: DocumentType[]) => {
@@ -57,7 +55,7 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.dataSet = x;
+          this.dataSet.set(x);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -72,17 +70,5 @@ export class DocTypeListComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocTypeListComponent OnDestory...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 }

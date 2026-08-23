@@ -698,6 +698,8 @@
     "SelectPress": "选择出版社",
     "SelectLocation": "选择存储地点",
     "SelectCategory": "选择类型",
+    "ChooseBook": "选择图书",
+    "SelectOrganization": "选择组织",
     "PaperBook": "印刷图书",
     "EBook": "电子图书",
     "LocationType": "存储类型",

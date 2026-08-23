@@ -1,5 +1,5 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject } from 'rxjs';
 import { Router, UrlTree } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -23,7 +23,7 @@ describe('HomeChoseGuardService', () => {
   });
 
   beforeEach(() => {
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     authServiceStub.doLogin = () => {
       // Do nothing
     };
@@ -69,7 +69,7 @@ describe('HomeChoseGuardService', () => {
     const router = TestBed.inject(Router);
     const urInfo = new UserAuthInfo();
     urInfo.isAuthorized = true;
-    authServiceStub.authSubject = new BehaviorSubject(urInfo);
+    authServiceStub.authSubject = signal(urInfo);
     homeService.ChosedHome = null as any;
 
     const result = service.canActivate({} as any, { url: '/test' } as any);
@@ -82,7 +82,7 @@ describe('HomeChoseGuardService', () => {
     const service = TestBed.inject(HomeChoseGuardService);
     const urInfo = new UserAuthInfo();
     urInfo.isAuthorized = true;
-    authServiceStub.authSubject = new BehaviorSubject(urInfo);
+    authServiceStub.authSubject = signal(urInfo);
     homeService.ChosedHome = fakeData.chosedHome;
 
     const result = service.canActivate({} as any, { url: '/test' } as any);
@@ -93,7 +93,7 @@ describe('HomeChoseGuardService', () => {
     const service = TestBed.inject(HomeChoseGuardService);
     const urInfo = new UserAuthInfo();
     urInfo.isAuthorized = true;
-    authServiceStub.authSubject = new BehaviorSubject(urInfo);
+    authServiceStub.authSubject = signal(urInfo);
     homeService.ChosedHome = null as any;
 
     service.canActivate({} as any, { url: '/finance/overview' } as any);

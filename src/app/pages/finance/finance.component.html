@@ -137,7 +137,7 @@
       (nzPanelChange)="onPanelChange($event)"
     >
       <ul *nzDateCell="let date" class="events">
-        @for (item of getDPDocsByDate(date); track $index) {
+        @for (item of getDPDocsByDate(date); track item.DocId) {
           <li>
             <div>
               <button
@@ -153,7 +153,7 @@
             </div>
           </li>
         }
-        @for (item of getLoanDocsByDate(date); track $index) {
+        @for (item of getLoanDocsByDate(date); track item.DocId) {
           <li>
             <div>
               <button

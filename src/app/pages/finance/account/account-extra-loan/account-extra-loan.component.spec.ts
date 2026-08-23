@@ -1,16 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { ViewChild, Component } from '@angular/core';
+import { signal, ViewChild, Component, ChangeDetectionStrategy } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { addMonths, addYears } from 'date-fns';
 
 import { AccountExtraLoanComponent } from './account-extra-loan.component';
@@ -25,7 +23,7 @@ import {
   TemplateDocLoan,
 } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -65,7 +63,7 @@ describe('AccountExtraLoanComponent', () => {
       MembersInChosedHome: fakeData.chosedHome.Members,
     };
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     arUIAccounts = BuildupAccountForSelection(fakeData.finAccounts, fakeData.finAccountCategories);
   });
 
@@ -78,8 +76,6 @@ describe('AccountExtraLoanComponent', () => {
 
         ReactiveFormsModule,
         RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         RouterTestingModule,
         getTranslocoModule(),
         NzFormModule,
@@ -100,7 +96,7 @@ describe('AccountExtraLoanComponent', () => {
         { provide: FinanceOdataService, useValue: storageService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -149,7 +145,7 @@ describe('AccountExtraLoanComponent', () => {
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
     expect(loanval2.startDate?.getTime()).toEqual(startdt.getTime());
-    expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
+    expect(testcomponent.extraComponent?.listTmpDocs().length).toEqual(0);
 
     await new Promise<void>((r) => setTimeout(r, 0));
   });
@@ -174,7 +170,7 @@ describe('AccountExtraLoanComponent', () => {
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
     expect(loanval2.startDate?.getTime()).toEqual(startdt.getTime());
-    expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
+    expect(testcomponent.extraComponent?.listTmpDocs().length).toEqual(0);
 
     await new Promise<void>((r) => setTimeout(r, 0));
   });
@@ -200,7 +196,7 @@ describe('AccountExtraLoanComponent', () => {
     const loanval2 = testcomponent.formGroup.get('extraControl')?.value as AccountExtraLoan;
     expect(loanval2.startDate).toBeTruthy();
     expect(loanval2.startDate?.getTime()).toEqual(startdt.getTime());
-    expect(testcomponent.extraComponent?.listTmpDocs.length).toEqual(0);
+    expect(testcomponent.extraComponent?.listTmpDocs().length).toEqual(0);
 
     await new Promise<void>((r) => setTimeout(r, 0));
   });
@@ -405,6 +401,7 @@ describe('AccountExtraLoanComponent', () => {
       </hih-finance-account-extra-loan>
     </form>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, AccountExtraLoanComponent],
 })
 export class AccountExtraLoanTestFormComponent {

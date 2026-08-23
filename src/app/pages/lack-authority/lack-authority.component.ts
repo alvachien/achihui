@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzResultModule } from 'ng-zorro-antd/result';
@@ -7,6 +7,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
   selector: 'hih-lack-authority',
   templateUrl: './lack-authority.component.html',
   styleUrls: ['./lack-authority.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzResultModule, NzButtonModule, TranslocoModule],
 })
 export class LackAuthorityComponent {}

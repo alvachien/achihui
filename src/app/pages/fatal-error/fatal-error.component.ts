@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -9,6 +9,7 @@ import { UIStatusService } from '@services/index';
   selector: 'hih-fatal-error',
   templateUrl: './fatal-error.component.html',
   styleUrls: ['./fatal-error.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzResultModule, NzButtonModule, TranslocoModule],
 })
 export class FatalErrorComponent {

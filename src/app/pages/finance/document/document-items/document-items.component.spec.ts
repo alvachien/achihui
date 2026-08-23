@@ -1,17 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { DebugElement } from '@angular/core';
+import { signal, DebugElement } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { dispatchMouseEvent, typeInElement } from 'ng-zorro-antd/core/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode } from 'actslib';
@@ -29,7 +27,7 @@ import {
   financeDocTypeNormal,
 } from '../../../../model';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentItemsComponent', () => {
   let component: DocumentItemsComponent;
@@ -54,19 +52,19 @@ describe('DocumentItemsComponent', () => {
 
   beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
     const routerSpy = createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [NoopAnimationsModule, RouterTestingModule, FormsModule, ReactiveFormsModule, getTranslocoModule()],
+      imports: [RouterTestingModule, FormsModule, ReactiveFormsModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -122,12 +120,12 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
-      component.listItems = [ditem];
+      component.listItems.set([ditem]);
       component.onChange();
 
       const err: SafeAny = component.validate(undefined);
@@ -140,13 +138,13 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       // ditem.TranType = 2;
       ditem.Desp = 'test';
-      component.listItems = [ditem];
+      component.listItems.set([ditem]);
       component.onChange();
 
       const err: SafeAny = component.validate(undefined);
@@ -159,13 +157,13 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       // ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
-      component.listItems = [ditem];
+      component.listItems.set([ditem]);
       component.onChange();
 
       const err: SafeAny = component.validate(undefined);
@@ -178,13 +176,13 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       // ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
-      component.listItems = [ditem];
+      component.listItems.set([ditem]);
       component.onChange();
 
       const err: SafeAny = component.validate(undefined);
@@ -197,14 +195,14 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.OrderId = fakeData.finOrders[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
-      component.listItems = [ditem];
+      component.listItems.set([ditem]);
       component.onChange();
 
       const err: SafeAny = component.validate(undefined);
@@ -217,13 +215,13 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       // ditem.Desp = 'test';
-      component.listItems = [ditem];
+      component.listItems.set([ditem]);
       component.onChange();
 
       const err: SafeAny = component.validate(undefined);
@@ -236,20 +234,20 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
-      // component.listItems = [ditem];
+      // component.listItems.set([ditem]);
 
-      component.onDeleteDocItem(component.listItems[0]);
+      component.onDeleteDocItem(component.listItems()[0]);
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.listItems.length).toEqual(0);
+      expect(component.listItems().length).toEqual(0);
     });
     it.skip('shall be valid in valid case', async () => {
       fixture.detectChanges();
@@ -257,13 +255,13 @@ describe('DocumentItemsComponent', () => {
       fixture.detectChanges();
 
       component.onCreateDocItem();
-      const ditem: DocumentItem = component.listItems[0];
+      const ditem: DocumentItem = component.listItems()[0];
       ditem.AccountId = fakeData.finAccounts[0].Id;
       ditem.TranAmount = 200;
       ditem.ControlCenterId = fakeData.finControlCenters[0].Id;
       ditem.TranType = 2;
       ditem.Desp = 'test';
-      component.listItems = [ditem];
+      component.listItems.set([ditem]);
       component.onChange();
 
       const err: SafeAny = component.validate(undefined);
@@ -330,7 +328,7 @@ describe('DocumentItemsComponent', () => {
           inpNumberComponent.writeValue(20);
           fixture.detectChanges();
 
-          expect(component.listItems[0].TranAmount).toEqual(20);
+          expect(component.listItems()[0].TranAmount).toEqual(20);
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 4) {
@@ -343,7 +341,7 @@ describe('DocumentItemsComponent', () => {
 
           typeInElement('Test', inpElem.nativeElement);
           fixture.detectChanges();
-          expect(component.listItems[0].Desp).toEqual('Test');
+          expect(component.listItems()[0].Desp).toEqual('Test');
 
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
@@ -377,9 +375,9 @@ describe('DocumentItemsComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.listItems.length).toEqual(1);
-      expect(component.listItems[0].Desp).toEqual('Test');
-      expect(component.listItems[0].TranAmount).toEqual(20);
+      expect(component.listItems().length).toEqual(1);
+      expect(component.listItems()[0].Desp).toEqual('Test');
+      expect(component.listItems()[0].TranAmount).toEqual(20);
     });
     it.skip('onChange method', async () => {
       const changefn = () => {
@@ -452,7 +450,7 @@ describe('DocumentItemsComponent', () => {
           inpNumberComponent.writeValue(20);
           fixture.detectChanges();
 
-          expect(component.listItems[0].TranAmount).toEqual(20);
+          expect(component.listItems()[0].TranAmount).toEqual(20);
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(4);
@@ -466,7 +464,7 @@ describe('DocumentItemsComponent', () => {
 
           typeInElement('Test', inpElem.nativeElement);
           fixture.detectChanges();
-          expect(component.listItems[0].Desp).toEqual('Test');
+          expect(component.listItems()[0].Desp).toEqual('Test');
 
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();

@@ -1,10 +1,9 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UrlSegment, ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Overlay } from '@angular/cdk/overlay';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -31,7 +30,7 @@ import { AuthService, HomeDefOdataService, FinanceOdataService } from '../../../
 import { UserAuthInfo } from '../../../model';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('HomeDefDetailComponent', () => {
   let component: HomeDefDetailComponent;
@@ -55,7 +54,7 @@ describe('HomeDefDetailComponent', () => {
     finService = createSpyObj('FinanceOdataService', ['fetchAllCurrencies']);
     fetchAllCurrenciesSpy = finService.fetchAllCurrencies.and.returnValue(of([]));
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -66,8 +65,6 @@ describe('HomeDefDetailComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
         RouterTestingModule,
         NzPageHeaderModule,
         NzTableModule,
@@ -89,12 +86,12 @@ describe('HomeDefDetailComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         Overlay,
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },

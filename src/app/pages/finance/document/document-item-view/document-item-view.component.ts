@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, Input, inject } from '@angular/core';
+import { Component, Input, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { ReplaySubject, forkJoin } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterModule } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 
@@ -23,12 +24,15 @@ import {
   selector: 'hih-fin-document-item-view',
   templateUrl: './document-item-view.component.html',
   styleUrls: ['./document-item-view.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzTableModule, DecimalPipe, TranslocoModule, RouterModule, NzModalModule],
 })
-export class DocumentItemViewComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class DocumentItemViewComponent {
   private _filterDocItem: GeneralFilterItem[] = [];
 
+  // Side-effect input kept as a plain setter: it triggers a fetch, and ~12 report
+  // consumers pass it via nzContentParams whose inferred type does not unwrap a
+  // signal input. Internal display state below is signalized instead.
   @Input()
   set filterDocItem(flters: GeneralFilterItem[]) {
     ModelUtility.writeConsoleLog(
@@ -40,7 +44,7 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     if (flters && flters.length > 0) {
       this._filterDocItem = flters;
 
-      this.pageIndex = 1;
+      this.pageIndex.set(1);
       this.fetchDocItems();
     } else {
       this._filterDocItem = [];
@@ -50,76 +54,45 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     return this._filterDocItem;
   }
 
-  isLoadingDocItems = false;
-  public arTranType: TranType[] = [];
-  public arControlCenters: ControlCenter[] = [];
-  public arOrders: Order[] = [];
-  public arAccounts: Account[] = [];
-  pageIndex = 1;
-  pageSize = 20;
-  listDocItem: DocumentItemView[] = [];
-  totalDocumentItemCount = 0;
-  incomeAmount = 0;
-  outgoAmount = 0;
-  incomeCurrency = '';
-  outgoCurrency = '';
+  isLoadingDocItems = signal(false);
+  arTranType = signal<TranType[]>([]);
+  arControlCenters = signal<ControlCenter[]>([]);
+  arOrders = signal<Order[]>([]);
+  arAccounts = signal<Account[]>([]);
+  pageIndex = signal(1);
+  pageSize = signal(20);
+  listDocItem = signal<DocumentItemView[]>([]);
+  totalDocumentItemCount = signal(0);
+  incomeAmount = signal(0);
+  outgoAmount = signal(0);
+  incomeCurrency = signal('');
+  outgoCurrency = signal('');
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly router = inject(Router);
-  constructor() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent constructor...',
-      ConsoleLogTypeEnum.debug,
-    );
-    if (this._destroyed$ === null) {
-      this._destroyed$ = new ReplaySubject(1);
-    }
-  }
+  private readonly destroyedRef = inject(DestroyRef);
 
-  ngOnInit(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnInit...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$ === null) {
-      this._destroyed$ = new ReplaySubject(1);
-    }
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering DocumentItemViewComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$ !== null) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
   public getAccountName(acntid: number): string {
-    const acntObj = this.arAccounts.find((acnt) => {
+    const acntObj = this.arAccounts().find((acnt) => {
       return acnt.Id === acntid;
     });
     return acntObj && acntObj.Name ? acntObj.Name : '';
   }
   public getControlCenterName(ccid: number): string {
-    const ccObj = this.arControlCenters.find((cc) => {
+    const ccObj = this.arControlCenters().find((cc) => {
       return cc.Id === ccid;
     });
     return ccObj ? ccObj.Name : '';
   }
   public getOrderName(ordid: number): string {
-    const orderObj = this.arOrders.find((ord) => {
+    const orderObj = this.arOrders().find((ord) => {
       return ord.Id === ordid;
     });
     return orderObj ? orderObj.Name : '';
   }
   public getTranTypeName(ttid: number): string {
-    const tranTypeObj = this.arTranType.find((tt) => {
+    const tranTypeObj = this.arTranType().find((tt) => {
       return tt.Id === ttid;
     });
 
@@ -134,8 +107,8 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
 
     if (this.filterDocItem.length > 0) {
       const { pageSize, pageIndex, sort } = params;
-      this.pageIndex = pageIndex;
-      this.pageSize = pageSize;
+      this.pageIndex.set(pageIndex);
+      this.pageSize.set(pageSize);
       const currentSort = sort.find((item) => item.value !== null);
       const sortField = (currentSort && currentSort.key) || null;
       const sortOrder = (currentSort && currentSort.value) || null;
@@ -195,12 +168,12 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
     // Not allow select all.
     if (this.filterDocItem.length <= 0) return;
 
-    this.isLoadingDocItems = true;
+    this.isLoadingDocItems.set(true);
     forkJoin([
       this.odataService.searchDocItem(
         this.filterDocItem,
-        this.pageSize,
-        this.pageIndex >= 1 ? (this.pageIndex - 1) * this.pageSize : 0,
+        this.pageSize(),
+        this.pageIndex() >= 1 ? (this.pageIndex() - 1) * this.pageSize() : 0,
         orderby,
       ),
       this.odataService.fetchAllAccounts(),
@@ -209,9 +182,8 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
       this.odataService.fetchAllOrders(),
     ])
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingDocItems = false)),
+        finalize(() => this.isLoadingDocItems.set(false)),
+        takeUntilDestroyed(this.destroyedRef),
       )
       .subscribe({
         next: (revdata) => {
@@ -220,49 +192,53 @@ export class DocumentItemViewComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.arAccounts = revdata[1];
-          this.arTranType = revdata[2];
-          this.arControlCenters = revdata[3];
-          this.arOrders = revdata[4];
+          this.arAccounts.set(revdata[1]);
+          this.arTranType.set(revdata[2]);
+          this.arControlCenters.set(revdata[3]);
+          this.arOrders.set(revdata[4]);
 
-          this.listDocItem = [];
-          this.incomeAmount = 0;
-          this.outgoAmount = 0;
-          this.incomeCurrency = '';
-          this.outgoCurrency = '';
+          const docItems: DocumentItemView[] = [];
+          let incomeAmt = 0;
+          let outgoAmt = 0;
+          let incomeCur = '';
+          let outgoCur = '';
           if (revdata[0]) {
             if (revdata[0].totalCount) {
-              this.totalDocumentItemCount = +revdata[0].totalCount;
+              this.totalDocumentItemCount.set(+revdata[0].totalCount);
             } else {
-              this.totalDocumentItemCount = 0;
+              this.totalDocumentItemCount.set(0);
             }
 
             revdata[0].contentList.forEach((eachitem: DocumentItemView) => {
               if (eachitem.Amount < 0) {
-                if (this.outgoCurrency === '') {
-                  this.outgoCurrency = eachitem.Currency;
-                  this.outgoAmount += eachitem.Amount;
+                if (outgoCur === '') {
+                  outgoCur = eachitem.Currency;
+                  outgoAmt += eachitem.Amount;
                 } else {
-                  if (this.outgoCurrency === eachitem.Currency) {
-                    this.outgoAmount += eachitem.Amount;
+                  if (outgoCur === eachitem.Currency) {
+                    outgoAmt += eachitem.Amount;
                   }
                 }
               } else {
-                if (this.incomeCurrency === '') {
-                  this.incomeCurrency = eachitem.Currency;
-                  this.incomeAmount += eachitem.Amount;
+                if (incomeCur === '') {
+                  incomeCur = eachitem.Currency;
+                  incomeAmt += eachitem.Amount;
                 } else {
-                  if (this.incomeCurrency === eachitem.Currency) {
-                    this.incomeAmount += eachitem.Amount;
+                  if (incomeCur === eachitem.Currency) {
+                    incomeAmt += eachitem.Amount;
                   }
                 }
               }
-              this.listDocItem.push(eachitem);
+              docItems.push(eachitem);
             });
           } else {
-            this.totalDocumentItemCount = 0;
-            this.listDocItem = [];
+            this.totalDocumentItemCount.set(0);
           }
+          this.listDocItem.set(docItems);
+          this.incomeAmount.set(incomeAmt);
+          this.outgoAmount.set(outgoAmt);
+          this.incomeCurrency.set(incomeCur);
+          this.outgoCurrency.set(outgoCur);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

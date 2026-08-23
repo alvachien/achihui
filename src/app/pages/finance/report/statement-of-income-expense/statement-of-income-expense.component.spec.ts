@@ -1,10 +1,9 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 
@@ -13,7 +12,7 @@ import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService 
 import { UserAuthInfo } from '../../../../model';
 import { StatementOfIncomeExpenseComponent } from './statement-of-income-expense.component';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('StatementOfIncomeExpenseComponent', () => {
   let component: StatementOfIncomeExpenseComponent;
@@ -36,27 +35,20 @@ describe('StatementOfIncomeExpenseComponent', () => {
 
     storageService = createSpyObj('FinanceOdataService', ['fetchCashReportMoM']);
     fetchCashReportMoMSpy = storageService.fetchCashReportMoM.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        NgxEchartsModule.forRoot({ echarts }),
-
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [NgxEchartsModule.forRoot({ echarts }), RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

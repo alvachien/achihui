@@ -1,6 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import {
+  Component,
+  OnInit,
+  ViewContainerRef,
+  inject,
+  signal,
+  computed,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -26,13 +35,14 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'hih-fin-account-list',
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzSpinModule,
     NzPageHeaderModule,
@@ -41,7 +51,7 @@ import { NgClass, NgIf } from '@angular/common';
     NzTableModule,
     NzButtonModule,
     NzPopconfirmModule,
-    NzDropDownModule,
+    NzDropdownModule,
     NgClass,
     NgIf,
     TranslocoModule,
@@ -49,20 +59,14 @@ import { NgClass, NgIf } from '@angular/common';
     RouterModule,
   ],
 })
-export class AccountListComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean;
-  dataSet: Account[] = [];
-  arCategories: AccountCategory[] = [];
+export class AccountListComponent implements OnInit {
+  isLoadingResults = signal(false);
+  dataSet = signal<Account[]>([]);
+  arCategories = signal<AccountCategory[]>([]);
   arrayStatus: UIDisplayString[] = [];
-  listCategoryFilter: ITableFilterValues[] = [];
+  listCategoryFilter = signal<ITableFilterValues[]>([]);
   listStatusFilter: ITableFilterValues[] = [];
   listOfColumns: UITableColumnItem<Account>[] = [];
-
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-  }
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly uiStatusService = inject(UIStatusService);
@@ -70,6 +74,12 @@ export class AccountListComponent implements OnInit, OnDestroy {
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
   private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly destroyedRef = inject(DestroyRef);
+
+  // Read the service's curHomeMember signal directly (Tier F route (b)):
+  // isChildMode updates reactively without manual subscriptions.
+  private readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -77,7 +87,6 @@ export class AccountListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this.isLoadingResults = false;
     this.arrayStatus = UIDisplayStringUtil.getAccountStatusStrings();
     this.arrayStatus.forEach((val) => {
       this.listStatusFilter.push({
@@ -140,7 +149,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     ];
   }
   public getCategoryName(ctgyid: number): string {
-    const ctgyobj = this.arCategories.find((val) => {
+    const ctgyobj = this.arCategories().find((val) => {
       return val.ID === ctgyid;
     });
     return ctgyobj && ctgyobj.Name ? ctgyobj.Name : '';
@@ -157,16 +166,15 @@ export class AccountListComponent implements OnInit, OnDestroy {
       'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
 
-    this.isLoadingResults = true;
-    this.arCategories = [];
-    this.listCategoryFilter = [];
+    this.isLoadingResults.set(true);
+    this.arCategories.set([]);
+    this.listCategoryFilter.set([]);
     this.odataService
       .fetchAllAccountCategories()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (val) => {
@@ -174,14 +182,16 @@ export class AccountListComponent implements OnInit, OnDestroy {
             'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnInit fetchAllAccountCategories succeed',
             ConsoleLogTypeEnum.debug,
           );
-          this.arCategories = val;
-          this.arCategories.forEach((val2: AccountCategory) => {
-            this.listCategoryFilter.push({
+          this.arCategories.set(val);
+          const filters: ITableFilterValues[] = [];
+          val.forEach((val2: AccountCategory) => {
+            filters.push({
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               text: translate(val2.Name!),
               value: val2.ID,
             });
           });
+          this.listCategoryFilter.set(filters);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -204,27 +214,14 @@ export class AccountListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering AccountListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
-
   onRefresh(isreload?: boolean): void {
-    this.isLoadingResults = true;
-    this.dataSet = [];
+    this.isLoadingResults.set(true);
+    this.dataSet.set([]);
     this.odataService
       .fetchAllAccounts(isreload)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (data: Account[]) => {
@@ -232,7 +229,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
             'AC_HIH_UI [Debug]: Entering AccountListComponent onRefresh fetchAllAccounts succeed',
             ConsoleLogTypeEnum.debug,
           );
-          this.dataSet = data.slice();
+          this.dataSet.set(data.slice());
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -265,21 +262,11 @@ export class AccountListComponent implements OnInit, OnDestroy {
     // After the pop confirm
     this.odataService
       .deleteAccount(rid)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: () => {
           // Just remove the item
-          const acnts = this.dataSet.slice();
-          const extidx = acnts.findIndex((val2) => {
-            return val2.Id === rid;
-          });
-
-          if (extidx !== -1) {
-            acnts.splice(extidx, 1);
-            this.dataSet = [];
-            this.dataSet = acnts;
-          }
+          this.dataSet.update((items) => items.filter((val2) => val2.Id !== rid));
         },
         error: (err) => {
           this.modalService.error({

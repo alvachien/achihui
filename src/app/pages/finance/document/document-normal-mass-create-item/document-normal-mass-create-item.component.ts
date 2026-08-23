@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 
 import { UIAccountForSelection, UIOrderForSelection, ControlCenter, TranType } from '../../../../model';
@@ -13,6 +13,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
   selector: 'hih-document-normal-mass-create-item',
   templateUrl: './document-normal-mass-create-item.component.html',
   styleUrls: ['./document-normal-mass-create-item.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

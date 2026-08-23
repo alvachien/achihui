@@ -4,10 +4,9 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject, of } from 'rxjs';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { DocumentListComponent } from './document-list.component';
@@ -21,10 +20,17 @@ import {
   ElementClass_DialogContent,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, Document, DocumentItem, financeDocTypeNormal, BaseListModel } from '../../../../model';
+import {
+  UserAuthInfo,
+  HomeMember,
+  Document,
+  DocumentItem,
+  financeDocTypeNormal,
+  BaseListModel,
+} from '../../../../model';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentListComponent', () => {
   let component: DocumentListComponent;
@@ -75,26 +81,19 @@ describe('DocumentListComponent', () => {
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
     fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeServiceStub = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
+      curHomeMember: signal<HomeMember | null>(fakeData.chosedHome.Members[0] ?? null),
     };
   });
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         UIStatusService,
@@ -102,12 +101,12 @@ describe('DocumentListComponent', () => {
         { provide: NZ_I18N, useValue: en_US },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    // TestBed.overrideModule(BrowserDynamicTestingModule, {
+    // TestBed.overrideModule(, {
     //   set: {
     //     entryComponents: [MessageDialogComponent],
     //   },
@@ -189,7 +188,7 @@ describe('DocumentListComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.listOfDocs.length).toEqual(0);
+      expect(component.listOfDocs().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -199,8 +198,8 @@ describe('DocumentListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.listOfDocs.length).toBeGreaterThan(0);
-      // expect(component.listOfDocs.length).toEqual(ardocs.totalCount);
+      expect(component.listOfDocs().length).toBeGreaterThan(0);
+      // expect(component.listOfDocs().length).toEqual(ardocs.totalCount);
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
@@ -213,10 +212,10 @@ describe('DocumentListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.listOfDocs.length).toBeGreaterThan(0);
+      expect(component.listOfDocs().length).toBeGreaterThan(0);
 
       const rows = fixture.nativeElement.querySelectorAll('tbody tr');
-      expect(rows.length).toBeGreaterThanOrEqual(component.listOfDocs.length);
+      expect(rows.length).toBeGreaterThanOrEqual(component.listOfDocs().length);
     });
 
     it('shall trigger navigation on menus for document creating', () => {

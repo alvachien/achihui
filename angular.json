@@ -64,7 +64,6 @@
               ]
             },
             "scripts": [
-              "node_modules/marked/lib/marked.umd.js",
               "node_modules/katex/dist/katex.min.js",
               "node_modules/katex/dist/contrib/auto-render.min.js"
             ],
@@ -82,8 +81,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "5mb",
-                  "maximumError": "10mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -117,14 +116,12 @@
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
-        },
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "tsconfig.spec.json",
-            "setupFiles": ["src/test-setup.ts"]
+            "setupFiles": ["src/test-setup.ts"],
+            "providersFile": "src/test-providers.ts"
           }
         },
         "lint": {

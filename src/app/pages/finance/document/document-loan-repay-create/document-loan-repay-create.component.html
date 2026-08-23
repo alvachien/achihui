@@ -14,7 +14,7 @@
     <nz-page-header-extra> </nz-page-header-extra>
   </nz-page-header>
 
-  <nz-steps [nzCurrent]="currentStep">
+  <nz-steps [nzCurrent]="currentStep()">
     <nz-step [nzTitle]="'Common.GenericInfo' | transloco"></nz-step>
     <nz-step [nzTitle]="'Finance.Items' | transloco"></nz-step>
     <nz-step [nzTitle]="'Common.ReviewForSubmit' | transloco"></nz-step>
@@ -23,7 +23,7 @@
 
   <div class="steps-content">
     <!-- Step 0. Search item -->
-    <div [hidden]="currentStep !== 0">
+    <div [hidden]="currentStep() !== 0">
       <form nz-form [formGroup]="searchFormGroup" class="ant-advanced-search-form">
         <div nz-row [nzGutter]="8">
           <div nz-col [nzSpan]="12">
@@ -62,7 +62,7 @@
               <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="accountErrorTpl">
                 <nz-select formControlName="accountControl">
                   @for (
-                    acnt of arUIAccount
+                    acnt of arUIAccount()
                       | uiAccountCtgyFilterEx: acntCategoryFilter
                       | uiAccountStatusFilter: acntFilterFilter;
                     track acnt.Id
@@ -87,7 +87,7 @@
               <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12">
                 <nz-select formControlName="ccControl">
-                  @for (tt of arControlCenters; track tt.Id) {
+                  @for (tt of arControlCenters(); track tt.Id) {
                     <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
                   }
                 </nz-select>
@@ -101,7 +101,7 @@
               <nz-form-label [nzSpan]="7">{{ 'Finance.Activity' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12" nzHasFeedback>
                 <nz-select formControlName="orderControl">
-                  @for (tt of arUIOrder; track tt.Id) {
+                  @for (tt of arUIOrder(); track tt.Id) {
                     <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
                   }
                 </nz-select>
@@ -137,7 +137,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (tdoc of rowLoanTmpDocs.data; track $index) {
+            @for (tdoc of rowLoanTmpDocs.data; track tdoc.DocId) {
               <tr>
                 <td nzShowCheckbox (nzCheckedChange)="onTmpLoanDocRowSelectChanged($event, tdoc)"></td>
                 <td>{{ tdoc.DocId }}</td>
@@ -155,7 +155,7 @@
     </div>
 
     <!-- Step 1. Document items -->
-    <div [hidden]="currentStep !== 1">
+    <div [hidden]="currentStep() !== 1">
       <nz-descriptions
         [nzTitle]="'Finance.Amount' | transloco"
         nzBordered
@@ -213,14 +213,14 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of orgItemsTable.data; track $index; let itemIdx = $index) {
+          @for (data of orgItemsTable.data; track data; let itemIdx = $index) {
             <tr>
               <td>{{ itemIdx + 1 }}</td>
               <td>
                 <nz-form-item>
                   <nz-form-control nzHasFeedback [nzErrorTip]="orgAccountTpl">
                     <nz-select [(ngModel)]="data.AccountId">
-                      @for (acnt of arUIAccount; track acnt.Id) {
+                      @for (acnt of arUIAccount(); track acnt.Id) {
                         <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
                       }
                     </nz-select>
@@ -251,14 +251,14 @@
               </td>
               <td>
                 <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
-                  @for (tt of arControlCenters; track tt.Id) {
+                  @for (tt of arControlCenters(); track tt.Id) {
                     <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
                   }
                 </nz-select>
               </td>
               <td>
                 <nz-select [(ngModel)]="data.OrderId" nzAllowClear>
-                  @for (tt of arUIOrder; track tt.Id) {
+                  @for (tt of arUIOrder(); track tt.Id) {
                     <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
                   }
                 </nz-select>
@@ -308,14 +308,14 @@
           </tr>
         </thead>
         <tbody>
-          @for (data of itemsTable.data; track $index; let itemIdx = $index) {
+          @for (data of itemsTable.data; track data; let itemIdx = $index) {
             <tr>
               <td>{{ itemIdx + 1 }}</td>
               <td>
                 <nz-form-item>
                   <nz-form-control nzHasFeedback [nzErrorTip]="accountTpl">
                     <nz-select [(ngModel)]="data.AccountId">
-                      @for (acnt of arUIAccount; track acnt.Id) {
+                      @for (acnt of arUIAccount(); track acnt.Id) {
                         <nz-option [nzValue]="acnt.Id" [nzLabel]="acnt.Name"></nz-option>
                       }
                     </nz-select>
@@ -362,14 +362,14 @@
               </td>
               <td>
                 <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
-                  @for (tt of arControlCenters; track tt.Id) {
+                  @for (tt of arControlCenters(); track tt.Id) {
                     <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
                   }
                 </nz-select>
               </td>
               <td>
                 <nz-select [(ngModel)]="data.OrderId" nzAllowClear>
-                  @for (tt of arUIOrder; track tt.Id) {
+                  @for (tt of arUIOrder(); track tt.Id) {
                     <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
                   }
                 </nz-select>
@@ -395,12 +395,12 @@
     </div>
 
     <!-- Step 2. Confirm -->
-    <div [hidden]="currentStep !== 2">
+    <div [hidden]="currentStep() !== 2">
       <nz-descriptions [nzTitle]="'Finance.Document' | transloco" nzBordered [nzColumn]="4">
         <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
           {{ confirmInfo.TranDateFormatString }}
         </nz-descriptions-item>
-        @for (iteminfo of confirmInfo.Items; track $index) {
+        @for (iteminfo of confirmInfo.Items; track iteminfo) {
           <div>
             <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
               {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
@@ -424,7 +424,7 @@
     </div>
 
     <!-- Step 3. Result -->
-    <div [hidden]="currentStep !== 3">
+    <div [hidden]="currentStep() !== 3">
       <nz-spin [nzSize]="'large'" [nzSpinning]="isDocPosting">
         @if (docIdCreated) {
           <div>
@@ -473,7 +473,7 @@
 
     <!-- Step actions/buttons -->
     <div class="steps-action">
-      <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep > 0 && currentStep < 3">
+      <button nz-button nzType="default" (click)="pre()" *ngIf="currentStep() > 0 && currentStep() < 3">
         <i nz-icon nzType="left"></i>{{ 'Common.PreviousButton' | transloco }}
       </button>
       <button
@@ -481,7 +481,7 @@
         nzType="primary"
         id="button_next_step"
         (click)="next()"
-        *ngIf="currentStep < 3"
+        *ngIf="currentStep() < 3"
         [disabled]="!nextButtonEnabled"
       >
         {{ 'Common.NextButton' | transloco }}<i nz-icon nzType="right"></i>

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -19,6 +19,7 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
   selector: 'hih-control-center-list',
   templateUrl: './control-center-list.component.html',
   styleUrls: ['./control-center-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzSpinModule,
     NzPageHeaderModule,
@@ -32,24 +33,20 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
     RouterModule,
   ],
 })
-export class ControlCenterListComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults: boolean;
-  dataSet: ControlCenter[] = [];
-
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-  }
+export class ControlCenterListComponent implements OnInit {
+  isLoadingResults = signal(false);
+  dataSet = signal<ControlCenter[]>([]);
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly router = inject(Router);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
-  constructor() {
-    this.isLoadingResults = false;
-  }
+  // Read the service's curHomeMember signal directly (Tier F route (b)):
+  // isChildMode updates reactively without manual subscriptions.
+  private readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(
@@ -57,14 +54,12 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
     this.odataService
       .fetchAllControlCenters()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (value: ControlCenter[]) => {
@@ -73,7 +68,7 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.dataSet = value.slice();
+          this.dataSet.set(value.slice());
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -88,18 +83,6 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering ControlCenterListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   onDisplay(rid: number): void {
@@ -126,18 +109,10 @@ export class ControlCenterListComponent implements OnInit, OnDestroy {
 
     this.odataService
       .deleteControlCenter(rid)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: () => {
-          const extccs = this.dataSet.slice();
-          const extidx = extccs.findIndex((val2) => {
-            return val2.Id === rid;
-          });
-          if (extidx !== -1) {
-            extccs.splice(extidx, 1);
-            this.dataSet = extccs;
-          }
+          this.dataSet.update((items) => items.filter((val2) => val2.Id !== rid));
         },
         error: (err) => {
           this.modalService.error({

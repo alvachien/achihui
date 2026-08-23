@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -15,37 +15,32 @@ import { FinanceOdataService } from '@services/index';
   selector: 'hih-finance-currency',
   templateUrl: './currency.component.html',
   styleUrls: ['./currency.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NzSpinModule, NzPageHeaderModule, NzBreadCrumbModule, NzTableModule, NzModalModule, TranslocoModule],
 })
-export class CurrencyComponent implements OnInit, OnDestroy {
-  /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  public dataSource: Currency[] = [];
-  isLoadingResults: boolean;
+export class CurrencyComponent implements OnInit {
+  dataSource = signal<Currency[]>([]);
+  isLoadingResults = signal(false);
 
   private readonly currService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering CurrencyComponent constructor...`,
       ConsoleLogTypeEnum.debug,
     );
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(`AC_HIH_UI [Debug]: Entering CurrencyComponent OnInit...`, ConsoleLogTypeEnum.debug);
 
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.isLoadingResults = false;
     this.currService
       .fetchAllCurrencies()
       .pipe(
-        takeUntil(this._destroyed$),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (x) => {
@@ -54,7 +49,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
             ConsoleLogTypeEnum.debug,
           );
           if (x) {
-            this.dataSource = x;
+            this.dataSource.set(x);
           }
         },
         error: (err) => {
@@ -70,17 +65,5 @@ export class CurrencyComponent implements OnInit, OnDestroy {
           });
         },
       });
-  }
-
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      `AC_HIH_UI [Debug]: Entering CurrencyComponent ngOnDestroy...`,
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 }

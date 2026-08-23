@@ -1,8 +1,9 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { forkJoin, ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
@@ -24,6 +25,7 @@ import { SafeAny } from '@common/any';
   selector: 'hih-organization-detail',
   templateUrl: './organization-detail.component.html',
   styleUrls: ['./organization-detail.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -41,21 +43,21 @@ import { SafeAny } from '@common/any';
     RouterModule,
   ],
 })
-export class OrganizationDetailComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
-  public routerID = -1; // Current object ID in routing
-  public currentMode = '';
-  public uiMode: UIMode = UIMode.Create;
+export class OrganizationDetailComponent implements OnInit {
+  isLoadingResults = signal(false);
+  public routerID = signal(-1); // Current object ID in routing
+  public currentMode = signal('');
+  public uiMode = signal<UIMode>(UIMode.Create);
   detailFormGroup: UntypedFormGroup;
-  listTypes: OrganizationType[] = [];
-  allTypes: OrganizationType[] = [];
+  listTypes = signal<OrganizationType[]>([]);
+  allTypes = signal<OrganizationType[]>([]);
 
   private readonly storageService = inject(LibraryStorageService);
   private readonly activateRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -72,7 +74,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
   }
 
   get isEditable(): boolean {
-    return isUIEditable(this.uiMode);
+    return isUIEditable(this.uiMode());
   }
 
   ngOnInit() {
@@ -81,9 +83,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
-
-    this.activateRoute.url.subscribe((x) => {
+    this.activateRoute.url.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((x) => {
       ModelUtility.writeConsoleLog(
         `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent ngOnInit activateRoute: ${x}`,
         ConsoleLogTypeEnum.debug,
@@ -91,52 +91,51 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
 
       if (x instanceof Array && x.length > 0) {
         if (x[0].path === 'create') {
-          this.uiMode = UIMode.Create;
+          this.uiMode.set(UIMode.Create);
         } else if (x[0].path === 'edit') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Update;
+          this.uiMode.set(UIMode.Update);
         } else if (x[0].path === 'display') {
-          this.routerID = +x[1].path;
+          this.routerID.set(+x[1].path);
 
-          this.uiMode = UIMode.Display;
+          this.uiMode.set(UIMode.Display);
         }
-        this.currentMode = getUIModeString(this.uiMode);
+        this.currentMode.set(getUIModeString(this.uiMode()));
       }
 
-      switch (this.uiMode) {
+      switch (this.uiMode()) {
         case UIMode.Update:
         case UIMode.Display: {
-          this.isLoadingResults = true;
+          this.isLoadingResults.set(true);
           forkJoin([
             this.storageService.fetchAllOrganizationTypes(),
-            this.storageService.readOrganization(this.routerID),
+            this.storageService.readOrganization(this.routerID()),
           ])
             .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
+              takeUntilDestroyed(this.destroyedRef),
+              finalize(() => this.isLoadingResults.set(false)),
             )
             .subscribe({
               next: (e) => {
-                this.allTypes = e[0];
+                this.allTypes.set(e[0]);
 
                 this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
                 this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
                 this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
                 this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
-                this.listTypes = e[1].Types.slice();
+                this.listTypes.set(e[1].Types.slice());
 
-                if (this.uiMode === UIMode.Display) {
+                if (this.uiMode() === UIMode.Display) {
                   this.detailFormGroup.disable();
-                } else if (this.uiMode === UIMode.Update) {
+                } else if (this.uiMode() === UIMode.Update) {
                   this.detailFormGroup.enable();
                   this.detailFormGroup.get('idControl')?.disable();
                 }
               },
               error: (err) => {
                 ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering OrganizationDetailComponent ngOnInit readOrganization failed ${err}...`,
+                  `AC_HIH_UI [Error]: Entering OrganizationDetailComponent readOrganization failed ${err}...`,
                   ConsoleLogTypeEnum.error,
                 );
                 this.modalService.error({
@@ -154,9 +153,8 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
           this.storageService
             .fetchAllOrganizationTypes()
             .pipe(
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              takeUntil(this._destroyed$!),
-              finalize(() => (this.isLoadingResults = false)),
+              takeUntilDestroyed(this.destroyedRef),
+              finalize(() => this.isLoadingResults.set(false)),
             )
             .subscribe({
               next: (rtndata) => {
@@ -164,7 +162,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
                   `AC_HIH_UI [Debug]: Entering OrganizationDetailComponent onInit fetchAllOrganizationTypes.`,
                   ConsoleLogTypeEnum.debug,
                 );
-                this.allTypes = rtndata;
+                this.allTypes.set(rtndata);
                 this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
               },
               error: (err) => {
@@ -184,30 +182,14 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering OrganizationDetailComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
-  }
-
   onAssignType(): void {
-    this.listTypes = [...this.listTypes, new OrganizationType()];
+    this.listTypes.update((arr) => [...arr, new OrganizationType()]);
   }
   onRemoveTypeAssignment(tid: number): void {
-    const ntypeidx = this.listTypes.findIndex((p) => p.ID === tid);
-    if (ntypeidx !== -1) {
-      this.listTypes.splice(ntypeidx, 1);
-      this.listTypes = [...this.listTypes];
-    }
+    this.listTypes.update((arr) => arr.filter((p) => p.ID !== tid));
   }
   onTypeModeChanged(tid: SafeAny) {
-    const tidx = this.allTypes.findIndex((p) => p.ID === +tid);
+    const tidx = this.allTypes().findIndex((p) => p.ID === +tid);
     if (tidx !== -1) {
       // TBD
     } else {
@@ -225,14 +207,13 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
-    objtbo.Types = this.listTypes.slice();
+    objtbo.Types = this.listTypes().slice();
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
 
-    if (this.uiMode === UIMode.Create) {
+    if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createOrganization(objtbo)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .pipe(takeUntil(this._destroyed$!))
+        .pipe(takeUntilDestroyed(this.destroyedRef))
         .subscribe({
           next: (e) => {
             // Succeed.
@@ -250,7 +231,7 @@ export class OrganizationDetailComponent implements OnInit, OnDestroy {
             });
           },
         });
-    } else if (this.uiMode === UIMode.Update) {
+    } else if (this.uiMode() === UIMode.Update) {
       objtbo.ID = this.detailFormGroup.get('idControl')?.value;
     }
   }

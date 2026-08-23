@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { NzCalendarModule } from 'ng-zorro-antd/calendar';
 
@@ -12,7 +11,7 @@ describe('EventComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, NoopAnimationsModule, NzCalendarModule],
+      imports: [FormsModule, NzCalendarModule],
       providers: [{ provide: NZ_I18N, useValue: en_US }],
     }).compileComponents();
   });

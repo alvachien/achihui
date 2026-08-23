@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { BehaviorSubject } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { UIMode } from 'actslib';
@@ -20,7 +19,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentHeaderComponent', () => {
   let component: DocumentHeaderComponent;
@@ -37,7 +36,7 @@ describe('DocumentHeaderComponent', () => {
 
   beforeEach(async () => {
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     const uiServiceStub: Partial<UIStatusService> = {};
     const routerSpy = createSpyObj('Router', ['navigate']);
 
@@ -47,7 +46,6 @@ describe('DocumentHeaderComponent', () => {
         FormsModule,
 
         ReactiveFormsModule,
-        NoopAnimationsModule,
         getTranslocoModule(),
         NzFormModule,
         NzSelectModule,
@@ -61,7 +59,7 @@ describe('DocumentHeaderComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: Router, useValue: routerSpy },
         { provide: NZ_I18N, useValue: en_US },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

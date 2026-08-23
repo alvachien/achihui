@@ -1,10 +1,9 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
@@ -28,7 +27,7 @@ import {
 } from '../../../../model';
 import { AccountMonthOnMonthReportComponent } from './account-month-on-month-report.component';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('AccountMonthOnMonthReportComponent', () => {
   let component: AccountMonthOnMonthReportComponent;
@@ -60,27 +59,20 @@ describe('AccountMonthOnMonthReportComponent', () => {
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllAccountCategoriesSpy = storageService.fetchAllAccountCategories.and.returnValue(of([]));
     fetchReportByAccountMoMSpy = storageService.fetchReportByAccountMoM.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        NgxEchartsModule.forRoot({ echarts }),
-
-        RouterTestingModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [NgxEchartsModule.forRoot({ echarts }), RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: FinanceOdataService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -169,7 +161,7 @@ describe('AccountMonthOnMonthReportComponent', () => {
     });
 
     it('should not show data before OnInit', () => {
-      expect(component.arUIAccounts.length).toEqual(0);
+      expect(component.arUIAccounts().length).toEqual(0);
     });
 
     it('should show data after OnInit', async () => {
@@ -179,7 +171,7 @@ describe('AccountMonthOnMonthReportComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.arUIAccounts.length).toBeGreaterThan(0);
+      expect(component.arUIAccounts().length).toBeGreaterThan(0);
 
       component.selectedAccountID = fakeData.finAccounts[0].Id ?? 0;
       component.selectedPeriod = financePeriodLast3Months;
@@ -197,7 +189,7 @@ describe('AccountMonthOnMonthReportComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      expect(component.arUIAccounts.length).toBeGreaterThan(0);
+      expect(component.arUIAccounts().length).toBeGreaterThan(0);
 
       component.selectedAccountID = fakeData.finAccounts[0].Id ?? 0;
       component.selectedPeriod = financePeriodLast6Months;

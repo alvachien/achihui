@@ -1,11 +1,10 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper } from '../../../../../testing';
@@ -15,7 +14,7 @@ import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService 
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { UserAuthInfo } from '@model/index';
 import { SafeAny } from '@common/any';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('DocumentChangeDespDialogComponent', () => {
   let component: DocumentChangeDespDialogComponent;
@@ -37,22 +36,14 @@ describe('DocumentChangeDespDialogComponent', () => {
 
     storageService = createSpyObj('FinanceOdataService', ['changeDocumentDespViaPatch']);
     changeDocumentDespViaPatchSpy = storageService.changeDocumentDespViaPatch.and.returnValue(of([]));
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
     homeServiceStub.ChosedHome = fakeData.chosedHome;
   });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       // declarations moved to imports
-      imports: [
-        FormsModule,
-
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        BrowserDynamicTestingModule,
-        RouterTestingModule,
-        getTranslocoModule(),
-      ],
+      imports: [FormsModule, ReactiveFormsModule, RouterTestingModule, getTranslocoModule()],
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeServiceStub },
@@ -69,7 +60,7 @@ describe('DocumentChangeDespDialogComponent', () => {
             }),
           deps: [NzModalService],
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
@@ -86,8 +77,8 @@ describe('DocumentChangeDespDialogComponent', () => {
   });
 
   it('should set form values from inputs on init', () => {
-    component.documentid = 456;
-    component.documentdesp = 'Test description';
+    fixture.componentRef.setInput('documentid', 456);
+    fixture.componentRef.setInput('documentdesp', 'Test description');
     fixture.detectChanges();
     expect(component.headerFormGroup.get('despControl')?.value).toBe('Test description');
   });
@@ -99,12 +90,12 @@ describe('DocumentChangeDespDialogComponent', () => {
 
   it('should return true for isSubmittedDisabled when isSubmitting is true', () => {
     component.headerFormGroup.get('despControl')?.setValue('Some description');
-    component.isSubmitting = true;
+    component.isSubmitting.set(true);
     expect(component.isSubmittedDisabled).toBe(true);
   });
 
   it('should call changeDocumentDespViaPatch on valid submit', () => {
-    component.documentid = 456;
+    fixture.componentRef.setInput('documentid', 456);
     component.headerFormGroup.get('despControl')?.setValue('New description');
     component.onSubmit();
     expect(changeDocumentDespViaPatchSpy).toHaveBeenCalled();
@@ -117,12 +108,12 @@ describe('DocumentChangeDespDialogComponent', () => {
   });
 
   it('should reset isSubmitting on submit error', () => {
-    component.documentid = 456;
+    fixture.componentRef.setInput('documentid', 456);
     component.headerFormGroup.get('despControl')?.setValue('New description');
     changeDocumentDespViaPatchSpy.and.returnValue({
       subscribe: (callbacks: SafeAny) => callbacks.error?.('server error'),
     });
     component.onSubmit();
-    expect(component.isSubmitting).toBe(false);
+    expect(component.isSubmitting()).toBe(false);
   });
 });

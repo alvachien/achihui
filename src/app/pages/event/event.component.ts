@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NzCalendarMode, NzCalendarModule } from 'ng-zorro-antd/calendar';
@@ -7,6 +7,7 @@ import { NzCalendarMode, NzCalendarModule } from 'ng-zorro-antd/calendar';
   selector: 'hih-event',
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, FormsModule, NzCalendarModule, RouterModule],
 })
 export class EventComponent {

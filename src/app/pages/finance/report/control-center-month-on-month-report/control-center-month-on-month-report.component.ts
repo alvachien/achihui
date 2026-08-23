@@ -1,6 +1,14 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ReplaySubject, takeUntil } from 'rxjs';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
 import { EChartsOption } from 'echarts';
@@ -30,6 +38,7 @@ import { SafeAny } from '@common/any';
   selector: 'hih-control-center-month-on-month-report',
   templateUrl: './control-center-month-on-month-report.component.html',
   styleUrls: ['./control-center-month-on-month-report.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -42,10 +51,11 @@ import { SafeAny } from '@common/any';
     TranslocoModule,
   ],
 })
-export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
+export class ControlCenterMonthOnMonthReportComponent implements OnInit {
   private readonly odataService = inject(FinanceOdataService);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent constructor...',
@@ -54,7 +64,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
   }
 
   arControlCenters: ControlCenter[] = [];
-  availableControlCenters: NzCascaderOption[] = [];
+  availableControlCenters = signal<NzCascaderOption[]>([]);
   selectedControlCenters: number[] | null = null;
   selectedPeriod = financePeriodLast3Months;
   chartOption: EChartsOption | null = null;
@@ -75,20 +85,18 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
       'AC_HIH_UI [Debug]: Entering ControlCenterMonthOnMonthReportComponent fetchAllControlCenters...',
       ConsoleLogTypeEnum.debug,
     );
-    this._destroyed$ = new ReplaySubject(1);
-
     this.odataService
       .fetchAllControlCenters()
-      .pipe(takeUntil(this._destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val: ControlCenter[]) => {
           this.arControlCenters = val.slice();
-          this.availableControlCenters = [];
+          const arOpts: NzCascaderOption[] = [];
 
           val.forEach((tt) => {
             if (!tt.ParentId) {
               // Root
-              this.availableControlCenters.push({
+              arOpts.push({
                 value: tt.Id,
                 label: tt.Name,
                 children: [],
@@ -97,7 +105,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
             }
           });
 
-          this.availableControlCenters.forEach((root) => {
+          arOpts.forEach((root) => {
             val.forEach((tt) => {
               if (tt.ParentId === root.value) {
                 const level2node: NzCascaderOption = {
@@ -123,6 +131,8 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
               }
             });
           });
+
+          this.availableControlCenters.set(arOpts);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -152,7 +162,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
     const selccid = this.selectedControlCenters![this.selectedControlCenters?.length! - 1];
     this.odataService
       .fetchReportByControlCenterMoM(selccid, this.selectedPeriod, true)
-      .pipe(takeUntil(this._destroyed$!))
+      .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (val: FinanceReportByControlCenterMOM[]) => {
           // Fetch out data
@@ -419,6 +429,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
             ],
             series: arSeries,
           };
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(
@@ -433,12 +444,5 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit, OnDestr
           });
         },
       });
-  }
-  ngOnDestroy(): void {
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
   }
 }

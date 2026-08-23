@@ -1,8 +1,8 @@
+import { signal } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { createSpyObj } from 'testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -21,7 +21,6 @@ import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { UserAuthInfo } from '@model/index';
 import { AuthService, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 
@@ -29,7 +28,7 @@ import { FakeDataHelper, asyncData, getTranslocoModule } from 'testing';
 import { ReconcileByMonthComponent } from './reconcile-by-month.component';
 import { SafeAny } from '@common/any';
 import { of } from 'rxjs';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('ReconcileByMonthComponent', () => {
   let component: ReconcileByMonthComponent;
@@ -47,7 +46,7 @@ describe('ReconcileByMonthComponent', () => {
     fakeData.buildFinConfigData();
     fakeData.buildFinAccounts();
 
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
   });
 
   beforeEach(async () => {
@@ -61,13 +60,12 @@ describe('ReconcileByMonthComponent', () => {
       CurrentMemberInChosedHome: fakeData.chosedHome.Members[0],
     };
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(new UserAuthInfo());
+    authServiceStub.authSubject = signal(new UserAuthInfo());
 
     await TestBed.configureTestingModule({
       // declarations moved to imports
       imports: [
         FormsModule,
-        NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
         NzStepsModule,
@@ -95,7 +93,7 @@ describe('ReconcileByMonthComponent', () => {
         { provide: FinanceOdataService, useValue: odataService },
         { provide: NZ_I18N, useValue: en_US },
         NzModalService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

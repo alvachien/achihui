@@ -1,6 +1,14 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  DestroyRef,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -32,6 +40,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
   selector: 'hih-statement-of-income-expense-month-on-month',
   templateUrl: './statement-of-income-expense-month-on-month.component.html',
   styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -43,9 +52,8 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
     TranslocoModule,
   ],
 })
-export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, OnDestroy {
-  private _destroyed$: ReplaySubject<boolean> | null = null;
-  isLoadingResults = false;
+export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit {
+  isLoadingResults = signal(false);
   excludeTransfer = false;
   selectedPeriod = financePeriodLast3Months;
   reportData: FinanceReportEntryMoM[] = [];
@@ -61,6 +69,10 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
 
   private readonly router = inject(Router);
 
+  private readonly destroyedRef = inject(DestroyRef);
+
+  private readonly cdr = inject(ChangeDetectorRef);
+
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent constructor...',
@@ -75,41 +87,28 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit, On
     );
 
     // Load data
-    this._destroyed$ = new ReplaySubject(1);
     this.onLoadData();
   }
 
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent OnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-      this._destroyed$ = null;
-    }
-  }
   onLoadData(forceReload?: boolean) {
     ModelUtility.writeConsoleLog(
       `AC_HIH_UI [Debug]: Entering StatementOfIncomeExpenseMonthOnMonthComponent onLoadData(${forceReload})...`,
       ConsoleLogTypeEnum.debug,
     );
 
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
 
     this.odataService
       .fetchStatementOfIncomeAndExposeMoM(this.selectedPeriod, this.excludeTransfer, forceReload)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (values: FinanceReportEntryMoM[]) => {
           this.reportData = values.slice();
           this.buildChart();
+          this.cdr.markForCheck();
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

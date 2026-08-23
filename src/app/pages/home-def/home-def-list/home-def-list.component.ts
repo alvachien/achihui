@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { ReplaySubject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -12,11 +11,13 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'hih-home-def-list',
   templateUrl: './home-def-list.component.html',
   styleUrls: ['./home-def-list.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NzSpinModule,
     NzPageHeaderModule,
@@ -28,37 +29,27 @@ import { AuthService, HomeDefOdataService } from '../../../services';
     RouterModule,
   ],
 })
-export class HomeDefListComponent implements OnInit, OnDestroy {
+export class HomeDefListComponent implements OnInit {
   /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-  private _destroyed$: ReplaySubject<boolean> | null = null;
   private readonly authService = inject(AuthService);
   private readonly homeService = inject(HomeDefOdataService);
+  readonly currentHome = computed(() => this.homeService.curHomeSelected());
+  readonly currentMember = computed(() => this.homeService.curHomeMember());
+  readonly IsCurrentHomeChosed = computed(() => !!this.currentHome());
+  readonly IsChildMode = computed(() => !!this.currentHome() && (this.currentMember()?.IsChild ?? false));
+
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);
+  private readonly destroyedRef = inject(DestroyRef);
 
-  isLoadingResults: boolean;
-  public dataSource: HomeDef[] = [];
-
-  get IsCurrentHomeChosed(): boolean {
-    if (this.homeService.ChosedHome) {
-      return true;
-    }
-    return false;
-  }
-  get IsChildMode(): boolean {
-    if (this.homeService.ChosedHome && this.homeService.CurrentMemberInChosedHome) {
-      return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
-    }
-    return false;
-  }
+  isLoadingResults = signal(false);
+  public dataSource = signal<HomeDef[]>([]);
 
   constructor() {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering HomeDefListComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
-
-    this.isLoadingResults = false;
   }
 
   ngOnInit(): void {
@@ -67,20 +58,7 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
       ConsoleLogTypeEnum.debug,
     );
 
-    this._destroyed$ = new ReplaySubject(1);
     this._fetchData();
-  }
-
-  ngOnDestroy(): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering HomeDefListComponent ngOnDestroy...',
-      ConsoleLogTypeEnum.debug,
-    );
-
-    if (this._destroyed$) {
-      this._destroyed$.next(true);
-      this._destroyed$.complete();
-    }
   }
 
   public onChooseHome(row: HomeDef): void {
@@ -90,10 +68,10 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
     );
     this.homeService.ChosedHome = row;
     // Set current home member
-    // const usrid = this.authService.authSubject.value.getUserId();
+    // const usrid = this.authService.authSubject().getUserId();
     // console.debug(usrid);
     this.homeService.ChosedHome.Members.forEach((mem) => {
-      if (mem.User === this.authService.authSubject.value.getUserId()) {
+      if (mem.User === this.authService.authSubject().getUserId()) {
         ModelUtility.writeConsoleLog(
           'AC_HIH_UI [Debug]: Entering HomeDefListComponent onChooseHome, set CurrentMemberInChosedHome...',
           ConsoleLogTypeEnum.debug,
@@ -113,18 +91,17 @@ export class HomeDefListComponent implements OnInit, OnDestroy {
   }
 
   private _fetchData(forceLoad?: boolean): void {
-    this.isLoadingResults = true;
+    this.isLoadingResults.set(true);
 
     this.homeService
       .fetchAllHomeDef(forceLoad)
       .pipe(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        takeUntil(this._destroyed$!),
-        finalize(() => (this.isLoadingResults = false)),
+        takeUntilDestroyed(this.destroyedRef),
+        finalize(() => this.isLoadingResults.set(false)),
       )
       .subscribe({
         next: (arHomeDef: HomeDef[]) => {
-          this.dataSource = arHomeDef;
+          this.dataSource.set(arHomeDef);
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

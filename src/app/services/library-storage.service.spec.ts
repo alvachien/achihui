@@ -1,6 +1,6 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { BehaviorSubject } from 'rxjs';
 
 import { LibraryStorageService } from './library-storage.service';
 import { AuthService } from './auth.service';
@@ -16,7 +16,7 @@ import {
   PersonRole,
 } from '../model';
 import { FakeDataHelper } from '../../testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('LibraryStorageService', () => {
   /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
@@ -33,7 +33,7 @@ describe('LibraryStorageService', () => {
 
   beforeEach(() => {
     const authServiceStub: Partial<AuthService> = {};
-    authServiceStub.authSubject = new BehaviorSubject(fakeData.currentUser);
+    authServiceStub.authSubject = signal(fakeData.currentUser);
     const homeService: Partial<HomeDefOdataService> = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -45,7 +45,7 @@ describe('LibraryStorageService', () => {
         LibraryStorageService,
         { provide: AuthService, useValue: authServiceStub },
         { provide: HomeDefOdataService, useValue: homeService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -699,7 +699,7 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}(2)`;
       });
 
       // Respond with the mock data
@@ -718,7 +718,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.personAPIURL}(2)`;
       });
 
       // respond with a 404 and the error message in the body
@@ -989,7 +989,7 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}(2)`;
       });
 
       // Respond with the mock data
@@ -1008,7 +1008,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.organizationAPIURL}(2)`;
       });
 
       // respond with a 404 and the error message in the body
@@ -1388,7 +1388,7 @@ describe('LibraryStorageService', () => {
 
       // Service should have made one request to GET data from expected URL
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}(2)`;
       });
 
       // Respond with the mock data
@@ -1407,7 +1407,7 @@ describe('LibraryStorageService', () => {
       });
 
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}/2`;
+        return requrl.method === 'DELETE' && requrl.url === `${service.bookAPIURL}(2)`;
       });
 
       // respond with a 404 and the error message in the body
