@@ -6,11 +6,11 @@ export const PERSON_ROUTES: Routes = [
     loadComponent: () => import('./person-list').then((m) => m.PersonListComponent),
   },
   {
-    path: 'person',
-    loadComponent: () => import('./person-list').then((m) => m.PersonListComponent),
+    path: 'create',
+    loadComponent: () => import('./person-detail/').then((m) => m.PersonDetailComponent),
   },
   {
-    path: 'create',
+    path: 'edit/:id',
     loadComponent: () => import('./person-detail/').then((m) => m.PersonDetailComponent),
   },
   {

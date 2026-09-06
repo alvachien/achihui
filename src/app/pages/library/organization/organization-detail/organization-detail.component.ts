@@ -45,12 +45,18 @@ import { SafeAny } from '@common/any';
 })
 export class OrganizationDetailComponent implements OnInit {
   isLoadingResults = signal(false);
+  isSubmitting = signal(false);
   public routerID = signal(-1); // Current object ID in routing
   public currentMode = signal('');
   public uiMode = signal<UIMode>(UIMode.Create);
   detailFormGroup: UntypedFormGroup;
   listTypes = signal<OrganizationType[]>([]);
   allTypes = signal<OrganizationType[]>([]);
+  // The record as loaded from the server. Update-mode saves patch THIS object
+  // instead of a fresh one: the backend PUT applies every column of the body
+  // (SetValues), so fields the edit form does not expose (Detail) must still
+  // carry their loaded value, or they get nulled on save.
+  private originalOrganization: Organization | null = null;
 
   private readonly storageService = inject(LibraryStorageService);
   private readonly activateRoute = inject(ActivatedRoute);
@@ -119,12 +125,13 @@ export class OrganizationDetailComponent implements OnInit {
             .subscribe({
               next: (e) => {
                 this.allTypes.set(e[0]);
+                this.originalOrganization = e[1];
 
                 this.detailFormGroup.get('idControl')?.setValue(e[1].ID);
                 this.detailFormGroup.get('nnameControl')?.setValue(e[1].NativeName);
                 this.detailFormGroup.get('cnameControl')?.setValue(e[1].ChineseName);
                 this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
-                this.listTypes.set(e[1].Types.slice());
+                this.listTypes.set(e[1].Types?.slice() ?? []);
 
                 if (this.uiMode() === UIMode.Display) {
                   this.detailFormGroup.disable();
@@ -185,16 +192,29 @@ export class OrganizationDetailComponent implements OnInit {
   onAssignType(): void {
     this.listTypes.update((arr) => [...arr, new OrganizationType()]);
   }
-  onRemoveTypeAssignment(tid: number): void {
-    this.listTypes.update((arr) => arr.filter((p) => p.ID !== tid));
+  // Rows are removed/replaced by object identity, never by $index: the template
+  // iterates typeTable.data — the CURRENT PAGE slice of the front-paginated
+  // table — so $index does not address the full listTypes() array (an action on
+  // a page-2 row would otherwise hit the page-1 row at the same slot).
+  onRemoveTypeAssignment(row: OrganizationType): void {
+    this.listTypes.update((arr) => arr.filter((p) => p !== row));
   }
-  onTypeModeChanged(tid: SafeAny) {
-    const tidx = this.allTypes().findIndex((p) => p.ID === +tid);
-    if (tidx !== -1) {
-      // TBD
-    } else {
-      // TBD
+  // Syncs the selected type's Name/Comment onto the row when the dropdown changes,
+  // so the displayed columns reflect the user's selection instead of staying stale.
+  onTypeModeChanged(tid: SafeAny, row: OrganizationType): void {
+    const type = this.allTypes().find((p) => p.ID === +tid);
+    if (!type) {
+      return;
     }
+    // Store a COPY, never the shared allTypes() entry itself: the template's
+    // [(ngModel)]="data.ID" writes into the row object, so a shared reference
+    // would corrupt the service-cached dictionary for every consumer.
+    const copy = new OrganizationType();
+    copy.ID = type.ID;
+    copy.HomeID = type.HomeID;
+    copy.Name = type.Name;
+    copy.Comment = type.Comment;
+    this.listTypes.update((arr) => arr.map((p) => (p === row ? copy : p)));
   }
 
   onSave(): void {
@@ -203,7 +223,17 @@ export class OrganizationDetailComponent implements OnInit {
       ConsoleLogTypeEnum.debug,
     );
 
-    const objtbo = new Organization();
+    // Guard: do nothing when the form is invalid (e.g. empty required NativeName),
+    // and prevent duplicate submissions on double-click.
+    if (this.detailFormGroup.invalid || this.isSubmitting()) {
+      return;
+    }
+    this.isSubmitting.set(true);
+
+    // Update mode patches the loaded record (see originalOrganization) so fields
+    // this form does not expose survive the PUT; create mode starts from blank.
+    const objtbo =
+      this.uiMode() === UIMode.Update && this.originalOrganization ? this.originalOrganization : new Organization();
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
@@ -213,7 +243,10 @@ export class OrganizationDetailComponent implements OnInit {
     if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createOrganization(objtbo)
-        .pipe(takeUntilDestroyed(this.destroyedRef))
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
         .subscribe({
           next: (e) => {
             // Succeed.
@@ -232,7 +265,30 @@ export class OrganizationDetailComponent implements OnInit {
           },
         });
     } else if (this.uiMode() === UIMode.Update) {
-      objtbo.ID = this.detailFormGroup.get('idControl')?.value;
+      objtbo.ID = this.routerID();
+      this.storageService
+        .updateOrganization(objtbo)
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
+        .subscribe({
+          next: (e) => {
+            // Succeed.
+            this.router.navigate(['/library/organization/display/' + e.ID.toString()]);
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering OrganizationDetailComponent onSave updateOrganization failed ${err}...`,
+              ConsoleLogTypeEnum.error,
+            );
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
+            });
+          },
+        });
     }
   }
 }

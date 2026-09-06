@@ -61,6 +61,10 @@ export class WelcomeComponent {
   get borrowRecordsImage(): string {
     return `${environment.AppHost}/assets/img/Borrow-records.png`;
   }
+  get readingRecordsImage(): string {
+    // Shares the borrow-records art until a dedicated icon is drawn.
+    return `${environment.AppHost}/assets/img/Borrow-records.png`;
+  }
   get bookSearchImage(): string {
     return `${environment.AppHost}/assets/img/Book-search.png`;
   }
@@ -120,6 +124,9 @@ export class WelcomeComponent {
   }
   onNavigateToLibraryBorrowRecord(): void {
     this.router.navigate(['library', 'borrowrecord']);
+  }
+  onNavigateToLibraryReadingRecord(): void {
+    this.router.navigate(['library', 'readingrecord']);
   }
   onNavigateToLibrarySearch(): void {
     this.router.navigate(['library', 'search']);

@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  LOCALE_ID,
   provideZonelessChangeDetection,
   importProvidersFrom,
   isDevMode,
@@ -11,7 +12,7 @@ import { provideRouter } from '@angular/router';
 import routeConfig from './app.routes';
 import { icons } from './icons-provider';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
-import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
+import { en_US, zh_CN, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import zh from '@angular/common/locales/zh';
@@ -28,18 +29,23 @@ import { provideNzDateFnsAdapter } from 'ng-zorro-antd/core/time';
 registerLocaleData(en);
 registerLocaleData(zh, 'zh-cn');
 
+// Default language is driven by environment.DefaultLanguage ('en' | 'zh').
+const defaultLang = environment.DefaultLanguage === 'zh' ? 'zh' : 'en';
+const isZhDefault = defaultLang === 'zh';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter(routeConfig),
     provideNzIcons(icons),
-    provideNzI18n(en_US),
+    provideNzI18n(isZhDefault ? zh_CN : en_US),
+    { provide: LOCALE_ID, useValue: isZhDefault ? 'zh' : 'en-US' },
     importProvidersFrom(FormsModule),
     provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     provideTransloco({
       config: {
         availableLangs: ['en', 'zh'],
-        defaultLang: 'en',
+        defaultLang,
         // Remove this option if your application doesn't support changing language in runtime.
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),

@@ -88,7 +88,7 @@ export class LocationListComponent implements OnInit {
   }
   public onEdit(pid: number) {
     if (pid) {
-      // TBD.
+      this.router.navigate(['/library/location/edit/' + pid.toString()]);
     }
   }
   public onDelete(pid: number) {
@@ -107,7 +107,7 @@ export class LocationListComponent implements OnInit {
               const sdlg = this.modalService.success({
                 nzTitle: translate('Common.Success'),
               });
-              sdlg.afterClose.subscribe(() => {
+              sdlg.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe(() => {
                 this.dataSet.update((items) => items.filter((p) => p.ID !== pid));
               });
               setTimeout(() => sdlg.destroy(), 1000);

@@ -1,17 +1,53 @@
 <div>
+  <!-- Filter row: the bar (live free-text pre-filter + structured-filter menu,
+       highlighted while any narrowing is in effect) takes the remaining width;
+       the `total | filtered` count sticks to the right end of the row. -->
+  <div class="filter-row">
+    <div class="filter-bar" [class.filter-bar-on]="filterActive()">
+      <input
+        type="text"
+        nz-input
+        class="filter-bar-input"
+        [ngModel]="searchText()"
+        (ngModelChange)="onSearchInput($event)"
+        placeholder="{{ 'Common.Search' | transloco }}"
+      />
+      <nz-divider nzType="vertical"></nz-divider>
+      <button nz-button nzType="link" nz-dropdown [nzDropdownMenu]="menuFilter" [class.filter-bar-active]="hasFilter()">
+        {{ 'Common.Filter' | transloco }}
+        <i nz-icon nzType="down"></i>
+      </button>
+      <nz-dropdown-menu #menuFilter="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="onEditFilter()">{{ filterMenuText() }}</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item [nzDisabled]="!hasFilter()" (click)="onClearFilter()">
+            {{ 'Filter.ClearFilter' | transloco }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <div class="table-count">{{ totalCountAll() }} | {{ filteredCount() }}</div>
+  </div>
   <nz-table
     #tableOrg
     nzShowPagination
     nzShowSizeChanger
-    [nzData]="listAllOrganization()"
+    [nzData]="displayList()"
+    [nzPageIndex]="pageIndex()"
+    (nzPageIndexChange)="pageIndex.set($event)"
     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
   >
     <thead>
       <tr>
         <th [nzChecked]="checked()" [nzIndeterminate]="indeterminate()" (nzCheckedChange)="onAllChecked($event)"></th>
-        <th>ID</th>
-        <th>Native Name</th>
-        <th>Chinese Name</th>
+        <th nzShowSort (nzSortOrderChange)="onSortChange('id', $event)">ID</th>
+        <th nzShowSort (nzSortOrderChange)="onSortChange('nname', $event)">
+          {{ 'Common.NativeName' | transloco }}
+        </th>
+        <th nzShowSort (nzSortOrderChange)="onSortChange('cname', $event)">
+          {{ 'Common.ChineseName' | transloco }}
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -27,6 +63,8 @@
   </nz-table>
 </div>
 <div *nzModalFooter>
-  <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-  <button nz-button nzType="primary" (click)="handleOk()" [disabled]="!isSubmittedAllowed()">Submit</button>
+  <button nz-button nzType="default" (click)="handleCancel()">{{ 'Common.Cancel' | transloco }}</button>
+  <button nz-button nzType="primary" (click)="handleOk()" [disabled]="!isSubmittedAllowed()">
+    {{ 'Common.Submit' | transloco }}
+  </button>
 </div>

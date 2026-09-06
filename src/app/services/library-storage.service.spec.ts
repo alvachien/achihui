@@ -619,6 +619,28 @@ describe('LibraryStorageService', () => {
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
     });
+
+    it('should error when no record matches (stale detail link)', () => {
+      service.readPerson(999).subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toContain('not found');
+          // The thrown "not found" Error must reach the caller verbatim - it must
+          // NOT be re-formatted by the HTTP error helper (yields "undefined undefined").
+          expect(err.toString()).toEqual('Error: Person 999 not found');
+          expect(err.toString()).not.toContain('undefined');
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
+      });
+
+      // Respond with an empty value array - the record does not exist.
+      req.flush({ value: [] });
+    });
   });
 
   // createPerson
@@ -674,6 +696,64 @@ describe('LibraryStorageService', () => {
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  // updatePerson
+  describe('updatePerson', () => {
+    let objdata: Person;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+      objdata = new Person();
+      objdata.ID = 1;
+      objdata.HID = 2;
+      objdata.NativeName = 'test1';
+    });
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('should return expected data', () => {
+      service.updatePerson(objdata).subscribe({
+        next: (data) => {
+          expect(data.ID).toEqual(1);
+          expect(data.NativeName).toEqual('test1');
+        },
+        error: (err) => {
+          // Empty
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === `${service.personAPIURL}(1)`;
+      });
+
+      req.flush(objdata.writeJSONObject());
+    });
+
+    it('should sync the buffered Persons list so cached fetchAllPersons reflects the update', () => {
+      // Prime the buffer with a server fetch.
+      service.fetchAllPersons().subscribe();
+      const getReq: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
+      });
+      getReq.flush({ '@odata.count': 1, value: [{ Id: 1, HomeID: 2, NativeName: 'John' }] });
+
+      service.updatePerson(objdata).subscribe();
+      const putReq: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === `${service.personAPIURL}(1)`;
+      });
+      putReq.flush(objdata.writeJSONObject());
+
+      // Cached read must be served from the buffer (no new request) AND show the saved name.
+      let cached: Person[] = [];
+      service.fetchAllPersons().subscribe((data) => (cached = data));
+      const lingering = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.personAPIURL;
+      });
+      expect(lingering.length, 'buffer hit, no refetch').toEqual(0);
+      expect(cached.length).toEqual(1);
+      expect(cached[0].NativeName).toEqual('test1');
     });
   });
 
@@ -891,6 +971,25 @@ describe('LibraryStorageService', () => {
       req.flush({ value: [objdata] });
     });
 
+    it('should error when no record matches (stale detail link)', () => {
+      service.readOrganization(999).subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toEqual('Error: Organization 999 not found');
+          expect(err.toString()).not.toContain('undefined');
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
+      });
+
+      // Respond with an empty value array - the record does not exist.
+      req.flush({ value: [] });
+    });
+
     it('should return error in case error appear', () => {
       const msg = 'Error 404';
       service.readOrganization(2).subscribe({
@@ -964,6 +1063,44 @@ describe('LibraryStorageService', () => {
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  // updateOrganization
+  describe('updateOrganization', () => {
+    let objdata: Organization;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+      objdata = new Organization();
+      objdata.ID = 1;
+      objdata.HID = 2;
+      objdata.NativeName = 'test-org';
+    });
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('should sync the buffered Organizations list so cached fetchAllOrganizations reflects the update', () => {
+      service.fetchAllOrganizations().subscribe();
+      const getReq: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
+      });
+      getReq.flush({ '@odata.count': 1, value: [{ Id: 1, HomeID: 2, NativeName: 'Old Org' }] });
+
+      service.updateOrganization(objdata).subscribe();
+      const putReq: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === `${service.organizationAPIURL}(1)`;
+      });
+      putReq.flush(objdata.writeJSONObject());
+
+      let cached: Organization[] = [];
+      service.fetchAllOrganizations().subscribe((data) => (cached = data));
+      const lingering = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.organizationAPIURL;
+      });
+      expect(lingering.length, 'buffer hit, no refetch').toEqual(0);
+      expect(cached.length).toEqual(1);
+      expect(cached[0].NativeName).toEqual('test-org');
     });
   });
 
@@ -1181,6 +1318,25 @@ describe('LibraryStorageService', () => {
       req.flush({ value: [objdata] });
     });
 
+    it('should error when no record matches (stale detail link)', () => {
+      service.readLocation(999).subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toEqual('Error: Location 999 not found');
+          expect(err.toString()).not.toContain('undefined');
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
+      });
+
+      // Respond with an empty value array - the record does not exist.
+      req.flush({ value: [] });
+    });
+
     it('should return error in case error appear', () => {
       const msg = 'Error 404';
       service.readLocation(2).subscribe({
@@ -1198,6 +1354,46 @@ describe('LibraryStorageService', () => {
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  // updateLocation
+  describe('updateLocation', () => {
+    let objdata: Location;
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+      objdata = new Location();
+      objdata.ID = 1;
+      objdata.HID = 2;
+      objdata.Name = 'New Shelf';
+      objdata.LocType = LocationTypeEnum.EBook;
+    });
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('should sync the buffered Locations list so cached fetchAllLocations reflects the update', () => {
+      service.fetchAllLocations().subscribe();
+      const getReq: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
+      });
+      getReq.flush({ '@odata.count': 1, value: [{ Id: 1, HomeID: 2, Name: 'Old Shelf' }] });
+
+      service.updateLocation(objdata).subscribe();
+      const putReq: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === `${service.locationAPIURL}(1)`;
+      });
+      putReq.flush(objdata.writeJSONObject());
+
+      let cached: Location[] = [];
+      service.fetchAllLocations().subscribe((data) => (cached = data));
+      const lingering = httpTestingController.match((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.locationAPIURL;
+      });
+      expect(lingering.length, 'buffer hit, no refetch').toEqual(0);
+      expect(cached.length).toEqual(1);
+      expect(cached[0].Name).toEqual('New Shelf');
+      expect(cached[0].LocType).toEqual(LocationTypeEnum.EBook);
     });
   });
 
@@ -1260,6 +1456,25 @@ describe('LibraryStorageService', () => {
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
     });
+
+    it('composes scope, structured filter fragment and search into $filter', () => {
+      service.fetchBooks(10, 0, undefined, 'abc', 'PublishedYear gt 1990').subscribe(() => {
+        /* response flushed below, assertions here touch the request */
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+
+      // Free-text search is case-insensitive: tolower() wraps BOTH sides of each
+      // contains() (SQLite instr() is case-sensitive otherwise).
+      expect(req.request.params.get('$filter')).toEqual(
+        `HomeID eq ${fakeData.chosedHome.ID} and (PublishedYear gt 1990) and ` +
+          `(contains(tolower(NativeName),tolower('abc')) or contains(tolower(ChineseName),tolower('abc')))`,
+      );
+
+      req.flush({ '@odata.count': 0, value: [] });
+    });
   });
 
   describe('readBoook', () => {
@@ -1297,6 +1512,25 @@ describe('LibraryStorageService', () => {
 
       // Respond with the mock data
       req.flush({ value: [objdata.writeJSONObject()] });
+    });
+
+    it('should error when no record matches (stale detail link)', () => {
+      service.readBook(999).subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toEqual('Error: Book 999 not found');
+          expect(err.toString()).not.toContain('undefined');
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+
+      // Respond with an empty value array - the record does not exist.
+      req.flush({ value: [] });
     });
 
     it('should return error in case error appear', () => {

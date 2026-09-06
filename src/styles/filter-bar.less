@@ -1,0 +1,78 @@
+// Shared filter-bar styling for the library list pages and selection dialogs
+// (book-list, person-list, organization-list, person-selection-dlg,
+// organization-selection-dlg). Single source: import from each component's
+// .less via `@import 'filter-bar';` (src/styles is on stylePreprocessorOptions
+// includePaths). Changing it here updates every consumer at once.
+
+// Filter row between the page header and the table: the bar takes the
+// remaining width, the `total | filtered` count sticks to the right end.
+.filter-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+// Filter bar: a bordered box around the free-text pre-filter (live) +
+// the structured-filter menu.
+.filter-bar {
+  display: inline-flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  // nowrap is load-bearing: .ant-input's width:100% makes the input's flex
+  // base the bar's whole width, and a wrapping flex container lines items by
+  // their pre-shrink size — with wrap the input takes line 1 alone and the
+  // Filter trigger drops to a second row. nowrap shrinks the input instead.
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+.filter-bar-input {
+  min-width: 200px;
+  flex: 1 1 auto;
+  border: none;
+  box-shadow: none; // neutralize the nz-input focus ring inside the box
+  padding-left: 0;
+}
+
+// Bold the Filter trigger while a structured filter is active.
+.filter-bar-active {
+  font-weight: 600;
+}
+
+// Active-filter indicator: highlight the whole bar while any narrowing
+// (free-text pre-filter or structured filter) is in effect; resets when off.
+.filter-bar-on {
+  border-color: #1890ff;
+  background: #e6f7ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.15);
+}
+
+// `total | filtered` record counts at the right end of the filter row.
+.table-count {
+  flex: 0 0 auto;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+// Dark theme (html.dark, toggled by ThemeService): the colors above are
+// black-based and vanish on the dark background — mirror them white-based,
+// and replace the active-bar pale-blue fill with a translucent tint.
+:host-context(html.dark) {
+  .filter-bar {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .filter-bar-on {
+    background: rgba(24, 144, 255, 0.15);
+  }
+
+  .table-count {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}

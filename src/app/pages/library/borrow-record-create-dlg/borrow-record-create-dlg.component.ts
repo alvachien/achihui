@@ -13,7 +13,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { map } from 'rxjs';
 
 import { Book, BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
-import { LibraryStorageService } from '@services/index';
+import { AuthService, HomeDefOdataService, LibraryStorageService } from '@services/index';
 import { BookSelectionDlgComponent } from '../book-selection-dlg';
 import { OrganizationSelectionDlgComponent } from '../organization-selection-dlg';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -70,6 +70,10 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
   private readonly viewContainerRef = inject(ViewContainerRef);
 
   private readonly storageService = inject(LibraryStorageService);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly homeService = inject(HomeDefOdataService);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -161,6 +165,12 @@ export class BorrowRecordCreateDlgComponent implements OnInit {
     record.FromDate = new Date(startdt);
     record.ToDate = new Date(enddt);
     record.HasReturned = this.detailFormGroup.get('hasRtnedControl')?.value;
+
+    // Stamp ownership before verifying: onVerify requires HomeID and User, and
+    // the service re-stamps them identically on create (idempotent). Without
+    // this the verification below always failed and Submit silently did nothing.
+    record.HID = this.homeService.ChosedHome?.ID ?? 0;
+    record.User = this.authService.authSubject().getUserId() ?? '';
 
     if (!record.onVerify()) {
       ModelUtility.writeConsoleLog(

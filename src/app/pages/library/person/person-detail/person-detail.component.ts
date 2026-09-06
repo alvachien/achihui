@@ -19,6 +19,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 import { ModelUtility, ConsoleLogTypeEnum, getUIModeString, Person, PersonRole } from '@model/index';
 import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { SafeAny } from '@common/any';
 
 @Component({
   selector: 'hih-person-detail',
@@ -44,6 +45,7 @@ import { HomeDefOdataService, LibraryStorageService } from '@services/index';
 })
 export class PersonDetailComponent implements OnInit {
   isLoadingResults = signal(false);
+  isSubmitting = signal(false);
   public routerID = signal(-1); // Current object ID in routing
   public currentMode = signal('');
   public uiMode = signal<UIMode>(UIMode.Create);
@@ -127,7 +129,7 @@ export class PersonDetailComponent implements OnInit {
                 this.detailFormGroup.get('chnIsNativeControl')?.setValue(e[1].ChineseIsNative);
                 this.detailFormGroup.get('detailControl')?.setValue(e[1].Detail);
                 if (e[1].Roles) {
-                  this.listRoles.set(e[1].Roles.slice());
+                  this.listRoles.set(e[1].Roles?.slice() ?? []);
                 }
 
                 if (this.uiMode() === UIMode.Display) {
@@ -190,8 +192,29 @@ export class PersonDetailComponent implements OnInit {
   onAssignRole(): void {
     this.listRoles.update((arr) => [...arr, new PersonRole()]);
   }
-  onRemoveRoleAssignment(rid: number): void {
-    this.listRoles.update((arr) => arr.filter((p) => p.ID !== rid));
+  // Rows are removed/replaced by object identity, never by $index: the template
+  // iterates roleTable.data — the CURRENT PAGE slice of the front-paginated
+  // table — so $index does not address the full listRoles() array (an action on
+  // a page-2 row would otherwise hit the page-1 row at the same slot).
+  onRemoveRoleAssignment(row: PersonRole): void {
+    this.listRoles.update((arr) => arr.filter((p) => p !== row));
+  }
+  // Syncs the selected role's Name/Comment onto the row when the dropdown changes,
+  // so the displayed columns reflect the user's selection instead of staying stale.
+  onRoleModeChanged(rid: SafeAny, row: PersonRole): void {
+    const role = this.allRoles().find((p) => p.ID === +rid);
+    if (!role) {
+      return;
+    }
+    // Store a COPY, never the shared allRoles() entry itself: the template's
+    // [(ngModel)]="data.ID" writes into the row object, so a shared reference
+    // would corrupt the service-cached dictionary for every consumer.
+    const copy = new PersonRole();
+    copy.ID = role.ID;
+    copy.HomeID = role.HomeID;
+    copy.Name = role.Name;
+    copy.Comment = role.Comment;
+    this.listRoles.update((arr) => arr.map((p) => (p === row ? copy : p)));
   }
 
   onSave(): void {
@@ -200,17 +223,28 @@ export class PersonDetailComponent implements OnInit {
       ConsoleLogTypeEnum.debug,
     );
 
+    // Guard: do nothing when the form is invalid (e.g. empty required NativeName),
+    // and prevent duplicate submissions on double-click.
+    if (this.detailFormGroup.invalid || this.isSubmitting()) {
+      return;
+    }
+    this.isSubmitting.set(true);
+
     const objtbo = new Person();
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
+    objtbo.Detail = this.detailFormGroup.get('detailControl')?.value;
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
     objtbo.Roles = this.listRoles().slice();
 
     if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createPerson(objtbo)
-        .pipe(takeUntilDestroyed(this.destroyedRef))
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
         .subscribe({
           next: (e) => {
             // Succeed.
@@ -230,7 +264,29 @@ export class PersonDetailComponent implements OnInit {
         });
     } else if (this.uiMode() === UIMode.Update) {
       objtbo.ID = this.routerID();
-      // TBD.
+      this.storageService
+        .updatePerson(objtbo)
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
+        .subscribe({
+          next: (e) => {
+            // Succeed.
+            this.router.navigate(['/library/person/display/' + e.ID.toString()]);
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering PersonDetailComponent onSave updatePerson failed ${err}...`,
+              ConsoleLogTypeEnum.error,
+            );
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
+            });
+          },
+        });
     }
   }
 }

@@ -13,6 +13,7 @@ import {
   Person,
   Organization,
   BookBorrowRecord,
+  BookReadingRecord,
 } from './librarymodel';
 
 describe('PersonRole', () => {
@@ -751,5 +752,127 @@ describe('BookBorrowRecord', () => {
     expect(objtbt2.ToDateString).toEqual(objtbt.ToDateString);
     expect(objtbt2.HasReturned).toBe(true);
     expect(objtbt2.Comment).toEqual(objtbt.Comment);
+  });
+});
+
+describe('BookReadingRecord', () => {
+  let objtbt: BookReadingRecord;
+
+  beforeEach(() => {
+    objtbt = new BookReadingRecord();
+  });
+
+  it('onInit', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.BookID = 3;
+    objtbt.User = 'test';
+    objtbt.FromDate = new Date();
+    objtbt.ToDate = addMonths(new Date(), 1);
+    objtbt.onInit();
+    expect(objtbt.ID).toEqual(0);
+    expect(objtbt.HID).toBeFalsy();
+    expect(objtbt.BookID).toBeFalsy();
+    expect(objtbt.User).toEqual('');
+    expect(objtbt.FromDate).toBeFalsy();
+    expect(objtbt.ToDate).toBeFalsy();
+  });
+
+  it('onVerify', () => {
+    objtbt.ID = 1;
+    let vrst = objtbt.onVerify();
+    expect(vrst).toBe(false);
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    objtbt.HID = 2;
+    vrst = objtbt.onVerify();
+    expect(vrst).toBe(false);
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    objtbt.BookID = 21;
+    vrst = objtbt.onVerify();
+    expect(vrst).toBe(false);
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    objtbt.User = 'Test';
+    vrst = objtbt.onVerify();
+    expect(vrst).toBe(true);
+    expect(objtbt.VerifiedMsgs.length).toEqual(0);
+
+    objtbt.FromDate = new Date();
+    objtbt.ToDate = addMonths(new Date(), -2);
+    vrst = objtbt.onVerify();
+    expect(vrst).toBe(false);
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    // Same-day reading is valid: ToDate === FromDate must pass.
+    objtbt.ToDate = objtbt.FromDate;
+    vrst = objtbt.onVerify();
+    expect(vrst).toBe(true);
+    expect(objtbt.VerifiedMsgs.length).toEqual(0);
+
+    objtbt.ToDate = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); // add 1 day
+    vrst = objtbt.onVerify();
+    expect(vrst).toBe(true);
+    expect(objtbt.VerifiedMsgs.length).toEqual(0);
+  });
+
+  it('writeObject and onSetData', () => {
+    objtbt.ID = 1;
+    objtbt.HID = 2;
+    objtbt.BookID = 3;
+    objtbt.User = 'test';
+    objtbt.FromDate = new Date();
+    objtbt.ToDate = addMonths(new Date(), 1);
+    objtbt.Comment = 'test';
+    const jsonobj = objtbt.writeJSONObject();
+    // Wire names the API binder expects (OData property names of the C# entity).
+    expect(jsonobj.HomeID).toEqual(2);
+    expect(jsonobj.BookId).toEqual(3);
+    const objtbt2 = new BookReadingRecord();
+    objtbt2.onSetData(jsonobj);
+    expect(objtbt2.ID).toEqual(objtbt.ID);
+    expect(objtbt2.HID).toEqual(objtbt.HID);
+    expect(objtbt2.BookID).toEqual(objtbt.BookID);
+    expect(objtbt2.User).toEqual(objtbt.User);
+    expect(objtbt2.FromDateString).toEqual(objtbt.FromDateString);
+    expect(objtbt2.ToDateString).toEqual(objtbt.ToDateString);
+    expect(objtbt2.Comment).toEqual(objtbt.Comment);
+  });
+
+  it('writeJSONObject omits Id on a fresh record', () => {
+    objtbt.HID = 2;
+    objtbt.BookID = 3;
+    objtbt.User = 'test';
+    const jsonobj = objtbt.writeJSONObject();
+    expect(jsonobj.Id).toBeUndefined();
+  });
+
+  it('onSetData parses bare Edm.Date strings to local midnight', () => {
+    // Regression: a bare 'yyyy-MM-dd' parsed straight by new Date() lands on
+    // UTC midnight and can render the previous day - the model must anchor it
+    // to local midnight.
+    objtbt.onSetData({
+      Id: 3,
+      HomeID: 1,
+      BookId: 2,
+      User: 'u',
+      FromDate: '2026-09-01',
+      ToDate: '2026-09-10',
+      Comment: 'c',
+    });
+    expect(objtbt.ID).toEqual(3);
+    expect(objtbt.BookID).toEqual(2);
+    expect(objtbt.FromDate!.getTime()).toEqual(new Date(2026, 8, 1).getTime());
+    expect(objtbt.ToDate!.getTime()).toEqual(new Date(2026, 8, 10).getTime());
+    expect(objtbt.Comment).toEqual('c');
+  });
+
+  it('onSetData tolerates full ISO timestamps', () => {
+    objtbt.onSetData({
+      FromDate: '2026-09-01T00:00:00+08:00',
+    });
+    expect(objtbt.FromDate).toBeTruthy();
+    expect(objtbt.FromDate!.getFullYear()).toEqual(2026);
   });
 });

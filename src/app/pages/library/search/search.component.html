@@ -1,5 +1,9 @@
-<nz-result nzStatus="404" nzTitle="404" nzSubTitle="Sorry, the page you visited still under construction.">
+<nz-result
+  nzStatus="404"
+  [nzTitle]="'Common.PageNotFoundHeader' | transloco"
+  [nzSubTitle]="'Library.SearchUnderConstruction' | transloco"
+>
   <div nz-result-extra>
-    <button nz-button nzType="primary">OK</button>
+    <button nz-button nzType="primary">{{ 'Common.OK' | transloco }}</button>
   </div>
 </nz-result>

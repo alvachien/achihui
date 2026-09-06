@@ -21,7 +21,7 @@ import {
   ActivatedRouteUrlStub,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, HomeDefOdataService, LibraryStorageService } from '../../../../services';
-import { UserAuthInfo, Person } from '../../../../model';
+import { UserAuthInfo, Person, PersonRole } from '../../../../model';
 import { PersonDetailComponent } from './person-detail.component';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
@@ -38,6 +38,8 @@ describe('PersonDetailComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let createPersonSpy: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let updatePersonSpy: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let activatedRouteStub: any;
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
@@ -50,10 +52,16 @@ describe('PersonDetailComponent', () => {
     fakeData.buildChosedHome();
     fakeData.buildPersonRoles();
 
-    storageService = createSpyObj('LibraryStorageService', ['fetchAllPersonRoles', 'readPerson', 'createPerson']);
+    storageService = createSpyObj('LibraryStorageService', [
+      'fetchAllPersonRoles',
+      'readPerson',
+      'createPerson',
+      'updatePerson',
+    ]);
     fetchAllPersonRolesSpy = storageService.fetchAllPersonRoles.and.returnValue(of([]));
     readPersonSpy = storageService.readPerson.and.returnValue(of({}));
     createPersonSpy = storageService.createPerson.and.returnValue(of({}));
+    updatePersonSpy = storageService.updatePerson.and.returnValue(of({}));
     homeService = {
       ChosedHome: fakeData.chosedHome,
       MembersInChosedHome: fakeData.chosedHome.Members,
@@ -106,6 +114,7 @@ describe('PersonDetailComponent', () => {
       const nrole = new Person();
       nrole.ID = 2;
       fetchAllPersonRolesSpy.and.returnValue(asyncData(fakeData.personRoles));
+      createPersonSpy.mockClear();
       createPersonSpy.and.returnValue(asyncData(nrole));
     });
 
@@ -150,6 +159,41 @@ describe('PersonDetailComponent', () => {
 
       await new Promise<void>((r) => setTimeout(r, 0));
     });
+
+    it('form is invalid when required NativeName is empty', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('');
+      component.detailFormGroup.markAsDirty();
+
+      expect(component.detailFormGroup.valid).toBe(false);
+    });
+
+    it('onSave does not call createPerson when form is invalid', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('');
+      component.detailFormGroup.markAsDirty();
+
+      component.onSave();
+
+      expect(createPersonSpy).not.toHaveBeenCalled();
+    });
+
+    it('form is invalid when NativeName exceeds 100 characters', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('x'.repeat(101));
+      component.detailFormGroup.markAsDirty();
+
+      expect(component.detailFormGroup.valid).toBe(false);
+    });
   });
 
   describe('display mode', () => {
@@ -190,9 +234,10 @@ describe('PersonDetailComponent', () => {
       nrole.ID = 2;
       fetchAllPersonRolesSpy.and.returnValue(asyncData(fakeData.personRoles));
       readPersonSpy.and.returnValue(asyncData(nrole));
+      updatePersonSpy.and.returnValue(asyncData(nrole));
     });
 
-    it('display mode init without error', async () => {
+    it('edit mode init without error', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -204,6 +249,117 @@ describe('PersonDetailComponent', () => {
       expect(component.isEditable).toBeTruthy();
 
       await new Promise<void>((r) => setTimeout(r, 0));
+    });
+
+    it('edit mode with valid data calls updatePerson', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
+      component.detailFormGroup.markAsDirty();
+
+      expect(component.detailFormGroup.valid).toBe(true);
+
+      const routerstub = TestBed.inject(Router);
+      vi.spyOn(routerstub, 'navigate');
+
+      // Submit
+      component.onSave();
+
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(routerstub.navigate).toHaveBeenCalled();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/library/person/display/2']);
+      expect(updatePersonSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('role rows', () => {
+    let roles: PersonRole[];
+    const mkRole = (id: number): PersonRole => {
+      const r = new PersonRole();
+      r.ID = id;
+      r.Name = 'Role ' + id;
+      r.Comment = 'Comment ' + id;
+      return r;
+    };
+
+    beforeEach(() => {
+      roles = [mkRole(1), mkRole(2), mkRole(3)];
+      activatedRouteStub.setURL([new UrlSegment('create', {})] as UrlSegment[]);
+      fetchAllPersonRolesSpy.and.returnValue(asyncData(roles));
+    });
+
+    it('onRoleModeChanged stores a copy and leaves the cached dictionary untouched', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.onAssignRole();
+      const row = component.listRoles()[0];
+      const cached = roles[0];
+
+      component.onRoleModeChanged(cached.ID, row);
+      const stored = component.listRoles()[0];
+      expect(stored).not.toBe(cached); // never the shared dictionary instance
+      expect(stored.ID).toBe(1);
+      expect(stored.Name).toEqual('Role 1');
+
+      // Simulate the template's [(ngModel)]="data.ID" writing into the row when
+      // the user switches the dropdown to another role, then the sync handler.
+      stored.ID = 2;
+      component.onRoleModeChanged(2, stored);
+
+      expect(roles[0].ID).toBe(1); // cached Author entry NOT corrupted
+      expect(roles[1].ID).toBe(2); // cached Translator entry unchanged
+      expect(component.listRoles()[0]).not.toBe(roles[1]);
+      expect(component.listRoles()[0].Name).toEqual('Role 2');
+      // Duplicate track keys would break the option list; IDs stay unique.
+      expect(new Set(roles.map((r) => r.ID)).size).toBe(3);
+    });
+
+    it('onRoleModeChanged with an unknown id leaves the row untouched', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.onAssignRole();
+      const row = component.listRoles()[0];
+      component.onRoleModeChanged(999, row);
+      expect(component.listRoles()[0]).toBe(row);
+    });
+
+    it('onRemoveRoleAssignment removes exactly the given row object', () => {
+      const a = mkRole(1);
+      const b = mkRole(2);
+      const c = mkRole(3);
+      component.listRoles.set([a, b, c]);
+
+      component.onRemoveRoleAssignment(b);
+
+      expect(component.listRoles()).toEqual([a, c]);
+    });
+
+    it('onRemoveRoleAssignment by identity is immune to page-slice $index confusion', () => {
+      // Regression guard: with >10 rows the table paginates client-side, so the
+      // template's $index addresses the current PAGE. Identity removal must hit
+      // the exact object no matter its position in the full list.
+      const rows: PersonRole[] = [];
+      for (let i = 1; i <= 12; i++) {
+        rows.push(mkRole(i));
+      }
+      const target = rows[11]; // would sit on page 2 with $index 1
+      component.listRoles.set(rows);
+
+      component.onRemoveRoleAssignment(target);
+
+      expect(component.listRoles().length).toBe(11);
+      expect(component.listRoles()).not.toContain(target);
+      expect(component.listRoles()[0]).toBe(rows[0]); // page-1 row 1 intact
     });
   });
 

@@ -1104,6 +1104,195 @@ export class BookBorrowRecord extends hih.BaseModel {
   }
 }
 
+/**
+ * Book reading record
+ */
+export class BookReadingRecord extends hih.BaseModel {
+  private _id = 0;
+  private _hid?: number;
+  private _bookid?: number;
+  private _user = '';
+  private _from_date: Date | null = null;
+  private _to_date: Date | null = null;
+  private _cmt = '';
+
+  get ID(): number {
+    return this._id;
+  }
+  set ID(id: number) {
+    this._id = id;
+  }
+  get HID(): number {
+    return this._hid ?? 0;
+  }
+  set HID(hid: number) {
+    this._hid = hid;
+  }
+  get BookID(): number {
+    return this._bookid ?? 0;
+  }
+  set BookID(bid: number) {
+    this._bookid = bid;
+  }
+  get User(): string {
+    return this._user;
+  }
+  set User(usr: string) {
+    this._user = usr;
+  }
+  get FromDate(): Date | null {
+    return this._from_date;
+  }
+  set FromDate(fdt: Date | null) {
+    this._from_date = fdt;
+  }
+  get ToDate(): Date | null {
+    return this._to_date;
+  }
+  set ToDate(tdt: Date | null) {
+    this._to_date = tdt;
+  }
+  get Comment(): string {
+    return this._cmt;
+  }
+  set Comment(dsp: string) {
+    this._cmt = dsp;
+  }
+
+  constructor() {
+    super();
+
+    this.initCore();
+  }
+
+  get FromDateString(): string {
+    if (this._from_date) {
+      return format(this._from_date, hih.dateFormat);
+    }
+    return '';
+  }
+  get ToDateString(): string {
+    if (this._to_date) {
+      return format(this._to_date, hih.dateFormat);
+    }
+    return '';
+  }
+  private initCore(): void {
+    this._id = 0;
+    this._hid = undefined;
+    this._bookid = undefined;
+    this._user = '';
+    this._from_date = null;
+    this._to_date = null;
+    this._cmt = '';
+  }
+  public override onInit() {
+    super.onInit();
+
+    this.initCore();
+  }
+
+  public override onVerify(context?: SafeAny): boolean {
+    let vrst = super.onVerify(context);
+    if (vrst) {
+      if (!this._hid) {
+        vrst = false;
+        const msg = new hih.InfoMessage(hih.MessageType.Error, 'HomeID is must', 'HomeID is must');
+        this.VerifiedMsgs.push(msg);
+      }
+
+      if (!this._bookid) {
+        vrst = false;
+        const msg = new hih.InfoMessage(hih.MessageType.Error, 'BookID is must', 'BookID is must');
+        this.VerifiedMsgs.push(msg);
+      }
+
+      if (!this._user) {
+        vrst = false;
+        const msg = new hih.InfoMessage(hih.MessageType.Error, 'User is must', 'User is must');
+        this.VerifiedMsgs.push(msg);
+      }
+
+      if (this._from_date !== null && this._to_date !== null) {
+        // Equal dates are valid: a same-day reading is allowed.
+        if (isAfter(this._from_date, this._to_date)) {
+          vrst = false;
+          const msg = new hih.InfoMessage(
+            hih.MessageType.Error,
+            'ToDate must not be earlier than FromDate',
+            'ToDate must not be earlier than FromDate',
+          );
+          this.VerifiedMsgs.push(msg);
+        }
+      }
+    }
+    return vrst;
+  }
+
+  public override writeJSONObject(): SafeAny {
+    const rstobj = super.writeJSONObject();
+    if (this._id > 0) {
+      rstobj.Id = this._id;
+    }
+    if (this._hid) {
+      rstobj.HomeID = this._hid;
+    }
+    if (this._bookid) {
+      rstobj.BookId = this._bookid;
+    }
+    if (this._user) {
+      rstobj.User = this._user;
+    }
+    if (this._from_date) {
+      rstobj.FromDate = format(this._from_date, hih.dateFormat);
+    }
+    if (this._to_date) {
+      rstobj.ToDate = format(this._to_date, hih.dateFormat);
+    }
+    if (this._cmt) {
+      rstobj.Comment = this._cmt;
+    }
+
+    return rstobj;
+  }
+  public override onSetData(data: SafeAny): void {
+    super.onSetData(data);
+    if (data && data.Id) {
+      this.ID = data.Id;
+    }
+    if (data && data.HomeID) {
+      this.HID = data.HomeID;
+    }
+    if (data && data.BookId) {
+      this.BookID = data.BookId;
+    }
+    if (data && data.User) {
+      this.User = data.User;
+    }
+    if (data && data.FromDate) {
+      this.FromDate = BookReadingRecord.parseWireDate(data.FromDate);
+    }
+    if (data && data.ToDate) {
+      this.ToDate = BookReadingRecord.parseWireDate(data.ToDate);
+    }
+    if (data && data.Comment) {
+      this.Comment = data.Comment;
+    }
+  }
+
+  /// The API sends these dates as Edm.Date (bare `yyyy-MM-dd`, see the
+  /// `.AsDate()` registration in EdmModelBuilder) or, depending on the server
+  /// side, full ISO timestamps. A bare date string would be parsed as UTC
+  /// midnight by the Date constructor and can render one day earlier for
+  /// negative-offset users - anchor it to local midnight; parse full
+  /// timestamps as-is.
+  private static parseWireDate(value: unknown): Date | null {
+    const s = String(value);
+    const dt = new Date(s.length === 10 ? `${s}T00:00:00` : s);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+}
+
 export interface MovieGenreJson {
   id: number;
   hid?: number;

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -30,6 +30,23 @@ export class BookCategoryListComponent implements OnInit {
       'AC_HIH_UI [Debug]: Entering BookCategoryListComponent constructor...',
       ConsoleLogTypeEnum.debug,
     );
+  }
+
+  /** id → raw Name, so the Parent column can resolve a category's parent */
+  private readonly namesById = computed(() => {
+    const map = new Map<number, string>();
+    for (const category of this.dataSet()) {
+      map.set(category.ID, category.Name);
+    }
+    return map;
+  });
+
+  /** raw parent Name (rendered through the same translate pipe as Name) */
+  parentName(category: BookCategory): string {
+    if (category.ParentID === null || category.ParentID === undefined) {
+      return '';
+    }
+    return this.namesById().get(category.ParentID) ?? '';
   }
 
   ngOnInit() {
