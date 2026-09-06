@@ -1,0 +1,82 @@
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'" [nzTip]="'Common.Loading' | transloco">
+  <nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>{{ 'Nav.LibraryTrace' | transloco }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{ 'Library.ReadingRecords' | transloco }}</nz-page-header-title>
+    <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <a nz-button nzType="link" (click)="onCreate()">{{ 'Common.Create' | transloco }}</a>
+    </nz-page-header-extra>
+  </nz-page-header>
+  <!-- Filter row: the bar (live free-text pre-filter, debounced refetch per
+       keystroke + structured-filter menu, highlighted while any narrowing is in
+       effect) takes the remaining width; the `total | filtered` count sticks to
+       the right end of the row. -->
+  <div class="filter-row">
+    <div class="filter-bar" [class.filter-bar-on]="filterActive()">
+      <input
+        type="text"
+        nz-input
+        class="filter-bar-input"
+        [ngModel]="searchText()"
+        (ngModelChange)="onSearchInput($event)"
+        placeholder="{{ 'Common.Search' | transloco }}"
+      />
+      <nz-divider nzType="vertical"></nz-divider>
+      <button nz-button nzType="link" nz-dropdown [nzDropdownMenu]="menuFilter" [class.filter-bar-active]="hasFilter()">
+        {{ 'Common.Filter' | transloco }}
+        <i nz-icon nzType="down"></i>
+      </button>
+      <nz-dropdown-menu #menuFilter="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="onEditFilter()">{{ filterMenuText() }}</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item [nzDisabled]="!hasFilter()" (click)="onClearFilter()">
+            {{ 'Filter.ClearFilter' | transloco }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <div class="table-count">{{ totalCountAll() }} | {{ totalCount() }}</div>
+  </div>
+  <nz-table
+    #basicTable
+    nzShowSizeChanger
+    [nzData]="dataSet()"
+    [nzFrontPagination]="false"
+    [nzTotal]="totalCount()"
+    [nzPageSize]="pageSize()"
+    [nzPageIndex]="pageIndex()"
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
+    <thead>
+      <tr>
+        <th nzShowSort nzSortKey="id">ID</th>
+        <th>{{ 'Library.Book' | transloco }}</th>
+        <th>{{ 'Library.Reader' | transloco }}</th>
+        <th>{{ 'Common.StartDate' | transloco }}</th>
+        <th>{{ 'Common.EndDate' | transloco }}</th>
+        <th>{{ 'Common.Comment' | transloco }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of basicTable.data; track data.ID) {
+        <tr>
+          <td>
+            {{ data.ID }}
+            <nz-divider nzType="vertical"></nz-divider>
+            <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>
+              {{ 'Common.Delete' | transloco }}
+            </button>
+          </td>
+          <td>{{ getBookTitle(data.BookID) }} ({{ data.BookID }})</td>
+          <td>{{ getReaderName(data.User) }}</td>
+          <td>{{ data.FromDateString }}</td>
+          <td>{{ data.ToDateString }}</td>
+          <td>{{ data.Comment }}</td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</nz-spin>

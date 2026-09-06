@@ -11,7 +11,7 @@
       @for (data of basicTable.data; track data.ID) {
         <tr>
           <td>{{ data.ID }}</td>
-          <td>{{ data.Name }}</td>
+          <td>{{ data.Name | transloco }}</td>
           <td>{{ data.Comment }}</td>
         </tr>
       }

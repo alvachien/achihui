@@ -75,6 +75,9 @@
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'borrowrecord']">{{ 'Library.BorrowRecords' | transloco }}</a>
           </li>
+          <li nz-menu-item nzMatchRouter>
+            <a [routerLink]="['/', 'library', 'readingrecord']">{{ 'Library.ReadingRecords' | transloco }}</a>
+          </li>
         </ul>
       </li>
       <!-- Event Trace temporarily shut down (2026-08-02) - submenu removed; DB content preserved.
@@ -251,6 +254,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>© 2016 - {{ currentYear }}, Alva Chien, All rights reserved</nz-footer>
+    <nz-footer class="app-footer">© 2016 - {{ currentYear }}, Alva Chien, All rights reserved</nz-footer>
   </nz-layout>
 </nz-layout>

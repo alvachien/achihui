@@ -65,6 +65,7 @@ import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
 })
 export class BookDetailComponent implements OnInit {
   isLoadingResults = signal(false);
+  isSubmitting = signal(false);
   public routerID = signal(-1); // Current object ID in routing
   public currentMode = signal('');
   public uiMode = signal<UIMode>(UIMode.Create);
@@ -74,6 +75,12 @@ export class BookDetailComponent implements OnInit {
   listPresses = signal<Organization[]>([]);
   listCategories = signal<BookCategory[]>([]);
   listLocations = signal<Location[]>([]);
+  // The record as loaded from the server. Update-mode saves patch THIS object
+  // instead of a fresh one: the backend PUT applies every column of the body
+  // (SetValues), so any field the edit form does not expose (ISBN, Detail,
+  // PublishedYear, PageCount, OriginLangID, BookLangID) must still carry its
+  // loaded value, or it gets nulled on save.
+  private originalBook: Book | null = null;
 
   private readonly storageService = inject(LibraryStorageService);
   private readonly activateRoute = inject(ActivatedRoute);
@@ -140,6 +147,7 @@ export class BookDetailComponent implements OnInit {
             )
             .subscribe({
               next: (e: Book) => {
+                this.originalBook = e;
                 this.detailFormGroup.get('idControl')?.setValue(e.ID);
                 this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
                 this.detailFormGroup.get('cnameControl')?.setValue(e.ChineseName);
@@ -213,7 +221,7 @@ export class BookDetailComponent implements OnInit {
         }
       },
     });
-    modal.afterClose.subscribe(() => {
+    modal.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe(() => {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BookDetailComponent selection dlg, dialog closed...',
         ConsoleLogTypeEnum.debug,
@@ -290,7 +298,16 @@ export class BookDetailComponent implements OnInit {
   onSave(): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookDetailComponent onSave...', ConsoleLogTypeEnum.debug);
 
-    const objtbo = new Book();
+    // Guard: do nothing when the form is invalid (e.g. empty required NativeName),
+    // and prevent duplicate submissions on double-click.
+    if (this.detailFormGroup.invalid || this.isSubmitting()) {
+      return;
+    }
+    this.isSubmitting.set(true);
+
+    // Update mode patches the loaded record (see originalBook) so fields this
+    // form does not expose survive the PUT; create mode starts from a blank Book.
+    const objtbo = this.uiMode() === UIMode.Update && this.originalBook ? this.originalBook : new Book();
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
@@ -304,7 +321,10 @@ export class BookDetailComponent implements OnInit {
     if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createBook(objtbo)
-        .pipe(takeUntilDestroyed(this.destroyedRef))
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
         .subscribe({
           next: (e) => {
             // Succeed.
@@ -323,7 +343,30 @@ export class BookDetailComponent implements OnInit {
           },
         });
     } else if (this.uiMode() === UIMode.Update) {
-      // Do nothing for now.
+      objtbo.ID = this.routerID();
+      this.storageService
+        .updateBook(objtbo)
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
+        .subscribe({
+          next: (e) => {
+            // Succeed.
+            this.router.navigate(['/library/book/display/' + e.ID.toString()]);
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering BookDetailComponent onSave failed ${err}...`,
+              ConsoleLogTypeEnum.error,
+            );
+            this.modal.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
+            });
+          },
+        });
     }
   }
 }

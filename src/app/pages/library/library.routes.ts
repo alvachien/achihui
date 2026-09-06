@@ -10,6 +10,10 @@ export const LIBRARY_ROUTES: Routes = [
     loadComponent: () => import('./borrow-record-list/').then((m) => m.BorrowRecordListComponent),
   },
   {
+    path: 'readingrecord',
+    loadComponent: () => import('./reading-record-list/').then((m) => m.ReadingRecordListComponent),
+  },
+  {
     path: 'location',
     loadChildren: () => import('./location/location.routes').then((m) => m.LOCATION_ROUTES),
   },

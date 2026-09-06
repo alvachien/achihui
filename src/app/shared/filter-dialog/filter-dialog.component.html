@@ -1,0 +1,216 @@
+<div class="fd-container" #fdContainer>
+  <!-- left: tree navigator -->
+  <div class="fd-tree-pane" [style.width]="splitPct() + '%'">
+    <div class="fd-toolbar">
+      <button nz-button nzSize="small" nzType="default" (click)="addCondition()">
+        <i nz-icon nzType="plus"></i>
+        <span>{{ 'Filter.AddCondition' | transloco }}</span>
+      </button>
+      <button nz-button nzSize="small" nzType="default" [disabled]="!canAddGroup()" (click)="addGroup()">
+        <i nz-icon nzType="apartment"></i>
+        <span>{{ 'Filter.AddGroup' | transloco }}</span>
+      </button>
+      <button nz-button nzSize="small" nzType="default" nzDanger [disabled]="!canDelete()" (click)="deleteSelected()">
+        <i nz-icon nzType="delete"></i>
+        <span>{{ 'Filter.Delete' | transloco }}</span>
+      </button>
+    </div>
+    <!-- always-expanded navigator: the expand switcher is suppressed so the
+         tree never depends on registered ant icons (§9) -->
+    <nz-tree
+      class="fd-tree"
+      [nzData]="treeNodes()"
+      [nzSelectedKeys]="selectedKeys()"
+      [nzShowExpand]="false"
+      (nzClick)="onTreeClick($event.node?.key)"
+    />
+  </div>
+
+  <!-- splitter -->
+  <div
+    class="fd-splitter"
+    role="separator"
+    aria-orientation="vertical"
+    tabindex="0"
+    [attr.aria-label]="'Filter.ResizePanes' | transloco"
+    (pointerdown)="onSplitterPointerDown($event)"
+    (keydown)="onSplitterKeydown($event)"
+  ></div>
+
+  <!-- right: detail pane for the selected node -->
+  <div class="fd-detail-pane">
+    @if (group(); as g) {
+      <div class="fd-field">
+        <span class="fd-label">{{ 'Filter.JoinMode' | transloco }}</span>
+        <nz-select [ngModel]="g.join" (ngModelChange)="setJoin($event)" class="fd-select">
+          @for (opt of joinOptions; track opt.value) {
+            <nz-option [nzValue]="opt.value" [nzLabel]="opt.label" />
+          }
+        </nz-select>
+      </div>
+      @if (selectedGroupInvalid()) {
+        <div class="fd-hint fd-hint--error">{{ groupNeedsTwoKey() | transloco }}</div>
+      }
+      <div class="fd-hint">{{ 'Filter.GroupDetailHint' | transloco }}</div>
+    } @else if (leaf(); as l) {
+      <div class="fd-field">
+        <span class="fd-label">{{ 'Common.Field' | transloco }}</span>
+        <nz-select [ngModel]="l.propertyKey" (ngModelChange)="setProperty($event)" class="fd-select">
+          @for (opt of propertyOptions(); track opt.value) {
+            <nz-option [nzValue]="opt.value" [nzLabel]="opt.label" />
+          }
+        </nz-select>
+      </div>
+
+      <div class="fd-field">
+        <span class="fd-label">{{ 'Common.Operator' | transloco }}</span>
+        <nz-select
+          [ngModel]="l.operator"
+          (ngModelChange)="setOperator($event)"
+          [nzDisabled]="operatorDisabled()"
+          class="fd-select"
+        >
+          @for (opt of operatorOptions(); track opt.value) {
+            <nz-option [nzValue]="opt.value" [nzLabel]="opt.label" />
+          }
+        </nz-select>
+      </div>
+
+      @switch (valueEditor()) {
+        @case ('text') {
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Common.Value' | transloco }}</span>
+            <input
+              nz-input
+              type="text"
+              class="fd-input"
+              [ngModel]="l.textValue"
+              (ngModelChange)="setTextValue($event)"
+            />
+          </div>
+        }
+        @case ('number') {
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Common.Value' | transloco }}</span>
+            <input
+              nz-input
+              type="number"
+              class="fd-input"
+              [min]="numberRange().min"
+              [max]="numberRange().max"
+              [ngModel]="l.numberValue"
+              (ngModelChange)="setNumberValue($event)"
+            />
+          </div>
+        }
+        @case ('date') {
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Common.Value' | transloco }}</span>
+            <input
+              nz-input
+              type="date"
+              class="fd-input"
+              [ngModel]="l.dateValue"
+              (ngModelChange)="setDateValue($event)"
+            />
+          </div>
+        }
+        @case ('between-text') {
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Filter.BetweenLow' | transloco }}</span>
+            <input nz-input type="text" class="fd-input" [ngModel]="l.lowValue" (ngModelChange)="setLowValue($event)" />
+          </div>
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Filter.BetweenHigh' | transloco }}</span>
+            <input
+              nz-input
+              type="text"
+              class="fd-input"
+              [ngModel]="l.highValue"
+              (ngModelChange)="setHighValue($event)"
+            />
+          </div>
+        }
+        @case ('between-number') {
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Filter.BetweenLow' | transloco }}</span>
+            <input
+              nz-input
+              type="number"
+              class="fd-input"
+              [min]="numberRange().min"
+              [max]="numberRange().max"
+              [ngModel]="l.lowValue"
+              (ngModelChange)="setLowValue($event)"
+            />
+          </div>
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Filter.BetweenHigh' | transloco }}</span>
+            <input
+              nz-input
+              type="number"
+              class="fd-input"
+              [min]="numberRange().min"
+              [max]="numberRange().max"
+              [ngModel]="l.highValue"
+              (ngModelChange)="setHighValue($event)"
+            />
+          </div>
+        }
+        @case ('between-date') {
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Filter.BetweenLow' | transloco }}</span>
+            <input nz-input type="date" class="fd-input" [ngModel]="l.lowValue" (ngModelChange)="setLowValue($event)" />
+          </div>
+          <div class="fd-field">
+            <span class="fd-label">{{ 'Filter.BetweenHigh' | transloco }}</span>
+            <input
+              nz-input
+              type="date"
+              class="fd-input"
+              [ngModel]="l.highValue"
+              (ngModelChange)="setHighValue($event)"
+            />
+          </div>
+        }
+        @case ('enum') {
+          <div class="fd-field fd-field--stacked">
+            <span class="fd-label">{{ 'Common.Value' | transloco }}</span>
+            <div class="fd-choices">
+              @for (choice of selectedLeafProp()?.choices ?? []; track choice.value) {
+                <label
+                  nz-checkbox
+                  [ngModel]="isChoiceSelected(choice.value)"
+                  (ngModelChange)="toggleChoice(choice.value, $event)"
+                >
+                  {{ choice.labelKey | transloco }}
+                </label>
+              }
+            </div>
+          </div>
+        }
+        @case ('none') {
+          <div class="fd-hint">{{ 'Filter.CustomNoValue' | transloco }}</div>
+        }
+      }
+
+      @if (selectedLeafErrorKey(); as errKey) {
+        <div class="fd-hint fd-hint--error">{{ errKey | transloco }}</div>
+      }
+    } @else {
+      <div class="fd-hint">{{ 'Filter.DetailEmpty' | transloco }}</div>
+    }
+  </div>
+</div>
+
+<div class="fd-preview">
+  <span class="fd-preview-label">{{ 'Filter.Preview' | transloco }}:</span>
+  <span class="fd-preview-text">{{ previewText() }}</span>
+</div>
+
+<div class="fd-footer">
+  <button nz-button nzType="default" (click)="cancel()">{{ 'Common.Cancel' | transloco }}</button>
+  <button nz-button nzType="primary" [disabled]="!canSubmit()" (click)="submit()">
+    {{ 'Common.Submit' | transloco }}
+  </button>
+</div>

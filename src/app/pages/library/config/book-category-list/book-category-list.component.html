@@ -4,6 +4,7 @@
       <tr>
         <th>ID</th>
         <th>{{ 'Common.Name' | transloco }}</th>
+        <th>{{ 'Common.Parent' | transloco }}</th>
         <th>{{ 'Common.Comment' | transloco }}</th>
       </tr>
     </thead>
@@ -11,7 +12,8 @@
       @for (data of basicTable.data; track data.ID) {
         <tr>
           <td>{{ data.ID }}</td>
-          <td>{{ data.Name }}</td>
+          <td>{{ data.Name | transloco }}</td>
+          <td>{{ parentName(data) | transloco }}</td>
           <td>{{ data.Comment }}</td>
         </tr>
       }

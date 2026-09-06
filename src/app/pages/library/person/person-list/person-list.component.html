@@ -9,13 +9,48 @@
       <a nz-button nzType="link" routerLink="/library/person/create">{{ 'Common.Create' | transloco }}</a>
     </nz-page-header-extra>
   </nz-page-header>
-  <nz-table #basicTable [nzData]="dataSet()">
+  <!-- Filter row: the bar (live free-text pre-filter + structured-filter menu,
+       highlighted while any narrowing is in effect) takes the remaining width;
+       the `total | filtered` count sticks to the right end of the row. -->
+  <div class="filter-row">
+    <div class="filter-bar" [class.filter-bar-on]="filterActive()">
+      <input
+        type="text"
+        nz-input
+        class="filter-bar-input"
+        [ngModel]="searchText()"
+        (ngModelChange)="onSearchInput($event)"
+        placeholder="{{ 'Common.Search' | transloco }}"
+      />
+      <nz-divider nzType="vertical"></nz-divider>
+      <button nz-button nzType="link" nz-dropdown [nzDropdownMenu]="menuFilter" [class.filter-bar-active]="hasFilter()">
+        {{ 'Common.Filter' | transloco }}
+        <i nz-icon nzType="down"></i>
+      </button>
+      <nz-dropdown-menu #menuFilter="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="onEditFilter()">{{ filterMenuText() }}</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item [nzDisabled]="!hasFilter()" (click)="onClearFilter()">
+            {{ 'Filter.ClearFilter' | transloco }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <div class="table-count">{{ totalCountAll() }} | {{ filteredCount() }}</div>
+  </div>
+  <nz-table
+    #basicTable
+    [nzData]="displayList()"
+    [nzPageIndex]="pageIndex()"
+    (nzPageIndexChange)="pageIndex.set($event)"
+  >
     <thead>
       <tr>
         <th>ID</th>
-        <th>{{ 'Common.Name' | transloco }}</th>
         <th>{{ 'Common.NativeName' | transloco }}</th>
-        <th>{{ 'Common.Comment' | transloco }}</th>
+        <th>{{ 'Common.ChineseName' | transloco }}</th>
+        <th>{{ 'Common.Detail' | transloco }}</th>
       </tr>
     </thead>
     <tbody>
@@ -26,6 +61,9 @@
             <nz-divider nzType="vertical"></nz-divider>
             <button nz-button nzType="link" (click)="onDisplay(data.ID)">
               {{ 'Common.Display' | transloco }}
+            </button>
+            <button nz-button nzType="link" (click)="onEdit(data.ID)">
+              {{ 'Common.Edit' | transloco }}
             </button>
             <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>
               {{ 'Common.Delete' | transloco }}

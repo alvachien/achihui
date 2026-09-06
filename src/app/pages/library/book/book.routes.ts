@@ -14,6 +14,10 @@ export const BOOK_ROUTES: Routes = [
     loadComponent: () => import('./book-detail/').then((m) => m.BookDetailComponent),
   },
   {
+    path: 'edit/:id',
+    loadComponent: () => import('./book-detail/').then((m) => m.BookDetailComponent),
+  },
+  {
     path: 'display/:id',
     loadComponent: () => import('./book-detail/').then((m) => m.BookDetailComponent),
   },

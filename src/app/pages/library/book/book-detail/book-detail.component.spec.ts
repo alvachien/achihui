@@ -33,6 +33,7 @@ describe('BookDetailComponent', () => {
   let storageService: SafeAny;
   let readBookSpy: SafeAny;
   let createBookSpy: SafeAny;
+  let updateBookSpy: SafeAny;
   let _fetchAllPersonsSpy: SafeAny;
   let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
@@ -45,9 +46,10 @@ describe('BookDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = createSpyObj('LibraryStorageService', ['readBook', 'fetchAllPersons', 'createBook']);
+    storageService = createSpyObj('LibraryStorageService', ['readBook', 'fetchAllPersons', 'createBook', 'updateBook']);
     readBookSpy = storageService.readBook.and.returnValue(of({}));
     createBookSpy = storageService.createBook.and.returnValue(of({}));
+    updateBookSpy = storageService.updateBook.and.returnValue(of({}));
     _fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -108,6 +110,7 @@ describe('BookDetailComponent', () => {
     beforeEach(() => {
       const nrole = new Book();
       nrole.ID = 2;
+      createBookSpy.mockClear();
       createBookSpy.and.returnValue(asyncData(nrole));
     });
 
@@ -148,6 +151,41 @@ describe('BookDetailComponent', () => {
       expect(createBookSpy).toHaveBeenCalled();
     });
 
+    it('form is invalid when required NativeName is empty', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('');
+      component.detailFormGroup.markAsDirty();
+
+      expect(component.detailFormGroup.valid).toBe(false);
+    });
+
+    it('onSave does not call createBook when form is invalid', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('');
+      component.detailFormGroup.markAsDirty();
+
+      component.onSave();
+
+      expect(createBookSpy).not.toHaveBeenCalled();
+    });
+
+    it('form is invalid when NativeName exceeds 100 characters', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('x'.repeat(101));
+      component.detailFormGroup.markAsDirty();
+
+      expect(component.detailFormGroup.valid).toBe(false);
+    });
+
     it('assign author', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -186,6 +224,107 @@ describe('BookDetailComponent', () => {
       expect(component.isEditable).toBe(false);
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nbook.NativeName);
+    });
+  });
+
+  describe('edit mode', () => {
+    let nbook: Book;
+    beforeEach(() => {
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('2', {})] as UrlSegment[]);
+
+      // Loaded record carries fields the edit form does not expose; they must
+      // survive an update save (backend PUT applies every column of the body).
+      nbook = new Book();
+      nbook.onSetData({
+        Id: 2,
+        NativeName: 'test',
+        ISBN: '978-0-00-000000-0',
+        PublishedYear: 2001,
+        Detail: 'a book detail',
+        OriginLangID: 5,
+        BookLangID: 6,
+        PageCount: 300,
+      });
+
+      readBookSpy.and.returnValue(asyncData(nbook));
+      updateBookSpy.and.returnValue(asyncData(nbook));
+    });
+
+    it('edit mode init without error', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(component).toBeTruthy();
+
+      expect(component.isEditable).toBe(true);
+      const nname = component.detailFormGroup.get('nnameControl')?.value;
+      expect(nname).toEqual(nbook.NativeName);
+    });
+
+    it('edit mode with valid data calls updateBook', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
+      component.detailFormGroup.markAsDirty();
+
+      expect(component.detailFormGroup.valid).toBe(true);
+
+      const routerstub = TestBed.inject(Router);
+      vi.spyOn(routerstub, 'navigate');
+
+      // Submit
+      component.onSave();
+
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(routerstub.navigate).toHaveBeenCalled();
+      expect(routerstub.navigate).toHaveBeenCalledWith(['/library/book/display/2']);
+      expect(updateBookSpy).toHaveBeenCalled();
+    });
+
+    it('edit save preserves fields the form does not expose (no wipe on PUT)', async () => {
+      updateBookSpy.mockClear();
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      // Change only the name, as the form allows.
+      component.detailFormGroup.get('nnameControl')?.setValue('Renamed');
+      component.detailFormGroup.markAsDirty();
+
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(updateBookSpy).toHaveBeenCalled();
+      const saved: Book = updateBookSpy.mock.calls[0][0];
+      expect(saved.NativeName).toEqual('Renamed');
+      expect(saved.ID).toBe(2);
+      expect(saved.ISBN).toEqual('978-0-00-000000-0');
+      expect(saved.PublishedYear).toBe(2001);
+      expect(saved.Detail).toEqual('a book detail');
+      expect(saved.OriginLangID).toBe(5);
+      expect(saved.BookLangID).toBe(6);
+      expect(saved.PageCount).toBe(300);
+
+      // The serialized PUT body must carry those columns, too.
+      const json = saved.writeJSONObject();
+      expect(json.ISBN).toEqual('978-0-00-000000-0');
+      expect(json.PublishedYear).toBe(2001);
+      expect(json.Detail).toEqual('a book detail');
+      expect(json.OriginLangID).toBe(5);
+      expect(json.BookLangID).toBe(6);
+      expect(json.PageCount).toBe(300);
     });
   });
 

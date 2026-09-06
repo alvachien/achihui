@@ -45,6 +45,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 })
 export class LocationDetailComponent implements OnInit {
   isLoadingResults = signal(false);
+  isSubmitting = signal(false);
   public routerID = signal(-1); // Current object ID in routing
   public currentMode = signal('');
   public uiMode = signal<UIMode>(UIMode.Create);
@@ -159,6 +160,13 @@ export class LocationDetailComponent implements OnInit {
       ConsoleLogTypeEnum.debug,
     );
 
+    // Guard: do nothing when the form is invalid (e.g. empty required Name),
+    // and prevent duplicate submissions on double-click.
+    if (this.detailFormGroup.invalid || this.isSubmitting()) {
+      return;
+    }
+    this.isSubmitting.set(true);
+
     const objtbo = new Location();
     objtbo.Name = this.detailFormGroup.get('nameControl')?.value;
     objtbo.Comment = this.detailFormGroup.get('cmtControl')?.value;
@@ -168,7 +176,10 @@ export class LocationDetailComponent implements OnInit {
     if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createLocation(objtbo)
-        .pipe(takeUntilDestroyed(this.destroyedRef))
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
         .subscribe({
           next: (e) => {
             // Succeed.
@@ -188,7 +199,29 @@ export class LocationDetailComponent implements OnInit {
         });
     } else if (this.uiMode() === UIMode.Update) {
       objtbo.ID = this.routerID();
-      // TBD.
+      this.storageService
+        .updateLocation(objtbo)
+        .pipe(
+          takeUntilDestroyed(this.destroyedRef),
+          finalize(() => this.isSubmitting.set(false)),
+        )
+        .subscribe({
+          next: (e) => {
+            // Succeed.
+            this.router.navigate(['/library/location/display/' + e.ID.toString()]);
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering LocationDetailComponent onSave updateLocation failed ${err}...`,
+              ConsoleLogTypeEnum.error,
+            );
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
+            });
+          },
+        });
     }
   }
 }

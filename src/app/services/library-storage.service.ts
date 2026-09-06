@@ -15,6 +15,7 @@ import {
   Organization,
   Location,
   BookBorrowRecord,
+  BookReadingRecord,
   BaseListModel,
 } from '../model';
 import { AuthService } from './auth.service';
@@ -75,6 +76,7 @@ export class LibraryStorageService {
   // readonly movieGenreAPIURL: any = environment.ApiUrl + '/LibMovieGenre';
   readonly locationAPIURL: string = environment.ApiUrl + '/LibraryBookLocations';
   readonly bookBorrowRecordAPIURL: string = environment.ApiUrl + '/LibraryBookBorrowRecords';
+  readonly bookReadingRecordAPIURL: string = environment.ApiUrl + '/LibraryBookReadingRecords';
 
   private readonly _http = inject(HttpClient);
   private readonly _authService = inject(AuthService);
@@ -365,7 +367,12 @@ export class LibraryStorageService {
             }
 
             if (this._currentHomeID() === reqHomeID) {
-              this._listPerson = persons;
+              // Preserve any rows created locally after this fetch was issued (their IDs
+              // won't appear in the server response yet) so an in-flight fetch can't wipe
+              // a just-created row from the buffer.
+              const fetchedIds = new Set(persons.map((p) => p.ID));
+              const locallyCreated = this._listPerson.filter((p) => !fetchedIds.has(p.ID));
+              this._listPerson = [...persons, ...locallyCreated];
               this._isPersonLoaded = true;
             }
 
@@ -416,11 +423,22 @@ export class LibraryStorageService {
           const rst: Person = new Person();
           if (rjs.value instanceof Array && rjs.value.length === 1) {
             rst.onSetData(rjs.value[0]);
+          } else {
+            // Nothing matched the filter - a stale detail link points at a record that no
+            // longer exists. Throw instead of returning a blank entity (ID 0), so the
+            // caller surfaces a "not found" error rather than rendering an empty record.
+            throw new Error(`Person ${pid} not found`);
           }
 
           return rst;
         }),
         catchError((error: HttpErrorResponse) => {
+          // The "not found" Error raised in map() is not an HTTP failure -
+          // pass it through untouched instead of re-formatting it as one.
+          if (!(error instanceof HttpErrorResponse)) {
+            return throwError(() => error);
+          }
+
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readPerson failed with: ${error}`,
             ConsoleLogTypeEnum.error,
@@ -452,13 +470,59 @@ export class LibraryStorageService {
 
           const hd: Person = new Person();
           hd.onSetData(response as any);
-          this._listPerson.push(hd);
+          // Dedupe by ID (matches createLocation): if the buffer already holds this row
+          // (e.g. a race), replace it rather than creating a duplicate entry.
+          const pidx = this._listPerson.findIndex((p) => p.ID === hd.ID);
+          if (pidx === -1) {
+            this._listPerson.push(hd);
+          } else {
+            this._listPerson[pidx] = hd;
+          }
 
           return hd;
         }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createPerson failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
+  public updatePerson(objtbo: Person): Observable<Person> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      // OData PUT defaults to return=minimal (204 No Content, empty body),
+      // which leaves the returned Person's Id at 0 and breaks post-save
+      // navigation (display/0). Request the full entity back instead.
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    const jdata = objtbo.writeJSONObject();
+
+    return this._http
+      .put(`${this.personAPIURL}(${objtbo.ID})`, jdata, {
+        headers: headers,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, updatePerson, map.`,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          const hd: Person = new Person();
+          hd.onSetData(response as any);
+          this._syncListCache(this._listPerson, hd);
+          return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService updatePerson failed ${error}`,
             ConsoleLogTypeEnum.error,
           );
 
@@ -539,7 +603,12 @@ export class LibraryStorageService {
             }
 
             if (this._currentHomeID() === reqHomeID) {
-              this._listOrganization = orgs;
+              // Preserve any rows created locally after this fetch was issued (their IDs
+              // won't appear in the server response yet) so an in-flight fetch can't wipe
+              // a just-created row from the buffer.
+              const fetchedIds = new Set(orgs.map((p) => p.ID));
+              const locallyCreated = this._listOrganization.filter((p) => !fetchedIds.has(p.ID));
+              this._listOrganization = [...orgs, ...locallyCreated];
               this._isOrganizationLoaded = true;
             }
 
@@ -590,11 +659,21 @@ export class LibraryStorageService {
           const rst: Organization = new Organization();
           if (rjs.value instanceof Array && rjs.value.length === 1) {
             rst.onSetData(rjs.value[0]);
+          } else {
+            // Nothing matched the filter - throw instead of returning a blank entity (ID 0),
+            // so the caller surfaces a "not found" error rather than rendering an empty record.
+            throw new Error(`Organization ${pid} not found`);
           }
 
           return rst;
         }),
         catchError((error: HttpErrorResponse) => {
+          // The "not found" Error raised in map() is not an HTTP failure -
+          // pass it through untouched instead of re-formatting it as one.
+          if (!(error instanceof HttpErrorResponse)) {
+            return throwError(() => error);
+          }
+
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readOrganization failed with: ${error}`,
             ConsoleLogTypeEnum.error,
@@ -626,13 +705,59 @@ export class LibraryStorageService {
 
           const hd: Organization = new Organization();
           hd.onSetData(response as any);
-          this._listOrganization.push(hd);
+          // Dedupe by ID (matches createLocation): if the buffer already holds this row
+          // (e.g. a race), replace it rather than creating a duplicate entry.
+          const pidx = this._listOrganization.findIndex((p) => p.ID === hd.ID);
+          if (pidx === -1) {
+            this._listOrganization.push(hd);
+          } else {
+            this._listOrganization[pidx] = hd;
+          }
 
           return hd;
         }),
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createOrganization failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
+  public updateOrganization(objtbo: Organization): Observable<Organization> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      // OData PUT defaults to return=minimal (204 No Content, empty body),
+      // which leaves the returned Organization's Id at 0 and breaks post-save
+      // navigation (display/0). Request the full entity back instead.
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    const jdata = objtbo.writeJSONObject();
+
+    return this._http
+      .put(`${this.organizationAPIURL}(${objtbo.ID})`, jdata, {
+        headers: headers,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, updateOrganization, map.`,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          const hd: Organization = new Organization();
+          hd.onSetData(response as any);
+          this._syncListCache(this._listOrganization, hd);
+          return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService updateOrganization failed ${error}`,
             ConsoleLogTypeEnum.error,
           );
 
@@ -763,11 +888,21 @@ export class LibraryStorageService {
           const rst: Location = new Location();
           if (rjs.value instanceof Array && rjs.value.length === 1) {
             rst.onSetData(rjs.value[0]);
+          } else {
+            // Nothing matched the filter - throw instead of returning a blank entity (ID 0),
+            // so the caller surfaces a "not found" error rather than rendering an empty record.
+            throw new Error(`Location ${lid} not found`);
           }
 
           return rst;
         }),
         catchError((error: HttpErrorResponse) => {
+          // The "not found" Error raised in map() is not an HTTP failure -
+          // pass it through untouched instead of re-formatting it as one.
+          if (!(error instanceof HttpErrorResponse)) {
+            return throwError(() => error);
+          }
+
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readLocation failed with: ${error}`,
             ConsoleLogTypeEnum.error,
@@ -818,6 +953,45 @@ export class LibraryStorageService {
         }),
       );
   }
+  public updateLocation(objtbo: Location): Observable<Location> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      // OData PUT defaults to return=minimal (204 No Content, empty body),
+      // which leaves the returned Location's Id at 0 and breaks post-save
+      // navigation (display/0). Request the full entity back instead.
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    const jdata = objtbo.writeJSONObject();
+
+    return this._http
+      .put(`${this.locationAPIURL}(${objtbo.ID})`, jdata, {
+        headers: headers,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, updateLocation, map.`,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          const hd: Location = new Location();
+          hd.onSetData(response as any);
+          this._syncListCache(this._listLocation, hd);
+          return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService updateLocation failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
   public deleteLocation(pid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -860,6 +1034,8 @@ export class LibraryStorageService {
     top?: number,
     skip?: number,
     orderby?: { field: string; order: string },
+    search?: string,
+    odataFilter?: string,
   ): Observable<BaseListModel<Book>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -869,7 +1045,6 @@ export class LibraryStorageService {
 
     let params: HttpParams = new HttpParams();
     params = params.append('$select', 'Id,HomeID,NativeName,ChineseName,Detail');
-    // params = params.append('$filter', filterstr);
     if (orderby) {
       params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
@@ -880,7 +1055,29 @@ export class LibraryStorageService {
       params = params.append('$skip', `${skip}`);
     }
     params = params.append('$count', `true`);
-    params = params.append('$filter', `HomeID eq ${this._homeService.ChosedHome?.ID ?? 0}`);
+    // Build the $filter: always scope to the chosen home, then AND in the optional
+    // structured filter fragment (from the shared filter dialog's toODataFilter()),
+    // then the free-text search matched against NativeName or ChineseName.
+    // Single quotes in the search term are doubled to avoid breaking out of the OData string.
+    const homeID = this._homeService.ChosedHome?.ID ?? 0;
+    const clauses: string[] = [`HomeID eq ${homeID}`];
+    const structured = odataFilter?.trim();
+    if (structured) {
+      clauses.push(`(${structured})`);
+    }
+    const trimmed = search?.trim();
+    if (trimmed && trimmed.length > 0) {
+      const escaped = trimmed.replace(/'/g, "''");
+      // tolower() on BOTH sides: SQLite translates contains() to instr(), which is
+      // case-sensitive - without this, typing "hobbit" finds nothing while the
+      // person/org/location pages' client-side search (toLowerCase().includes)
+      // matches case-insensitively. OData tolower → SQL lower (ASCII, the relevant
+      // case for Latin names/ISBNs; CJK has no case).
+      clauses.push(
+        `(contains(tolower(NativeName),tolower('${escaped}')) or contains(tolower(ChineseName),tolower('${escaped}')))`,
+      );
+    }
+    params = params.append('$filter', clauses.join(' and '));
     return this._http
       .get(this.bookAPIURL, {
         headers: headers,
@@ -946,11 +1143,21 @@ export class LibraryStorageService {
           const rst: Book = new Book();
           if (rjs.value instanceof Array && rjs.value.length === 1) {
             rst.onSetData(rjs.value[0]);
+          } else {
+            // Nothing matched the filter - throw instead of returning a blank entity (ID 0),
+            // so the caller surfaces a "not found" error rather than rendering an empty record.
+            throw new Error(`Book ${bid} not found`);
           }
 
           return rst;
         }),
         catchError((error: HttpErrorResponse) => {
+          // The "not found" Error raised in map() is not an HTTP failure -
+          // pass it through untouched instead of re-formatting it as one.
+          if (!(error instanceof HttpErrorResponse)) {
+            return throwError(() => error);
+          }
+
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService readBook failed with: ${error}`,
             ConsoleLogTypeEnum.error,
@@ -987,6 +1194,44 @@ export class LibraryStorageService {
         catchError((error: HttpErrorResponse) => {
           ModelUtility.writeConsoleLog(
             `AC_HIH_UI [Error]: Entering LibraryStorageService, createBook failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
+  public updateBook(objtbo: Book): Observable<Book> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      // OData PUT defaults to return=minimal (204 No Content, empty body),
+      // which leaves the returned Book's Id at 0 and breaks post-save
+      // navigation (display/0). Request the full entity back instead.
+      .append('Prefer', 'return=representation')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    const jdata = objtbo.writeJSONObject();
+
+    return this._http
+      .put(`${this.bookAPIURL}(${objtbo.ID})`, jdata, {
+        headers: headers,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, updateBook, map.`,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          const hd: Book = new Book();
+          hd.onSetData(response as any);
+          return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService updateBook failed ${error}`,
             ConsoleLogTypeEnum.error,
           );
 
@@ -1152,6 +1397,177 @@ export class LibraryStorageService {
           return throwError(() => new Error(this._buildHttpErrorMessage(error)));
         }),
       );
+  }
+
+  public fetchBookReadingRecords(
+    top?: number,
+    skip?: number,
+    orderby?: { field: string; order: string },
+    search?: string,
+    odataFilter?: string,
+    titleMatchedBookIds?: number[],
+  ): Observable<BaseListModel<BookReadingRecord>> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    let params: HttpParams = new HttpParams();
+    params = params.append('$select', 'Id,HomeID,BookId,User,FromDate,ToDate,Comment');
+    if (orderby) {
+      params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
+    }
+    if (top) {
+      params = params.append('$top', `${top}`);
+    }
+    if (skip) {
+      params = params.append('$skip', `${skip}`);
+    }
+    params = params.append('$count', `true`);
+    // Build the $filter: always scope to the chosen home (the API additionally
+    // enforces home membership server-side), then AND in the optional
+    // structured filter fragment (shared filter dialog's toODataFilter()), then
+    // the free-text search matched against User or Comment - plus, when given,
+    // the BookIds whose titles matched the search text (titles are not a column
+    // of the record, so the caller resolves them from the book catalog).
+    // Single quotes in the search term are doubled to avoid breaking out of the OData string.
+    const homeID = this._homeService.ChosedHome?.ID ?? 0;
+    const clauses: string[] = [`HomeID eq ${homeID}`];
+    const structured = odataFilter?.trim();
+    if (structured) {
+      clauses.push(`(${structured})`);
+    }
+    const trimmed = search?.trim();
+    if (trimmed && trimmed.length > 0) {
+      const escaped = trimmed.replace(/'/g, "''");
+      // tolower() on BOTH sides: SQLite translates contains() to instr(), which is
+      // case-sensitive (see fetchBooks).
+      const ors: string[] = [
+        `contains(tolower(User),tolower('${escaped}'))`,
+        `contains(tolower(Comment),tolower('${escaped}'))`,
+      ];
+      if (titleMatchedBookIds && titleMatchedBookIds.length > 0) {
+        // `in` with an empty list is invalid OData - the term is skipped above.
+        ors.push(`BookId in (${titleMatchedBookIds.join(',')})`);
+      }
+      clauses.push(`(${ors.join(' or ')})`);
+    }
+    params = params.append('$filter', clauses.join(' and '));
+    return this._http
+      .get(this.bookReadingRecordAPIURL, {
+        headers: headers,
+        params: params,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchBookReadingRecords, map `,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          const rjs: any = <any>response;
+          const records: BookReadingRecord[] = [];
+
+          if (rjs['@odata.count'] > 0 && rjs.value instanceof Array && rjs.value.length > 0) {
+            for (const si of rjs.value) {
+              const rst: BookReadingRecord = new BookReadingRecord();
+              rst.onSetData(si);
+              records.push(rst);
+            }
+          }
+
+          return {
+            totalCount: rjs['@odata.count'],
+            contentList: records,
+          };
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService fetchBookReadingRecords failed with: ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
+  public createBookReadingRecord(objtrc: BookReadingRecord): Observable<BookReadingRecord> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    objtrc.User = this._authService.authSubject().getUserId() ?? '';
+    objtrc.HID = this._homeService.ChosedHome?.ID ?? 0;
+    const jdata = objtrc.writeJSONObject();
+
+    return this._http
+      .post(this.bookReadingRecordAPIURL, jdata, {
+        headers: headers,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, createBookReadingRecord, map.`,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          const hd: BookReadingRecord = new BookReadingRecord();
+          hd.onSetData(response as any);
+          return hd;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService, createBookReadingRecord failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
+  public deleteBookReadingRecord(rid: number): Observable<any> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    return this._http
+      .delete(`${this.bookReadingRecordAPIURL}(${rid})`, {
+        headers: headers,
+      })
+      .pipe(
+        map(() => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, deleteBookReadingRecord, map.`,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          return true;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService, deleteBookReadingRecord failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
+
+  /// Mirror a freshly saved entity into a fetchAll*-cache buffer so cached
+  /// reads (fetchAll* short-circuits to of(this._list*) while loaded) don't
+  /// serve stale data after an update. Replaces in place when the row is
+  /// already buffered; never appends (an update is not a create).
+  private _syncListCache<T extends { ID: number }>(list: T[], updated: T): void {
+    const idx = list.findIndex((p) => p.ID === updated.ID);
+    if (idx !== -1) {
+      list[idx] = updated;
+    }
   }
 
   /// Build a readable message from an HTTP error response.

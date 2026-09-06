@@ -231,6 +231,37 @@
     "Yes": "是",
     "No": "否"
   },
+  "Filter": {
+    "EditFilter": "编辑筛选条件",
+    "AddCondition": "条件",
+    "AddGroup": "分组",
+    "Delete": "删除",
+    "JoinMode": "连接方式",
+    "Preview": "预览",
+    "DetailEmpty": "在左侧树中选择一个条件或分组进行编辑。",
+    "GroupDetailHint": "该分组以所选方式连接其成员。",
+    "ResizePanes": "调整筛选面板宽度",
+    "BetweenLow": "下限",
+    "BetweenHigh": "上限",
+    "And": "并且",
+    "Or": "或者",
+    "NeedsValue": "必须填写值。",
+    "GroupNeedsTwo": "分组至少需要两个条件。",
+    "EnumNeedsChoice": "请至少选择一个值。",
+    "InvalidRange": "下限不能大于上限。",
+    "CustomNoValue": "该操作符不需要填写值。",
+    "NewFilter": "新建筛选",
+    "ClearFilter": "清除筛选",
+    "opBeginsWith": "开头是",
+    "opContains": "包含",
+    "opEqual": "等于",
+    "opEndsWith": "结尾是",
+    "opGreaterThan": ">",
+    "opGreaterOrEqual": ">=",
+    "opLessThan": "<",
+    "opLessOrEqual": "<=",
+    "opBetween": "介于"
+  },
   "Sys": {
     "Currency": {
       "CNY": "人民币",
@@ -671,6 +702,7 @@
   "Library": {
     "BookCategories": "图书种类",
     "BookCategory": "图书种类",
+    "CategoryUnassignedParent": "未分类（父级缺失或无效）",
     "MovieGenres": "影视类别",
     "MovieGenre": "影视类别",
     "Books": "书籍",
@@ -708,7 +740,16 @@
     "BorrowRecord": "图书借阅记录",
     "BorrowFrom": "借阅机构",
     "CreateBorrowRecord": "新建借阅记录",
-    "HasReturned": "已归还"
+    "ReadingRecords": "图书阅读记录",
+    "ReadingRecord": "阅读记录",
+    "CreateReadingRecord": "新建阅读记录",
+    "Reader": "阅读者",
+    "HasReturned": "已归还",
+    "ConfigObjects": "配置对象",
+    "SearchUnderConstruction": "抱歉，搜索页面仍在建设中。",
+    "ISBN": "ISBN号",
+    "PublishedYear": "出版年份",
+    "PageCount": "页数"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

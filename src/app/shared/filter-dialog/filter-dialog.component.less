@@ -1,0 +1,135 @@
+:host {
+  display: block;
+}
+
+.fd-container {
+  display: flex;
+  align-items: stretch;
+  min-height: 260px;
+  max-height: 52vh;
+}
+
+.fd-tree-pane {
+  flex: 0 0 auto;
+  min-width: 180px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.fd-toolbar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.fd-tree {
+  display: block;
+}
+
+.fd-splitter {
+  flex: 0 0 8px;
+  cursor: col-resize;
+  background: transparent;
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  touch-action: none;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(24, 144, 255, 0.12);
+    outline: none;
+  }
+}
+
+.fd-detail-pane {
+  flex: 1 1 auto;
+  min-width: 240px;
+  overflow: auto;
+  padding-left: 4px;
+}
+
+.fd-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  &--stacked {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.fd-label {
+  flex: 0 0 90px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.fd-select {
+  min-width: 160px;
+  flex: 1 1 auto;
+}
+
+.fd-input {
+  flex: 1 1 auto;
+}
+
+.fd-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.fd-hint {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+  margin: 6px 0;
+
+  &--error {
+    color: #f5222d;
+  }
+}
+
+.fd-preview {
+  border-top: 1px dashed rgba(0, 0, 0, 0.15);
+  margin-top: 10px;
+  padding-top: 8px;
+  font-size: 12px;
+  min-height: 20px;
+}
+
+.fd-preview-label {
+  color: rgba(0, 0, 0, 0.45);
+  margin-right: 6px;
+}
+
+.fd-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+// stacked panes below ~720px (design §9)
+@media (max-width: 720px) {
+  .fd-container {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .fd-tree-pane {
+    width: 100% !important;
+    min-width: 0;
+    max-height: 30vh;
+  }
+
+  .fd-splitter {
+    display: none;
+  }
+
+  .fd-detail-pane {
+    min-width: 0;
+    padding-left: 0;
+    margin-top: 8px;
+  }
+}

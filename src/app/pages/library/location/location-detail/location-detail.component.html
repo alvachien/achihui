@@ -5,7 +5,9 @@
   <nz-page-header-title>{{ 'Library.Location' | transloco }}</nz-page-header-title>
   <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{ 'Common.Save' | transloco }}</a>
+    <a nz-button nzType="link" [disabled]="!isEditable || isSubmitting()" (click)="onSave()">{{
+      'Common.Save' | transloco
+    }}</a>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -48,9 +50,9 @@
 
   <!-- Comment -->
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.Comment' | transloco }}</nz-form-label>
+    <nz-form-label [nzSpan]="7">{{ 'Common.Comment' | transloco }}</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameTpl">
-      <input nz-input formControlName="cmtControl" maxlength="100" required />
+      <input nz-input formControlName="cmtControl" maxlength="100" />
       <ng-template #nameTpl let-control>
         @if (control.hasError('maxlength')) {
           <ng-container>{{ 'Common.FieldMaxLength' | transloco }}</ng-container>

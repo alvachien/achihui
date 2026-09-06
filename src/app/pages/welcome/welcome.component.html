@@ -131,6 +131,15 @@
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
+    <a (click)="onNavigateToLibraryReadingRecord()">
+      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Library.ReadingRecords' | transloco">
+        <div class="components-overview-img">
+          <img nz-image width="200px" height="200px" [nzSrc]="readingRecordsImage" nzDisablePreview="true" alt="" />
+        </div>
+      </nz-card>
+    </a>
+  </div>
+  <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibrarySearch()">
       <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Common.Search' | transloco">
         <div class="components-overview-img">

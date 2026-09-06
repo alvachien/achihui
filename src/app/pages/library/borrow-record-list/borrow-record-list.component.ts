@@ -146,7 +146,7 @@ export class BorrowRecordListComponent implements OnInit {
       nzData: {},
     });
     // The dialog itself performs the create; refresh the list once it closes.
-    modal.afterClose.subscribe(() => {
+    modal.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe(() => {
       ModelUtility.writeConsoleLog(
         'AC_HIH_UI [Debug]: Entering BorrowRecordListComponent onCreate, dialog closed...',
         ConsoleLogTypeEnum.debug,
@@ -181,7 +181,7 @@ export class BorrowRecordListComponent implements OnInit {
               const sdlg = this.modal.success({
                 nzTitle: translate('Common.Success'),
               });
-              sdlg.afterClose.subscribe(() => {
+              sdlg.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe(() => {
                 this.dataSet.update((items) => items.filter((p) => p.ID !== bid));
                 this.totalCount.update((n) => Math.max(0, n - 1));
               });

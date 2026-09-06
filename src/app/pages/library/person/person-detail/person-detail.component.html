@@ -5,7 +5,9 @@
   <nz-page-header-title>{{ 'Library.Person' | transloco }}</nz-page-header-title>
   <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <a nz-button nzType="link" [disabled]="!isEditable" (click)="onSave()">{{ 'Common.Save' | transloco }}</a>
+    <a nz-button nzType="link" [disabled]="!isEditable || isSubmitting()" (click)="onSave()">{{
+      'Common.Save' | transloco
+    }}</a>
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -98,17 +100,21 @@
       </tr>
     </thead>
     <tbody>
-      @for (data of roleTable.data; track data.ID) {
+      @for (data of roleTable.data; track $index) {
         <tr>
           <td>
-            <nz-select [(ngModel)]="data.ID" [nzDisabled]="!isEditable">
+            <nz-select
+              [(ngModel)]="data.ID"
+              [nzDisabled]="!isEditable"
+              (ngModelChange)="onRoleModeChanged($event, data)"
+            >
               @for (coll of allRoles(); track coll.ID) {
                 <nz-option [nzLabel]="coll.Name | transloco" [nzValue]="coll.ID"></nz-option>
               }
             </nz-select>
 
             <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveRoleAssignment(data.ID)">
+            <button nz-button nzType="link" [disabled]="!isEditable" (click)="onRemoveRoleAssignment(data)">
               {{ 'Common.Delete' | transloco }}
             </button>
           </td>

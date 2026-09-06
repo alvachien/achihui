@@ -231,6 +231,37 @@
     "Yes": "Yes",
     "No": "No"
   },
+  "Filter": {
+    "EditFilter": "Edit Filter",
+    "AddCondition": "Condition",
+    "AddGroup": "Group",
+    "Delete": "Delete",
+    "JoinMode": "Join",
+    "Preview": "Preview",
+    "DetailEmpty": "Select a condition or group in the tree to edit it.",
+    "GroupDetailHint": "This group joins its members with the selected operator.",
+    "ResizePanes": "Resize filter panes",
+    "BetweenLow": "From",
+    "BetweenHigh": "To",
+    "And": "AND",
+    "Or": "OR",
+    "NeedsValue": "A value is required.",
+    "GroupNeedsTwo": "A group needs at least two conditions.",
+    "EnumNeedsChoice": "Select at least one value.",
+    "InvalidRange": "The low bound must not exceed the high bound.",
+    "CustomNoValue": "This operator needs no value.",
+    "NewFilter": "New filter",
+    "ClearFilter": "Clear filter",
+    "opBeginsWith": "starts with",
+    "opContains": "contains",
+    "opEqual": "is",
+    "opEndsWith": "ends with",
+    "opGreaterThan": ">",
+    "opGreaterOrEqual": ">=",
+    "opLessThan": "<",
+    "opLessOrEqual": "<=",
+    "opBetween": "between"
+  },
   "Sys": {
     "Currency": {
       "CNY": "Chinese Yuan",
@@ -671,6 +702,7 @@
   "Library": {
     "BookCategories": "Book Categories",
     "BookCategory": "Book Category",
+    "CategoryUnassignedParent": "Uncategorized (missing or invalid parent)",
     "MovieGenres": "Movie Genres",
     "MovieGenre": "Movie Genre",
     "Books": "Books",
@@ -708,7 +740,16 @@
     "BorrowRecord": "Borrow Record",
     "BorrowFrom": "Borrow From",
     "CreateBorrowRecord": "Create Borrow Record",
-    "HasReturned": "Has Returned"
+    "ReadingRecords": "Reading Records",
+    "ReadingRecord": "Reading Record",
+    "CreateReadingRecord": "Create Reading Record",
+    "Reader": "Reader",
+    "HasReturned": "Has Returned",
+    "ConfigObjects": "Config Objects",
+    "SearchUnderConstruction": "Sorry, the search page is still under construction.",
+    "ISBN": "ISBN",
+    "PublishedYear": "Published Year",
+    "PageCount": "Page Count"
   },
   "Paginator": {
     "ItemsPerPage": "Items per page:",
