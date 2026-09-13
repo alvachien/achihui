@@ -1,3 +1,15 @@
 // Shared filter-bar styling - single source in src/styles/filter-bar.less
 // (resolved via stylePreprocessorOptions.includePaths).
 @import 'filter-bar';
+
+// Shared ID-column styling - single source in src/styles/id-cell.less.
+@import 'id-cell';
+
+// Status cell: lifecycle tag + the compact Complete/Abort action links.
+.status-cell {
+    white-space: nowrap;
+
+    button {
+        padding-inline: 4px;
+    }
+}

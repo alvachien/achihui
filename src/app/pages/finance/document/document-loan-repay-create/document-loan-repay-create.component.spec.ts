@@ -447,7 +447,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 0: shall popup error dialog if failed to read loan account', async () => {
+    it('step 0: shall popup error dialog if failed to read loan account', async () => {
       readAccountSpy.and.returnValue(asyncError('failed'));
 
       fixture.detectChanges();
@@ -497,7 +497,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 1: items', async () => {
+    it('step 1: items', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -540,7 +540,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // await new Promise<void>(r => setTimeout(r, 0));
     });
 
-    it.skip('step 2: confirm', async () => {
+    it('step 2: confirm', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -589,7 +589,7 @@ describe('DocumentLoanRepayCreateComponent', () => {
       // await new Promise<void>(r => setTimeout(r, 0));
     });
 
-    it.skip('step 3: result with success', async () => {
+    it('step 3: result with success', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();

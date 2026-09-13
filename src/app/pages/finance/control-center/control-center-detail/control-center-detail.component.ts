@@ -13,6 +13,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { FinanceOdataService, HomeDefOdataService } from '@services/index';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '@model/index';
@@ -25,6 +26,7 @@ import { SafeAny } from '@common/any';
   styleUrls: ['./control-center-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzButtonModule,
     NzPageHeaderModule,
     NzSpinModule,
     NzBreadCrumbModule,

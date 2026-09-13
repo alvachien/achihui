@@ -219,6 +219,29 @@ export interface BaseModelJson {
   UpdatedBy: string;
 }
 
+// Parses an audit date arriving from the OData wire. The API serializes these
+// either as a plain date (Edm.Date, "yyyy-MM-dd") or as a full ISO datetime
+// (Edm.DateTimeOffset, e.g. "2026-09-13T02:47:41.505Z"). date-fns v4 parse is
+// STRICT about trailing characters, so a datetime value fails the 'yyyy-MM-dd'
+// format and yields Invalid Date - which would later make format() throw
+// "RangeError: Invalid time value" in a template. Try the date-only format
+// first (local midnight), then fall back to the native Date constructor;
+// return null when neither produces a valid date so the caller can keep its
+// previous value.
+function parseWireDate(value: SafeAny): Date | null {
+  if (!value) {
+    return null;
+  }
+  if (value instanceof Date) {
+    return isNaN(value.getTime()) ? null : value;
+  }
+  let d: Date = parse(String(value), dateFormat, new Date());
+  if (isNaN(d.getTime())) {
+    d = new Date(String(value));
+  }
+  return isNaN(d.getTime()) ? null : d;
+}
+
 /**
  * Base model
  */
@@ -259,6 +282,20 @@ export class BaseModel {
   }
   set Updatedat(ua: Date) {
     this._updatedAt = ua;
+  }
+  get CreatedatFormatString(): string {
+    // Defensive: an Invalid Date (NaN time value) makes date-fns format THROW
+    // a RangeError - never let that reach a template binding.
+    if (this._createdAt !== undefined && this._createdAt !== null && !isNaN(this._createdAt.getTime())) {
+      return format(this._createdAt, dateFormat);
+    }
+    return '';
+  }
+  get UpdatedatFormatString(): string {
+    if (this._updatedAt !== undefined && this._updatedAt !== null && !isNaN(this._updatedAt.getTime())) {
+      return format(this._updatedAt, dateFormat);
+    }
+    return '';
   }
 
   constructor() {
@@ -313,17 +350,27 @@ export class BaseModel {
   }
 
   public onSetData(data: SafeAny): void {
+    // The OData wire format uses PascalCase (CreatedAt / UpdatedAt / Createdby /
+    // Updatedby - see the API BaseModel and blogmodel). The previous guards
+    // checked camelCase and read yet another casing, so the audit fields were
+    // never picked up by any derived model.
     if (data && data.Createdby) {
       this.Createdby = data.Createdby;
     }
-    if (data && data.createdAt) {
-      this.Createdat = parse(data.Createdat, dateFormat, new Date());
+    if (data && data.CreatedAt) {
+      const d = parseWireDate(data.CreatedAt);
+      if (d) {
+        this.Createdat = d;
+      }
     }
-    if (data && data.updatedBy) {
+    if (data && data.Updatedby) {
       this.Updatedby = data.Updatedby;
     }
-    if (data && data.updatedAt) {
-      this.Updatedat = parse(data.Updatedat, dateFormat, new Date());
+    if (data && data.UpdatedAt) {
+      const d = parseWireDate(data.UpdatedAt);
+      if (d) {
+        this.Updatedat = d;
+      }
     }
   }
 

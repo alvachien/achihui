@@ -46,6 +46,8 @@ import {
 import { costObjectValidator } from '../../../../uimodel';
 import { HomeDefOdataService, UIStatusService, FinanceOdataService } from '../../../../services';
 import { SafeAny } from '@common/any';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
@@ -53,6 +55,8 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-create-item';
 
 @Component({
@@ -61,6 +65,10 @@ import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-c
   styleUrls: ['./document-normal-mass-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzFormModule,
+    NzGridModule,
+    NzButtonModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzStepsModule,

@@ -153,7 +153,7 @@ describe('MarkdownEditorComponent', () => {
 
     // According to NZ-ANTD repo, there is no way to wait for editor initialized
     // .../components/code-editor/code-editor.spec.ts
-    it.skip('edit mode with value change', async () => {
+    it('edit mode with value change', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -175,9 +175,14 @@ describe('MarkdownEditorComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
+      // Monaco is loaded asynchronously by nz-code-editor and never finishes
+      // initializing under jsdom, so toolbar actions cannot mutate real editor
+      // content (onToolbarH1 stays a safe no-op here - this is why the old
+      // toolbar-only version of this test could never see a value and was
+      // skipped). The testable contract is the CVA one: a value change on the
+      // editor component propagates out to the hosting form control.
       testingComponent.editorComponent?.onToolbarH1();
-      testingComponent.formGrp.get('infoControl')?.markAsDirty();
-      testingComponent.formGrp.get('infoControl')?.updateValueAndValidity();
+      testingComponent.editorComponent!.value = '# header';
 
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -185,6 +190,7 @@ describe('MarkdownEditorComponent', () => {
 
       curval = testingComponent.formGrp.get('infoControl')?.value;
       expect(curval).toBeTruthy();
+      expect(curval).toEqual('# header');
     });
   });
 });

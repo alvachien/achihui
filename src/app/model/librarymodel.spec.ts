@@ -14,6 +14,7 @@ import {
   Organization,
   BookBorrowRecord,
   BookReadingRecord,
+  BookReadingStatus,
 } from './librarymodel';
 
 describe('PersonRole', () => {
@@ -769,6 +770,7 @@ describe('BookReadingRecord', () => {
     objtbt.User = 'test';
     objtbt.FromDate = new Date();
     objtbt.ToDate = addMonths(new Date(), 1);
+    objtbt.Status = BookReadingStatus.Reading;
     objtbt.onInit();
     expect(objtbt.ID).toEqual(0);
     expect(objtbt.HID).toBeFalsy();
@@ -776,6 +778,9 @@ describe('BookReadingRecord', () => {
     expect(objtbt.User).toEqual('');
     expect(objtbt.FromDate).toBeFalsy();
     expect(objtbt.ToDate).toBeFalsy();
+    // Reset to the terminal default: never enable finalize actions on a fresh model.
+    expect(objtbt.Status).toEqual(BookReadingStatus.Completed);
+    expect(objtbt.IsReading).toBe(false);
   });
 
   it('onVerify', () => {
@@ -796,10 +801,17 @@ describe('BookReadingRecord', () => {
 
     objtbt.User = 'Test';
     vrst = objtbt.onVerify();
+    // FromDate is mandatory - User alone is not enough.
+    expect(vrst).toBe(false);
+    expect(objtbt.VerifiedMsgs.length).toBeGreaterThan(0);
+
+    // FromDate alone is valid now: it starts an open (Reading) record that is
+    // finalized later via CompleteReading / AbortReading (server derives status).
+    objtbt.FromDate = new Date();
+    vrst = objtbt.onVerify();
     expect(vrst).toBe(true);
     expect(objtbt.VerifiedMsgs.length).toEqual(0);
 
-    objtbt.FromDate = new Date();
     objtbt.ToDate = addMonths(new Date(), -2);
     vrst = objtbt.onVerify();
     expect(vrst).toBe(false);
@@ -874,5 +886,44 @@ describe('BookReadingRecord', () => {
     });
     expect(objtbt.FromDate).toBeTruthy();
     expect(objtbt.FromDate!.getFullYear()).toEqual(2026);
+  });
+
+  it('parses the Status member-name wire format', () => {
+    // The API serializes the enum as its member name (integration-test pinned).
+    objtbt.onSetData({ Id: 1, Status: 'Reading' });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Reading);
+    expect(objtbt.IsReading).toBe(true);
+
+    objtbt.onSetData({ Id: 2, Status: 'Completed' });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Completed);
+    expect(objtbt.IsReading).toBe(false);
+
+    objtbt.onSetData({ Id: 3, Status: 'Aborted' });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Aborted);
+    expect(objtbt.IsReading).toBe(false);
+  });
+
+  it('tolerates the numeric Status form', () => {
+    objtbt.onSetData({ Id: 1, Status: 0 });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Reading);
+
+    objtbt.onSetData({ Id: 2, Status: 1 });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Completed);
+
+    objtbt.onSetData({ Id: 3, Status: 2 });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Aborted);
+  });
+
+  it('defaults unknown or missing Status to the terminal Completed', () => {
+    // A record we cannot classify must never offer the finalize actions.
+    objtbt.onSetData({ Id: 1 });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Completed);
+    expect(objtbt.IsReading).toBe(false);
+
+    objtbt.onSetData({ Id: 2, Status: 'SomethingNew' });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Completed);
+
+    objtbt.onSetData({ Id: 3, Status: 7 });
+    expect(objtbt.Status).toEqual(BookReadingStatus.Completed);
   });
 });

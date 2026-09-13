@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { FilterOperation, FilterUtility, IFilterDefinition } from 'actslib';
+import { FilterOperation, FilterUtility, FilterRoot } from 'actslib';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -25,7 +25,12 @@ import { Organization } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { FilterableProperty, filterMenuLabel, openFilterDialog } from '../../../shared/filter-dialog';
+import {
+  FilterableProperty,
+  filterMenuLabel,
+  hasActiveFilterDefinition,
+  openFilterDialog,
+} from '../../../shared/filter-dialog';
 
 import { SelectionDlgModalData } from '../selection-dlg.models';
 
@@ -76,12 +81,14 @@ export class OrganizationSelectionDlgComponent implements OnInit {
 
   // Free-text search: a live pre-filter — every keystroke narrows the table.
   readonly searchText = signal('');
-  // Structured filter emitted by the shared filter dialog (undefined = none).
-  readonly filterDef = signal<IFilterDefinition | undefined>(undefined);
+  // Structured filter emitted by the shared filter dialog (undefined = none;
+  // any actslib FilterRoot spelling — a single-condition filter travels as a
+  // bare condition).
+  readonly filterDef = signal<FilterRoot | undefined>(undefined);
   readonly pageIndex = signal(1);
   private readonly sortKey = signal<OrganizationSortKey | null>(null);
   private readonly sortOrder = signal<OrganizationSortOrder | null>(null);
-  readonly hasFilter = computed(() => (this.filterDef()?.conditions?.length ?? 0) > 0);
+  readonly hasFilter = computed(() => hasActiveFilterDefinition(this.filterDef()));
   // Menu item label: a summary of the active filter, or "New filter" when none.
   readonly filterMenuText = computed(
     () => filterMenuLabel(this.filterDef(), ORGANIZATION_FILTER_PROPERTIES) || translate('Filter.NewFilter'),
@@ -106,7 +113,7 @@ export class OrganizationSelectionDlgComponent implements OnInit {
       );
     }
     const def = this.filterDef();
-    if (def && def.conditions.length > 0) {
+    if (hasActiveFilterDefinition(def)) {
       list = FilterUtility.FilterList(list as Organization[], def);
     }
     const key = this.sortKey();
@@ -207,7 +214,8 @@ export class OrganizationSelectionDlgComponent implements OnInit {
     );
     ref.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((result) => {
       if (result) {
-        // root may be an empty tree (= match-all) — the user cleared all conditions.
+        // Submit only — the dialog never emits case 0 (the empty tree is not
+        // submittable); Cancel/backdrop/Esc yield undefined and keep the old filter.
         this.filterDef.set(result.root);
         this.pageIndex.set(1);
       }

@@ -126,7 +126,7 @@ describe('AccountExtraLoanComponent', () => {
     await new Promise<void>((r) => setTimeout(r, 0));
   });
 
-  it.skip('shall work with data 2: input start date', async () => {
+  it('shall work with data 2: input start date', async () => {
     fixture.detectChanges();
     await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
@@ -150,7 +150,7 @@ describe('AccountExtraLoanComponent', () => {
     await new Promise<void>((r) => setTimeout(r, 0));
   });
 
-  it.skip('shall work with data 3: input start date, total months', async () => {
+  it('shall work with data 3: input start date, total months', async () => {
     fixture.detectChanges();
     await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
@@ -175,7 +175,7 @@ describe('AccountExtraLoanComponent', () => {
     await new Promise<void>((r) => setTimeout(r, 0));
   });
 
-  it.skip('shall work with data 4: input start date, total months and repay method', async () => {
+  it('shall work with data 4: input start date, total months and repay method', async () => {
     fixture.detectChanges();
     await new Promise<void>((r) => setTimeout(r, 0));
     fixture.detectChanges();
@@ -201,7 +201,7 @@ describe('AccountExtraLoanComponent', () => {
     await new Promise<void>((r) => setTimeout(r, 0));
   });
 
-  it.skip('shall work with data 5: interest free case', async () => {
+  it('shall work with data 5: interest free case', async () => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -251,7 +251,7 @@ describe('AccountExtraLoanComponent', () => {
     await new Promise<void>((r) => setTimeout(r, 0));
   });
 
-  it.skip('shall work with data 6: interest case', async () => {
+  it('shall work with data 6: interest case', async () => {
     const tmpdocs: TemplateDocLoan[] = [];
     for (let i = 0; i < 12; i++) {
       const tmpdoc: TemplateDocLoan = new TemplateDocLoan();
@@ -277,6 +277,9 @@ describe('AccountExtraLoanComponent', () => {
     loan1.TotalMonths = 24;
     loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
     loan1.InterestFree = false;
+    // An interest-bearing loan REQUIRES an annual rate (isAccountValid) - the
+    // former version of this test omitted it and was skipped as "failing".
+    loan1.annualRate = 0.05;
     loan1.RepayDayInMonth = 15;
     loan1.Comment = 'test';
     expect(loan1.isAccountValid).toBeTruthy();
@@ -320,7 +323,7 @@ describe('AccountExtraLoanComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it.skip('shall display error dialog', async () => {
+    it('shall display error dialog', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -331,6 +334,8 @@ describe('AccountExtraLoanComponent', () => {
       loan1.TotalMonths = 24;
       loan1.RepayMethod = RepaymentMethodEnum.EqualPrincipalAndInterset;
       loan1.InterestFree = false;
+      // Interest-bearing loans require an annual rate (see the data-6 case).
+      loan1.annualRate = 0.05;
       loan1.RepayDayInMonth = 15;
       expect(loan1.isAccountValid).toBeTruthy();
 

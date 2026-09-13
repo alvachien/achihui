@@ -50,11 +50,12 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 @Component({
   selector: 'hih-fin-document-list',
@@ -62,6 +63,8 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   styleUrls: ['./document-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzGridModule,
+    NzIconModule,
     NzSpinModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -70,14 +73,12 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     NzDropdownModule,
     NzTableModule,
     NzDatePickerModule,
-    NzPopconfirmModule,
     DecimalPipe,
     FormsModule,
     ReactiveFormsModule,
     TranslocoModule,
     NzButtonModule,
     NzMenuModule,
-    NzDropdownModule,
     NzModalModule,
     RouterModule,
   ],
@@ -405,10 +406,6 @@ export class DocumentListComponent implements OnInit {
   public onCreateRepayDocument(): void {
     this.router.navigate(['/finance/document/createloanrepay']);
   }
-  public onDisplayDocument(doc: Document): void {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.onDisplay(doc.Id!);
-  }
   public onMassCreateNormalDocument(): void {
     this.router.navigate(['/finance/document/masscreatenormal']);
   }
@@ -422,37 +419,49 @@ export class DocumentListComponent implements OnInit {
     this.router.navigate(['/finance/document/edit/', docid]);
   }
   public onDelete(docid: number): void {
-    this.odataService
-      .deleteDocument(docid)
-      .pipe(takeUntilDestroyed(this.destroyedRef))
-      .subscribe({
-        next: () => {
-          // Show dialog.
-          const ref: NzModalRef = this.modalService.success({
-            nzTitle: translate('Common.Success'),
-            nzContent: translate('Finance.DeleteDocumentSuccessfully'),
-          });
-          setTimeout(() => {
-            ref.close();
-            ref.destroy();
-          }, 1000);
+    // Modal confirm (book-list pattern) - the row action now lives in the
+    // ID cell's dropdown, where a popconfirm would not anchor cleanly.
+    this.modalService.confirm({
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: translate('Common.OperationConfirmationContent'),
+      nzOkText: translate('Common.Yes'),
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.odataService
+          .deleteDocument(docid)
+          .pipe(takeUntilDestroyed(this.destroyedRef))
+          .subscribe({
+            next: () => {
+              // Show dialog.
+              const ref: NzModalRef = this.modalService.success({
+                nzTitle: translate('Common.Success'),
+                nzContent: translate('Finance.DeleteDocumentSuccessfully'),
+              });
+              setTimeout(() => {
+                ref.close();
+                ref.destroy();
+              }, 1000);
 
-          // Need refresh
-          this.fetchData();
-        },
-        error: (err) => {
-          ModelUtility.writeConsoleLog(
-            `AC_HIH_UI [Error]: Entering DocumentListComponent onDelete, failed ${err}...`,
-            ConsoleLogTypeEnum.error,
-          );
+              // Need refresh
+              this.fetchData();
+            },
+            error: (err) => {
+              ModelUtility.writeConsoleLog(
+                `AC_HIH_UI [Error]: Entering DocumentListComponent onDelete, failed ${err}...`,
+                ConsoleLogTypeEnum.error,
+              );
 
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err.toString(),
+                nzClosable: true,
+              });
+            },
           });
-        },
-      });
+      },
+      nzCancelText: translate('Common.No'),
+    });
   }
   public onChangeDate(docid: number, docdate: Date): void {
     // Change the account name

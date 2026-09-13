@@ -28,6 +28,7 @@ import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { finalize, forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -54,6 +55,7 @@ interface FastInputExpectedResult {
   styleUrls: ['./reconcile-by-month.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzDatePickerModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzStepsModule,

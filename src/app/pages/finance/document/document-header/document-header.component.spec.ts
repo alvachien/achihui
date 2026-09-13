@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -531,6 +531,80 @@ describe('DocumentHeaderComponent', () => {
       expect(curDocument.TranCurr2).toEqual('EUR');
       expect(curDocument.ExgRate2).toEqual(666.56);
       expect(curDocument.ExgRate_Plan2).toBeTruthy();
+    });
+  });
+
+  describe('Currency must be defined in the catalog (create step-1 gating)', () => {
+    beforeEach(() => {
+      component.currentUIMode = UIMode.Create;
+      component.docType = financeDocTypeNormal;
+      component.arCurrencies = fakeData.currencies;
+    });
+
+    it('flags the home base-currency stamp when the catalog does not define it', () => {
+      // Data drift: the home was set up with 'GBP' but the catalog defines
+      // CNY/USD/EUR only. The baseCurrency setter stamps GBP - 'required'
+      // passes, the catalog check must not.
+      component.baseCurrency = 'GBP';
+      const ctl = component.headerForm.get('currControl');
+      expect(ctl?.value).toBe('GBP');
+      expect(ctl?.hasError('invalidCurrency')).toBe(true);
+
+      // A code the catalog defines passes.
+      ctl?.setValue('USD');
+      ctl?.updateValueAndValidity();
+      expect(ctl?.hasError('invalidCurrency')).toBeFalsy();
+    });
+
+    it('validate() propagates child failures to the hosting (wizard) control', () => {
+      // Stamps a defined currency (so only the description keeps the inner
+      // group invalid - a CHILD error with no GROUP-level errors): validate()
+      // must still say "invalid" or step gating stays green.
+      component.baseCurrency = 'CNY';
+      expect(component.validate(new UntypedFormControl(null))).toEqual({ headerFormInvalid: true });
+
+      component.headerForm.get('despControl')?.setValue('filled in');
+      expect(component.validate(new UntypedFormControl(null))).toBeNull();
+    });
+
+    it('an arriving catalog re-validates a stale stamp and notifies the hosting control', () => {
+      component.baseCurrency = 'CNY';
+      expect(component.headerForm.get('currControl')?.hasError('invalidCurrency')).toBeFalsy();
+
+      const revalidateSpy = vi.fn();
+      component.registerOnValidatorChange(revalidateSpy);
+      const changeSpy = vi.fn();
+      component.registerOnChange(changeSpy);
+
+      // The fetch completes later with a list that lacks the stamped code.
+      component.arCurrencies = fakeData.currencies.filter((c) => c.Currency !== 'CNY');
+      expect(component.headerForm.get('currControl')?.hasError('invalidCurrency')).toBe(true);
+      // Validator-change hook fired -> the outer control revalidates (step
+      // gating updates). onChange must NOT fire: an input setter may not
+      // push a value out or dirty the hosting control.
+      expect(revalidateSpy).toHaveBeenCalledTimes(1);
+      expect(changeSpy).not.toHaveBeenCalled();
+    });
+
+    it('stays silent while the catalog has not loaded (no false invalid flash)', () => {
+      // Fresh instance: no arCurrencies input ever set (fetch pending/failed).
+      const freshFixture = TestBed.createComponent(DocumentHeaderComponent);
+      const fresh = freshFixture.componentInstance;
+      fresh.currentUIMode = UIMode.Create;
+      fresh.docType = financeDocTypeNormal;
+      fresh.baseCurrency = 'GBP'; // stamped before any catalog arrives
+      expect(fresh.headerForm.get('currControl')?.hasError('invalidCurrency')).toBeFalsy();
+
+      // Once a catalog lands, the drift is flagged.
+      fresh.arCurrencies = fakeData.currencies; // CNY/USD/EUR only
+      expect(fresh.headerForm.get('currControl')?.hasError('invalidCurrency')).toBe(true);
+    });
+
+    it('Display mode stays silent even for unknown currencies', () => {
+      component.currentUIMode = UIMode.Display;
+      component.headerForm.get('currControl')?.setValue('GBP');
+      component.headerForm.get('currControl')?.updateValueAndValidity();
+      expect(component.validate(new UntypedFormControl(null))).toBeNull();
     });
   });
 });

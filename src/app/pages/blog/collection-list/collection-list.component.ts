@@ -7,7 +7,9 @@ import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { ModelUtility, ConsoleLogTypeEnum, BlogCollection } from '@model/index';
@@ -22,7 +24,9 @@ import { BlogOdataService } from '@services/index';
     NzPageHeaderModule,
     NzSpinModule,
     NzTableModule,
-    NzDividerModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
     NzModalModule,
     NzButtonModule,
     TranslocoModule,
@@ -100,9 +104,6 @@ export class CollectionListComponent implements OnInit, OnDestroy {
 
   onCreate(): void {
     this.router.navigate(['/blog/collection/create']);
-  }
-  onDisplay(rid: number): void {
-    this.router.navigate(['/blog/collection/display/' + rid.toString()]);
   }
   onEdit(rid: number): void {
     this.router.navigate(['/blog/collection/edit/' + rid.toString()]);

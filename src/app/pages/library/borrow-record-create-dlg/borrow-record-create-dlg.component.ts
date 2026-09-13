@@ -2,6 +2,7 @@ import { Component, OnInit, ViewContainerRef, inject, signal, computed, ChangeDe
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NZ_MODAL_DATA, NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
@@ -35,6 +36,7 @@ interface BorrowRecordCreateDlgModalData {
     FormsModule,
     ReactiveFormsModule,
     NzModalModule,
+    NzButtonModule,
     NzDatePickerModule,
     NzSwitchModule,
     NzInputModule,

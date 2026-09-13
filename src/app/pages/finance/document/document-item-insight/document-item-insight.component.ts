@@ -9,6 +9,7 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzTransferModule, TransferItem } from 'ng-zorro-antd/transfer';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { format } from 'date-fns';
@@ -49,6 +50,7 @@ interface InsightRecord {
   styleUrls: ['./document-item-insight.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzGridModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzTransferModule,

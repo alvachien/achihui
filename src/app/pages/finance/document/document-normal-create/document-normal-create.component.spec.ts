@@ -180,7 +180,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(docobj.TranCurr).toEqual(fakeData.chosedHome.BaseCurrency);
     });
 
-    it.skip('step 0: should not go to next page if header is not valid', async () => {
+    it('step 0: should not go to next page if header is not valid', async () => {
       fixture.detectChanges(); // ngOnInit
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -192,7 +192,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 0: should go to next page if header is valid for document with local currency', async () => {
+    it('step 0: should go to next page if header is valid for document with local currency', async () => {
       fixture.detectChanges(); // ngOnInit
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -216,7 +216,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 0: should go to next page if header is valid for document with foreign currency', async () => {
+    it('step 0: should go to next page if header is valid for document with foreign currency', async () => {
       fixture.detectChanges(); // ngOnInit
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -245,7 +245,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 1: should not go to next page if item is invalid', async () => {
+    it('step 1: should not go to next page if item is invalid', async () => {
       fixture.detectChanges(); // ngOnInit
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -310,7 +310,7 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 2: should popup an error dialog if verification failed on generated object', async () => {
+    it('step 2: should popup an error dialog if verification failed on generated object', async () => {
       fixture.detectChanges(); // ngOnInit
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -343,6 +343,11 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       nextButtonNativeEl.click();
+      // Step 1 -> 2 only completes when the duplicate-warning searchDocItem
+      // call finishes (the step increment sits in its finalize) - asyncData
+      // delays that by a tick, so the old synchronous assertion could never
+      // see step 2 (this is why the test was skipped).
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
       // Step 2.
@@ -372,7 +377,8 @@ describe('DocumentNormalCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeFalsy();
-      expect(component.docIdCreated).toBeNull();
+      // docIdCreated is `?: number` - "nothing created" is undefined, not null.
+      expect(component.docIdCreated).toBeUndefined();
       expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -437,7 +443,7 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.docPostingFailed).toBeTruthy();
     });
 
-    it.skip('step 3: should save document for base currency case', async () => {
+    it('step 3: should save document for base currency case', async () => {
       fixture.detectChanges(); // ngOnInit
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -469,6 +475,10 @@ describe('DocumentNormalCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       component.next();
+      // The step advance rides on the searchDocItem finalize (async) - see the
+      // step-2 test for details.
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
       expect(component.currentStep()).toEqual(2);
 
       // Save the document

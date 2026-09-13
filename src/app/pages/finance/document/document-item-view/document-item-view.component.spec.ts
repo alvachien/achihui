@@ -10,7 +10,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService } from '../../../../services';
-import { UserAuthInfo } from '../../../../model';
+import { UserAuthInfo, GeneralFilterItem, GeneralFilterOperatorEnum, GeneralFilterValueType } from '../../../../model';
 import { DocumentItemViewComponent } from './document-item-view.component';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
@@ -130,28 +130,41 @@ describe('DocumentItemViewComponent', () => {
       expect(searchDocItemSpy).not.toHaveBeenCalled();
     });
 
-    it.skip('should display error when Service fails on Account', async () => {
+    it('should display error when Service fails on Account', async () => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
       fixture.detectChanges();
-      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      component.fetchDocItems();
+      // fetchDocItems bails out when no filter is set ("Not allow select all"),
+      // so the old bare call never issued any request and no error modal could
+      // appear. The filterDocItem input setter stores the filter AND kicks off
+      // the fetch itself.
+      const flt = new GeneralFilterItem();
+      flt.fieldName = 'AccountID';
+      flt.operator = GeneralFilterOperatorEnum.Equal;
+      flt.lowValue = fakeData.finAccounts[0].Id;
+      flt.valueType = GeneralFilterValueType.number;
+      component.filterDocItem = [flt];
 
       fixture.detectChanges();
-      await new Promise<void>((r) => setTimeout(r, 0)); // complete the Observable in ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // let the forkJoin error arrive
       fixture.detectChanges();
 
-      // Expect there is a dialog
-      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+      // Expect the error dialog(s). NOTE: the filterDocItem setter fetches
+      // AND the table's initial nzQueryParams emission re-fetches (this
+      // component has no query dedupe like book-list), so the failing
+      // forkJoin can legitimately raise two identical error modals.
+      const modalCount = overlayContainerElement.querySelectorAll('.ant-modal-body').length;
+      expect(modalCount).toBeGreaterThanOrEqual(1);
       await new Promise<void>((r) => setTimeout(r, 0));
 
-      // OK button
-      const closeBtn = overlayContainerElement.querySelector('.ant-modal-close') as HTMLButtonElement;
-      expect(closeBtn).toBeTruthy();
-      closeBtn.click();
+      // OK button(s): close every dialog shown.
+      const closeBtns = overlayContainerElement.querySelectorAll('.ant-modal-close');
+      expect(closeBtns.length).toBe(modalCount);
+      closeBtns.forEach((btn) => (btn as HTMLButtonElement).click());
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();

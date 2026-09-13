@@ -21,17 +21,31 @@
       @for (data of basicTable.data; track data.ID) {
         <tr>
           <td>
-            {{ data.ID }}
-            <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDisplay(data.ID)">
-              {{ 'Common.Display' | transloco }}
-            </button>
-            <button nz-button nzType="link" (click)="onEdit(data.ID)">
-              {{ 'Common.Edit' | transloco }}
-            </button>
-            <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>
-              {{ 'Common.Delete' | transloco }}
-            </button>
+            <div class="id-cell">
+              <!-- The ID itself links to the display page -->
+              <a [routerLink]="['/library/location/display', data.ID]">{{ data.ID }}</a>
+              <!-- Row actions: the former inline links live in a three-dot menu -->
+              <button
+                nz-button
+                nzType="text"
+                nzSize="small"
+                nz-dropdown
+                [nzDropdownMenu]="rowActionMenu"
+                nzTrigger="click"
+                nzPlacement="bottomRight"
+                [attr.aria-label]="'Common.Actions' | transloco"
+                class="id-cell-action"
+              >
+                <i nz-icon nzType="more" nzTheme="outline"></i>
+              </button>
+              <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="onEdit(data.ID)">{{ 'Common.Edit' | transloco }}</li>
+                  <li nz-menu-divider></li>
+                  <li nz-menu-item nzDanger (click)="onDelete(data.ID)">{{ 'Common.Delete' | transloco }}</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
           </td>
           <td>{{ data.Name }}</td>
           <td>{{ data.Comment }}</td>

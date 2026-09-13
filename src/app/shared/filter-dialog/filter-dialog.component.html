@@ -2,7 +2,11 @@
   <!-- left: tree navigator -->
   <div class="fd-tree-pane" [style.width]="splitPct() + '%'">
     <div class="fd-toolbar">
-      <button nz-button nzSize="small" nzType="default" (click)="addCondition()">
+      <!-- Exactly three buttons, armed by the selected node's kind: a GROUP
+           arms all three (it becomes the insert target), a CONDITION arms
+           delete only, and with nothing selected (the empty tree) the two
+           inserts arm and delete stays off. -->
+      <button nz-button nzSize="small" nzType="default" [disabled]="!canAddCondition()" (click)="addCondition()">
         <i nz-icon nzType="plus"></i>
         <span>{{ 'Filter.AddCondition' | transloco }}</span>
       </button>

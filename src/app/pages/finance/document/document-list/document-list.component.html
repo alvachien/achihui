@@ -113,40 +113,38 @@
           <tr>
             <td nzShowExpand [(nzExpand)]="mapOfExpandData[data.Id!]"></td>
             <td>
-              {{ data.Id }}
-              <nz-divider nzType="vertical"></nz-divider>
-              <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
-                {{ 'Common.Display' | transloco }}
-              </button>
-              <a nz-dropdown nz-dropdown [nzDropdownMenu]="menuForChange">
-                {{ 'Common.Edit' | transloco }}
-                <i nz-icon nzType="down"></i>
-              </a>
-              <nz-divider nzType="vertical"></nz-divider>
-              <button
-                nz-button
-                nzType="link"
-                nz-popconfirm
-                [nzPopconfirmTitle]="'Common.OperationConfirmationContent' | transloco"
-                (nzOnConfirm)="onDelete(data.Id!)"
-                nzDanger
-              >
-                {{ 'Common.Delete' | transloco }}
-              </button>
-              <nz-dropdown-menu #menuForChange="nzDropdownMenu">
-                <ul nz-menu>
-                  <li nz-menu-item (click)="onEdit(data.Id!)">
-                    {{ 'Common.Edit' | transloco }}
-                  </li>
-                  <li nz-menu-divider></li>
-                  <li nz-menu-item (click)="onChangeDate(data.Id!, data.TranDate)">
-                    {{ 'Finance.ChangeDate' | transloco }}
-                  </li>
-                  <li nz-menu-item (click)="onChangeDesp(data.Id!, data.Desp!)">
-                    {{ 'Finance.ChangeDesp' | transloco }}
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
+              <div class="id-cell">
+                <!-- The ID itself links to the display page -->
+                <a [routerLink]="['/finance/document/display', data.Id!]">{{ data.Id }}</a>
+                <!-- Row actions: the former inline links live in a three-dot menu -->
+                <button
+                  nz-button
+                  nzType="text"
+                  nzSize="small"
+                  nz-dropdown
+                  [nzDropdownMenu]="rowActionMenu"
+                  nzTrigger="click"
+                  nzPlacement="bottomRight"
+                  [attr.aria-label]="'Common.Actions' | transloco"
+                  class="id-cell-action"
+                >
+                  <i nz-icon nzType="more" nzTheme="outline"></i>
+                </button>
+                <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="onEdit(data.Id!)">{{ 'Common.Edit' | transloco }}</li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="onChangeDate(data.Id!, data.TranDate)">
+                      {{ 'Finance.ChangeDate' | transloco }}
+                    </li>
+                    <li nz-menu-item (click)="onChangeDesp(data.Id!, data.Desp!)">
+                      {{ 'Finance.ChangeDesp' | transloco }}
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item nzDanger (click)="onDelete(data.Id!)">{{ 'Common.Delete' | transloco }}</li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
             </td>
             <td>{{ getCurrencyName(data.TranCurr!) }}</td>
             <td>{{ data.TranDateFormatString }}</td>

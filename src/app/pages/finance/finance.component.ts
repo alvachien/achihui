@@ -69,6 +69,7 @@ class DateCellData {
   styleUrls: ['./finance.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzButtonModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSwitchModule,

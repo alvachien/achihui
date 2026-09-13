@@ -1,6 +1,8 @@
 import { Component, Input, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -25,7 +27,7 @@ import {
   templateUrl: './document-item-view.component.html',
   styleUrls: ['./document-item-view.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzTableModule, DecimalPipe, TranslocoModule, RouterModule, NzModalModule],
+  imports: [NzTableModule, DecimalPipe, TranslocoModule, RouterModule, NzModalModule, NzButtonModule, NzGridModule],
 })
 export class DocumentItemViewComponent {
   private _filterDocItem: GeneralFilterItem[] = [];

@@ -8,7 +8,9 @@ import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import {
@@ -32,7 +34,9 @@ import { BlogOdataService } from '@services/index';
     NzButtonModule,
     NzTableModule,
     NzModalModule,
-    NzDividerModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
     NzSpinModule,
     RouterModule,
   ],
@@ -135,9 +139,6 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
   onCreate(): void {
     this.router.navigate(['/blog/post/create']);
-  }
-  onDisplay(rid: number): void {
-    this.router.navigate(['/blog/post/display/' + rid.toString()]);
   }
   onEdit(rid: number): void {
     this.router.navigate(['/blog/post/edit/' + rid.toString()]);

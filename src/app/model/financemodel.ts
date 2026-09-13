@@ -2203,7 +2203,8 @@ export class Document extends hih.BaseModel {
         }
       }
 
-      // Currency check
+      // Currency check. An empty Currencies list is NOT a pass: the else
+      // branch below raises CurrencyFetchFailed (pinned by spec #9).
       if (context && context.Currencies && context.Currencies instanceof Array && context.Currencies.length > 0) {
         if (this.TranCurr) {
           let bExist = false;
@@ -2242,7 +2243,9 @@ export class Document extends hih.BaseModel {
         if (this.TranCurr2) {
           let bExist = false;
           for (const cc of context.Currencies) {
-            if (cc.Currency === this.TranCurr) {
+            // was `this.TranCurr` (copy-paste bug): currency 2 only ever
+            // passed the existence check if currency 1 was maintained.
+            if (cc.Currency === this.TranCurr2) {
               bExist = true;
               break;
             }

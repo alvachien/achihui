@@ -46,6 +46,8 @@ import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { UIAccountStatusFilterPipe } from '../../pipes';
 
 @Component({
@@ -54,6 +56,8 @@ import { UIAccountStatusFilterPipe } from '../../pipes';
   styleUrls: ['./plan-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSpinModule,

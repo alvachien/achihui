@@ -20,14 +20,20 @@ import { FormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { authInterceptor } from './services/auth.interceptor';
 import { TranslocoHttpLoader } from './transloco-loader';
-import { provideTransloco } from '@jsverse/transloco';
+import { provideTransloco, TranslocoService } from '@jsverse/transloco';
+import { firstValueFrom } from 'rxjs';
 import { LogLevel, provideAuth } from 'angular-auth-oidc-client';
 import { environment } from '@environments/environment';
 import { ThemeService } from '@services/theme.service';
 import { provideNzDateFnsAdapter } from 'ng-zorro-antd/core/time';
 
 registerLocaleData(en);
-registerLocaleData(zh, 'zh-cn');
+// Register zh under its canonical id 'zh' (the id embedded in the data), NOT 'zh-cn'.
+// The prod environment sets LOCALE_ID to 'zh' (DefaultLanguage 'zh'); a lookup for 'zh'
+// only matches a registry key 'zh'. A wrong key here makes every `number`/`currency`
+// pipe throw (NG0701 wrapped as NG02100) on each change-detection cycle. 'zh-CN'
+// lookups still resolve via Angular's parent-locale fallback.
+registerLocaleData(zh);
 
 // Default language is driven by environment.DefaultLanguage ('en' | 'zh').
 const defaultLang = environment.DefaultLanguage === 'zh' ? 'zh' : 'en';
@@ -54,8 +60,15 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAppInitializer(() => {
       console.log('Entering App Initializer...');
+      // Preload the default language before first render: components that call
+      // the synchronous translate() imperatively (e.g. the library lists'
+      // filter-menu label) would otherwise warn "Missing translation" and show
+      // the raw key until the next language event.
+      const translocoService = inject(TranslocoService);
       const themeService = inject(ThemeService);
-      return themeService.loadTheme(true);
+      return Promise.all([firstValueFrom(translocoService.load(defaultLang)), themeService.loadTheme(true)]).then(
+        () => void 0,
+      );
     }),
     provideAuth({
       config: {

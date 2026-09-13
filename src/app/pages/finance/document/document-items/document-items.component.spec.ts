@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { signal, DebugElement } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 import { NzInputDirective } from 'ng-zorro-antd/input';
@@ -10,7 +10,12 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
-import { dispatchMouseEvent, typeInElement } from 'ng-zorro-antd/core/testing';
+// dispatchMouseEvent is NOT used here anymore: the ng-zorro helper builds its
+// event via the deprecated initMouseEvent(..., window, ...), whose `view`
+// argument fails jsdom's Window brand check under vitest ("parameter 4 is not
+// of type 'Window'"). Native `new MouseEvent('click', { bubbles: true })`
+// skips that validation entirely.
+import { typeInElement } from 'ng-zorro-antd/core/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode } from 'actslib';
 
@@ -76,7 +81,7 @@ describe('DocumentItemsComponent', () => {
     // fixture.detectChanges();
   });
 
-  it.skip('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -105,7 +110,7 @@ describe('DocumentItemsComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it.skip('shall be invalid if no items', async () => {
+    it('shall be invalid if no items', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -114,7 +119,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.noitems).toBeTruthy();
     });
-    it.skip('shall be invalid if items without account', async () => {
+    it('shall be invalid if items without account', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -132,7 +137,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.itemwithoutaccount).toBeTruthy();
     });
-    it.skip('shall be invalid if items without tran type', async () => {
+    it('shall be invalid if items without tran type', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -151,7 +156,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.itemwithouttrantype).toBeTruthy();
     });
-    it.skip('shall be invalid if items without amount', async () => {
+    it('shall be invalid if items without amount', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -170,7 +175,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.itemwithoutamount).toBeTruthy();
     });
-    it.skip('shall be invalid if items without cost object', async () => {
+    it('shall be invalid if items without cost object', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -189,7 +194,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy();
     });
-    it.skip('shall be invalid if items have cost center and order both', async () => {
+    it('shall be invalid if items have cost center and order both', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -209,7 +214,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.itemwithwrongcostobject).toBeTruthy();
     });
-    it.skip('shall be invalid if items without desp', async () => {
+    it('shall be invalid if items without desp', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -228,7 +233,7 @@ describe('DocumentItemsComponent', () => {
       expect(err).toBeTruthy();
       expect(err.itemwithoutdesp).toBeTruthy();
     });
-    it.skip('shall remove item on deletion', async () => {
+    it('shall remove item on deletion', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -249,7 +254,7 @@ describe('DocumentItemsComponent', () => {
 
       expect(component.listItems().length).toEqual(0);
     });
-    it.skip('shall be valid in valid case', async () => {
+    it('shall be valid in valid case', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -267,7 +272,7 @@ describe('DocumentItemsComponent', () => {
       const err: SafeAny = component.validate(undefined);
       expect(err).toBeNull();
     });
-    it.skip('createItem method', async () => {
+    it('createItem method', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();
@@ -294,7 +299,7 @@ describe('DocumentItemsComponent', () => {
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          dispatchMouseEvent(listOfContainerItem[0], 'click');
+          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
           // overlayContainerElement.querySelector('nz-option-item')!.click();
           fixture.detectChanges();
 
@@ -312,7 +317,7 @@ describe('DocumentItemsComponent', () => {
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          dispatchMouseEvent(listOfContainerItem[0], 'click');
+          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
@@ -325,7 +330,11 @@ describe('DocumentItemsComponent', () => {
           expect(inpNumber).toBeTruthy();
           const inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
           expect(inpNumberComponent).toBeTruthy();
-          inpNumberComponent.writeValue(20);
+          // writeValue() alone only pushes model -> view; the item is updated
+          // through the [(ngModel)] write-back, which fires only for
+          // view-originated changes. NgModel.viewToModelUpdate simulates that.
+          const amountModel = inpNumber.injector.get(NgModel);
+          amountModel.viewToModelUpdate(20);
           fixture.detectChanges();
 
           expect(component.listItems()[0].TranAmount).toEqual(20);
@@ -357,7 +366,7 @@ describe('DocumentItemsComponent', () => {
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          dispatchMouseEvent(listOfContainerItem[0], 'click');
+          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
@@ -379,7 +388,7 @@ describe('DocumentItemsComponent', () => {
       expect(component.listItems()[0].Desp).toEqual('Test');
       expect(component.listItems()[0].TranAmount).toEqual(20);
     });
-    it.skip('onChange method', async () => {
+    it('onChange method', async () => {
       const changefn = () => {
         // TBD.
       };
@@ -413,8 +422,10 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
-          const listOfContainerItem = select.nativeElement.querySelectorAll('nz-option-item');
-          dispatchMouseEvent(listOfContainerItem[0], 'click');
+          // The select's options render in the OVERLAY, not inside the select
+          // element (the former query here always returned an empty list).
+          const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
+          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
@@ -433,7 +444,7 @@ describe('DocumentItemsComponent', () => {
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          dispatchMouseEvent(listOfContainerItem[0], 'click');
+          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
@@ -447,7 +458,11 @@ describe('DocumentItemsComponent', () => {
           expect(inpNumber).toBeTruthy();
           const inpNumberComponent = inpNumber.injector.get(NzInputNumberComponent) as NzInputNumberComponent;
           expect(inpNumberComponent).toBeTruthy();
-          inpNumberComponent.writeValue(20);
+          // writeValue() alone only pushes model -> view; the item is updated
+          // through the [(ngModel)] write-back, which fires only for
+          // view-originated changes. NgModel.viewToModelUpdate simulates that.
+          const amountModel = inpNumber.injector.get(NgModel);
+          amountModel.viewToModelUpdate(20);
           fixture.detectChanges();
 
           expect(component.listItems()[0].TranAmount).toEqual(20);
@@ -477,10 +492,11 @@ describe('DocumentItemsComponent', () => {
           const selectComponent = select.injector.get(NzSelectComponent);
           expect(selectComponent).toBeTruthy();
           select.nativeElement.click();
+          fixture.detectChanges(); // open the dropdown BEFORE ticking (as in the other branches)
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          dispatchMouseEvent(listOfContainerItem[0], 'click');
+          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 
@@ -499,7 +515,7 @@ describe('DocumentItemsComponent', () => {
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
           const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          dispatchMouseEvent(listOfContainerItem[0], 'click');
+          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
           // overlayContainerElement.querySelector('li')!.click();
           fixture.detectChanges();
 

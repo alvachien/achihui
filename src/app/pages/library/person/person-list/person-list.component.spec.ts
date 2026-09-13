@@ -91,6 +91,62 @@ describe('PersonListComponent', () => {
     expect(component.dataSet()[0].NativeName).toEqual('Alice');
   });
 
+  it('renders the ID as a link to the display page', async () => {
+    const p1 = new Person();
+    p1.ID = 1;
+    p1.NativeName = 'Alice';
+    fetchAllPersonsSpy.and.returnValue(asyncData([p1]));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const idCell: HTMLElement = fixture.nativeElement.querySelector('tbody tr td');
+    const idLink = idCell.querySelector('a');
+    expect(idLink).toBeTruthy();
+    expect(idLink?.textContent?.trim()).toBe('1');
+    expect(idLink?.getAttribute('href')).toBe('/library/person/display/1');
+  });
+
+  it('keeps the row actions in the three-dot menu, without Display', async () => {
+    const p1 = new Person();
+    p1.ID = 1;
+    p1.NativeName = 'Alice';
+    fetchAllPersonsSpy.and.returnValue(asyncData([p1]));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const idCell: HTMLElement = fixture.nativeElement.querySelector('tbody tr td');
+    // The former inline link buttons are gone from the ID cell (the ID itself
+    // is an anchor, not a button).
+    expect(idCell.querySelector('button[nzType="link"]')).toBeFalsy();
+    // A single three-dot dropdown trigger sits beside the ID link.
+    const trigger = idCell.querySelector('button[nz-dropdown]') as HTMLElement | null;
+    expect(trigger).toBeTruthy();
+    expect(trigger?.querySelector('i[nz-icon]')).toBeTruthy();
+    expect(idCell.querySelectorAll('button').length).toBe(1);
+
+    // Open the menu and inspect the overlay contents. NzDropdownDirective
+    // debounces visibility with auditTime(150), so wait past that window.
+    const overlayContainerElement = TestBed.inject(OverlayContainer).getContainerElement();
+    trigger?.click();
+    fixture.detectChanges();
+    await new Promise<void>((r) => setTimeout(r, 200));
+    fixture.detectChanges();
+
+    const items = overlayContainerElement.querySelectorAll('.ant-dropdown-menu-item');
+    expect(items.length, 'Edit / Delete — Display moved onto the ID link').toBe(2);
+    const itemTexts = Array.from(items).map((li) => li.textContent?.trim() ?? '');
+    expect(itemTexts[0]).toContain('Edit');
+    expect(itemTexts.some((t) => t === 'Display')).toBe(false);
+    // Divider between Edit and the dangerous Delete entry.
+    expect(overlayContainerElement.querySelectorAll('.ant-dropdown-menu-item-divider').length).toBe(1);
+    expect(itemTexts[1]).toContain('Delete');
+    expect(items[1].className).toContain('ant-dropdown-menu-item-danger');
+  });
+
   describe('fetch error', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;

@@ -107,10 +107,17 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
 
   get value(): AccountExtraLoan {
     const objrst = new AccountExtraLoan();
-    let controlVal = this.loanInfoForm.get('dateRangeControl')?.value;
+    // The form uses two single date pickers (startDateControl / endDateControl,
+    // see the template) - the 'dateRangeControl' read here previously never
+    // existed, so value ALWAYS carried the constructor-default startDate
+    // (today) and no endDate.
+    let controlVal = this.loanInfoForm.get('startDateControl')?.value;
     if (controlVal) {
-      objrst.startDate = new Date((controlVal as SafeAny[])[0]);
-      objrst.endDate = new Date((controlVal as SafeAny[])[1]);
+      objrst.startDate = new Date(controlVal as Date);
+    }
+    controlVal = this.loanInfoForm.get('endDateControl')?.value;
+    if (controlVal) {
+      objrst.endDate = new Date(controlVal as Date);
     }
     controlVal = this.loanInfoForm.get('totalMonthControl')?.value;
     if (controlVal) {
@@ -454,8 +461,12 @@ export class AccountExtraLoanComponent implements OnInit, ControlValueAccessor, 
     );
 
     if (val) {
-      const dtrange = [val.startDate ? val.startDate : undefined, val.endDate ? val.endDate : undefined];
-      this.loanInfoForm.get('dateRangeControl')?.setValue(dtrange);
+      // Write into the two single date pickers the form actually has - the
+      // former 'dateRangeControl' target does not exist, so the incoming dates
+      // were silently dropped (editing a loan account showed today's date and
+      // a save would have overwritten the stored start date with it).
+      this.loanInfoForm.get('startDateControl')?.setValue(val.startDate ? val.startDate : new Date());
+      this.loanInfoForm.get('endDateControl')?.setValue(val.endDate ? val.endDate : null);
       this.loanInfoForm.get('totalMonthControl')?.setValue(val.TotalMonths);
       this.loanInfoForm.get('repayDayControl')?.setValue(val.RepayDayInMonth);
       if (val.FirstRepayDate) {

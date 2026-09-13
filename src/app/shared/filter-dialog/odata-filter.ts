@@ -25,12 +25,15 @@
  * Defensive skips: conditions on properties absent from `schema`, or with
  * unrenderable values, are dropped (the dialog's emit never produces these;
  * only hand-crafted seeds could). A tree that translates to nothing yields
- * `''` = no clause = match-all, consistent with the empty-root contract.
+ * `''` = no clause = match-all, consistent with the empty-root contract
+ * (case 0 travels as `undefined`/`''` — the dialog itself never submits it).
  */
 import {
   FilterJoinType,
   FilterOperation,
+  FilterUtility,
   FilterValue,
+  FilterRoot,
   IFilterCondition,
   IFilterDefinition,
   FilterMember,
@@ -131,16 +134,22 @@ function translateCondition(cond: IFilterCondition, schema: FilterableProperty[]
 }
 
 /**
- * Translate an actslib `IFilterDefinition` tree into an OData v4 `$filter`
- * fragment (no outer parentheses; the caller composes and wraps it).
- * Empty/undefined trees — and trees where every condition was skipped —
- * return `''`, i.e. "add no clause".
+ * Translate an actslib `FilterRoot` into an OData v4 `$filter` fragment (no
+ * outer parentheses; the caller composes and wraps it). A bare condition
+ * (the case-1 spelling the dialog's Submit emits, via `Simplify`) is
+ * normalized through `FilterUtility.ToDefinition` first. Empty/undefined
+ * roots — and trees where every condition was skipped — return `''`, i.e.
+ * "add no clause".
  */
-export function toODataFilter(def: IFilterDefinition | undefined, schema: FilterableProperty[]): string {
-  if (!def || !def.conditions || def.conditions.length === 0) {
+export function toODataFilter(def: FilterRoot | undefined, schema: FilterableProperty[]): string {
+  if (!def) {
     return '';
   }
-  return translateDefinition(def, schema, true);
+  const normalized = FilterUtility.ToDefinition(def);
+  if (normalized.conditions.length === 0) {
+    return '';
+  }
+  return translateDefinition(normalized, schema, true);
 }
 
 function translateDefinition(def: IFilterDefinition, schema: FilterableProperty[], isRoot: boolean): string {

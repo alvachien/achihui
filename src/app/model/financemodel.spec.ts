@@ -471,16 +471,21 @@ describe('AccountExtraLoan', () => {
     instance2.onSetData(dataJson);
     expect(instance2).toBeTruthy();
   });
-  it.skip('#5. isAccountValid', () => {
+  it('#5. isAccountValid', () => {
     expect(instance.isAccountValid).toBeFalsy();
     instance.InterestFree = true;
     instance.startDate = new Date();
     instance.endDate = subMonths(new Date(), 1);
     expect(instance.isAccountValid).toBeFalsy();
+    // The field default RepayMethod is DueRepayment, which only needs an end
+    // date AFTER the start date - so the instance is already valid here. (The
+    // former falsy expectation predates the DueRepayment default, when an
+    // unset RepayMethod made the instance invalid; that staleness is why this
+    // test was skipped.)
     instance.endDate = addYears(new Date(), 1);
-    expect(instance.isAccountValid).toBeFalsy();
+    expect(instance.isAccountValid).toBeTruthy();
     instance.RepayMethod = RepaymentMethodEnum.EqualPrincipal;
-    expect(instance.isAccountValid).toBeFalsy();
+    expect(instance.isAccountValid).toBeFalsy(); // TotalMonths missing
     instance.TotalMonths = 12;
     expect(instance.isAccountValid).toBeTruthy();
   });
@@ -909,6 +914,32 @@ describe('Document', () => {
     expect(rst).toBeFalsy();
     const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
       return msg.MsgTitle === 'Finance.CurrencyFetchFailed';
+    });
+    expect(idx).not.toEqual(-1);
+  });
+  it('#9b. onVerify: currency 2 existence uses currency 2 (was a TranCurr copy-paste)', () => {
+    instance.Id = 1;
+    instance.DocType = fakeData.finDocTypes[0].Id ?? 0;
+    instance.TranCurr = fakeData.chosedHome.BaseCurrency; // maintained: 'CNY'
+    instance.TranCurr2 = 'GBP'; // NOT maintained
+    instance.TranDate = new Date();
+    instance.Desp = 'test';
+
+    const rst: boolean = instance.onVerify({
+      ControlCenters: fakeData.finControlCenters,
+      Orders: fakeData.finOrders,
+      Accounts: fakeData.finAccounts,
+      DocumentTypes: fakeData.finDocTypes,
+      TransactionTypes: fakeData.finTranTypes,
+      Currencies: fakeData.currencies,
+      BaseCurrency: fakeData.chosedHome.BaseCurrency,
+    });
+
+    expect(rst).toBeFalsy();
+    // Before the fix the loop compared cc.Currency === TranCurr, so GBP
+    // "existed" and the verdict degraded to NoExchangeRate instead.
+    const idx: number = instance.VerifiedMsgs.findIndex((msg: hih.InfoMessage) => {
+      return msg.MsgTitle === 'Finance.InvalidCurrency';
     });
     expect(idx).not.toEqual(-1);
   });

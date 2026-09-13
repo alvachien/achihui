@@ -10,7 +10,9 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -24,7 +26,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NzBreadCrumbModule,
     NzSpinModule,
     NzTableModule,
-    NzDividerModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
     NzModalModule,
     NzButtonModule,
     RouterModule,
@@ -83,9 +87,6 @@ export class LocationListComponent implements OnInit {
       });
   }
 
-  public onDisplay(pid: number) {
-    this.router.navigate(['/library/location/display/' + pid.toString()]);
-  }
   public onEdit(pid: number) {
     if (pid) {
       this.router.navigate(['/library/location/edit/' + pid.toString()]);

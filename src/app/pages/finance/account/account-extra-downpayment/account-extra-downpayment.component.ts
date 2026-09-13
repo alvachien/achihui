@@ -46,6 +46,8 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'hih-finance-account-extra-downpayment',
@@ -65,6 +67,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzInputModule,
+    NzButtonModule,
     NzFormModule,
     FormsModule,
     ReactiveFormsModule,

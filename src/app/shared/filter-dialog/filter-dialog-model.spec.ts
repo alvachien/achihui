@@ -2,7 +2,7 @@
 // Unit tests for filter-dialog-model.ts — pure functions, no Angular.
 //
 
-import { FilterJoinType, FilterOperation, IFilterCondition, IFilterDefinition } from 'actslib';
+import { FilterJoinType, FilterOperation, FilterUtility, IFilterCondition, IFilterDefinition } from 'actslib';
 
 import {
   FilterCustomOperator,
@@ -18,6 +18,7 @@ import {
   emptyLeaf,
   emitTree,
   findMember,
+  hasActiveFilterDefinition,
   isDialogNode,
   patchLeaf,
   patchNode,
@@ -200,6 +201,46 @@ describe('seedTree (copy-in + fold-back)', () => {
     expect(seeded.members.length).toBe(1);
   });
 
+  it('a bare condition (case 1) seeds one leaf — same as its 1-member wrapper', () => {
+    const bare = { property: 'title', operation: FilterOperation.Contains, lowValue: 'foo' };
+    const wrapped: IFilterDefinition = { conditions: [bare] };
+    const fromBare = seedTree(bare, SCHEMA);
+    const fromWrapped = seedTree(wrapped, SCHEMA);
+    expect(fromBare.members.length).toBe(1);
+    expect(isDialogNode(fromBare.members[0])).toBe(false);
+    // identical edit state modulo ids
+    const stripIds = (t: ReturnType<typeof seedTree>): string =>
+      JSON.stringify({ ...t, id: 0, members: (t.members as unknown[]).map((m) => ({ ...(m as object), id: 0 })) });
+    expect(stripIds(fromBare)).toBe(stripIds(fromWrapped));
+    // a chain of 1-member wrappers seeds identically too
+    const nested: IFilterDefinition = { conditions: [{ conditions: [bare] }] };
+    expect(stripIds(seedTree(nested, SCHEMA))).toBe(stripIds(fromWrapped));
+  });
+
+  it('seeds a 2+ member definition as ONE group node carrying its join (case 2)', () => {
+    const tree = seedTree(
+      {
+        join: FilterJoinType.OR,
+        conditions: [
+          { property: 'title', operation: FilterOperation.Contains, lowValue: 'a' },
+          { property: 'score', operation: FilterOperation.GreaterThan, lowValue: 3 },
+        ],
+      },
+      SCHEMA,
+    );
+    expect(tree.members.length).toBe(1);
+    const group = tree.members[0] as SharedFilterDialogNode;
+    expect(isDialogNode(group)).toBe(true);
+    expect(group.join).toBe(FilterJoinType.OR);
+    expect(group.members.length).toBe(2);
+  });
+
+  it('degrades a definition missing the conditions key to the empty tree (case 0)', () => {
+    const malformed = { join: FilterJoinType.OR } as unknown as IFilterDefinition;
+    const tree = seedTree(malformed, SCHEMA);
+    expect(tree.members.length).toBe(0);
+  });
+
   it('seeds a string condition into textValue', () => {
     const tree = seedTree(
       { conditions: [{ property: 'title', operation: FilterOperation.Contains, lowValue: 'foo' }] },
@@ -226,10 +267,13 @@ describe('seedTree (copy-in + fold-back)', () => {
       },
       SCHEMA,
     );
-    const num = tree.members[0] as SharedFilterDialogLeaf;
+    // a 2-member definition seeds ONE group node holding the two leaves
+    const group = tree.members[0] as SharedFilterDialogNode;
+    expect(isDialogNode(group)).toBe(true);
+    const num = group.members[0] as SharedFilterDialogLeaf;
     expect(num.lowValue).toBe(2);
     expect(num.highValue).toBe(4);
-    const dt = tree.members[1] as SharedFilterDialogLeaf;
+    const dt = group.members[1] as SharedFilterDialogLeaf;
     expect(dt.lowValue).toBe(dateToEditorValue(new Date(2026, 0, 1)));
     expect(dt.highValue).toBe(dateToEditorValue(new Date(2026, 0, 31)));
   });
@@ -324,7 +368,9 @@ describe('seedTree (copy-in + fold-back)', () => {
       SCHEMA,
     );
     let depth = 0;
-    let node: SharedFilterDialogNode | null = tree;
+    // The wrapper is invisible scaffold (level 0); the walk starts at the
+    // single top node — the group the seed's definition became.
+    let node: SharedFilterDialogNode | null = (tree.members[0] as SharedFilterDialogNode) ?? null;
     while (node) {
       depth++;
       const child: SharedFilterDialogNode | null =
@@ -340,7 +386,7 @@ describe('seedTree (copy-in + fold-back)', () => {
 });
 
 describe('emitTree (dispatch §6)', () => {
-  it('empty root emits conditions: [] (match-all = cleared filter)', () => {
+  it('empty root emits conditions: [] (the pure function only — the emptyTree gate blocks Submit)', () => {
     const def = emitTree(root(), SCHEMA);
     expect(def.conditions).toEqual([]);
     expect(def.join).toBe(FilterJoinType.AND);
@@ -483,9 +529,11 @@ describe('mutators are immutable through the root', () => {
     expect(parentIdOf(tree, leaf.id)).toBe(7);
     expect(parentIdOf(tree, 7)).toBe(0);
     expect(parentIdOf(tree, 0)).toBeNull();
-    expect(depthOf(tree, leaf.id)).toBe(3);
-    expect(depthOf(tree, 7)).toBe(2);
-    expect(depthOf(tree, 0)).toBe(1);
+    // depthOf counts the wrapper as level 0 (it is never rendered): the top
+    // visible node sits at level 1, its child at 2, the grandchild leaf at 3.
+    expect(depthOf(tree, tree.id)).toBe(0);
+    expect(depthOf(tree, 7)).toBe(1);
+    expect(depthOf(tree, leaf.id)).toBe(2);
     expect(containsMember(tree, leaf.id)).toBe(true);
     expect(containsMember(inner, leaf.id)).toBe(true);
   });
@@ -575,17 +623,24 @@ describe('validateTree matrix (§8)', () => {
     });
   }
 
-  it('nested groups with < 2 members are invalid; root exempt', () => {
+  it('nested groups with < 2 members are invalid; the wrapper exemption is structural', () => {
     const goodLeaf = makeLeaf({ id: 2, propertyKey: 'title', operator: FilterOperation.Contains, textValue: 'a' });
     const emptyGroup: SharedFilterDialogNode = { id: 1, kind: 'group', join: FilterJoinType.AND, members: [] };
     const singleGroup: SharedFilterDialogNode = { id: 3, kind: 'group', join: FilterJoinType.OR, members: [goodLeaf] };
     const state = validateTree(root(emptyGroup, singleGroup), SCHEMA);
     expect(state.invalidGroupIds.sort()).toEqual([1, 3]);
     expect(state.isValid).toBe(false);
-    // root itself with one member is fine
+    // The wrapper holding ONE member is case 1 — valid (its exemption is
+    // structural: it holds at most one node by construction).
     const rootState = validateTree({ id: 0, kind: 'group', join: FilterJoinType.AND, members: [goodLeaf] }, SCHEMA);
     expect(rootState.invalidGroupIds.length).toBe(0);
     expect(rootState.isValid).toBe(true);
+  });
+
+  it("the empty tree (case 0) is not submittable — clearing is the pages' job", () => {
+    const state = validateTree(root(), SCHEMA);
+    expect(state.emptyTree).toBe(true);
+    expect(state.isValid).toBe(false);
   });
 
   it('unknown property leaf is invalid (needsValue)', () => {
@@ -650,10 +705,68 @@ describe('summarizeFilterDefinition (§9)', () => {
     expect(short.endsWith('…')).toBe(true);
   });
 
+  it('the ellipsis cut never splits a surrogate pair', () => {
+    // 𠀋 is astral-plane (2 UTF-16 code units); placed exactly at the cut.
+    const astral = 'a'.repeat(10) + '𠀋' + 'b'.repeat(5);
+    const def: IFilterDefinition = {
+      conditions: [{ property: 'title', operation: FilterOperation.Contains, lowValue: astral }],
+    };
+    const short = summarizeFilterDefinition(def, SCHEMA, labels, 12);
+    expect(short.includes('�')).toBe(false);
+    expect(short.endsWith('…')).toBe(true);
+  });
+
+  it('renders a bare condition (case 1) like its wrapper', () => {
+    const bare: IFilterCondition = { property: 'title', operation: FilterOperation.Contains, lowValue: 'foo' };
+    expect(summarizeFilterDefinition(bare, SCHEMA, labels)).toBe('title contains foo');
+  });
+
   it('summarizeMember labels groups and leaves', () => {
     const leaf = makeLeaf({ propertyKey: 'title', operator: FilterOperation.Contains, textValue: 'foo' });
     expect(summarizeMember(leaf, SCHEMA, labels)).toBe('title contains foo');
     const group: SharedFilterDialogNode = { id: 9, kind: 'group', join: FilterJoinType.OR, members: [leaf] };
     expect(summarizeMember(group, SCHEMA, labels)).toBe('OR (1)');
+  });
+});
+
+describe('FilterRoot boundary (hasActiveFilterDefinition + Simplify round-trip)', () => {
+  it('hasActiveFilterDefinition discriminates all three cases', () => {
+    expect(hasActiveFilterDefinition(undefined)).toBe(false);
+    expect(hasActiveFilterDefinition({ conditions: [] })).toBe(false);
+    expect(
+      hasActiveFilterDefinition({
+        conditions: [{ conditions: [] }],
+      }),
+    ).toBe(false); // a wrapper around an empty group is still inactive
+    const bare: IFilterCondition = { property: 'title', operation: FilterOperation.Contains, lowValue: 'x' };
+    expect(hasActiveFilterDefinition(bare)).toBe(true);
+    expect(hasActiveFilterDefinition({ conditions: [bare] })).toBe(true);
+    expect(
+      hasActiveFilterDefinition({
+        conditions: [{ conditions: [bare] }],
+      }),
+    ).toBe(true);
+  });
+
+  it('submit-boundary round-trip: Simplify(emitTree(seedTree(Simplify(emit)))) is stable', () => {
+    // Case 1: a single-condition filter crosses the boundary as a BARE
+    // condition and re-seeds to the same single leaf.
+    const single: IFilterDefinition = {
+      conditions: [{ property: 'title', operation: FilterOperation.Contains, lowValue: 'foo' }],
+    };
+    const bare = FilterUtility.Simplify(single);
+    expect(typeof (bare as IFilterCondition).property).toBe('string');
+    const reEmitted = FilterUtility.Simplify(emitTree(seedTree(bare, SCHEMA), SCHEMA));
+    expect(reEmitted).toEqual(bare);
+
+    // Case 2: a group tree crosses as a definition, unchanged in shape.
+    const group: IFilterDefinition = {
+      join: FilterJoinType.OR,
+      conditions: [
+        { property: 'title', operation: FilterOperation.Contains, lowValue: 'a' },
+        { property: 'score', operation: FilterOperation.GreaterThan, lowValue: 3 },
+      ],
+    };
+    expect(FilterUtility.Simplify(emitTree(seedTree(group, SCHEMA), SCHEMA))).toEqual(group);
   });
 });

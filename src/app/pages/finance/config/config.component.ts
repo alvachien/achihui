@@ -12,6 +12,7 @@ import { DocTypeListComponent } from './doc-type-list';
 import { TranTypeHierarchyComponent } from './tran-type-hierarchy';
 import { TranTypeListComponent } from './tran-type-list';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'hih-finance-config',
@@ -19,6 +20,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
   styleUrls: ['./config.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzButtonModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzResultModule,

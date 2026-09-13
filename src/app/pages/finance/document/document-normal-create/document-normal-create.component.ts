@@ -34,6 +34,8 @@ import {
 import { HomeDefOdataService, FinanceOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
@@ -53,6 +55,8 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
   styleUrls: ['./document-normal-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzButtonModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzStepsModule,

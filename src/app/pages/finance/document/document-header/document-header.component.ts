@@ -81,10 +81,12 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
   private _isChangable = true; // Default is changable
   private _onTouched?: () => void = undefined;
   private _onChange?: (val: SafeAny) => void = undefined;
+  private _onValidatorChange?: () => void = undefined;
   private _doctype?: number;
   private _uiMode: UIMode = UIMode.Invalid;
 
   private _arCurrencies: Currency[] = [];
+  private _currenciesLoaded = false;
   private _arDocTypes: DocumentType[] = [];
   private _baseCurr = '';
 
@@ -113,6 +115,17 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     );
     if (currs && currs.length > 0) {
       this._arCurrencies = currs;
+      this._currenciesLoaded = true;
+      // The catalog arrives asynchronously (possibly after the base-currency
+      // pre-fill in the baseCurrency setter): re-run the currency validators
+      // and notify the hosting wizard so its step gating sees the current
+      // verdict immediately. Use the validator-change hook (NOT onChange):
+      // an input setter must only revalidate the outer control, never push a
+      // value out - onChange would mark headerControl dirty and replace its
+      // value with the reconstructed (partial) Document from the value getter.
+      this.headerForm?.get('currControl')?.updateValueAndValidity();
+      this.headerForm?.get('curr2Control')?.updateValueAndValidity();
+      this._onValidatorChange?.();
     }
   }
   get arCurrencies(): Currency[] {
@@ -284,11 +297,12 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
       docTypeControl: new UntypedFormControl({ value: this.docType, disabled: true }, [Validators.required]),
       dateControl: new UntypedFormControl(new Date(), [Validators.required]),
       despControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(44)]),
-      currControl: new UntypedFormControl(undefined, [Validators.required]),
+      currControl: new UntypedFormControl(undefined, [Validators.required, this.currencyDefinedValidator]),
       exgControl: new UntypedFormControl(undefined, [this.exchangeRateMissingValidator]),
       exgpControl: new UntypedFormControl(undefined),
       curr2Control: new UntypedFormControl(undefined, [
         this.curr2MissingValidator,
+        this.currencyDefinedValidator,
         this.currencyMustDiffForExchgValidator,
       ]),
       exg2Control: new UntypedFormControl(undefined, [this.exchangeRate2MissingValidator]),
@@ -348,6 +362,13 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     );
     this._onTouched = fn;
   }
+  registerOnValidatorChange(fn: () => void): void {
+    ModelUtility.writeConsoleLog(
+      'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent registerOnValidatorChange...',
+      ConsoleLogTypeEnum.debug,
+    );
+    this._onValidatorChange = fn;
+  }
   setDisabledState(isDisabled: boolean): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering DocumentHeaderComponent setDisabledState...',
@@ -379,9 +400,13 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     if (this.headerForm.valid) {
       // Beside the basic form valid, it need more checks
       return null;
-    } else {
-      return this.headerForm.errors;
     }
+    // A group's `errors` only carries GROUP-level validator failures: when a
+    // child control is invalid (empty description, unknown currency, missing
+    // exchange rate, ...) `errors` is null and the hosting wizard would keep
+    // headerControl - and thus its step gating - VALID. Surface a marker in
+    // that case so the verdict actually propagates.
+    return this.headerForm.errors ?? { headerFormInvalid: true };
   }
 
   onCurrencyChange(event: SafeAny): void {
@@ -429,6 +454,32 @@ export class DocumentHeaderComponent implements ControlValueAccessor, Validator 
     }
 
     return null;
+  };
+
+  // The transaction currency must be one DEFINED in the currency catalog
+  // (/Currencies - the global list every home draws from). Normally the
+  // baseCurrency setter stamps the home's own BaseCurrency here and this
+  // passes; it only fails on data drift (home base code absent from the
+  // catalog, e.g. 'GBP' when only 7 codes are defined). 'required' alone
+  // cannot see that: the control has a value, it is just one the system does
+  // not know - step 1 of the create wizards must block it, not wait for
+  // onVerify at final save. Before the catalog has loaded the validator
+  // stays silent (no red flash on every normal page load); a failed or
+  // pending fetch is still caught at save time by onVerify's
+  // CurrencyFetchFailed check.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private currencyDefinedValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    if (!this.isCurrencyEditable) {
+      return null;
+    }
+    if (!this._currenciesLoaded) {
+      return null; // catalog not fetched (yet): no verdict to give
+    }
+    const curr = control.value;
+    if (!curr) {
+      return null; // emptiness is owned by 'required' / curr2MissingValidator
+    }
+    return this._arCurrencies.some((c: Currency) => c.Currency === curr) ? null : { invalidCurrency: true };
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

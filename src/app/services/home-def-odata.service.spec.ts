@@ -87,7 +87,7 @@ describe('HomeDefOdataService', () => {
       });
     });
 
-    it.skip('should return error in case error appear', () => {
+    it('should return error in case error appear', () => {
       const msg = 'server failed';
       service.fetchAllHomeDef().subscribe({
         next: (data) => {
@@ -98,9 +98,15 @@ describe('HomeDefOdataService', () => {
         },
       });
 
+      // HttpRequest.url EXCLUDES the query string (that lives in req.params) -
+      // the old expectation concatenated '?$count=true&$expand=Members' onto the
+      // URL (pre-HttpParams era) and could never match, which is why this test
+      // was skipped. Assert the params separately instead.
       const req: any = httpTestingController.expectOne((requrl: any) => {
-        return requrl.method === 'GET' && requrl.url === `${service.apiUrl}?$count=true&$expand=Members`;
+        return requrl.method === 'GET' && requrl.url === service.apiUrl;
       });
+      expect(req.request.params.get('$count')).toEqual('true');
+      expect(req.request.params.get('$expand')).toEqual('Members');
 
       // respond with a 500 and the error message in the body
       req.flush(msg, { status: 500, statusText: 'server failed' });

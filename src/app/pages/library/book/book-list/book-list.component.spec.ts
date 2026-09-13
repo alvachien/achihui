@@ -108,6 +108,91 @@ describe('BookListComponent', () => {
     expect(component.listData()[0].NativeName).toEqual('Book A');
   });
 
+  it('renders the five columns with the formatted audit dates', async () => {
+    const b1 = new Book();
+    b1.onSetData({
+      Id: 1,
+      NativeName: 'Book A',
+      ChineseName: '书A',
+      CreatedAt: '2026-09-01',
+      UpdatedAt: '2026-09-12',
+    });
+    fetchBooksSpy.and.returnValue(asyncData({ totalCount: 1, contentList: [b1] }));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const headers = fixture.nativeElement.querySelectorAll('thead th');
+    expect(headers.length, 'ID / Chinese / Native / Created / Last changed').toBe(5);
+
+    const cells = fixture.nativeElement.querySelectorAll('tbody tr td');
+    expect(cells.length).toBe(5);
+    expect(cells[0].textContent).toContain('1');
+    expect(cells[1].textContent).toContain('书A');
+    expect(cells[2].textContent).toContain('Book A');
+    expect(cells[3].textContent).toContain('2026-09-01');
+    expect(cells[4].textContent).toContain('2026-09-12');
+  });
+
+  it('renders the ID as a link to the display page', async () => {
+    const b1 = new Book();
+    b1.ID = 1;
+    b1.NativeName = 'Book A';
+    fetchBooksSpy.and.returnValue(asyncData({ totalCount: 1, contentList: [b1] }));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const idCell: HTMLElement = fixture.nativeElement.querySelector('tbody tr td');
+    const idLink = idCell.querySelector('a');
+    expect(idLink).toBeTruthy();
+    expect(idLink?.textContent?.trim()).toBe('1');
+    expect(idLink?.getAttribute('href')).toBe('/library/book/display/1');
+  });
+
+  it('keeps the row actions in the three-dot menu, without Display and with a divider after Edit', async () => {
+    const b1 = new Book();
+    b1.ID = 1;
+    b1.NativeName = 'Book A';
+    fetchBooksSpy.and.returnValue(asyncData({ totalCount: 1, contentList: [b1] }));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const idCell: HTMLElement = fixture.nativeElement.querySelector('tbody tr td');
+    // The former inline link buttons are gone from the ID cell (the ID itself
+    // is an anchor, not a button).
+    expect(idCell.querySelector('button[nzType="link"]')).toBeFalsy();
+    // A single three-dot dropdown trigger sits beside the ID link.
+    const trigger = idCell.querySelector('button[nz-dropdown]') as HTMLElement | null;
+    expect(trigger).toBeTruthy();
+    expect(trigger?.querySelector('i[nz-icon]')).toBeTruthy();
+    expect(idCell.querySelectorAll('button').length).toBe(1);
+
+    // Open the menu and inspect the overlay contents. NzDropdownDirective
+    // debounces visibility with auditTime(150), so wait past that window.
+    const overlayContainerElement = TestBed.inject(OverlayContainer).getContainerElement();
+    trigger?.click();
+    fixture.detectChanges();
+    await new Promise<void>((r) => setTimeout(r, 200));
+    fixture.detectChanges();
+
+    const items = overlayContainerElement.querySelectorAll('.ant-dropdown-menu-item');
+    expect(items.length, 'Edit / Borrow / Reading / Delete — Display moved onto the ID link').toBe(4);
+    const itemTexts = Array.from(items).map((li) => li.textContent?.trim() ?? '');
+    expect(itemTexts[0]).toContain('Edit');
+    expect(itemTexts.some((t) => t === 'Display')).toBe(false);
+    // Dividers: one between Edit and the record-creation actions, one before Delete.
+    const dividers = overlayContainerElement.querySelectorAll('.ant-dropdown-menu-item-divider');
+    expect(dividers.length).toBe(2);
+    // The Delete entry is the dangerous one.
+    expect(itemTexts[3]).toContain('Delete');
+    expect(items[3].className).toContain('ant-dropdown-menu-item-danger');
+  });
+
   describe('fetch error', () => {
     let overlayContainer: OverlayContainer;
     let overlayContainerElement: HTMLElement;
@@ -157,6 +242,14 @@ describe('BookListComponent', () => {
 
     it('passes the translated $filter fragment to fetchBooks', () => {
       component.filterDef.set(PAGE_COUNT_GT_300);
+      component.onSearch();
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300');
+    });
+
+    it('accepts a BARE condition (the case-1 Submit shape) and still translates it', () => {
+      const bare = { property: 'PageCount', operation: FilterOperation.GreaterThan, lowValue: 300 };
+      component.filterDef.set(bare);
+      expect(component.hasFilter()).toBe(true);
       component.onSearch();
       expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300');
     });
@@ -289,6 +382,17 @@ describe('BookListComponent', () => {
       // identical to what was just loaded, so it must NOT hit the network again.
       emitQuery(1, 'nname', 'descend');
       expect(fetchBooksSpy).toHaveBeenCalledTimes(3);
+    });
+
+    it('maps the audit-date sort keys to the OData field names', () => {
+      fixture.detectChanges(); // ngOnInit fetch (page 1, no sort)
+      fetchBooksSpy.mockClear();
+
+      emitQuery(1, 'createdat', 'ascend');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'CreatedAt', order: 'asc' }, '', '');
+
+      emitQuery(1, 'updatedat', 'descend');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'UpdatedAt', order: 'desc' }, '', '');
     });
 
     it('a repeated emission of the current query is swallowed, but a changed one is not', () => {

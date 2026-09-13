@@ -35,11 +35,29 @@
       @for (data of basicTable.data; track data.ID) {
         <tr>
           <td>
-            {{ data.ID }}
-            <nz-divider nzType="vertical"></nz-divider>
-            <button nz-button nzType="link" (click)="onDelete(data.ID)" nzDanger>
-              {{ 'Common.Delete' | transloco }}
-            </button>
+            <div class="id-cell">
+              <!-- No display page for borrow records: ID stays plain text -->
+              <span>{{ data.ID }}</span>
+              <!-- Row actions: the former inline link lives in a three-dot menu -->
+              <button
+                nz-button
+                nzType="text"
+                nzSize="small"
+                nz-dropdown
+                [nzDropdownMenu]="rowActionMenu"
+                nzTrigger="click"
+                nzPlacement="bottomRight"
+                [attr.aria-label]="'Common.Actions' | transloco"
+                class="id-cell-action"
+              >
+                <i nz-icon nzType="more" nzTheme="outline"></i>
+              </button>
+              <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item nzDanger (click)="onDelete(data.ID)">{{ 'Common.Delete' | transloco }}</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
           </td>
           <td>{{ data.BookID }}</td>
           <td>{{ getBorrowFromName(data.BorrowFrom) }} ({{ data.BorrowFrom }})</td>

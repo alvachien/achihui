@@ -1044,7 +1044,7 @@ export class LibraryStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'Id,HomeID,NativeName,ChineseName,Detail');
+    params = params.append('$select', 'Id,HomeID,NativeName,ChineseName,Detail,CreatedAt,UpdatedAt');
     if (orderby) {
       params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
@@ -1406,6 +1406,7 @@ export class LibraryStorageService {
     search?: string,
     odataFilter?: string,
     titleMatchedBookIds?: number[],
+    readerMatchedUserIds?: string[],
   ): Observable<BaseListModel<BookReadingRecord>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -1414,7 +1415,7 @@ export class LibraryStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'Id,HomeID,BookId,User,FromDate,ToDate,Comment');
+    params = params.append('$select', 'Id,HomeID,BookId,User,FromDate,ToDate,Comment,Status');
     if (orderby) {
       params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
@@ -1450,6 +1451,13 @@ export class LibraryStorageService {
       if (titleMatchedBookIds && titleMatchedBookIds.length > 0) {
         // `in` with an empty list is invalid OData - the term is skipped above.
         ors.push(`BookId in (${titleMatchedBookIds.join(',')})`);
+      }
+      // Reader display-name matches, resolved client-side against the home's
+      // member list (the Reader column shows DisplayAs while the row stores
+      // the token's User id). Same `in` + quote-doubling rules as above.
+      if (readerMatchedUserIds && readerMatchedUserIds.length > 0) {
+        const ids = readerMatchedUserIds.map((u) => `'${u.replace(/'/g, "''")}'`).join(',');
+        ors.push(`User in (${ids})`);
       }
       clauses.push(`(${ors.join(' or ')})`);
     }
@@ -1528,6 +1536,65 @@ export class LibraryStorageService {
         }),
       );
   }
+  /// Complete an open (Reading) record: Reading -> Completed, ToDate mandatory
+  /// ('yyyy-MM-dd'). Returns the updated entity as the server persists it.
+  public completeBookReadingRecord(hid: number, rid: number, toDate: string): Observable<BookReadingRecord> {
+    return this.finalizeBookReadingRecord('CompleteReading', hid, rid, toDate);
+  }
+  /// Abort an open (Reading) record: Reading -> Aborted, ToDate optional
+  /// ('yyyy-MM-dd' when given). Returns the updated entity.
+  public abortBookReadingRecord(hid: number, rid: number, toDate?: string): Observable<BookReadingRecord> {
+    return this.finalizeBookReadingRecord('AbortReading', hid, rid, toDate);
+  }
+  // Bound OData collection actions are invoked by their BARE name (no namespace
+  // prefix) - the same convention as finance's CloseAccount/SettleAccount calls;
+  // proven for these two by the API integration test
+  // ReadingLifecycle_Actions_RouteAndTransition.
+  private finalizeBookReadingRecord(
+    action: 'CompleteReading' | 'AbortReading',
+    hid: number,
+    rid: number,
+    toDate?: string,
+  ): Observable<BookReadingRecord> {
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    // ToDate travels as a string (the EDM action parameter is Edm.String, same
+    // precedent as SettleAccount's SettledDate); omit the key entirely when not
+    // given - an explicit null would fail the server-side string cast.
+    const jdata: Record<string, unknown> = { HomeID: hid, RecordID: rid };
+    if (toDate) {
+      jdata['ToDate'] = toDate;
+    }
+
+    return this._http
+      .post(`${this.bookReadingRecordAPIURL}/${action}`, jdata, {
+        headers: headers,
+      })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Debug]: Entering LibraryStorageService, finalizeBookReadingRecord(${action}), map.`,
+            ConsoleLogTypeEnum.debug,
+          );
+
+          const rst: BookReadingRecord = new BookReadingRecord();
+          rst.onSetData(response as any);
+          return rst;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService finalizeBookReadingRecord(${action}) failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
+  }
   public deleteBookReadingRecord(rid: number): Observable<any> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -1571,8 +1638,14 @@ export class LibraryStorageService {
   }
 
   /// Build a readable message from an HTTP error response.
-  /// `error.error` may be a parsed JSON object, so it must be stringified explicitly.
+  /// The API's ErrorHandlingMiddleware writes handled 4xx as {"error":"<message>"} -
+  /// surface that verdict directly instead of the raw JSON envelope. Anything
+  /// else (plain strings, framework bodies) keeps the stringified fallback.
   private _buildHttpErrorMessage(error: HttpErrorResponse): string {
+    const inner = (error.error as { error?: unknown } | null | undefined)?.error;
+    if (typeof inner === 'string' && inner.length > 0) {
+      return `${error.status} ${error.statusText}: ${inner}`;
+    }
     const body = typeof error.error === 'string' ? error.error : JSON.stringify(error.error ?? '');
     return `${error.status} ${error.statusText}: ${body}; ${error.message}`;
   }

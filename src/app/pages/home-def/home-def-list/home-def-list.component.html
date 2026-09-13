@@ -26,22 +26,50 @@
           @for (row of basicTable.data; track row.ID) {
             <tr>
               <td>
-                <span>{{ row.ID }}</span>
-                <nz-divider nzType="vertical"></nz-divider>
-                @if (!IsCurrentHomeChosed()) {
-                  <a (click)="onChooseHome(row)">{{ 'Common.ChooseThisHome' | transloco }}</a>
-                }
-
-                @if (IsCurrentHomeChosed()) {
-                  <a nz-button nzType="link" routerLink="/homedef/display/{{ row.ID }}">
-                    {{ 'Common.Display' | transloco }}
-                  </a>
-                }
-                @if (IsCurrentHomeChosed() && !IsChildMode()) {
-                  <a nz-button nzType="link" routerLink="/homedef/edit/{{ row.ID }}">
-                    {{ 'Common.Edit' | transloco }}
-                  </a>
-                }
+                <div class="id-cell">
+                  @if (IsCurrentHomeChosed()) {
+                    <!-- The ID itself links to the display page -->
+                    <a [routerLink]="['/homedef/display', row.ID]">{{ row.ID }}</a>
+                    @if (!IsChildMode()) {
+                      <!-- Row actions: the former inline links live in a three-dot menu -->
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzSize="small"
+                        nz-dropdown
+                        [nzDropdownMenu]="rowActionMenu"
+                        nzTrigger="click"
+                        nzPlacement="bottomRight"
+                        [attr.aria-label]="'Common.Actions' | transloco"
+                        class="id-cell-action"
+                      >
+                        <i nz-icon nzType="more" nzTheme="outline"></i>
+                      </button>
+                      <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
+                        <ul nz-menu>
+                          <li nz-menu-item [routerLink]="['/homedef/edit', row.ID]">
+                            {{ 'Common.Edit' | transloco }}
+                          </li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    }
+                  } @else {
+                    <!-- Not the current home: plain ID + one-click icon right after it -->
+                    <span>{{ row.ID }}</span>
+                    <nz-divider nzType="vertical"></nz-divider>
+                    <button
+                      nz-button
+                      nzType="link"
+                      nzSize="small"
+                      nz-tooltip
+                      [nzTooltipTitle]="'Common.ChooseThisHome' | transloco"
+                      [attr.aria-label]="'Common.ChooseThisHome' | transloco"
+                      (click)="onChooseHome(row)"
+                    >
+                      <i nz-icon nzType="home" nzTheme="outline"></i>
+                    </button>
+                  }
+                </div>
               </td>
               <td>{{ row.Name }}</td>
               <td>{{ row.CreatorDisplayAs }}</td>

@@ -25,11 +25,17 @@ import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule } from '@angular/forms';
-import { FilterOperation, IFilterDefinition } from 'actslib';
+import { FilterOperation, FilterRoot } from 'actslib';
 
 import { BaseListModel, Book, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
 import { LibraryStorageService } from '@services/index';
-import { FilterableProperty, filterMenuLabel, openFilterDialog, toODataFilter } from '../../../../shared/filter-dialog';
+import {
+  FilterableProperty,
+  filterMenuLabel,
+  hasActiveFilterDefinition,
+  openFilterDialog,
+  toODataFilter,
+} from '../../../../shared/filter-dialog';
 import { BorrowRecordCreateDlgComponent } from '../../borrow-record-create-dlg';
 import { ReadingRecordCreateDlgComponent } from '../../reading-record-create-dlg';
 
@@ -102,9 +108,11 @@ export class BookListComponent implements OnInit {
   // newer one) must not overwrite the list, raise an error modal, or clear
   // the spinner.
   private fetchSeq = 0;
-  // Structured filter emitted by the shared filter dialog (undefined = none).
-  filterDef = signal<IFilterDefinition | undefined>(undefined);
-  hasFilter = computed(() => (this.filterDef()?.conditions?.length ?? 0) > 0);
+  // Structured filter emitted by the shared filter dialog (undefined = none;
+  // any actslib FilterRoot spelling — a single-condition filter travels as a
+  // bare condition).
+  filterDef = signal<FilterRoot | undefined>(undefined);
+  hasFilter = computed(() => hasActiveFilterDefinition(this.filterDef()));
   // Bumped on every runtime language switch so computeds below that call the
   // imperative translate() (no implicit activeLang dependency) recompute.
   private readonly langTick = signal(0);
@@ -128,7 +136,7 @@ export class BookListComponent implements OnInit {
     sortField: string | null;
     sortOrder: string | null;
     search: string;
-    filter: IFilterDefinition | undefined;
+    filter: FilterRoot | undefined;
   } | null = null;
   // Current table sort, kept so search/filter refetches don't silently drop it.
   private sortField: string | null = null;
@@ -215,7 +223,17 @@ export class BookListComponent implements OnInit {
     let orderby: { field: string; order: string } | undefined;
     if (sortField && sortOrder) {
       const fieldName =
-        sortField === 'nname' ? 'NativeName' : sortField === 'cname' ? 'ChineseName' : sortField === 'id' ? 'Id' : '';
+        sortField === 'nname'
+          ? 'NativeName'
+          : sortField === 'cname'
+            ? 'ChineseName'
+            : sortField === 'id'
+              ? 'Id'
+              : sortField === 'createdat'
+                ? 'CreatedAt'
+                : sortField === 'updatedat'
+                  ? 'UpdatedAt'
+                  : '';
       const fieldOrder = sortOrder === 'ascend' ? 'asc' : sortOrder === 'descend' ? 'desc' : '';
       if (fieldName && fieldOrder) {
         orderby = { field: fieldName, order: fieldOrder };
@@ -295,7 +313,8 @@ export class BookListComponent implements OnInit {
     );
     ref.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((result) => {
       if (result) {
-        // root may be an empty tree (= match-all) — the user cleared all conditions.
+        // Submit only — the dialog never emits case 0 (the empty tree is not
+        // submittable); Cancel/backdrop/Esc yield undefined and keep the old filter.
         this.filterDef.set(result.root);
         this.onSearch();
       }
@@ -310,9 +329,6 @@ export class BookListComponent implements OnInit {
     this.onSearch();
   }
 
-  onDisplay(bid: number): void {
-    this.router.navigate(['/library/book/display/' + bid.toString()]);
-  }
   onEdit(bid: number): void {
     if (bid) {
       this.router.navigate(['/library/book/edit/' + bid.toString()]);

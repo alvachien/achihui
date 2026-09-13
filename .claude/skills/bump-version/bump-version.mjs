@@ -1,7 +1,7 @@
 // Bumps the achihui app version in package.json and all three environment files,
 // and refreshes the release date.
 // Usage: node .claude/skills/bump-version/bump-version.mjs <X.Y.Z>
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 const newVersion = process.argv[2];
 if (!newVersion || !/^\d+\.\d+\.\d+$/.test(newVersion)) {
@@ -26,6 +26,10 @@ const envFiles = [
   'src/environments/environment.azureprod.ts',
 ];
 for (const p of envFiles) {
+  if (!existsSync(p)) {
+    console.log(`Skipped (not present): ${p}`);
+    continue;
+  }
   let txt = readFileSync(p, 'utf8');
   const before = txt;
   txt = txt.replace(/(CurrentVersion\s*:\s*)'[^']*'/, `$1'${newVersion}'`);

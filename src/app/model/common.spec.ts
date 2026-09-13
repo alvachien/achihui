@@ -70,6 +70,48 @@ describe('MultipleNamesObject', () => {
     expect(testobj2.ChineseName).toEqual(testobj.ChineseName);
     expect(testobj2.NativeName).toEqual(testobj.NativeName);
   });
+
+  it('onSetData shall pick up the PascalCase audit fields from the OData wire format', () => {
+    testobj.onSetData({
+      CreatedAt: '2026-09-01',
+      Createdby: 'user1',
+      UpdatedAt: '2026-09-12',
+      Updatedby: 'user2',
+    });
+    expect(testobj.Createdat.getFullYear()).toEqual(2026);
+    expect(getMonth(testobj.Createdat)).toEqual(8); // 0-based: September
+    expect(getDate(testobj.Createdat)).toEqual(1);
+    expect(testobj.Createdby).toEqual('user1');
+    expect(getDate(testobj.Updatedat)).toEqual(12);
+    expect(testobj.Updatedby).toEqual('user2');
+    expect(testobj.CreatedatFormatString).toEqual('2026-09-01');
+    expect(testobj.UpdatedatFormatString).toEqual('2026-09-12');
+  });
+
+  it('onSetData handles the full ISO datetime wire format (Edm.DateTimeOffset)', () => {
+    // The API serializes audit fields as datetimes, e.g. "2026-09-01T02:47:41.505Z".
+    // date-fns v4 parse('yyyy-MM-dd') is strict and yields Invalid Date for those -
+    // parsing must fall back gracefully instead of poisoning the getter (which
+    // made format() throw "RangeError: Invalid time value" in templates).
+    testobj.onSetData({
+      CreatedAt: '2026-09-01T12:34:56', // local datetime, timezone-independent
+      UpdatedAt: '2026-09-12T08:00:00',
+    });
+    expect(testobj.CreatedatFormatString).toEqual('2026-09-01');
+    expect(testobj.UpdatedatFormatString).toEqual('2026-09-12');
+  });
+
+  it('onSetData leaves the audit defaults untouched when the wire omits or garbles them', () => {
+    const before = testobj.Createdat;
+    testobj.onSetData({ NativeName: 'x', CreatedAt: null, UpdatedAt: null });
+    expect(testobj.Createdat).toEqual(before);
+    expect(testobj.Createdby).toBeNull();
+
+    // Unparseable garbage must not produce an Invalid Date.
+    testobj.onSetData({ CreatedAt: 'not-a-date', UpdatedAt: 'not-a-date' });
+    expect(testobj.CreatedatFormatString).not.toEqual('');
+    expect(isNaN(testobj.Createdat.getTime())).toBe(false);
+  });
 });
 
 describe('AppLanguage', () => {

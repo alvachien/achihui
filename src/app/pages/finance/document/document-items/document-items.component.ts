@@ -30,6 +30,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -50,6 +52,8 @@ import { RouterModule } from '@angular/router';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzInputModule,
+    NzButtonModule,
     NzAlertModule,
     NzTableModule,
     NzDividerModule,

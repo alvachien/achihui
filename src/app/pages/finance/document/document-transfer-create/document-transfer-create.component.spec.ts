@@ -438,6 +438,36 @@ describe('DocumentTransferCreateComponent', () => {
       expect(component.currentStep()).toBe(1);
     });
 
+    it('step 0: blocks Next when the transaction currency is not defined in the catalog', async () => {
+      fixture.detectChanges(); // ngOnInit
+
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      const curdoc: Document = new Document();
+      curdoc.TranCurr = fakeData.chosedHome.BaseCurrency;
+      curdoc.Desp = 'test';
+      component.headerFormGroup.get('headerControl')?.setValue(curdoc);
+      component.headerFormGroup.get('amountControl')?.setValue(100);
+      component.headerFormGroup.updateValueAndValidity();
+      expect(component.headerFormGroup.get('headerControl')?.valid, 'valid with the full catalog').toBeTruthy();
+
+      // Data drift: the fetched list no longer defines the home's base currency.
+      component.arCurrencies.set(fakeData.currencies.filter((c) => c.Currency !== 'CNY'));
+      fixture.detectChanges(); // push through the header input binding
+
+      expect(
+        component.headerFormGroup.get('headerControl')?.valid,
+        'invalid when the stamped currency is unknown',
+      ).toBeFalsy();
+      expect(component.nextButtonEnabled).toBe(false);
+
+      // Restoring the catalog unblocks step 1 without touching the fields.
+      component.arCurrencies.set(fakeData.currencies);
+      fixture.detectChanges();
+      expect(component.headerFormGroup.get('headerControl')?.valid).toBeTruthy();
+    });
+
     it('step 0: shall go to step 1 for foreign currency case', async () => {
       expect(component.headerFormGroup.valid).toBeFalsy();
       fixture.detectChanges(); // ngOnInit
@@ -820,7 +850,7 @@ describe('DocumentTransferCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 3: shall popup dialog for invalid generated doc', async () => {
+    it('step 3: shall popup dialog for invalid generated doc', async () => {
       fixture.detectChanges(); // ngOnInit
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
       fixture.detectChanges();

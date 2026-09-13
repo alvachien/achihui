@@ -48,6 +48,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -70,6 +73,9 @@ interface ISettleAccountDetail {
   styleUrls: ['./account-hierarchy.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzInputNumberModule,
+    NzDatePickerModule,
+    NzInputModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSelectModule,

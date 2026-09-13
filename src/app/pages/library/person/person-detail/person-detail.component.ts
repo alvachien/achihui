@@ -236,7 +236,9 @@ export class PersonDetailComponent implements OnInit {
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
     objtbo.Detail = this.detailFormGroup.get('detailControl')?.value;
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
-    objtbo.Roles = this.listRoles().slice();
+    // Blank assignment rows (added via onAssignRole but never given a role) carry ID 0 and
+    // would serialize as RoleId 0, which the API rejects — drop them before submitting.
+    objtbo.Roles = this.listRoles().filter((p) => p.ID > 0);
 
     if (this.uiMode() === UIMode.Create) {
       this.storageService

@@ -2,13 +2,16 @@ import { Component, inject, OnDestroy, OnInit, ChangeDetectorRef, ChangeDetectio
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { ConsoleLogTypeEnum, ModelUtility, RecurEvent, BaseListModel } from '@model/index';
 import { EventStorageService } from '@services/index';
@@ -19,12 +22,15 @@ import { EventStorageService } from '@services/index';
   styleUrls: ['./recur-event-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzButtonModule,
     NzSpinModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     TranslocoModule,
     NzTableModule,
-    NzDividerModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
     NzModalModule,
     RouterModule,
   ],
@@ -39,7 +45,6 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
 
   private readonly odataService = inject(EventStorageService);
   private readonly modalService = inject(NzModalService);
-  private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
 
   constructor() {
@@ -127,9 +132,6 @@ export class RecurEventListComponent implements OnInit, OnDestroy {
     this.loadDataFromServer(pageIndex, pageSize, sortField, sortOrder, filter);
   }
 
-  onDisplay(eventid: number): void {
-    this.router.navigate(['/event/recur-event/display/' + eventid.toString()]);
-  }
   onDelete(eventid: number): void {
     this.modalService.confirm({
       nzTitle: translate('Common.DeleteConfirmation'),

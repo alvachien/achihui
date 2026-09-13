@@ -44,7 +44,9 @@ import {
   financeTranTypeInterestIn,
 } from '../../../../model';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '../../../../services';
+import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -59,6 +61,7 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
 
 enum BorrowFromRepayType {
@@ -82,6 +85,8 @@ interface PayingAccountItem {
   styleUrls: ['./document-loan-repay-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     FormsModule,
@@ -463,7 +468,23 @@ export class DocumentLoanRepayCreateComponent implements OnInit {
           }
         }
       } else {
-        // TBD.
+        // Normal (template-doc) loan case. This used to be `// TBD.` - the
+        // getter fell through to `return true`, so step 1 was ALWAYS gated
+        // open and Next stayed enabled with zero repayment items. Minimal
+        // sanity gating mirroring the legacy branch: at least one item, each
+        // with an account and a non-zero amount (the cost object is
+        // auto-filled from the selected template docs).
+        if (this.listItems.length <= 0) {
+          return false;
+        }
+        for (const item of this.listItems) {
+          if (!item.AccountId) {
+            return false;
+          }
+          if (!item.TranAmount) {
+            return false;
+          }
+        }
       }
 
       return true;
@@ -622,6 +643,26 @@ export class DocumentLoanRepayCreateComponent implements OnInit {
 
   // Step 3.
   private doPosting() {
+    // This wizard builds confirmInfo by hand (no document-header), so the
+    // step-1 currency/field gating never runs and the repay endpoints do not
+    // re-validate client data. Verify here before posting - same context the
+    // other create wizards pass - so a missing/unknown currency is caught.
+    if (
+      !this.confirmInfo.onVerify({
+        ControlCenters: this.arControlCenters(),
+        Orders: this.arOrders(),
+        Accounts: this.arAccounts(),
+        DocumentTypes: this.arDocTypes(),
+        TransactionTypes: this.arTranTypes(),
+        Currencies: this.arCurrencies(),
+        BaseCurrency: this.homeService.ChosedHome?.BaseCurrency ?? '',
+      })
+    ) {
+      popupDialog(this.modalService, translate('Common.Error'), this.confirmInfo.VerifiedMsgs);
+      this.isDocPosting = false;
+      return;
+    }
+
     // Now go to the real posting
     let postrst = null;
     if (this.selectedLoanTmpDoc.length === 1) {
