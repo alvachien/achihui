@@ -11,7 +11,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SafeAny } from '@common/any';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { FilterOperation, FilterUtility, IFilterDefinition } from 'actslib';
+import { FilterOperation, FilterUtility, FilterRoot } from 'actslib';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -19,14 +19,19 @@ import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NZ_MODAL_DATA, NzModalService } from 'ng-zorro-antd/modal';
+import { NZ_MODAL_DATA, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { Person } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { FilterableProperty, filterMenuLabel, openFilterDialog } from '../../../shared/filter-dialog';
+import {
+  FilterableProperty,
+  filterMenuLabel,
+  hasActiveFilterDefinition,
+  openFilterDialog,
+} from '../../../shared/filter-dialog';
 
 import { SelectionDlgModalData } from '../selection-dlg.models';
 
@@ -61,6 +66,7 @@ type PersonSortOrder = 'ascend' | 'descend';
     NzTableModule,
     NzCheckboxModule,
     TranslocoModule,
+    NzModalModule,
     NzButtonModule,
     NzInputModule,
     NzDividerModule,
@@ -77,12 +83,14 @@ export class PersonSelectionDlgComponent implements OnInit {
 
   // Free-text search: a live pre-filter — every keystroke narrows the table.
   readonly searchText = signal('');
-  // Structured filter emitted by the shared filter dialog (undefined = none).
-  readonly filterDef = signal<IFilterDefinition | undefined>(undefined);
+  // Structured filter emitted by the shared filter dialog (undefined = none;
+  // any actslib FilterRoot spelling — a single-condition filter travels as a
+  // bare condition).
+  readonly filterDef = signal<FilterRoot | undefined>(undefined);
   readonly pageIndex = signal(1);
   private readonly sortKey = signal<PersonSortKey | null>(null);
   private readonly sortOrder = signal<PersonSortOrder | null>(null);
-  readonly hasFilter = computed(() => (this.filterDef()?.conditions?.length ?? 0) > 0);
+  readonly hasFilter = computed(() => hasActiveFilterDefinition(this.filterDef()));
   // Menu item label: a summary of the active filter, or "New filter" when none.
   readonly filterMenuText = computed(
     () => filterMenuLabel(this.filterDef(), PERSON_FILTER_PROPERTIES) || translate('Filter.NewFilter'),
@@ -107,7 +115,7 @@ export class PersonSelectionDlgComponent implements OnInit {
       );
     }
     const def = this.filterDef();
-    if (def && def.conditions.length > 0) {
+    if (hasActiveFilterDefinition(def)) {
       list = FilterUtility.FilterList(list as Person[], def);
     }
     const key = this.sortKey();
@@ -195,7 +203,8 @@ export class PersonSelectionDlgComponent implements OnInit {
     );
     ref.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((result) => {
       if (result) {
-        // root may be an empty tree (= match-all) — the user cleared all conditions.
+        // Submit only — the dialog never emits case 0 (the empty tree is not
+        // submittable); Cancel/backdrop/Esc yield undefined and keep the old filter.
         this.filterDef.set(result.root);
         this.pageIndex.set(1);
       }

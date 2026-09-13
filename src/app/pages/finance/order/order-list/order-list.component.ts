@@ -14,7 +14,9 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NgClass } from '@angular/common';
 import { OrderValidityFilterPipe } from '../../pipes';
 
@@ -45,7 +47,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     ReactiveFormsModule,
     NzSpinModule,
     NzTableModule,
-    NzPopconfirmModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
     NgClass,
     OrderValidityFilterPipe,
     TranslocoModule,
@@ -130,14 +134,6 @@ export class OrderListComponent implements OnInit {
     this.router.navigate(['/finance/order/create']);
   }
 
-  onDisplay(rid: number): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering OrderListComponent onDisplay...',
-      ConsoleLogTypeEnum.debug,
-    );
-    this.router.navigate(['/finance/order/display/' + rid.toString()]);
-  }
-
   onEdit(rid: number): void {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering OrderListComponent onEdit...', ConsoleLogTypeEnum.debug);
     this.router.navigate(['/finance/order/edit/' + rid.toString()]);
@@ -148,22 +144,34 @@ export class OrderListComponent implements OnInit {
       'AC_HIH_UI [Debug]: Entering OrderListComponent onDelete...',
       ConsoleLogTypeEnum.debug,
     );
-    this.odataService
-      .deleteOrder(rid)
-      .pipe(takeUntilDestroyed(this.destroyedRef))
-      .subscribe({
-        next: () => {
-          // Delete item from list
-          this.dataSet.update((items) => items.filter((ext) => ext.Id !== rid));
-        },
-        error: (err) => {
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
+    // Modal confirm (book-list pattern) - the row action now lives in the
+    // ID cell's dropdown, where a popconfirm would not anchor cleanly.
+    this.modalService.confirm({
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: translate('Common.ConfirmToDeleteSelectedItem'),
+      nzOkText: translate('Common.Yes'),
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.odataService
+          .deleteOrder(rid)
+          .pipe(takeUntilDestroyed(this.destroyedRef))
+          .subscribe({
+            next: () => {
+              // Delete item from list
+              this.dataSet.update((items) => items.filter((ext) => ext.Id !== rid));
+            },
+            error: (err) => {
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err.toString(),
+                nzClosable: true,
+              });
+            },
           });
-        },
-      });
+      },
+      nzCancelText: translate('Common.No'),
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

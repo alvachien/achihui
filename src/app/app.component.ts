@@ -72,13 +72,19 @@ export class AppComponent implements OnInit {
   switchLanguage(lang: string) {
     ModelUtility.writeConsoleLog('AC HIH UI [Debug]: Entering AppComponent switchLanguage', ConsoleLogTypeEnum.debug);
 
-    if (lang === 'en_US') {
-      this.i18n.setLocale(en_US);
-      this.translocoService.setActiveLang('en');
-    } else {
-      this.i18n.setLocale(zh_CN);
-      this.translocoService.setActiveLang('zh');
-    }
+    // Load the target language BEFORE activating it: setActiveLang only fires
+    // langChanges$ (which re-runs the imperative-translate computeds), while
+    // the JSON arrives later — leaving raw keys on screen until another event.
+    const translocoLang = lang === 'en_US' ? 'en' : 'zh';
+    this.translocoService.load(translocoLang).subscribe(() => {
+      if (lang === 'en_US') {
+        this.i18n.setLocale(en_US);
+        this.translocoService.setActiveLang('en');
+      } else {
+        this.i18n.setLocale(zh_CN);
+        this.translocoService.setActiveLang('zh');
+      }
+    });
   }
   toggleTheme(): void {
     this.themeService.toggleTheme().then();

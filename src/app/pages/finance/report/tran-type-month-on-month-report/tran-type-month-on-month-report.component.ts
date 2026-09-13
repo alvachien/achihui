@@ -36,6 +36,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { FormsModule } from '@angular/forms';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
@@ -44,6 +45,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   styleUrls: ['./tran-type-month-on-month-report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzButtonModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzCascaderModule,

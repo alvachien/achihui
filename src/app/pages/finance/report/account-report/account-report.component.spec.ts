@@ -140,7 +140,7 @@ describe('AccountReportComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('should filter account list', async () => {
+    it('should filter account list', async () => {
       // fixture.detectChanges(); // ngOnInit()
       // await new Promise<void>(r => setTimeout(r, 0)); // Complete the observables in ngOnInit
       // fixture.detectChanges();

@@ -11,6 +11,7 @@ import { PostListComponent } from './post-list.component';
 import { AuthService, UIStatusService, BlogOdataService } from '../../../services';
 import { UserAuthInfo } from '../../../model';
 import { Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
@@ -86,21 +87,19 @@ describe('PostListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it('shall navigate to display post', async () => {
+    it('shall render the post ID as a link to the display page', async () => {
       fixture.detectChanges(); // ngOnInit()
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      const routerstub = TestBed.inject(Router);
-      vi.spyOn(routerstub, 'navigate');
-
-      // Display
-      component.onDisplay(fakeData.blogPost[0].id ?? 0);
-      expect(routerstub.navigate).toHaveBeenCalledWith([
-        '/blog/post/display/' + (fakeData.blogPost[0].id ?? 0).toString(),
-      ]);
+      // The ID column links to the display page (book-list pattern)
+      const id = fakeData.blogPost[0].id ?? 0;
+      const idLink = fixture.debugElement.query(By.css('.id-cell a'));
+      expect(idLink).toBeTruthy();
+      expect(idLink?.nativeElement.textContent?.trim()).toBe(String(id));
+      expect(idLink?.nativeElement.getAttribute('href')).toBe('/blog/post/display/' + id);
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 

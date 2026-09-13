@@ -23,6 +23,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'hih-location-detail',
@@ -30,6 +31,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
   styleUrls: ['./location-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzInputModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSpinModule,

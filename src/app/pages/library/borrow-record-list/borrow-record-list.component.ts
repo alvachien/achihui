@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -16,7 +17,9 @@ import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 import { BookBorrowRecord, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
 import { LibraryStorageService, UIStatusService } from '@services/index';
@@ -35,7 +38,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     TranslocoModule,
     NzTableModule,
     NzModalModule,
-    NzDividerModule,
+    NzButtonModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
   ],
 })
 export class BorrowRecordListComponent implements OnInit {

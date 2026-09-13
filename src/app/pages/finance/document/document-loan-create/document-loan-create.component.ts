@@ -58,6 +58,8 @@ import { popupDialog } from '../../../message-dialog';
 import { startOfDay, isBefore } from 'date-fns';
 import { AccountExtraLoanComponent } from '../../account/account-extra-loan';
 import { SafeAny } from '@common/any';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
@@ -71,6 +73,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -78,6 +81,9 @@ import { NzResultModule } from 'ng-zorro-antd/result';
   styleUrls: ['./document-loan-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
+    NzButtonModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzStepsModule,
@@ -171,7 +177,9 @@ export class DocumentLoanCreateComponent implements OnInit {
     this.firstFormGroup = new UntypedFormGroup(
       {
         headerControl: new UntypedFormControl(new Document(), Validators.required),
-        amountControl: new UntypedFormControl(0, [Validators.required]),
+        // `required` alone treats 0 as PRESENT (Angular's isEmptyInputValue
+        // only rejects null/undefined/'') - a loan amount must be positive.
+        amountControl: new UntypedFormControl(0, [Validators.required, Validators.min(0.01)]),
         legacyControl: new UntypedFormControl(false),
         accountControl: new UntypedFormControl(undefined),
         ccControl: new UntypedFormControl(undefined),
@@ -334,7 +342,9 @@ export class DocumentLoanCreateComponent implements OnInit {
 
     if (!this.isLegacyLoan) {
       const acntid = group.get('accountControl')?.value;
-      if (acntid === undefined) {
+      // An empty nz-select reports NULL (not undefined) once it initializes,
+      // so the old strict `=== undefined` check let a missing account pass.
+      if (acntid === undefined || acntid === null) {
         return { accountisinvalid: true };
       }
     }

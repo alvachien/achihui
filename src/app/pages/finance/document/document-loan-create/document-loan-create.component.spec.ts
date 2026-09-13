@@ -219,7 +219,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 0: account is manadatory', async () => {
+    it('step 0: account is manadatory', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -263,7 +263,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 0: amount is manadatory', async () => {
+    it('step 0: amount is manadatory', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -407,7 +407,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 1: loan extra info is manadatory', async () => {
+    it('step 1: loan extra info is manadatory', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -472,7 +472,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 2: shall go to step 2 in valid case', async () => {
+    it('step 2: shall go to step 2 in valid case', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -537,7 +537,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 2: shall popup error dialog if verfication failed in generated object', async () => {
+    it('step 2: shall popup error dialog if verfication failed in generated object', async () => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -628,7 +628,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeFalsy();
-      expect(component.docIdCreated).toBeNull();
+      expect(component.docIdCreated).toBeUndefined();
       expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -637,7 +637,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 3: shall display success result after document posted', async () => {
+    it('step 3: shall display success result after document posted', async () => {
       createLoanDocumentSpy.and.returnValue(
         asyncData({
           Id: 1,
@@ -718,7 +718,7 @@ describe('DocumentLoanCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 3: shall display error result after document failed to post', async () => {
+    it('step 3: shall display error result after document failed to post', async () => {
       createLoanDocumentSpy.and.returnValue(asyncError('Failed to post'));
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -789,7 +789,7 @@ describe('DocumentLoanCreateComponent', () => {
       fixture.detectChanges();
       expect(createLoanDocumentSpy).toHaveBeenCalled();
       expect(component.isDocPosting).toBeFalsy();
-      expect(component.docIdCreated).toBeNull();
+      expect(component.docIdCreated).toBeUndefined();
       expect(component.currentStep()).toBe(3);
 
       await new Promise<void>((r) => setTimeout(r, 0));
@@ -824,7 +824,7 @@ describe('DocumentLoanCreateComponent', () => {
       overlayContainer.ngOnDestroy();
     });
 
-    it.skip('should display error when Account Category fetched fails', async () => {
+    it('should display error when Account Category fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountCategoriesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -846,7 +846,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
 
-    it.skip('should display error when Doc type fetched fails', async () => {
+    it('should display error when Doc type fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllDocTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -868,7 +868,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
 
-    it.skip('should display error when Tran. type fetched fails', async () => {
+    it('should display error when Tran. type fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllTranTypesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -890,7 +890,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
 
-    it.skip('should display error when currency fetched fails', async () => {
+    it('should display error when currency fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllCurrenciesSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -912,7 +912,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
 
-    it.skip('should display error when account fetched fails', async () => {
+    it('should display error when account fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllAccountsSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -934,7 +934,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
 
-    it.skip('should display error when control center fetched fails', async () => {
+    it('should display error when control center fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllControlCentersSpy.and.returnValue(asyncError<string>('Service failed'));
 
@@ -956,7 +956,7 @@ describe('DocumentLoanCreateComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
     });
 
-    it.skip('should display error when order fetched fails', async () => {
+    it('should display error when order fetched fails', async () => {
       // tell spy to return an async error observable
       fetchAllOrdersSpy.and.returnValue(asyncError<string>('Service failed'));
 

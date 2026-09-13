@@ -32,6 +32,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { DocumentItemViewComponent } from '../document-item-view';
 import { RouterModule } from '@angular/router';
 import { OperatorFilterPipe } from 'app/pages/reusable-components/pipes';
@@ -42,6 +44,8 @@ import { OperatorFilterPipe } from 'app/pages/reusable-components/pipes';
   styleUrls: ['./document-item-search.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzCheckboxModule,
+    NzDatePickerModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzResultModule,

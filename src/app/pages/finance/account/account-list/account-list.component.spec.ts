@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -106,21 +107,19 @@ describe('AccountListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it('shall navigate to display account', async () => {
+    it('shall render the account ID as a link to the display page', async () => {
       fixture.detectChanges(); // ngOnInit()
       await new Promise<void>((r) => setTimeout(r, 0)); // Complete the observables in ngOnInit
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
 
-      const routerstub = TestBed.inject(Router);
-      vi.spyOn(routerstub, 'navigate');
-
-      // Display
-      component.onDisplay(fakeData.finAccounts[0].Id ?? 0);
-      expect(routerstub.navigate).toHaveBeenCalledWith([
-        '/finance/account/display/' + (fakeData.finAccounts[0].Id ?? 0).toString(),
-      ]);
+      // The ID column links to the display page (book-list pattern)
+      const id = fakeData.finAccounts[0].Id ?? 0;
+      const idLink = fixture.debugElement.query(By.css('.id-cell a'));
+      expect(idLink).toBeTruthy();
+      expect(idLink?.nativeElement.textContent?.trim()).toBe(String(id));
+      expect(idLink?.nativeElement.getAttribute('href')).toBe('/finance/account/display/' + id);
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 

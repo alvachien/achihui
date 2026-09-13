@@ -36,6 +36,7 @@ import { costObjectValidator } from '../../../../uimodel';
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
@@ -47,6 +48,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
 
 @Component({
@@ -55,6 +57,8 @@ import { AccountExtraDownpaymentComponent } from '../../account/account-extra-do
   styleUrls: ['./document-downpayment-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzStepsModule,

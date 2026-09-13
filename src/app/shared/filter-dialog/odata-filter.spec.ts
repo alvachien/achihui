@@ -56,6 +56,12 @@ describe('toODataFilter — empty trees', () => {
   });
 });
 
+describe('toODataFilter — FilterRoot spellings', () => {
+  it('a bare condition (the case-1 Submit shape) translates like its wrapper', () => {
+    expect(toODataFilter(cond('Score', FilterOperation.GreaterThan, 3), SCHEMA)).toEqual('Score gt 3');
+  });
+});
+
 describe('toODataFilter — comparisons', () => {
   it('maps each comparison operator and quotes strings / leaves numbers bare', () => {
     const def: IFilterDefinition = {

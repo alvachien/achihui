@@ -2,8 +2,11 @@ import { Component, OnInit, inject, signal, computed, DestroyRef, ChangeDetectio
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -39,6 +42,10 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     FormsModule,
     NzSpinModule,
     NzInputNumberModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
+    RouterModule,
     TranslocoModule,
   ],
 })
@@ -90,10 +97,6 @@ export class PlanListComponent implements OnInit {
 
   onCreate(): void {
     this.router.navigate(['/finance/plan/create']);
-  }
-
-  onDisplay(rid: number): void {
-    this.router.navigate(['/finance/plan/display/' + rid.toString()]);
   }
 
   onEdit(rid: number): void {

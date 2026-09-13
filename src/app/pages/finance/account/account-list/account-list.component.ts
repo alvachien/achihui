@@ -34,9 +34,11 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
-import { NgClass, NgIf } from '@angular/common';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'hih-fin-account-list',
@@ -44,16 +46,17 @@ import { NgClass, NgIf } from '@angular/common';
   styleUrls: ['./account-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzGridModule,
+    NzIconModule,
     NzSpinModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzDividerModule,
     NzTableModule,
     NzButtonModule,
-    NzPopconfirmModule,
     NzDropdownModule,
+    NzMenuModule,
     NgClass,
-    NgIf,
     TranslocoModule,
     NzModalModule,
     RouterModule,
@@ -246,10 +249,6 @@ export class AccountListComponent implements OnInit {
       });
   }
 
-  onDisplay(rid: number): void {
-    this.router.navigate(['/finance/account/display/' + rid.toString()]);
-  }
-
   onEdit(rid: number): void {
     this.router.navigate(['/finance/account/edit/' + rid.toString()]);
   }
@@ -259,23 +258,34 @@ export class AccountListComponent implements OnInit {
       `AC_HIH_UI [Error]: Entering AccountListComponent onDelete, ${rid}`,
       ConsoleLogTypeEnum.debug,
     );
-    // After the pop confirm
-    this.odataService
-      .deleteAccount(rid)
-      .pipe(takeUntilDestroyed(this.destroyedRef))
-      .subscribe({
-        next: () => {
-          // Just remove the item
-          this.dataSet.update((items) => items.filter((val2) => val2.Id !== rid));
-        },
-        error: (err) => {
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
+    // Modal confirm (book-list pattern) - the row action now lives in the
+    // ID cell's dropdown, where a popconfirm would not anchor cleanly.
+    this.modalService.confirm({
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: translate('Common.ConfirmToDeleteSelectedItem'),
+      nzOkText: translate('Common.Yes'),
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.odataService
+          .deleteAccount(rid)
+          .pipe(takeUntilDestroyed(this.destroyedRef))
+          .subscribe({
+            next: () => {
+              // Just remove the item
+              this.dataSet.update((items) => items.filter((val2) => val2.Id !== rid));
+            },
+            error: (err) => {
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err.toString(),
+                nzClosable: true,
+              });
+            },
           });
-        },
-      });
+      },
+      nzCancelText: translate('Common.No'),
+    });
   }
 
   onChangeAccountName(acntid: number): void {

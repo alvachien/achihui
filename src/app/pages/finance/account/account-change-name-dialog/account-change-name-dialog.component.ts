@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import { FinanceOdataService } from '@services/index';
 import { SafeAny } from '@common/any';
@@ -13,7 +14,15 @@ import { SafeAny } from '@common/any';
   templateUrl: './account-change-name-dialog.component.html',
   styleUrls: ['./account-change-name-dialog.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzFormModule, FormsModule, ReactiveFormsModule, NzInputModule, TranslocoModule, NzModalModule],
+  imports: [
+    NzFormModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    TranslocoModule,
+    NzModalModule,
+    NzButtonModule,
+  ],
 })
 export class AccountChangeNameDialogComponent implements OnInit {
   // Header forum

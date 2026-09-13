@@ -1,0 +1,17 @@
+// Shared ID-column styling for list pages (book-list pattern). Single source:
+// import from each component's .less via `@import 'id-cell';` (src/styles is
+// on stylePreprocessorOptions includePaths). Changing it here updates every
+// consumer at once.
+
+// ID cell: ID link on the left, three-dot action trigger flush right.
+// The <nz-dropdown-menu> host that follows the button renders empty (its
+// content lives in an overlay template), so margin-left:auto - not
+// space-between - is what pins the button to the right edge.
+.id-cell {
+  display: flex;
+  align-items: center;
+
+  .id-cell-action {
+    margin-left: auto;
+  }
+}

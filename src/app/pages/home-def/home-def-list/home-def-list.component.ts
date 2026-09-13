@@ -8,6 +8,12 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { HomeDef, ModelUtility, ConsoleLogTypeEnum } from '../../../model';
 import { AuthService, HomeDefOdataService } from '../../../services';
@@ -19,12 +25,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./home-def-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
+    NzButtonModule,
     NzSpinModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzTableModule,
     TranslocoModule,
     NzDividerModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
+    NzTooltipModule,
     NzModalModule,
     RouterModule,
   ],

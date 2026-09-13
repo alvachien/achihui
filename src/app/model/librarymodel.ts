@@ -1105,6 +1105,18 @@ export class BookBorrowRecord extends hih.BaseModel {
 }
 
 /**
+ * Lifecycle state of a book reading record. String values match the OData wire
+ * format: the API serializes the server-side enum as its MEMBER NAME (pinned by
+ * the integration test ReadingLifecycle_Actions_RouteAndTransition). Reading is
+ * open-ended; Completed and Aborted are terminal (no further transitions).
+ */
+export enum BookReadingStatus {
+  Reading = 'Reading',
+  Completed = 'Completed',
+  Aborted = 'Aborted',
+}
+
+/**
  * Book reading record
  */
 export class BookReadingRecord extends hih.BaseModel {
@@ -1115,6 +1127,22 @@ export class BookReadingRecord extends hih.BaseModel {
   private _from_date: Date | null = null;
   private _to_date: Date | null = null;
   private _cmt = '';
+  // Default Completed (terminal): a payload without Status must never enable
+  // the Complete/Abort row actions - a wrongly-offered finalize is a guaranteed
+  // server 400, while a wrongly-hidden one is merely conservative.
+  private _status: BookReadingStatus = BookReadingStatus.Completed;
+
+  get Status(): BookReadingStatus {
+    return this._status;
+  }
+  set Status(sts: BookReadingStatus) {
+    this._status = sts;
+  }
+  /// True while the reading is open (Reading): only then are the lifecycle
+  /// actions (CompleteReading / AbortReading) available.
+  get IsReading(): boolean {
+    return this._status === BookReadingStatus.Reading;
+  }
 
   get ID(): number {
     return this._id;
@@ -1185,6 +1213,7 @@ export class BookReadingRecord extends hih.BaseModel {
     this._from_date = null;
     this._to_date = null;
     this._cmt = '';
+    this._status = BookReadingStatus.Completed;
   }
   public override onInit() {
     super.onInit();
@@ -1210,6 +1239,16 @@ export class BookReadingRecord extends hih.BaseModel {
       if (!this._user) {
         vrst = false;
         const msg = new hih.InfoMessage(hih.MessageType.Error, 'User is must', 'User is must');
+        this.VerifiedMsgs.push(msg);
+      }
+
+      // FromDate is always required. ToDate is OPTIONAL: omitting it starts an
+      // open (Reading) record that is finalized later via CompleteReading /
+      // AbortReading - the API derives the status from the supplied dates the
+      // same way (and also refuses overlapping periods for the same reader/book).
+      if (this._from_date === null) {
+        vrst = false;
+        const msg = new hih.InfoMessage(hih.MessageType.Error, 'FromDate is must', 'FromDate is must');
         this.VerifiedMsgs.push(msg);
       }
 
@@ -1278,6 +1317,41 @@ export class BookReadingRecord extends hih.BaseModel {
     if (data && data.Comment) {
       this.Comment = data.Comment;
     }
+    if (data && data.Status !== undefined && data.Status !== null) {
+      this.Status = BookReadingRecord.parseWireStatus(data.Status);
+    }
+  }
+
+  /// The API serializes the lifecycle enum as its MEMBER NAME string
+  /// ("Reading" / "Completed" / "Aborted" - pinned by the integration test);
+  /// tolerate the numeric form as well. Unknown values fall back to Completed
+  /// (terminal): never offer a finalize action on a record we cannot classify.
+  private static parseWireStatus(value: unknown): BookReadingStatus {
+    if (typeof value === 'string') {
+      switch (value) {
+        case BookReadingStatus.Reading:
+          return BookReadingStatus.Reading;
+        case BookReadingStatus.Completed:
+          return BookReadingStatus.Completed;
+        case BookReadingStatus.Aborted:
+          return BookReadingStatus.Aborted;
+        default:
+          return BookReadingStatus.Completed;
+      }
+    }
+    if (typeof value === 'number') {
+      switch (value) {
+        case 0:
+          return BookReadingStatus.Reading;
+        case 1:
+          return BookReadingStatus.Completed;
+        case 2:
+          return BookReadingStatus.Aborted;
+        default:
+          return BookReadingStatus.Completed;
+      }
+    }
+    return BookReadingStatus.Completed;
   }
 
   /// The API sends these dates as Edm.Date (bare `yyyy-MM-dd`, see the

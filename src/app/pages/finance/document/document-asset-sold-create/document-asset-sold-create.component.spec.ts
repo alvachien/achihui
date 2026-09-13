@@ -158,7 +158,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('setp 0: document header is manadatory', async () => {
+    it('setp 0: document header is manadatory', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -535,7 +535,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 2: shall popup dialog in verification failed', async () => {
+    it('step 2: shall popup dialog in verification failed', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -620,7 +620,7 @@ describe('DocumentAssetSoldCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeFalsy();
-      expect(component.docIdCreated).toBeNull();
+      expect(component.docIdCreated).toBeUndefined();
       expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));

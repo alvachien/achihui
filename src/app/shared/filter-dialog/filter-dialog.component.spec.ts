@@ -1,5 +1,7 @@
 //
-// DOM tests for the generic filter dialog (design §11).
+// DOM tests for the generic filter dialog (design §11, as corrected by the
+// hierarchy contract: single top node under an invisible wrapper, kind-armed
+// toolbar, empty tree not submittable, Simplify at the Submit boundary).
 //
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -7,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
 import { ApartmentOutline, DeleteOutline, PlusOutline } from '@ant-design/icons-angular/icons';
-import { FilterJoinType, FilterOperation, IFilterDefinition } from 'actslib';
+import { FilterJoinType, FilterOperation, FilterRoot } from 'actslib';
 import { TranslocoService } from '@jsverse/transloco';
 import { getTranslocoModule } from 'testing';
 
@@ -111,64 +113,99 @@ describe('SharedFilterDialogComponent', () => {
     return nodes.map((n) => n.textContent?.trim() ?? '');
   }
 
-  it('should create with a blank seeded tree and root preselected', async () => {
+  /** The single top node the navigator shows (the wrapper is never a row). */
+  function topMember(): SharedFilterDialogLeaf | SharedFilterDialogNode {
+    const top = component.root().members[0];
+    if (!top) {
+      throw new Error('tree has no top node');
+    }
+    return top;
+  }
+
+  function selectedLeaf(): SharedFilterDialogLeaf {
+    const m = component.selectedMember();
+    if (!m || 'members' in m) {
+      throw new Error('no leaf is selected');
+    }
+    return m;
+  }
+
+  it('opens scaffolded with one blank condition (case 1), selected; Submit gated', async () => {
     await setupDialog({ properties: SCHEMA });
     expect(component).toBeTruthy();
-    expect(component.root().members.length).toBe(0);
-    expect(component.selectedId()).toBe(component.root().id);
-    expect(component.canSubmit()).toBe(true); // empty root = cleared filter, valid
+    expect(component.root().members.length).toBe(1); // the wrapper holds ONE node
+    expect(component.selectedId()).toBe(topMember().id); // the leaf, not the wrapper
+    expect(component.canSubmit()).toBe(false); // blank condition blocks Submit
+    expect(submitButton().disabled).toBe(true);
+    expect(treeRowTexts().length).toBe(1); // the wrapper is never a row
+    // kind-arming: a CONDITION is selected → delete only
+    expect(buttonByText('Condition')?.disabled).toBe(true);
+    expect(buttonByText('Group')?.disabled).toBe(true);
+    expect(buttonByText('Delete')?.disabled).toBe(false);
+  });
+
+  it('a seeded bare condition (case 1) opens as the single leaf', async () => {
+    const bare = { property: 'title', operation: FilterOperation.Contains, lowValue: 'foo' };
+    await setupDialog({ properties: SCHEMA, root: bare });
+    expect(component.root().members.length).toBe(1);
+    const leaf = selectedLeaf();
+    expect(leaf.propertyKey).toBe('title');
+    expect(leaf.textValue).toBe('foo');
+    expect(component.canSubmit()).toBe(true);
   });
 
   it('tree refreshes after toolbar inserts and deletes', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
+    // a condition is selected → inserts disarmed → select the top GROUP after
+    // building one: first delete the scaffolded leaf (tree empties, inserts arm)
+    component.deleteSelected();
+    fixture.detectChanges();
+    expect(component.root().members.length).toBe(0);
+    expect(component.selectedId()).toBeNull(); // the insert-anchor state
+    expect(buttonByText('Delete')?.disabled).toBe(true);
+
+    component.addCondition(); // lands as THE top node
     fixture.detectChanges();
     expect(component.root().members.length).toBe(1);
     expect(treeRowTexts().some((t) => t.length > 0)).toBe(true);
 
-    component.addCondition();
-    fixture.detectChanges();
-    expect(component.root().members.length).toBe(2);
-
-    // delete the selected leaf, selection falls back to the parent (root)
-    const leafId = component.selectedId();
+    // a leaf is selected again → inserts disarmed; delete returns the
+    // selection to nothing (the tree emptied — the top level holds one node)
     component.deleteSelected();
     fixture.detectChanges();
-    expect(component.root().members.length).toBe(1);
-    expect(component.selectedId()).toBe(component.root().id);
-    expect(leafId).not.toBe(component.root().id);
+    expect(component.root().members.length).toBe(0);
+    expect(component.selectedId()).toBeNull();
   });
 
   it('edits flow through the root signal (identity changes — the OnPush guard)', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
     fixture.detectChanges();
     const before = component.root();
     component.setTextValue('hello');
     expect(component.root()).not.toBe(before); // immutable replacement through the signal
-    const leaf = component.root().members[0] as SharedFilterDialogLeaf;
-    expect(leaf.textValue).toBe('hello');
+    expect(selectedLeaf().textValue).toBe('hello');
     fixture.detectChanges();
     expect(treeRowTexts().some((t) => t.includes('hello'))).toBe(true);
   });
 
-  it('value fields survive a property→operator→property round-trip (§6.1)', async () => {
+  it('operator switches keep values; a property switch resets them', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
     fixture.detectChanges();
+    const leaf = selectedLeaf();
     component.setTextValue('keepme');
+    component.setOperator(FilterOperation.EndsWith);
+    expect(selectedLeaf().textValue).toBe('keepme'); // operator switch preserves
+
     component.setProperty('score');
-    component.setNumberValue(3);
-    component.setProperty('title');
-    fixture.detectChanges();
-    const leaf = component.root().members[0] as SharedFilterDialogLeaf;
-    expect(leaf.textValue).toBe('keepme');
-    expect(leaf.numberValue).toBe(3);
+    const after = selectedLeaf();
+    expect(after.id).toBe(leaf.id); // the leaf id survives the swap
+    expect(after.propertyKey).toBe('score');
+    expect(after.operator).toBe(FilterOperation.GreaterThan); // re-defaulted
+    expect(after.textValue).toBe(''); // values reset with the property
   });
 
   it('switching property switches the operator list and the value editor', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
     fixture.detectChanges();
     expect(component.valueEditor()).toBe('text');
     expect(component.operatorOptions().map((o) => o.value)).toContain(FilterOperation.Contains);
@@ -182,7 +219,6 @@ describe('SharedFilterDialogComponent', () => {
 
   it('enum editor renders checkboxes; multi-select emits an OR group; Submit reflects it', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
     component.setProperty('status');
     fixture.detectChanges();
 
@@ -200,10 +236,12 @@ describe('SharedFilterDialogComponent', () => {
     fixture.detectChanges();
     const args = closeArgs(modalRef);
     expect(args.length).toBe(1);
-    const result = args[0] as { root: IFilterDefinition };
-    const group = result.root.conditions[0] as IFilterDefinition;
+    const result = args[0] as { root: FilterRoot };
+    // the wrapper held one member (the enum leaf emitting an OR group), so
+    // Simplify unwraps it — the OR group IS the root
+    const group = result.root as { join?: FilterJoinType; conditions?: unknown[] };
     expect(group.join).toBe(FilterJoinType.OR);
-    expect(group.conditions.length).toBe(2);
+    expect(group.conditions?.length).toBe(2);
   });
 
   it('enum fold-back seeds the checkboxes checked', async () => {
@@ -222,9 +260,8 @@ describe('SharedFilterDialogComponent', () => {
         ],
       },
     });
-    const leaf = component.root().members[0] as SharedFilterDialogLeaf;
+    const leaf = selectedLeaf();
     expect(leaf.selectedChoices).toEqual([DocStatus.Draft, DocStatus.Published]);
-    component.selectedId.set(leaf.id);
     fixture.detectChanges();
     // ngModel seeds the checkbox via a microtask — let it settle, then re-render
     await fixture.whenStable();
@@ -241,7 +278,6 @@ describe('SharedFilterDialogComponent', () => {
 
   it('Between shows two inputs and gates Submit on low ≤ high', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
     component.setProperty('score');
     component.setOperator(FilterOperation.Between);
     fixture.detectChanges();
@@ -263,7 +299,6 @@ describe('SharedFilterDialogComponent', () => {
 
   it('custom operator hides the value editor and shows the hint', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
     component.setOperator(IS_MULTIWORD.id);
     fixture.detectChanges();
     expect(component.valueEditor()).toBe('none');
@@ -271,46 +306,76 @@ describe('SharedFilterDialogComponent', () => {
     expect(component.canSubmit()).toBe(true); // valueless ops never block Submit
   });
 
-  it('nested groups with < 2 members block Submit and show the warning icon', async () => {
+  it('a group with < 2 members blocks Submit and shows the warning icon', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addGroup(); // inserts a group holding one empty leaf; selects it
+    // empty the tree → the inserts arm (nothing selected)
+    component.deleteSelected();
     fixture.detectChanges();
-    // one member → the nested group is invalid and blocks Submit
+    component.addGroup(); // childless OR group, selected — one click, one node
+    fixture.detectChanges();
+    expect(component.root().members.length).toBe(1);
+    expect((topMember() as SharedFilterDialogNode).members.length).toBe(0); // no phantom leaf
+    // one member (the group itself is the only node) → invalid, Submit blocked
     expect(component.canSubmit()).toBe(false);
     expect(treeRowTexts().some((t) => t.includes('⚠'))).toBe(true);
 
-    // add a sibling into the selected group, then fill both leaves
+    // the group is selected → inserts armed INTO it; fill two leaves
+    component.addCondition();
+    component.setTextValue('a');
+    fixture.detectChanges();
+    component.selectedId.set(topMember().id); // re-fetch: inserts replace objects along the path
     component.addCondition();
     fixture.detectChanges();
+    const secondLeaf = (topMember() as SharedFilterDialogNode).members[1] as SharedFilterDialogLeaf;
+    component.selectedId.set(secondLeaf.id);
     component.setTextValue('b');
-    const group = component.root().members[0] as SharedFilterDialogNode;
-    const firstLeaf = group.members[0] as SharedFilterDialogLeaf;
-    component.selectedId.set(firstLeaf.id);
-    component.setTextValue('a');
     fixture.detectChanges();
 
     expect(component.canSubmit()).toBe(true);
     expect(treeRowTexts().some((t) => t.includes('⚠'))).toBe(false);
   });
 
-  it('depth cap disables +group at the deepest level; root is never deletable', async () => {
+  it('depth cap counts VISIBLE levels (the wrapper is level 0)', async () => {
     await setupDialog({ properties: SCHEMA, maxDepth: 2 });
+    // the scaffolded leaf is selected → +group disabled; empty the tree first
+    component.deleteSelected();
+    fixture.detectChanges();
     expect(buttonByText('Group')?.disabled).toBe(false);
+    component.addGroup(); // top group at visible level 1, selected
+    fixture.detectChanges();
+    expect(buttonByText('Group')?.disabled).toBe(false); // level 1 < 2: can nest
+    component.addCondition();
+    fixture.detectChanges();
+    // now a leaf is selected → +group disabled (a condition arms delete only)
+    expect(buttonByText('Group')?.disabled).toBe(true);
+    component.selectedId.set(topMember().id);
+    fixture.detectChanges();
+    expect(buttonByText('Group')?.disabled).toBe(false); // the group can take a nested one
+
+    // ... but the case-2 root CAN always take a nested group at maxDepth 2
+    // (condA AND (condB OR condC)); at maxDepth 1 it cannot:
+    await setupDialog({ properties: SCHEMA, maxDepth: 1 });
+    component.deleteSelected();
     component.addGroup();
     fixture.detectChanges();
-    component.selectedId.set((component.root().members[0] as SharedFilterDialogNode).id);
-    fixture.detectChanges();
-    expect(buttonByText('Group')?.disabled).toBe(true); // now at depth 2
-
-    expect(buttonByText('Delete')?.disabled).toBe(false);
-    component.selectedId.set(component.root().id);
-    fixture.detectChanges();
-    expect(buttonByText('Delete')?.disabled).toBe(true); // root exempt
+    expect(buttonByText('Group')?.disabled).toBe(true); // the top group is already level maxDepth
   });
 
-  it('Submit closes with { root }; Cancel closes with undefined and mutates nothing', async () => {
+  it('the invisible wrapper is never selectable or deletable', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
+    component.deleteSelected();
+    component.addGroup();
+    fixture.detectChanges();
+    expect(component.selectedId()).not.toBe(component.root().id); // the group row, not the wrapper
+    expect(component.canDelete()).toBe(true); // the top GROUP row IS deletable
+    component.deleteSelected();
+    fixture.detectChanges();
+    expect(component.root().members.length).toBe(0); // the tree emptied
+    expect(component.canDelete()).toBe(false); // nothing selected
+  });
+
+  it('Submit closes with a bare condition (case 1); Cancel closes with undefined', async () => {
+    await setupDialog({ properties: SCHEMA });
     component.setTextValue('abc');
     fixture.detectChanges();
 
@@ -319,13 +384,11 @@ describe('SharedFilterDialogComponent', () => {
     fixture.detectChanges();
     expect(component.root()).toBe(before); // Submit must not mutate editor state
     const args = closeArgs(modalRef);
-    expect((args[0] as { root: IFilterDefinition }).root.conditions).toEqual([
-      {
-        property: 'title',
-        operation: FilterOperation.BeginsWith,
-        lowValue: 'abc',
-      },
-    ]);
+    expect(args.length).toBe(1);
+    // single-condition filter crosses the boundary as a BARE condition
+    expect(args[0]).toEqual({
+      root: { property: 'title', operation: FilterOperation.BeginsWith, lowValue: 'abc' },
+    });
 
     component.cancel();
     fixture.detectChanges();
@@ -333,11 +396,37 @@ describe('SharedFilterDialogComponent', () => {
     expect(component.root()).toBe(before);
   });
 
+  it('Submit closes with a definition (case 2) for a group tree', async () => {
+    await setupDialog({ properties: SCHEMA });
+    component.deleteSelected(); // empty the tree → the inserts arm
+    component.addGroup(); // the case-2 root group, selected
+    component.addCondition();
+    component.setTextValue('a');
+    component.selectedId.set(topMember().id); // re-fetch, then add a sibling
+    component.addCondition();
+    const second = (topMember() as SharedFilterDialogNode).members[1] as SharedFilterDialogLeaf;
+    component.selectedId.set(second.id);
+    component.setProperty('score');
+    component.setNumberValue(3);
+    fixture.detectChanges();
+
+    submitButton().click();
+    fixture.detectChanges();
+    const result = (closeArgs(modalRef)[0] ?? {}) as { root: FilterRoot };
+    expect((result.root as { conditions?: unknown[] }).conditions?.length).toBe(2);
+  });
+
   it('live preview summarizes the emitted tree', async () => {
     await setupDialog({ properties: SCHEMA });
+    component.setTextValue('foo');
+    component.deleteSelected(); // empty → +group arms (nothing selected)
+    component.addGroup();
     component.addCondition();
     component.setTextValue('foo');
+    component.selectedId.set((topMember() as SharedFilterDialogNode).id);
     component.addCondition();
+    const second = (topMember() as SharedFilterDialogNode).members[1] as SharedFilterDialogLeaf;
+    component.selectedId.set(second.id);
     component.setProperty('score');
     component.setNumberValue(3);
     fixture.detectChanges();
@@ -347,26 +436,19 @@ describe('SharedFilterDialogComponent', () => {
 
   it('renders the tree via nz-tree with keys following the root signal', async () => {
     await setupDialog({ properties: SCHEMA });
-    // pre-insert selection is the root
-    expect(component.selectedKeys()).toEqual([String(component.root().id)]);
+    // the scaffolded leaf is preselected (the wrapper is never a row)
+    expect(component.selectedKeys()).toEqual([String(topMember().id)]);
 
-    // selection follows the newly inserted leaf (id-based, survives replacement)
+    // delete → empty → insert: selection follows the newly inserted leaf
+    component.deleteSelected();
     component.addCondition();
     fixture.detectChanges();
-    const first = component.root().members[0];
-    expect(component.selectedKeys()).toEqual([String(first.id)]);
-
-    // a leaf selected means the next insert targets its parent (the root)
-    component.addCondition();
-    fixture.detectChanges();
-    const second = component.root().members[1];
-    expect(component.selectedKeys()).toEqual([String(second.id)]);
-    expect(treeRowTexts().length).toBe(3); // root + two leaves
+    expect(component.selectedKeys()).toEqual([String(topMember().id)]);
+    expect(treeRowTexts().length).toBe(1);
   });
 
   it('translated options recompute when the language changes while the dialog is open', async () => {
     await setupDialog({ properties: SCHEMA });
-    component.addCondition();
     fixture.detectChanges();
 
     const transloco = TestBed.inject(TranslocoService);

@@ -26,6 +26,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { FinanceOdataService, HomeDefOdataService } from '../../../../services';
 import {
@@ -46,6 +48,8 @@ import { SafeAny } from '@common/any';
   styleUrls: ['./order-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSpinModule,

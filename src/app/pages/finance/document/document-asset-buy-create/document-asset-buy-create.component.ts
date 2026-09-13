@@ -44,6 +44,8 @@ import { costObjectValidator } from '@uimodel/index';
 import { HomeDefOdataService, FinanceOdataService, UIStatusService } from '@services/index';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
@@ -57,6 +59,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { DocumentItemsComponent } from '../document-items';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @Component({
   selector: 'hih-fin-document-asset-buy-create',
@@ -64,6 +67,9 @@ import { NzResultModule } from 'ng-zorro-antd/result';
   styleUrls: ['./document-asset-buy-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
+    NzButtonModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzStepsModule,

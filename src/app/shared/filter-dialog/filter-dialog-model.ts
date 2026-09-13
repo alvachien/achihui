@@ -6,13 +6,20 @@
  * testable without TestBed (see filter-dialog-model.spec.ts). The component
  * file only holds signals and wires the template.
  *
- * Specification: docs/filter-dialog-generic-design.md
+ * Specification: docs/filter-dialog-generic-design.md, as corrected by the
+ * hierarchy contract in the knowledgebuilder project
+ * (docs/filter-hierarchy-contract.md §1–§3): the seed and result are actslib
+ * `FilterRoot`, the editor tree normalizes to a SINGLE top node under an
+ * invisible 0-or-1-member wrapper, and the empty tree (case 0) is not
+ * submittable.
  */
 import {
   EnumLike,
   FilterJoinType,
   FilterOperation,
+  FilterUtility,
   FilterValue,
+  FilterRoot,
   IFilterCondition,
   IFilterDefinition,
   FilterMember,
@@ -67,22 +74,50 @@ export interface FilterableProperty {
 
 export interface FilterDialogData {
   properties: FilterableProperty[];
-  /** seed = the filter currently in effect; empty/undefined starts blank */
-  root?: IFilterDefinition;
-  /** deepest group level the toolbar offers; default 4 */
+  /** seed = the filter currently in effect; any FilterRoot spelling (a bare
+   *  condition seeds the same single leaf as its 1-member wrapper); empty or
+   *  undefined opens scaffolded with one blank condition */
+  root?: FilterRoot;
+  /** deepest group level the toolbar offers; default 4 (visible levels: the
+   *  invisible wrapper is level 0, the top row level 1) */
   maxDepth?: number;
   /** dialog title key; default 'Filter.EditFilter' */
   titleKey?: string;
 }
 
 export interface FilterDialogResult {
-  root: IFilterDefinition;
+  root: FilterRoot;
 }
 
 /** Default dialog title key (design §4). */
 export const DEFAULT_FILTER_TITLE_KEY = 'Filter.EditFilter';
 /** Default deepest group level (design §4). */
 export const DEFAULT_FILTER_MAX_DEPTH = 4;
+
+/** A fresh filter root: case 0 (match-all) — the cleared-filter state the
+ *  pages' Clear Filter button installs directly. The dialog itself can never
+ *  emit this (the `emptyTree` gate blocks case 0 at Submit). */
+export function emptyFilterDefinition(): IFilterDefinition {
+  return { join: FilterJoinType.AND, conditions: [] };
+}
+
+/**
+ * Type guard narrowing `root` to a filter that holds at least one condition
+ * anywhere (nested included). A bare condition (case 1) is always active;
+ * dialog-emitted definitions never contain empty sub-groups, so the
+ * recursion is defensive for hand-built seeds — pages use this to decide
+ * between the "new filter" and the summary menu label (and to narrow their
+ * `FilterRoot | undefined` signal before evaluating it).
+ */
+export function hasActiveFilterDefinition(root: FilterRoot | undefined): root is FilterRoot {
+  if (!root) {
+    return false;
+  }
+  if (isFilterCondition(root)) {
+    return true;
+  }
+  return membersOf(root).some((c) => (isFilterCondition(c) ? true : hasActiveFilterDefinition(c)));
+}
 
 // ---------------------------------------------------------------------------
 // Editor state model (design §5.1)
@@ -311,6 +346,17 @@ function isFilterCondition(m: FilterMember): m is IFilterCondition {
   return typeof (m as IFilterCondition).property === 'string';
 }
 
+/**
+ * A definition's members, tolerating a missing `conditions` key: actslib's
+ * own `Simplify`/`MatchFilter` treat `undefined` conditions as empty (JSON
+ * from persistence or a hand-built `{ join }` decodes without the key), so
+ * every walk here degrades the same way — to case 0 / match-all — instead of
+ * throwing during change detection.
+ */
+function membersOf(def: IFilterDefinition): FilterMember[] {
+  return def.conditions ?? [];
+}
+
 /** Detect the strict enum fold-back shape of §6.3: an OR group whose direct
  *  members are ALL `Equal` conditions on the same enum property. Returns the
  *  property and the chosen values, or null. Shared by seedTree and summarize
@@ -319,12 +365,13 @@ export function tryFoldEnumGroup(
   def: IFilterDefinition,
   schema: FilterableProperty[],
 ): { propertyKey: string; values: Array<string | number> } | null {
-  if (def.join !== FilterJoinType.OR || def.conditions.length === 0) {
+  const members = membersOf(def);
+  if (def.join !== FilterJoinType.OR || members.length === 0) {
     return null;
   }
   let propertyKey: string | null = null;
   const values: Array<string | number> = [];
-  for (const member of def.conditions) {
+  for (const member of members) {
     if (!isFilterCondition(member) || member.operation !== FilterOperation.Equal) {
       return null;
     }
@@ -426,7 +473,7 @@ export function seedNode(def: IFilterDefinition, schema: FilterableProperty[]): 
     join: def.join ?? FilterJoinType.AND,
     members: [],
   };
-  for (const member of def.conditions ?? []) {
+  for (const member of membersOf(def)) {
     const seeded = seedMember(member, schema);
     if (seeded) {
       node.members.push(seeded);
@@ -435,8 +482,43 @@ export function seedNode(def: IFilterDefinition, schema: FilterableProperty[]): 
   return node;
 }
 
-export function seedTree(def: IFilterDefinition | undefined, schema: FilterableProperty[]): SharedFilterDialogNode {
-  return seedNode(def ?? { conditions: [] }, schema);
+/**
+ * Copy a caller's `FilterRoot` into editable nodes (the 2026-09-04
+ * single-top-node normalization): the tree's top level is ONE node — the
+ * actslib root itself. A bare condition (or any chain of 1-member definition
+ * wrappers, the case-1 spellings) seeds one condition LEAF; a 2+ member
+ * definition seeds one GROUP node carrying its join (case 2); an empty or
+ * absent seed leaves the wrapper with no member (the transient empty tree —
+ * the "new filter" scaffold fills in one blank condition). The wrapper stays
+ * invisible scaffold: it holds 0 or 1 members, its join is never evaluated,
+ * and `FilterUtility.Simplify` unwraps its single member at the Submit
+ * boundary. Structure below the top is preserved to any depth (never
+ * flattened); enum OR-groups and custom-op conditions fold back into single
+ * leaves so re-editing is lossless. The input is never mutated.
+ */
+export function seedTree(root: FilterRoot | undefined, schema: FilterableProperty[]): SharedFilterDialogNode {
+  const seedTop = (r: FilterRoot): SharedFilterDialogMember | null => {
+    let current: FilterMember = r;
+    while (!isFilterCondition(current) && membersOf(current).length === 1) {
+      current = membersOf(current)[0]; // 1-member wrappers are case-1 spellings
+    }
+    if (isFilterCondition(current)) {
+      return leafFromCondition(current, schema);
+    }
+    if (membersOf(current).length === 0) {
+      return null; // case 0 — the tree gets no top node
+    }
+    // 2+ conditions: the definition becomes THE root group node (seedMember
+    // folds an enum OR-group first, then falls back to seedNode).
+    return seedMember(current, schema);
+  };
+  const top = root ? seedTop(root) : null;
+  return {
+    id: nextEditorId(),
+    kind: 'group',
+    join: FilterJoinType.AND, // inert scaffold join (a single-member wrapper never evaluates it)
+    members: top ? [top] : [],
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -519,9 +601,13 @@ function emitMember(member: SharedFilterDialogMember, schema: FilterableProperty
   return emitLeaf(member, schema);
 }
 
-/** Submit output: leaves → conditions/groups; drops nothing (validation
- *  already guarantees completeness); root may emit `conditions: []` (=
- *  match-all = cleared filter). */
+/** Pre-Submit emission: leaves → conditions/groups; drops nothing (the
+ *  validation gate guarantees completeness; an empty sub-group or bare
+ *  wrapper can only appear when the pure function is driven directly, e.g.
+ *  unit tests — the `emptyTree` gate blocks case 0 at Submit, and the
+ *  component's Submit boundary passes the result through
+ *  `FilterUtility.Simplify`, so a single-condition filter crosses to the
+ *  page as a bare condition). */
 export function emitTree(root: SharedFilterDialogNode, schema: FilterableProperty[]): IFilterDefinition {
   return emitNode(root, schema);
 }
@@ -623,10 +709,13 @@ export function parentIdOf(root: SharedFilterDialogNode, memberId: number): numb
   return found;
 }
 
-/** Nesting depth of a member: root = 1. */
-export function depthOf(root: SharedFilterDialogNode, memberId: number): number {
+/** Nesting depth of a member: the invisible wrapper root sits at
+ *  `startDepth` (0 — it is never a rendered row), so the single top node the
+ *  user sees is level 1 and `maxDepth` is exactly the deepest group level
+ *  the toolbar offers. */
+export function depthOf(root: SharedFilterDialogNode, memberId: number, startDepth = 0): number {
   if (root.id === memberId) {
-    return 1;
+    return startDepth;
   }
   let result = 0;
   const visit = (n: SharedFilterDialogNode, depth: number): void => {
@@ -643,7 +732,7 @@ export function depthOf(root: SharedFilterDialogNode, memberId: number): number 
       }
     }
   };
-  visit(root, 2);
+  visit(root, startDepth + 1);
   return result;
 }
 
@@ -677,8 +766,27 @@ export function emptyLeaf(schema: FilterableProperty[]): SharedFilterDialogLeaf 
   if (!first) {
     return blankLeaf('', '');
   }
-  const ops = effectiveOperations(first);
-  return blankLeaf(first.key, ops[0] ?? first.customOperators?.[0]?.id ?? '');
+  return emptyLeafForProperty(first, nextEditorId());
+}
+
+/** A blank leaf for a given property: its first effective operator (or first
+ *  custom op when the property has no valued operators), all value slots
+ *  cleared. `id` is passed in so a property switch can keep the existing
+ *  leaf id (selection/expansion survive the swap). */
+export function emptyLeafForProperty(prop: FilterableProperty, id: number): SharedFilterDialogLeaf {
+  const ops = effectiveOperations(prop);
+  return {
+    id,
+    kind: 'leaf',
+    propertyKey: prop.key,
+    operator: ops[0] ?? prop.customOperators?.[0]?.id ?? '',
+    textValue: '',
+    numberValue: null,
+    dateValue: '',
+    lowValue: null,
+    highValue: null,
+    selectedChoices: [],
+  };
 }
 
 /** A new group with the given id, AND-joined, empty (the toolbar's +group). */
@@ -696,8 +804,11 @@ export interface ValidationState {
   hasMissingValue: boolean;
   /** leaf id → the reason its value editor is offending */
   leafErrors: Map<number, FilterLeafError>;
-  /** nested groups with < 2 members (root exempt) */
+  /** rendered groups with < 2 members (the single top GROUP row included) */
   invalidGroupIds: number[];
+  /** true when the wrapper holds no members (case 0 — clearing is the
+   *  pages' Clear Filter button's job, never the dialog's) */
+  emptyTree: boolean;
   isValid: boolean;
 }
 
@@ -744,11 +855,22 @@ function leafError(leaf: SharedFilterDialogLeaf, schema: FilterableProperty[]): 
   }
 }
 
-/** validateTree: blank/missing values and non-branching nested groups block
- *  Submit; root exempt (0 = clear-filter, 1 = single-condition filter). */
+/**
+ * validateTree against the three-case taxonomy (see KB's
+ * docs/filter-hierarchy-contract.md §1): the invisible wrapper root must
+ * carry at least one member (case 0 is not the dialog's business — the
+ * pages' Clear Filter button owns the empty filter), every leaf must have a
+ * value (except valueless custom ops; Between needs both bounds, low ≤
+ * high), and every RENDERED group must branch (≥ 2 members) — the single
+ * top GROUP row included, which is why `visit` only exempts the wrapper
+ * itself. The wrapper holds at most one node by construction, so its
+ * exemption is structural: a 1-member wrapper IS case 1 (a lone condition
+ * leaf).
+ */
 export function validateTree(root: SharedFilterDialogNode, schema: FilterableProperty[]): ValidationState {
   const leafErrors = new Map<number, FilterLeafError>();
   const invalidGroupIds: number[] = [];
+  const emptyTree = root.members.length === 0;
   const visit = (n: SharedFilterDialogNode, isRoot: boolean): void => {
     if (!isRoot && n.members.length < 2) {
       invalidGroupIds.push(n.id);
@@ -769,7 +891,8 @@ export function validateTree(root: SharedFilterDialogNode, schema: FilterablePro
     hasMissingValue: leafErrors.size > 0,
     leafErrors,
     invalidGroupIds,
-    isValid: leafErrors.size === 0 && invalidGroupIds.length === 0,
+    emptyTree,
+    isValid: !emptyTree && leafErrors.size === 0 && invalidGroupIds.length === 0,
   };
 }
 
@@ -852,7 +975,7 @@ function summarizeDef(
   }
   const join = def.join ?? FilterJoinType.AND;
   const joinText = join === FilterJoinType.OR ? labels('Filter.Or') : labels('Filter.And');
-  const parts = def.conditions
+  const parts = membersOf(def)
     .map((m) => (isFilterCondition(m) ? summarizeCondition(m, schema, labels) : summarizeDef(m, schema, labels, false)))
     .filter((s) => s.length > 0);
   if (parts.length === 0) {
@@ -864,17 +987,29 @@ function summarizeDef(
 }
 
 /** preview + menu label (parenthesized notation, per-group join, choice lists
- *  as `a/b/c`, Between as `low ≤ x ≤ high`). `maxLength` caps menu labels
+ *  as `a/b/c`, Between as `low ≤ x ≤ high`). Accepts any `FilterRoot`
+ *  spelling — the root is normalized through actslib's own
+ *  `ToDefinition`/`Simplify` pair (the exact conversions the Submit boundary
+ *  uses), so the dialog's raw wrapper emission and the page's stored
+ *  Simplified filter render IDENTICALLY: a bare condition (case 1) like its
+ *  wrapper, a group tree without outer parens. `maxLength` caps menu labels
  *  with an ellipsis; the live preview is uncapped. */
 export function summarizeFilterDefinition(
-  def: IFilterDefinition,
+  root: FilterRoot,
   schema: FilterableProperty[],
   labels: FilterLabels,
   maxLength?: number,
 ): string {
-  const text = summarizeDef(def, schema, labels, true);
+  const normalized = FilterUtility.ToDefinition(FilterUtility.Simplify(FilterUtility.ToDefinition(root)));
+  const text = summarizeDef(normalized, schema, labels, true);
   if (maxLength && text.length > maxLength) {
-    return `${text.slice(0, maxLength - 1)}…`;
+    // Slice by CODE POINT: a UTF-16 slice can cut an astral-plane character
+    // (e.g. a CJK Ext-B ideograph in a book title) between its surrogates,
+    // which the menu label would render as U+FFFD.
+    return `${Array.from(text)
+      .slice(0, maxLength - 1)
+      .join('')
+      .trimEnd()}…`;
   }
   return text;
 }

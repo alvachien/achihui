@@ -19,6 +19,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
@@ -38,6 +39,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./control-center-hierarchy.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzResizableModule,

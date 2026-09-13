@@ -22,14 +22,19 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { FilterOperation, FilterUtility, IFilterDefinition } from 'actslib';
+import { FilterOperation, FilterUtility, FilterRoot } from 'actslib';
 
 import { ConsoleLogTypeEnum, ModelUtility, Organization } from '@model/index';
 import { LibraryStorageService } from '@services/index';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { FilterableProperty, filterMenuLabel, openFilterDialog } from '../../../../shared/filter-dialog';
+import {
+  FilterableProperty,
+  filterMenuLabel,
+  hasActiveFilterDefinition,
+  openFilterDialog,
+} from '../../../../shared/filter-dialog';
 
 // Filterable scalar Organization fields — mirrors the book-list filter schema.
 const ORGANIZATION_FILTER_PROPERTIES: FilterableProperty[] = [
@@ -78,9 +83,11 @@ export class OrganizationListComponent implements OnInit {
   // Filter row, per docs/filter-dialog-generic-design.md §7: live free-text
   // pre-filter + structured filter applied on dialog close, client-evaluated.
   readonly searchText = signal('');
-  readonly filterDef = signal<IFilterDefinition | undefined>(undefined);
+  // Any actslib FilterRoot spelling — a single-condition filter travels as a
+  // bare condition (the dialog's Submit runs Simplify).
+  readonly filterDef = signal<FilterRoot | undefined>(undefined);
   readonly pageIndex = signal(1);
-  readonly hasFilter = computed(() => (this.filterDef()?.conditions?.length ?? 0) > 0);
+  readonly hasFilter = computed(() => hasActiveFilterDefinition(this.filterDef()));
   // Menu item label: a summary of the active filter, or "New filter" when none.
   readonly filterMenuText = computed(
     () => filterMenuLabel(this.filterDef(), ORGANIZATION_FILTER_PROPERTIES) || translate('Filter.NewFilter'),
@@ -105,7 +112,7 @@ export class OrganizationListComponent implements OnInit {
       );
     }
     const def = this.filterDef();
-    if (def && def.conditions.length > 0) {
+    if (hasActiveFilterDefinition(def)) {
       list = FilterUtility.FilterList(list as Organization[], def);
     }
     return list;
@@ -127,7 +134,8 @@ export class OrganizationListComponent implements OnInit {
     );
     ref.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((result) => {
       if (result) {
-        // root may be an empty tree (= match-all) — the user cleared all conditions.
+        // Submit only — the dialog never emits case 0 (the empty tree is not
+        // submittable); Cancel/backdrop/Esc yield undefined and keep the old filter.
         this.filterDef.set(result.root);
         this.pageIndex.set(1);
       }
@@ -191,9 +199,6 @@ export class OrganizationListComponent implements OnInit {
       });
   }
 
-  public onDisplay(pid: number) {
-    this.router.navigate(['/library/organization/display/' + pid.toString()]);
-  }
   public onEdit(pid: number) {
     if (pid) {
       this.router.navigate(['/library/organization/edit/' + pid.toString()]);

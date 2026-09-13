@@ -695,7 +695,7 @@ describe('DocumentAssetBuyCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 3: popup dialog if generated document object failed in verification', async () => {
+    it('step 3: popup dialog if generated document object failed in verification', async () => {
       createAssetBuyinDocumentSpy.and.returnValue(asyncData(1));
 
       fixture.detectChanges();

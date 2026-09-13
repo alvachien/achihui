@@ -9,8 +9,10 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { FinanceOdataService, HomeDefOdataService } from '@services/index';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
@@ -21,13 +23,15 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
   styleUrls: ['./control-center-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzGridModule,
     NzSpinModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzButtonModule,
     NzTableModule,
-    NzPopconfirmModule,
-    NzDividerModule,
+    NzDropdownModule,
+    NzMenuModule,
+    NzIconModule,
     TranslocoModule,
     NzModalModule,
     RouterModule,
@@ -85,14 +89,6 @@ export class ControlCenterListComponent implements OnInit {
       });
   }
 
-  onDisplay(rid: number): void {
-    ModelUtility.writeConsoleLog(
-      'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onDisplay...',
-      ConsoleLogTypeEnum.debug,
-    );
-    this.router.navigate(['/finance/controlcenter/display/' + rid.toString()]);
-  }
-
   onEdit(rid: number): void {
     ModelUtility.writeConsoleLog(
       'AC_HIH_UI [Debug]: Entering ControlCenterListComponent onEdit...',
@@ -107,20 +103,32 @@ export class ControlCenterListComponent implements OnInit {
       ConsoleLogTypeEnum.debug,
     );
 
-    this.odataService
-      .deleteControlCenter(rid)
-      .pipe(takeUntilDestroyed(this.destroyedRef))
-      .subscribe({
-        next: () => {
-          this.dataSet.update((items) => items.filter((val2) => val2.Id !== rid));
-        },
-        error: (err) => {
-          this.modalService.error({
-            nzTitle: translate('Common.Error'),
-            nzContent: err.toString(),
-            nzClosable: true,
+    // Modal confirm (book-list pattern) - the row action now lives in the
+    // ID cell's dropdown, where a popconfirm would not anchor cleanly.
+    this.modalService.confirm({
+      nzTitle: translate('Common.DeleteConfirmation'),
+      nzContent: translate('Common.ConfirmToDeleteSelectedItem'),
+      nzOkText: translate('Common.Yes'),
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.odataService
+          .deleteControlCenter(rid)
+          .pipe(takeUntilDestroyed(this.destroyedRef))
+          .subscribe({
+            next: () => {
+              this.dataSet.update((items) => items.filter((val2) => val2.Id !== rid));
+            },
+            error: (err) => {
+              this.modalService.error({
+                nzTitle: translate('Common.Error'),
+                nzContent: err.toString(),
+                nzClosable: true,
+              });
+            },
           });
-        },
-      });
+      },
+      nzCancelText: translate('Common.No'),
+    });
   }
 }

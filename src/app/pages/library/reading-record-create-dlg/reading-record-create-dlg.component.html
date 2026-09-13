@@ -15,13 +15,38 @@
       </div>
     </div>
 
-    <!-- Date range -->
+    <!-- Still reading: sends the start date only -> the server opens a Reading
+         record that is finalized later via Complete/Abort on the list page. -->
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">{{ 'Common.DateRange' | transloco }}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzHasFeedback>
-        <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+      <nz-form-label [nzSpan]="7">{{ 'Library.StillReading' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <nz-switch formControlName="stillReadingControl"></nz-switch>
       </nz-form-control>
     </nz-form-item>
+
+    @if (stillReading()) {
+      <!-- Open reading: only the start date -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.StartDate' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="startDateTpl">
+          <nz-date-picker formControlName="startDateControl"></nz-date-picker>
+          <ng-template #startDateTpl>
+            <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    } @else {
+      <!-- Finished reading: the complete period is mandatory -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>{{ 'Common.DateRange' | transloco }}</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="dateRangeTpl">
+          <nz-range-picker formControlName="dateRangeControl"></nz-range-picker>
+          <ng-template #dateRangeTpl>
+            <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    }
 
     <!-- Comment -->
     <nz-form-item>

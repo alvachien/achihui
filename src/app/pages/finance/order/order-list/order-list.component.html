@@ -54,28 +54,40 @@
           @for (data of basicTable.data; track data.Id) {
             <tr>
               <td>
-                <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Id }}</span>
-                <nz-divider nzType="vertical"></nz-divider>
-                <button nz-button nzType="link" (click)="onDisplay(data.Id!)">
-                  {{ 'Common.Display' | transloco }}
-                </button>
-                <button nz-button nzType="link" (click)="onEdit(data.Id!)" [disabled]="invalidOrder(data)">
-                  {{ 'Common.Edit' | transloco }}
-                </button>
-                <a
-                  nz-button
-                  nz-popconfirm
-                  [nzPopconfirmTitle]="'Common.ConfirmToDeleteSelectedItem' | transloco"
-                  nzPopconfirmPlacement="bottom"
-                  (nzOnConfirm)="onDelete(data.Id!)"
-                  nzType="link"
-                  nzDanger
-                  >{{ 'Common.Delete' | transloco }}</a
-                >
-                <nz-divider nzType="vertical"></nz-divider>
-                <button nz-button nzType="link" (click)="onDisplayDocItem(data.Id!, data.Name)">
-                  {{ 'Finance.Documents' | transloco }}
-                </button>
+                <div class="id-cell">
+                  <!-- The ID itself links to the display page -->
+                  <a
+                    [routerLink]="['/finance/order/display', data.Id!]"
+                    [ngClass]="{ 'closed-order': invalidOrder(data) }"
+                    >{{ data.Id }}</a
+                  >
+                  <!-- Row actions: the former inline links live in a three-dot menu -->
+                  <button
+                    nz-button
+                    nzType="text"
+                    nzSize="small"
+                    nz-dropdown
+                    [nzDropdownMenu]="rowActionMenu"
+                    nzTrigger="click"
+                    nzPlacement="bottomRight"
+                    [attr.aria-label]="'Common.Actions' | transloco"
+                    class="id-cell-action"
+                  >
+                    <i nz-icon nzType="more" nzTheme="outline"></i>
+                  </button>
+                  <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                      <li nz-menu-item [nzDisabled]="invalidOrder(data)" (click)="onEdit(data.Id!)">
+                        {{ 'Common.Edit' | transloco }}
+                      </li>
+                      <li nz-menu-item (click)="onDisplayDocItem(data.Id!, data.Name)">
+                        {{ 'Finance.Documents' | transloco }}
+                      </li>
+                      <li nz-menu-divider></li>
+                      <li nz-menu-item nzDanger (click)="onDelete(data.Id!)">{{ 'Common.Delete' | transloco }}</li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
               </td>
               <td>
                 <span [ngClass]="{ 'closed-order': invalidOrder(data) }">{{ data.Name }}</span>

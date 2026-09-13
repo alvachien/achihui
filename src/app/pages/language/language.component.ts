@@ -11,6 +11,7 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -21,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./language.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzTypographyModule,
     FormsModule,
     ReactiveFormsModule,
     TranslocoModule,

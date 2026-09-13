@@ -16,6 +16,8 @@ import { NzListModule } from 'ng-zorro-antd/list';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { DecimalPipe } from '@angular/common';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 import {
   FinanceReportByAccount,
@@ -45,6 +47,8 @@ import { SafeAny } from '@common/any';
   styleUrls: ['./report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzButtonModule,
+    NzIconModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzDropdownModule,

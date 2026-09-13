@@ -7,10 +7,42 @@ model, actslib integration, validation, and invariants. Any Angular 21+
 standalone component project that depends on **actslib** can implement this
 specification directly.
 
+> **2026-09-06 correction.** The as-built contract below supersedes several
+> statements in this document — this port originally shipped the
+> pre-normalization design, then adopted the hierarchy contract documented in
+> the knowledgebuilder project's `docs/filter-hierarchy-contract.md`
+> (§1–§3). The affected decisions, restated correctly:
+>
+> - **D1:** Seed + result are actslib **`FilterRoot`**
+>   (`IFilterCondition | IFilterDefinition`), not `IFilterDefinition` alone —
+>   a single-condition filter crosses the boundary as a **bare condition**
+>   (Submit runs `FilterUtility.Simplify`), and either spelling may seed.
+> - **D7 + §8:** the three-case taxonomy replaces "root exempt": case 0
+>   (the empty tree) is **not submittable** (clearing is the pages' Clear
+>   Filter button's job); every RENDERED group — the single top GROUP row
+>   included — must branch (≥ 2 members); the invisible wrapper's exemption
+>   is structural only (it holds 0 or 1 members by construction).
+> - **Editor tree:** normalized to a SINGLE top node (case 1: one leaf;
+>   case 2: one group row) under an invisible 0-or-1-member wrapper — the
+>   wrapper is never rendered, selectable, or deletable, and `maxDepth`
+>   counts VISIBLE levels (the wrapper is level 0).
+> - **Toolbar:** exactly three buttons (+ condition, + group, delete), armed
+>   by the selected node's kind — a condition arms delete only (inserts
+>   target nothing), a group arms all three (it is the insert target),
+>   nothing selected (the empty tree) arms the two inserts. "+ group"
+>   inserts a CHILDLESS group (one click, one node; ⚠ until 2 members). A
+>   dialog seeded empty opens SCAFFOLDED with one blank condition.
+> - **§6.3:** there IS an "inactive" escape from the enum editor — but it is
+>   the pages' Clear Filter button, not a Submit with zero choices (the
+>   empty tree cannot be submitted from inside the dialog).
+> - **§7.2:** an empty tree is NOT a legitimate Submit; the dialog never
+>   emits case 0.
+
 Dependencies: Angular + Angular Material (`MatDialog`, `MatTree` nested nodes,
 form fields/select/checkbox), an i18n layer (key-based labels throughout),
-actslib (`IFilterDefinition`, `IFilterCondition`, `FilterOperation`,
-`FilterUtility`, `EnumLike`).
+actslib ≥ 0.6.83 (`FilterRoot`, `IFilterDefinition`, `IFilterCondition`,
+`FilterOperation`, `FilterUtility` incl. `ToDefinition`/`Simplify`,
+`EnumLike`).
 
 ---
 
@@ -20,7 +52,7 @@ One project-wide dialog for defining list-page filters as a **condition tree**
 (SQL-WHERE shape: leaves = property conditions, inner nodes = AND/OR joins).
 The dialog is configured per page with a **property schema** whose operator set
 derives from actslib's filter semantics; its seed and result are
-actslib-native (`IFilterDefinition`), so pages store, translate-free, and
+actslib-native (`FilterRoot`), so pages store, translate-free, and
 evaluate exactly what the dialog returns.
 
 Name it "Filter Dialog" (not "filter *options* dialog") to avoid a collision
@@ -141,16 +173,18 @@ export interface FilterableProperty {
 
 export interface FilterDialogData {
   properties: FilterableProperty[];
-  /** seed = the filter currently in effect; empty/undefined starts blank */
-  root?: IFilterDefinition;
-  /** deepest group level the toolbar offers; default 4 */
+  /** seed = the filter currently in effect; any FilterRoot spelling;
+   *  empty/undefined opens scaffolded with one blank condition */
+  root?: FilterRoot;
+  /** deepest group level the toolbar offers; default 4 (visible levels:
+   *  the invisible wrapper is level 0) */
   maxDepth?: number;
   /** dialog title key; default 'editFilter' (namespaced per host project) */
   titleKey?: string;
 }
 
 export interface FilterDialogResult {
-  root: IFilterDefinition;
+  root: FilterRoot;
 }
 ```
 
@@ -235,8 +269,8 @@ export interface SharedFilterDialogNode {
 
 | function | role |
 |---|---|
-| `seedTree(def: IFilterDefinition \| undefined, schema): SharedFilterDialogNode` | copy-in: conditions → leaves (fold-back: custom `recognize`, Between, enum OR-of-equals → one multi-choice leaf, single value); nested groups → nodes; **structure preserved at any depth**; never mutates the caller's def |
-| `emitTree(root, schema): IFilterDefinition` | Submit output: leaves → conditions/groups (§6 dispatch); drops nothing (validation already guarantees completeness); root may emit `conditions: []` (= match-all = cleared filter) |
+| `seedTree(root: FilterRoot \| undefined, schema): SharedFilterDialogNode` | copy-in, normalized to a SINGLE top node: a bare condition (or a chain of 1-member wrappers, the case-1 spellings) seeds one condition leaf; a 2+ member definition seeds one group node carrying its join (case 2); empty/absent → no node (the "new filter" scaffold fills in one blank condition). Fold-back: custom `recognize`, Between, enum OR-of-equals → one multi-choice leaf, single value. **Structure below the top preserved at any depth**; never mutates the caller's def |
+| `emitTree(root, schema): IFilterDefinition` | pre-Submit emission: leaves → conditions/groups (§6 dispatch); drops nothing (the validation gate guarantees completeness). The **Submit boundary** passes it through `FilterUtility.Simplify`, so a single-condition filter crosses to the page as a bare condition and the page never receives `conditions: []` from the dialog (case 0 is gated off; the pure function alone can still emit it — unit tests only) |
 | `insertMember / deleteMember / patchNode / patchLeaf` | immutable mutators: every edit returns a new object along the mutation path |
 | `emptyLeaf(schema): SharedFilterDialogLeaf` | new row = first property, its first operator, blank values |
 | `validateTree(root, schema): ValidationState` | `hasMissingValue` + `invalidGroupIds` (§8) |
@@ -315,7 +349,8 @@ is implied by the kind).
 - N > 1 values → a nested group
   `{ join: OR, conditions: [ {Equal, v₁, enumValues}, …, {Equal, vₙ, enumValues} ] }`
 - 0 values → **invalid** (§8: enum leaf must pick at least one). There is no
-  "inactive" escape: an all-empty tree is the way to clear the filter.
+  "inactive" escape from inside the dialog: clearing the filter is the pages'
+  Clear Filter button — the empty tree (case 0) cannot be submitted.
 
 Rationale: actslib has no `In` operation; OR-of-`Equal` is the only faithful
 encoding of "row's enum value ∈ chosen set", and attaching `enumValues` to
@@ -408,7 +443,11 @@ touches the page state. The filter changes **exactly once, at close**:
 
 - **Submit (OK)** → `afterClosed()` emits `{ root }` → the page stores
   `result.root` as the active filter and refetches/re-derives the list.
-  An empty tree is a legitimate Submit and means *match-all* (cleared filter).
+  The root is a `FilterRoot`: a **bare condition** for a single-condition
+  filter (case 1, via `Simplify`) or a definition for a group tree (case 2).
+  The empty tree (case 0) is **not** a legitimate Submit — clearing the
+  filter is the page's Clear Filter button, so the dialog never emits a
+  match-all from inside itself.
 - **Cancel / backdrop / Esc** → emits `undefined` → the page leaves the
   previous filter untouched and does not reload. The dialog discards its copy.
 
@@ -522,20 +561,28 @@ the highlight and M are read against.
 ## 8. Validation (Submit gate)
 
 `validateTree` returns per-leaf "missing value" flags + `invalidGroupIds`
-(nested groups with `< 2` members; **root exempt**: 0 = clear-filter, 1 =
-single-condition filter). A leaf is missing its value when the dispatch
-selects an input and it is blank (`textValue.trim() === ''`,
-`numberValue == null`, any Between bound null,
+(every RENDERED group with `< 2` members — the single top GROUP row included;
+the invisible wrapper's exemption is **structural**, it holds 0 or 1 members
+by construction) + an `emptyTree` flag. This is the three-case taxonomy of
+the hierarchy contract stated as a gate: case 1 (a lone condition leaf) and
+case 2 (a branching group tree) submit; case 0 (a 0-member tree) is **not
+submittable** — clearing belongs to the pages' Clear Filter button. A leaf is
+missing its value when the dispatch selects an input and it is blank
+(`textValue.trim() === ''`, `numberValue == null`, any Between bound null,
 `selectedChoices.length === 0`), or when Between has `low > high`.
 
 - **Submit button** `[disabled]="!canSubmit()"` where
-  `canSubmit = noMissingValue && noInvalidGroups`.
+  `canSubmit = !emptyTree && noMissingValue && noInvalidGroups`.
 - Offending rows get the invalid class + `error` icon (tree), and the detail
   pane shows the matching hint below the offending control; group hints use a
   shared "a group needs at least two conditions" message key.
 - **No silent pruning on Submit**: validation prevents submitting an empty
   group, so `emitTree` is total. `Cancel` still mutates nothing.
-- `maxDepth` disables "+ group" at the deepest level (default 4).
+- `maxDepth` disables "+ group" at the deepest level (default 4), counted in
+  VISIBLE group levels: the invisible wrapper is level 0, the top row is
+  level 1, so the deepest group the toolbar offers is exactly level
+  `maxDepth` (an off-by-one here silently eats one nesting level — see the
+  hierarchy contract / review H1).
 
 ---
 
@@ -566,10 +613,18 @@ selects an input and it is blank (`textValue.trim() === ''`,
 - **Live preview**: same function, uncapped; menu labels on pages call it with
   their own cap (e.g. 40 chars, ellipsis) — the summarize helper lives in the
   model file so both use one implementation.
-- Toolbar: insert condition / insert group (depth-capped) / delete selected.
+- Toolbar: exactly three buttons — insert condition / insert group
+  (depth-capped) / delete selected — armed by the selected node's kind: a
+  group arms all three (it becomes the insert target), a condition arms
+  delete only, nothing selected (the empty tree) arms the two inserts.
+  "+ group" inserts a CHILDLESS group (one click, one node; the ≥2-members
+  warning shows until it is filled).
 - Selection & keyboard: click or `(activation)` selects; selection is id-based
-  (`selectedId` signal) so immutable replacements don't drop it; root
-  preselected.
+  (`selectedId` signal, `null` = nothing selected) so immutable replacements
+  don't drop it; the single top node is preselected (or nothing for an empty
+  tree). The invisible wrapper is never rendered, selectable, or deletable;
+  deleting a member returns the selection to its parent group — or to
+  nothing when the tree just emptied.
 - Follow the host project's dialog-sizing conventions.
 
 ---
@@ -620,7 +675,9 @@ Component spec (DOM, with the host project's mocked-i18n harness):
 - Between shows two inputs, validates low≤high;
 - Submit disabled/enabled tracks `validateTree` live; invalid-group ⚠ icon;
 - schema dispatch: switching property switches operator list and editor;
-- depth cap hides +group; root never deletable; Cancel never mutates.
+- depth cap counts visible levels (wrapper = 0; the case-2 root can nest at
+  `maxDepth: 2`, not at `maxDepth: 1`); the wrapper is never a row; delete
+  to the empty tree re-arms the inserts; Cancel never mutates.
 
 Host-page specs should cover the §7 contracts too: the pre-filter narrows on a
 single `onSearchInput` call (no commit step) and resets the page index; the

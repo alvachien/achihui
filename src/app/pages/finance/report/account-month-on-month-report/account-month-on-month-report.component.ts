@@ -32,8 +32,9 @@ import {
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzRadioGroupComponent } from 'ng-zorro-antd/radio';
+import { NzRadioGroupComponent, NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 
@@ -43,6 +44,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
   styleUrls: ['./account-month-on-month-report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzRadioModule,
+    NzButtonModule,
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSelectModule,

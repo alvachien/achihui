@@ -7,6 +7,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { Currency, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
 import { FinanceOdataService } from '@services/index';
@@ -16,7 +17,15 @@ import { FinanceOdataService } from '@services/index';
   templateUrl: './currency.component.html',
   styleUrls: ['./currency.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzSpinModule, NzPageHeaderModule, NzBreadCrumbModule, NzTableModule, NzModalModule, TranslocoModule],
+  imports: [
+    NzSpinModule,
+    NzPageHeaderModule,
+    NzBreadCrumbModule,
+    NzTableModule,
+    NzModalModule,
+    TranslocoModule,
+    NzTypographyModule,
+  ],
 })
 export class CurrencyComponent implements OnInit {
   dataSource = signal<Currency[]>([]);

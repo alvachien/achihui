@@ -8,6 +8,7 @@ import { HomeDefOdataService } from './home-def-odata.service';
 import {
   Book,
   BookCategory,
+  BookReadingStatus,
   Location,
   LocationTypeEnum,
   Organization,
@@ -1475,6 +1476,31 @@ describe('LibraryStorageService', () => {
 
       req.flush({ '@odata.count': 0, value: [] });
     });
+
+    it('selects the audit fields shown by the list columns and parses them from the wire', () => {
+      service.fetchBooks(10, 0).subscribe({
+        next: (data) => {
+          expect(data.contentList.length).toEqual(1);
+          expect(data.contentList[0].CreatedatFormatString).toEqual('2026-09-01');
+          expect(data.contentList[0].UpdatedatFormatString).toEqual('2026-09-12');
+        },
+        error: () => {
+          // Empty
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+      const sel: string | null = req.request.params.get('$select');
+      expect(sel).toContain('CreatedAt');
+      expect(sel).toContain('UpdatedAt');
+
+      req.flush({
+        '@odata.count': 1,
+        value: [{ Id: 1, HomeID: 2, NativeName: 'test1', CreatedAt: '2026-09-01', UpdatedAt: '2026-09-12' }],
+      });
+    });
   });
 
   describe('readBoook', () => {
@@ -1646,6 +1672,140 @@ describe('LibraryStorageService', () => {
 
       // respond with a 404 and the error message in the body
       req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  // Book reading records: list query shape + the lifecycle actions
+  describe('book reading records', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('selects Status in the list query and parses it from the wire', () => {
+      service.fetchBookReadingRecords(10, 0).subscribe((x) => {
+        expect(x.totalCount).toEqual(1);
+        expect(x.contentList.length).toEqual(1);
+        expect(x.contentList[0].Status).toEqual(BookReadingStatus.Reading);
+        expect(x.contentList[0].IsReading).toBe(true);
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookReadingRecordAPIURL;
+      });
+      // The lifecycle column must be part of the projection.
+      expect(req.request.params.get('$select')).toContain('Status');
+
+      req.flush({
+        '@odata.count': 1,
+        value: [
+          {
+            Id: 1,
+            HomeID: fakeData.chosedHome.ID,
+            BookId: 7,
+            User: 'u',
+            FromDate: '2026-09-01',
+            ToDate: null,
+            Comment: null,
+            Status: 'Reading',
+          },
+        ],
+      });
+    });
+
+    it('completes a record via the bare CompleteReading action route', () => {
+      service.completeBookReadingRecord(3, 55, '2026-09-20').subscribe((x) => {
+        expect(x.Status).toEqual(BookReadingStatus.Completed);
+        expect(x.ToDate).toBeTruthy();
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === `${service.bookReadingRecordAPIURL}/CompleteReading`;
+      });
+      expect(req.request.body).toEqual({ HomeID: 3, RecordID: 55, ToDate: '2026-09-20' });
+
+      req.flush({
+        Id: 55,
+        HomeID: 3,
+        BookId: 7,
+        User: 'u',
+        FromDate: '2026-09-01',
+        ToDate: '2026-09-20',
+        Status: 'Completed',
+      });
+    });
+
+    it('aborts a record and omits ToDate when none is given', () => {
+      service.abortBookReadingRecord(3, 55).subscribe((x) => {
+        expect(x.Status).toEqual(BookReadingStatus.Aborted);
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === `${service.bookReadingRecordAPIURL}/AbortReading`;
+      });
+      // The key must be absent entirely - an explicit null would fail the
+      // server-side string cast for the optional ToDate parameter.
+      expect(req.request.body).toEqual({ HomeID: 3, RecordID: 55 });
+
+      req.flush({ Id: 55, HomeID: 3, BookId: 7, User: 'u', FromDate: '2026-09-01', Status: 'Aborted' });
+    });
+
+    it('surfaces the server verdict when the transition is refused', () => {
+      const msg = 'Only a record in Reading status can be completed';
+      service.completeBookReadingRecord(3, 55, '2026-09-20').subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === `${service.bookReadingRecordAPIURL}/CompleteReading`;
+      });
+      req.flush(msg, { status: 400, statusText: 'Bad Request' });
+    });
+
+    it('surfaces the middleware verdict without the raw JSON envelope', () => {
+      // ErrorHandlingMiddleware writes handled 4xx as {"error":"<message>"} -
+      // the user-facing modal must show the verdict, not the envelope.
+      service.completeBookReadingRecord(3, 55, '2026-09-20').subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toContain('Reading period overlaps an existing record');
+          expect(err.toString()).not.toContain('{');
+          expect(err.toString()).not.toContain('Http failure response');
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === `${service.bookReadingRecordAPIURL}/CompleteReading`;
+      });
+      req.flush(
+        { error: 'Reading period overlaps an existing record of the same reader for this book' },
+        { status: 400, statusText: 'Bad Request' },
+      );
+    });
+
+    it('inlines reader-matched user ids into the search filter', () => {
+      service.fetchBookReadingRecords(10, 0, undefined, 'creator', undefined, [], ['user-1', "o'x"]).subscribe((x) => {
+        expect(x.totalCount).toEqual(0);
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookReadingRecordAPIURL;
+      });
+      const filter: string = req.request.params.get('$filter') ?? '';
+      // Quote doubling protects the OData string literals.
+      expect(filter).toContain("User in ('user-1','o''x')");
+      expect(filter).toContain("contains(tolower(User),tolower('creator'))");
+
+      req.flush({ '@odata.count': 0, value: [] });
     });
   });
 });

@@ -18,7 +18,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { FilterJoinType, IFilterDefinition } from 'actslib';
+import { FilterJoinType, FilterUtility, FilterRoot } from 'actslib';
 
 import {
   DEFAULT_FILTER_MAX_DEPTH,
@@ -35,10 +35,12 @@ import {
   depthOf,
   effectiveOperations,
   emptyLeaf,
+  emptyLeafForProperty,
   emptyNode,
   emitTree,
   findMember,
   findProperty,
+  hasActiveFilterDefinition,
   insertMember,
   isDialogNode,
   nextEditorId,
@@ -60,7 +62,10 @@ interface OptionItem {
 }
 
 /**
- * Generic condition-tree filter editor dialog (design §3/§5.3/§9).
+ * Generic condition-tree filter editor dialog (design §3/§5.3/§9, as
+ * corrected by the hierarchy contract: seed/result are actslib `FilterRoot`,
+ * the editor tree normalizes to a SINGLE top node under an invisible
+ * 0-or-1-member wrapper, and the empty tree is not submittable).
  *
  * NG-ZORRO adaptation of the spec: NzModal (via the `openFilterDialog`
  * helper below) replaces MatDialog, nz-tree replaces mat-tree. The
@@ -70,6 +75,22 @@ interface OptionItem {
  * so immutable replacements don't drop it. nz-tree is fed a freshly built
  * `NzTreeNodeOptions[]` from a computed over `root`, which sidesteps the
  * MatTree reference-trackBy concern entirely (the whole view rebuilds).
+ *
+ * The navigator renders the (at most one) root NODE — never the unrendered
+ * wrapper: case 1 shows one condition row, case 2 one group row with its
+ * members nested below, and the transient empty tree shows none (the two
+ * insert buttons arm; delete stays off). A dialog seeded empty — the "new
+ * filter" case — opens SCAFFOLDED with one blank condition, selected.
+ * The toolbar holds exactly three buttons, armed by the selected node's
+ * kind: a GROUP arms all three (it becomes the insert target), a CONDITION
+ * arms delete only, and with nothing selected the two inserts arm. Inserts
+ * select the new node; deleting a member returns the selection to the
+ * parent group — or to nothing when the tree just emptied, where the
+ * inserts re-arm (delete → + group → + condition is the growth path from
+ * any state). Submit emits a `FilterRoot`: a bare condition for a
+ * single-condition filter (case 1, via `FilterUtility.Simplify`), a
+ * definition otherwise (case 2). Cancel/backdrop/Esc yield `undefined` and
+ * the caller keeps its previous filter.
  */
 @Component({
   selector: 'hih-filter-dialog',
@@ -94,15 +115,17 @@ export class SharedFilterDialogComponent {
   readonly schema: FilterableProperty[];
   readonly maxDepth: number;
 
-  /** root of the editor tree — the single source all edits flow through */
+  /** root of the editor tree — the invisible 0-or-1-member wrapper; the
+   *  single source all edits flow through */
   readonly root = signal<SharedFilterDialogNode>({
     id: 0,
     kind: 'group',
     join: FilterJoinType.AND,
     members: [],
   });
-  /** id-based selection so immutable replacements keep it (§5.3.3) */
-  readonly selectedId = signal(0);
+  /** id-based selection so immutable replacements keep it (§5.3.3); null =
+   *  nothing selected (the transient empty tree — the insert-anchor state) */
+  readonly selectedId = signal<number | null>(null);
   readonly splitPct = signal(42);
   // Bumped on runtime language switches so the computeds below that call the
   // imperative translate() - which has no activeLang signal of its own -
@@ -121,9 +144,17 @@ export class SharedFilterDialogComponent {
     if (warnings.length > 0) {
       warnings.forEach((w) => console.warn(w));
     }
-    const seeded = seedTree(data?.root, this.schema);
+    // Seed normalized to a single top node (the wrapper holds 0 or 1
+    // members). An empty seed — the "new filter" case — opens SCAFFOLDED
+    // with one blank condition (case 1), selected: the dialog only ever
+    // presents cases 1/2, and the missing-value rule keeps Submit disabled
+    // until the leaf is filled.
+    let seeded = seedTree(data?.root, this.schema);
+    if (seeded.members.length === 0 && selectableProperties(this.schema).length > 0) {
+      seeded = { ...seeded, members: [emptyLeaf(this.schema)] };
+    }
     this.root.set(seeded);
-    this.selectedId.set(seeded.id);
+    this.selectedId.set(seeded.members[0]?.id ?? null);
 
     inject(TranslocoService)
       .langChanges$.pipe(takeUntilDestroyed())
@@ -134,13 +165,19 @@ export class SharedFilterDialogComponent {
 
   readonly validation = computed(() => validateTree(this.root(), this.schema));
   readonly canSubmit = computed(() => this.validation().isValid);
+  /** The navigator's top rows: the (at most one) root NODE — never the
+   *  unrendered wrapper (case 1: one condition row; case 2: one group row
+   *  with nested rows; the transient empty tree: no rows). */
   readonly treeNodes = computed<NzTreeNodeOptions[]>(() => {
     this.langTick(); // tree titles embed translate() results
-    return [this.buildTreeNode(this.root())];
+    return this.root().members.map((m) => (isDialogNode(m) ? this.buildTreeNode(m) : this.buildTreeLeaf(m)));
   });
-  readonly selectedKeys = computed(() => [String(this.selectedId())]);
+  readonly selectedKeys = computed(() => (this.selectedId() === null ? [] : [String(this.selectedId())]));
 
-  readonly selectedMember = computed(() => findMember(this.root(), this.selectedId()));
+  readonly selectedMember = computed(() => {
+    const id = this.selectedId();
+    return id === null ? null : findMember(this.root(), id);
+  });
   readonly selectedGroup = computed(() => {
     const m = this.selectedMember();
     return m && isDialogNode(m) ? m : null;
@@ -154,21 +191,40 @@ export class SharedFilterDialogComponent {
     return leaf ? findProperty(this.schema, leaf.propertyKey) : undefined;
   });
 
-  /** the group toolbar inserts into: the selected group, or a leaf's parent */
-  readonly insertTargetId = computed(() => {
+  /**
+   * The group that accepts toolbar inserts: a selected GROUP (the case-2
+   * root node or any nested group), or — with NOTHING selected (the empty
+   * tree) — the scaffold root, so the insert becomes THE single top node.
+   * A selected CONDITION targets nothing: its parent is not the selection,
+   * so both add buttons stay disabled for it.
+   */
+  readonly insertTargetId = computed<number | null>(() => {
     const g = this.selectedGroup();
     if (g) {
       return g.id;
     }
     const leaf = this.selectedLeaf();
     if (leaf) {
-      return parentIdOf(this.root(), leaf.id) ?? this.root().id;
+      return null; // a condition arms delete only — inserts are off
     }
-    return this.root().id;
+    return this.root().id; // nothing selected (empty tree): the scaffold takes the insert
   });
 
-  readonly canAddGroup = computed(() => depthOf(this.root(), this.insertTargetId()) < this.maxDepth);
-  readonly canDelete = computed(() => this.selectedId() !== this.root().id);
+  readonly canAddCondition = computed(() => {
+    const target = this.insertTargetId();
+    return target !== null && selectableProperties(this.schema).length > 0;
+  });
+  readonly canAddGroup = computed(() => {
+    const target = this.insertTargetId();
+    if (target === null) {
+      return false;
+    }
+    // The depth cap counts VISIBLE group levels: the unrendered wrapper is
+    // level 0, so the single top node the user sees sits at level 1 and
+    // maxDepth is exactly the deepest group level the toolbar offers.
+    return depthOf(this.root(), target) < this.maxDepth;
+  });
+  readonly canDelete = computed(() => this.selectedId() !== null);
 
   readonly propertyOptions = computed<OptionItem[]>(() => {
     this.langTick();
@@ -253,30 +309,51 @@ export class SharedFilterDialogComponent {
   // -- toolbar mutators (all immutable through the root signal) ---------------
 
   addCondition(): void {
-    const leaf = emptyLeaf(this.schema);
     const target = this.insertTargetId();
+    if (target === null) {
+      return;
+    }
+    const leaf = emptyLeaf(this.schema);
     this.root.update((r) => insertMember(r, target, leaf));
     this.selectedId.set(leaf.id);
   }
 
+  /**
+   * Insert an AND-joined, CHILDLESS group into the target group and select
+   * it. One click adds exactly one node: the group starts empty and carries
+   * the ≥2-members warning until the user fills it (+ condition targets the
+   * selected group) — no phantom placeholder row.
+   */
   addGroup(): void {
-    if (!this.canAddGroup()) {
+    const target = this.insertTargetId();
+    if (target === null || !this.canAddGroup()) {
       return;
     }
-    const group = { ...emptyNode(nextEditorId()), members: [emptyLeaf(this.schema)] };
-    const target = this.insertTargetId();
+    const group = emptyNode(nextEditorId());
     this.root.update((r) => insertMember(r, target, group));
     this.selectedId.set(group.id);
   }
 
+  /**
+   * Delete the selected node (leaf, or group with its subtree). Selection
+   * moves to the parent group; when the parent is the unrendered scaffold
+   * root, it lands on the root's surviving first member — or on NOTHING
+   * once the tree has emptied, the insert-anchor state where both add
+   * buttons re-arm (the top level holds at most one node, so deleting the
+   * top node always empties the tree).
+   */
   deleteSelected(): void {
     const id = this.selectedId();
-    if (id === this.root().id) {
-      return; // the root is never deletable
+    if (id === null) {
+      return;
     }
-    const parent = parentIdOf(this.root(), id) ?? this.root().id;
+    const parent = parentIdOf(this.root(), id);
+    if (parent === null) {
+      return; // the unrendered wrapper itself is never deletable
+    }
     this.root.update((r) => deleteMember(r, id));
-    this.selectedId.set(parent);
+    const after = this.root();
+    this.selectedId.set(parent === after.id ? (after.members[0]?.id ?? null) : parent);
   }
 
   // -- detail-pane patchers ----------------------------------------------------
@@ -289,21 +366,20 @@ export class SharedFilterDialogComponent {
     this.root.update((r) => patchNode(r, g.id, join === FilterJoinType.OR ? FilterJoinType.OR : FilterJoinType.AND));
   }
 
+  /** Property switch: resets the operator (it belongs to the previous
+   *  property) AND the value slots — stale values from another property
+   *  must never be re-emitted. The leaf id is kept so selection survives. */
   setProperty(key: string): void {
     const leaf = this.selectedLeaf();
     if (!leaf) {
       return;
     }
     const prop = findProperty(this.schema, key);
-    const first = prop ? effectiveOperations(prop)[0] : undefined;
-    // value fields keep their content across switches (§6.1); the operator is
-    // re-defaulted because it belongs to the previous property.
-    this.root.update((r) =>
-      patchLeaf(r, leaf.id, {
-        propertyKey: key,
-        operator: first ?? leaf.operator,
-      }),
-    );
+    if (!prop) {
+      return;
+    }
+    const fresh = emptyLeafForProperty(prop, leaf.id);
+    this.root.update((r) => patchLeaf(r, leaf.id, fresh));
   }
 
   setOperator(operator: string): void {
@@ -413,13 +489,21 @@ export class SharedFilterDialogComponent {
     }
   }
 
-  // -- close contract: Submit → { root }; Cancel → undefined ------------------
+  // -- close contract: Submit → { root: FilterRoot }; Cancel → undefined ------
 
+  /**
+   * Emit the edited tree as an actslib `FilterRoot` (validation gated the
+   * button). `Simplify` reduces the 1-member wrapper to a bare condition so
+   * a single-condition filter (case 1) leaves the dialog in its minimal
+   * form; a group tree (case 2) is returned unchanged. The empty filter
+   * (case 0) is not submittable — clearing is the pages' Clear Filter
+   * button.
+   */
   submit(): void {
     if (!this.canSubmit()) {
       return;
     }
-    const result: FilterDialogResult = { root: emitTree(this.root(), this.schema) };
+    const result: FilterDialogResult = { root: FilterUtility.Simplify(emitTree(this.root(), this.schema)) };
     this.modal.close(result);
   }
 
@@ -448,13 +532,10 @@ export function openFilterDialog(
   });
 }
 
-/** Reusable filter menu label: the current definition summarized for display. */
-export function filterMenuLabel(
-  def: IFilterDefinition | undefined,
-  schema: FilterableProperty[],
-  maxLength = 40,
-): string {
-  if (!def || def.conditions.length === 0) {
+/** Reusable filter menu label: the current filter root summarized for
+ *  display (empty string when there is no active filter). */
+export function filterMenuLabel(def: FilterRoot | undefined, schema: FilterableProperty[], maxLength = 40): string {
+  if (!hasActiveFilterDefinition(def)) {
     return '';
   }
   return summarizeFilterDefinition(def, schema, translate, maxLength);

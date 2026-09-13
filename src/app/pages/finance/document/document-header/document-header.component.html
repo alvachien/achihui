@@ -68,6 +68,11 @@
             {{ 'Common.FieldIsMandatory' | transloco }}
           </ng-container>
         }
+        @if (control.hasError('invalidCurrency')) {
+          <ng-container>
+            {{ 'Finance.InvalidCurrency' | transloco }}
+          </ng-container>
+        }
       </ng-template>
     </nz-form-control>
   </nz-form-item>
@@ -121,6 +126,11 @@
           @if (control.hasError('required')) {
             <ng-container>
               {{ 'Common.FieldIsMandatory' | transloco }}
+            </ng-container>
+          }
+          @if (control.hasError('invalidCurrency')) {
+            <ng-container>
+              {{ 'Finance.InvalidCurrency' | transloco }}
             </ng-container>
           }
           @if (control.hasError('currencyMustDiff')) {

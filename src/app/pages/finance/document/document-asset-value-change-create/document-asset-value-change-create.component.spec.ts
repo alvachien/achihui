@@ -549,7 +549,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('step 2: shall popup dialog if verification on generated document failed', async () => {
+    it('step 2: shall popup dialog if verification on generated document failed', async () => {
       // Prepare the data
       const docitemview: DocumentItemView[] = [];
       docitemview.push({
@@ -638,7 +638,7 @@ describe('DocumentAssetValueChangeCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeFalsy();
-      expect(component.docIdCreated).toBeNull();
+      expect(component.docIdCreated).toBeUndefined();
       expect(component.currentStep()).toBe(1);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));

@@ -596,7 +596,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 
-    it.skip('setp 2: popup dialog if verification failed in generated object', async () => {
+    it('setp 2: popup dialog if verification failed in generated object', async () => {
       fixture.detectChanges();
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
@@ -690,7 +690,7 @@ describe('DocumentDownpaymentCreateComponent', () => {
       fixture.detectChanges();
 
       expect(component.isDocPosting).toBeFalsy();
-      expect(component.docIdCreated).toBeNull();
+      expect(component.docIdCreated).toBeUndefined();
       expect(component.currentStep()).toBe(2);
       await new Promise<void>((r) => setTimeout(r, 0));
       await new Promise<void>((r) => setTimeout(r, 0));

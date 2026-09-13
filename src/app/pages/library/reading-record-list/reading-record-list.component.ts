@@ -8,7 +8,7 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,18 +23,41 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 import { FormsModule } from '@angular/forms';
-import { FilterOperation, IFilterDefinition } from 'actslib';
+import { FilterOperation, FilterRoot } from 'actslib';
 
-import { BaseListModel, Book, BookReadingRecord, ConsoleLogTypeEnum, ModelUtility } from '@model/index';
+import {
+  BaseListModel,
+  Book,
+  BookReadingRecord,
+  BookReadingStatus,
+  ConsoleLogTypeEnum,
+  ModelUtility,
+} from '@model/index';
 import { HomeDefOdataService, LibraryStorageService } from '@services/index';
-import { FilterableProperty, filterMenuLabel, openFilterDialog, toODataFilter } from '../../../shared/filter-dialog';
+import {
+  FilterableProperty,
+  filterMenuLabel,
+  hasActiveFilterDefinition,
+  openFilterDialog,
+  toODataFilter,
+} from '../../../shared/filter-dialog';
 import { ReadingRecordCreateDlgComponent } from '../reading-record-create-dlg';
+import { ReadingRecordFinalizeDlgComponent, ReadingRecordFinalizeMode } from '../reading-record-finalize-dlg';
 
 // Filterable scalar fields, keyed by the OData entity field names.
 // HomeID is excluded (implicit scope, enforced by the service + server-side
 // membership join); the Book key stays numeric - titles are matched through the
 // free-text search (resolved against the book catalog), not the filter dialog.
+// Table sort keys -> OData field names (only the sortable columns are listed;
+// anything else disables server-side ordering for that emission).
+const SORT_FIELD_MAP: Record<string, string> = {
+  id: 'Id',
+  fromdate: 'FromDate',
+  todate: 'ToDate',
+};
+
 const RECORD_FILTER_PROPERTIES: FilterableProperty[] = [
   {
     key: 'Id',
@@ -69,12 +92,14 @@ const RECORD_FILTER_PROPERTIES: FilterableProperty[] = [
     NzBreadCrumbModule,
     NzTableModule,
     TranslocoModule,
+    NzModalModule,
     NzDividerModule,
     NzButtonModule,
     NzInputModule,
     NzDropdownModule,
     NzMenuModule,
     NzIconModule,
+    NzTagModule,
     FormsModule,
   ],
 })
@@ -99,9 +124,11 @@ export class ReadingRecordListComponent implements OnInit {
   // newer one) must not overwrite the list, raise an error modal, or clear
   // the spinner.
   private fetchSeq = 0;
-  // Structured filter emitted by the shared filter dialog (undefined = none).
-  filterDef = signal<IFilterDefinition | undefined>(undefined);
-  hasFilter = computed(() => (this.filterDef()?.conditions?.length ?? 0) > 0);
+  // Structured filter emitted by the shared filter dialog (undefined = none;
+  // any actslib FilterRoot spelling — a single-condition filter travels as a
+  // bare condition).
+  filterDef = signal<FilterRoot | undefined>(undefined);
+  hasFilter = computed(() => hasActiveFilterDefinition(this.filterDef()));
   // Any narrowing in effect (free-text pre-filter OR structured filter):
   // drives the filter-bar highlight; resets automatically when both clear.
   filterActive = computed(() => this.searchText().trim().length > 0 || this.hasFilter());
@@ -121,7 +148,7 @@ export class ReadingRecordListComponent implements OnInit {
     sortField: string | null;
     sortOrder: string | null;
     search: string;
-    filter: IFilterDefinition | undefined;
+    filter: FilterRoot | undefined;
   } | null = null;
   // Current table sort, kept so search/filter refetches don't silently drop it.
   private sortField: string | null = null;
@@ -244,6 +271,23 @@ export class ReadingRecordListComponent implements OnInit {
       .map((bk) => bk.ID);
   }
 
+  // User ids of members whose DISPLAY name matches the search text: the Reader
+  // column shows the member's DisplayAs while the record stores the token's
+  // User id, so a display-name search would never match server-side without
+  // this resolution (same client-side dictionary pattern as matchedBookIds).
+  private matchedUserIds(text: string): string[] {
+    const t = text.trim().toLowerCase();
+    if (!t) {
+      return [];
+    }
+    return (this.homeService.MembersInChosedHome ?? [])
+      .filter(
+        (m: { User: string; DisplayAs: string }) =>
+          m.DisplayAs?.toLowerCase().includes(t) || m.User?.toLowerCase().includes(t),
+      )
+      .map((m: { User: string }) => m.User);
+  }
+
   loadDataFromServer(pageIndex: number, pageSize: number, sortField: string | null, sortOrder: string | null): void {
     // Dedupe against the last query actually issued (see lastQuery).
     const search = this.searchText();
@@ -265,7 +309,7 @@ export class ReadingRecordListComponent implements OnInit {
     // Map the table's sort key to the OData field name expected by the API.
     let orderby: { field: string; order: string } | undefined;
     if (sortField && sortOrder) {
-      const fieldName = sortField === 'id' ? 'Id' : '';
+      const fieldName = SORT_FIELD_MAP[sortField] ?? '';
       const fieldOrder = sortOrder === 'ascend' ? 'asc' : sortOrder === 'descend' ? 'desc' : '';
       if (fieldName && fieldOrder) {
         orderby = { field: fieldName, order: fieldOrder };
@@ -286,6 +330,7 @@ export class ReadingRecordListComponent implements OnInit {
         this.searchText(),
         filterFragment,
         this.matchedBookIds(this.searchText()),
+        this.matchedUserIds(this.searchText()),
       )
       .pipe(
         takeUntilDestroyed(this.destroyedRef),
@@ -353,7 +398,8 @@ export class ReadingRecordListComponent implements OnInit {
     );
     ref.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((result) => {
       if (result) {
-        // root may be an empty tree (= match-all) - the user cleared all conditions.
+        // Submit only — the dialog never emits case 0 (the empty tree is not
+        // submittable); Cancel/backdrop/Esc yield undefined and keep the old filter.
         this.filterDef.set(result.root);
         this.onSearch();
       }
@@ -385,6 +431,49 @@ export class ReadingRecordListComponent implements OnInit {
       this.lastQuery = null; // force a fresh fetch even if the query is unchanged
       this.loadDataFromServer(this.pageIndex(), this.pageSize(), this.sortField, this.sortOrder);
       this.loadTotalCountAll();
+    });
+  }
+
+  // nz-tag color per lifecycle state: Reading is in flight (blue), Completed
+  // is terminal-good (green), Aborted is terminal-neutral (gray).
+  statusColor(status: BookReadingStatus): string {
+    switch (status) {
+      case BookReadingStatus.Reading:
+        return 'processing';
+      case BookReadingStatus.Completed:
+        return 'success';
+      case BookReadingStatus.Aborted:
+      default:
+        return 'default';
+    }
+  }
+
+  // i18n key for the status label - the enum member names double as the
+  // translation keys (Library.ReadingStatus.Reading/Completed/Aborted).
+  statusLabelKey(status: BookReadingStatus): string {
+    return `Library.ReadingStatus.${status}`;
+  }
+
+  // Open the finalize dialog (Complete: end date mandatory; Abort: optional).
+  // Only offered on Reading rows - Completed/Aborted are terminal server-side.
+  onFinalize(data: BookReadingRecord, mode: ReadingRecordFinalizeMode): void {
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: translate(mode === 'complete' ? 'Library.CompleteReading' : 'Library.AbortReading'),
+      nzWidth: 600,
+      nzContent: ReadingRecordFinalizeDlgComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzData: {
+        mode,
+        recordId: data.ID,
+        homeId: data.HID,
+        bookName: this.getBookTitle(data.BookID),
+        fromDate: data.FromDate,
+      },
+    });
+    // The dialog itself performs the transition; refresh the list once it closes.
+    modal.afterClose.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe(() => {
+      this.lastQuery = null; // force a fresh fetch even if the query is unchanged
+      this.loadDataFromServer(this.pageIndex(), this.pageSize(), this.sortField, this.sortOrder);
     });
   }
 
