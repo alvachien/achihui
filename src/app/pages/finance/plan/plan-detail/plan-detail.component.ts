@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -72,6 +72,7 @@ import { UIAccountStatusFilterPipe } from '../../pipes';
     NzResultModule,
     TranslocoModule,
     UIAccountStatusFilterPipe,
+    RouterModule,
   ],
 })
 export class PlanDetailComponent implements OnInit {

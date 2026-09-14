@@ -761,7 +761,28 @@
     "SearchUnderConstruction": "抱歉，搜索页面仍在建设中。",
     "ISBN": "ISBN号",
     "PublishedYear": "出版年份",
-    "PageCount": "页数"
+    "PageCount": "页数",
+    "DuplicatedNameWarning": "本家庭下已存在名称或中文名相同的记录，请使用其他名称。"
+  },
+  "Welcome": {
+    "GoodMorning": "早上好",
+    "GoodAfternoon": "下午好",
+    "GoodEvening": "晚上好",
+    "HomeListDesc": "查看和管理你所在的家庭",
+    "OverviewDesc": "余额与近期动态，一目了然",
+    "AccountsDesc": "创建账户并跟踪它们的余额",
+    "DocumentsDesc": "记录支出、收入与转账",
+    "ReportsDesc": "任意时段，看清钱的去向",
+    "PlanDesc": "设定预算，跟踪计划执行情况",
+    "ConfigDesc": "币种、类别等基础参照数据",
+    "FinanceSearchDesc": "按金额、日期或关键字查找条目",
+    "PersonsDesc": "书架背后的人：作者与译者",
+    "OrganizationsDesc": "出版社、图书馆等机构",
+    "LocationsDesc": "管理实体书的存放位置",
+    "BooksDesc": "家庭图书馆的书目、版本与馆藏信息",
+    "BorrowRecordsDesc": "登记借出与借入，到期提醒",
+    "ReadingRecordsDesc": "记录正在阅读的书，从开始到读完",
+    "LibrarySearchDesc": "一次检索书目、人物与出版机构"
   },
   "Paginator": {
     "ItemsPerPage": "每页项目数:",

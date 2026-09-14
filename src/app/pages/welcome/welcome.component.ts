@@ -1,92 +1,52 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
-import { environment } from '@environments/environment';
+import { HomeDefOdataService } from '@services/index';
 
 @Component({
   selector: 'hih-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzGridModule, NzDividerModule, NzTypographyModule, NzCardModule, NzImageModule, TranslocoModule],
+  imports: [NzGridModule, NzDividerModule, NzTypographyModule, NzCardModule, NzIconModule, DatePipe, TranslocoModule],
 })
 export class WelcomeComponent {
-  gridFinanceStyle = {
-    width: '33%',
-    textAlign: 'center',
-  };
   private readonly router = inject(Router);
+  private readonly homeService = inject(HomeDefOdataService);
 
-  constructor() {}
+  /** Captured once at construction; the page is short-lived and the date rolling
+   *  over mid-session is not worth a timer. */
+  readonly today = new Date();
 
-  get accountImage(): string {
-    return `${environment.AppHost}/assets/img/Accounts.png`;
+  /** nz-card body padding for the launcher tiles (images are gone; the card keeps
+   *  its themed background/border from the lazily-swapped light/dark stylesheets). */
+  readonly tileBodyStyle = { padding: '16px 20px' };
+
+  // Greeting is a translation KEY (resolved by `| transloco` in the template), so it
+  // re-renders correctly when the user switches language mid-session.
+  get greetingKey(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+      return 'Welcome.GoodMorning';
+    }
+    if (hour < 18) {
+      return 'Welcome.GoodAfternoon';
+    }
+    return 'Welcome.GoodEvening';
   }
-  get documentImage(): string {
-    return `${environment.AppHost}/assets/img/Documents.png`;
+
+  get currentHomeName(): string {
+    return this.homeService.ChosedHome?.Name ?? '';
   }
-  get reportImage(): string {
-    return `${environment.AppHost}/assets/img/Reports.png`;
-  }
-  get overviewImage(): string {
-    return `${environment.AppHost}/assets/img/Overview.png`;
-  }
-  get planImage(): string {
-    return `${environment.AppHost}/assets/img/Plan.png`;
-  }
-  get configImage(): string {
-    return `${environment.AppHost}/assets/img/Config.png`;
-  }
-  get financeSearchImage(): string {
-    return `${environment.AppHost}/assets/img/Finance-search.png`;
-  }
-  get bookImage(): string {
-    return `${environment.AppHost}/assets/img/Book.png`;
-  }
-  get personImage(): string {
-    return `${environment.AppHost}/assets/img/Person.png`;
-  }
-  get locationImage(): string {
-    return `${environment.AppHost}/assets/img/Location.png`;
-  }
-  get organizationImage(): string {
-    return `${environment.AppHost}/assets/img/Organization.png`;
-  }
-  get borrowRecordsImage(): string {
-    return `${environment.AppHost}/assets/img/Borrow-records.png`;
-  }
-  get readingRecordsImage(): string {
-    // Shares the borrow-records art until a dedicated icon is drawn.
-    return `${environment.AppHost}/assets/img/Borrow-records.png`;
-  }
-  get bookSearchImage(): string {
-    return `${environment.AppHost}/assets/img/Book-search.png`;
-  }
-  get eventOverviewImage(): string {
-    return `${environment.AppHost}/assets/img/Event-overview.png`;
-  }
-  get eventListImage(): string {
-    return `${environment.AppHost}/assets/img/Event.png`;
-  }
-  get eventRecurListImage(): string {
-    return `${environment.AppHost}/assets/img/Event-recur.png`;
-  }
-  get eventSearchImage(): string {
-    return `${environment.AppHost}/assets/img/Event-search.png`;
-  }
-  get homeImage(): string {
-    return `${environment.AppHost}/assets/img/Home.png`;
-  }
+
   onNavigateToHomeList(): void {
-    this.router.navigate(['homedef']);
-  }
-  onNavigateToCurrentHome(): void {
     this.router.navigate(['homedef']);
   }
   onNavigateToOverview(): void {

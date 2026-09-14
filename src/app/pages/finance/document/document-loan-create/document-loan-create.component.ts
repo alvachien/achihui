@@ -19,7 +19,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -102,6 +102,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     AccountExtraLoanComponent,
     TranslocoModule,
     NgIf,
+    RouterModule,
   ],
 })
 export class DocumentLoanCreateComponent implements OnInit {

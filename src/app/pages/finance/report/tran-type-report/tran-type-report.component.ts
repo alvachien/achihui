@@ -2,8 +2,9 @@ import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy 
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { RouterModule } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { format, subMonths, startOfYear, startOfMonth, addYears, addMonths } from 'date-fns';
 
@@ -50,6 +51,9 @@ import { DecimalPipe } from '@angular/common';
     NzProgressModule,
     NzButtonModule,
     DecimalPipe,
+    NzModalModule,
+    NzDrawerModule,
+    RouterModule,
     TranslocoModule,
   ],
 })

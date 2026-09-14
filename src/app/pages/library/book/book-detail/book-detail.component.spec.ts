@@ -34,6 +34,7 @@ describe('BookDetailComponent', () => {
   let readBookSpy: SafeAny;
   let createBookSpy: SafeAny;
   let updateBookSpy: SafeAny;
+  let checkBookDuplicateSpy: SafeAny;
   let _fetchAllPersonsSpy: SafeAny;
   let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
@@ -46,10 +47,18 @@ describe('BookDetailComponent', () => {
     fakeData.buildCurrentUser();
     fakeData.buildChosedHome();
 
-    storageService = createSpyObj('LibraryStorageService', ['readBook', 'fetchAllPersons', 'createBook', 'updateBook']);
+    storageService = createSpyObj('LibraryStorageService', [
+      'readBook',
+      'fetchAllPersons',
+      'checkBookDuplicate',
+      'createBook',
+      'updateBook',
+    ]);
     readBookSpy = storageService.readBook.and.returnValue(of({}));
     createBookSpy = storageService.createBook.and.returnValue(of({}));
     updateBookSpy = storageService.updateBook.and.returnValue(of({}));
+    // Duplicate pre-check: default to "no duplicate" so unrelated saves pass.
+    checkBookDuplicateSpy = storageService.checkBookDuplicate.and.returnValue(of(false));
     _fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
     homeService = {
       ChosedHome: fakeData.chosedHome,
@@ -361,6 +370,101 @@ describe('BookDetailComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
+    });
+  });
+
+  describe('duplicate pre-check', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    beforeEach(() => {
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+      // Spies are built in the shared beforeAll and keep their call records across
+      // describes - clear so the assertions below only see this test's calls.
+      createBookSpy.mockClear();
+      updateBookSpy.mockClear();
+      checkBookDuplicateSpy.mockClear();
+    });
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('blocks create when the service reports a duplicate', async () => {
+      checkBookDuplicateSpy.and.returnValue(of(true));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(createBookSpy).not.toHaveBeenCalled();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+    });
+
+    it('submits create when no duplicate is reported', async () => {
+      checkBookDuplicateSpy.and.returnValue(of(false));
+      createBookSpy.and.returnValue(asyncData({ ID: 9 }));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+
+      expect(createBookSpy).toHaveBeenCalled();
+    });
+
+    it('still submits when the pre-check fetch fails (API guard is authoritative)', async () => {
+      checkBookDuplicateSpy.and.returnValue(asyncError('Service failed'));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test 1');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+
+      // asyncError rejects on a macrotask; the error handler must fall through to submit.
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(createBookSpy).toHaveBeenCalled();
+    });
+
+    it('edit mode passes the edited record id as the exclusion', async () => {
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('2', {})] as UrlSegment[]);
+      const nbook = new Book();
+      nbook.ID = 2;
+      nbook.NativeName = 'Test 1';
+      readBookSpy.and.returnValue(asyncData(nbook));
+      updateBookSpy.and.returnValue(asyncData(nbook));
+      checkBookDuplicateSpy.and.returnValue(of(false));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+
+      expect(updateBookSpy).toHaveBeenCalled();
+      expect(checkBookDuplicateSpy).toHaveBeenCalled();
+      expect(checkBookDuplicateSpy.mock.calls[0][2]).toBe(2);
     });
   });
 });

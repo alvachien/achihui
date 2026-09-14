@@ -17,7 +17,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { format, isWithinInterval, addDays } from 'date-fns';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -117,6 +117,7 @@ class DocumentCountByDateRange {
     NzCheckboxModule,
     TranslocoModule,
     NgFor,
+    RouterModule,
   ],
 })
 export class DocumentRecurredMassCreateComponent implements OnInit {

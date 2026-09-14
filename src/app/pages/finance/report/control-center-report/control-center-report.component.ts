@@ -1,10 +1,10 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
@@ -40,6 +40,9 @@ import { DecimalPipe } from '@angular/common';
     NzDividerModule,
     NzButtonModule,
     DecimalPipe,
+    NzModalModule,
+    NzDrawerModule,
+    RouterModule,
     TranslocoModule,
   ],
 })

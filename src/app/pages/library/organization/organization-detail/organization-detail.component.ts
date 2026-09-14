@@ -240,6 +240,42 @@ export class OrganizationDetailComponent implements OnInit {
     objtbo.Types = this.listTypes().slice();
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
 
+    // Duplicate pre-check against the (cached, home-scoped) organization list, using the
+    // same rule as the API guard: {NativeName | non-empty ChineseName} of the input
+    // matching any OTHER row's NativeName/ChineseName, compared trimmed and
+    // case-insensitively. In create mode routerID() is -1, so the self-exclusion is
+    // inert. This is a heuristic (TOCTOU) - the API guard is authoritative: on a
+    // pre-check FETCH failure we still submit and surface the server's 400 in the modal.
+    this.storageService
+      .fetchAllOrganizations()
+      .pipe(takeUntilDestroyed(this.destroyedRef))
+      .subscribe({
+        next: (orgs) => {
+          const norm = (s?: string | null): string => (s ?? '').trim().toLowerCase();
+          const nn = norm(objtbo.NativeName);
+          const cn = norm(objtbo.ChineseName);
+          const dup = orgs.some(
+            (p) =>
+              p.ID !== this.routerID() &&
+              ((!!nn && (norm(p.NativeName) === nn || norm(p.ChineseName) === nn)) ||
+                (!!cn && (norm(p.NativeName) === cn || norm(p.ChineseName) === cn))),
+          );
+          if (dup) {
+            this.isSubmitting.set(false);
+            this.modalService.warning({
+              nzTitle: translate('Common.Warning'),
+              nzContent: translate('Library.DuplicatedNameWarning'),
+              nzClosable: true,
+            });
+            return;
+          }
+          this.submitOrganization(objtbo);
+        },
+        error: () => this.submitOrganization(objtbo),
+      });
+  }
+
+  private submitOrganization(objtbo: Organization): void {
     if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createOrganization(objtbo)

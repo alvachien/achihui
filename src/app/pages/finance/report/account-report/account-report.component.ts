@@ -1,12 +1,12 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 
 import {
   FinanceReportByAccount,
@@ -28,7 +28,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -39,6 +39,7 @@ import { DecimalPipe } from '@angular/common';
   templateUrl: './account-report.component.html',
   styleUrls: ['./account-report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideEchartsCore({ echarts })],
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -50,6 +51,9 @@ import { DecimalPipe } from '@angular/common';
     NzTableModule,
     NzButtonModule,
     DecimalPipe,
+    NzModalModule,
+    NzDrawerModule,
+    RouterModule,
     TranslocoModule,
   ],
 })
@@ -60,10 +64,10 @@ export class AccountReportComponent implements OnInit {
   arAccountCategories = signal<AccountCategory[]>([]);
   arReportByAccount = signal<FinanceReportByAccount[]>([]);
   baseCurrency = '';
-  chartAssetOption: EChartsOption | null = null;
-  chartLiabilitiesOption: EChartsOption | null = null;
-  chartAssetAccountOption: EChartsOption | null = null;
-  chartLiabilitiesAccountOption: EChartsOption | null = null;
+  chartAssetOption: echarts.EChartsOption | null = null;
+  chartLiabilitiesOption: echarts.EChartsOption | null = null;
+  chartAssetAccountOption: echarts.EChartsOption | null = null;
+  chartLiabilitiesAccountOption: echarts.EChartsOption | null = null;
   listCategoryFilter: ITableFilterValues[] = [];
   // Drilldown to table level
   selectedCategoryFilter: number[] = [];

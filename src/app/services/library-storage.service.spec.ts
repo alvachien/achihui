@@ -1503,6 +1503,76 @@ describe('LibraryStorageService', () => {
     });
   });
 
+  describe('checkBookDuplicate', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('emits false without any request for a blank native name', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate('   ').subscribe((v) => (emitted = v));
+      expect(emitted).toBe(false);
+      // No request asserted by afterEach verify() - nothing must be on the wire.
+    });
+
+    it('composes exact-match clauses for both names and reports count > 0 as duplicate', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate('Cross', 'C&J').subscribe((v) => (emitted = v));
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+      // OR-list self-grouped: fetchBooks adds its own (...) around the fragment, and
+      // the whole thing is ANDed after the home scope - precedence must not leak.
+      // tolower() both sides mirrors the API guard's case-folded comparison.
+      expect(req.request.params.get('$filter')).toEqual(
+        `HomeID eq ${fakeData.chosedHome.ID} and ((tolower(NativeName) eq 'cross' or tolower(ChineseName) eq 'cross' ` +
+          `or tolower(NativeName) eq 'c&j' or tolower(ChineseName) eq 'c&j'))`,
+      );
+      expect(req.request.params.get('$top')).toEqual('1');
+      expect(req.request.params.get('search')).toBeNull();
+
+      req.flush({ '@odata.count': 1, value: [] });
+      expect(emitted).toBe(true);
+    });
+
+    it('escapes single quotes in names (OData doubles them)', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate("O'Brien").subscribe((v) => (emitted = v));
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+      expect(req.request.params.get('$filter')).toEqual(
+        `HomeID eq ${fakeData.chosedHome.ID} and ((tolower(NativeName) eq 'o''brien' or tolower(ChineseName) eq 'o''brien'))`,
+      );
+
+      req.flush({ '@odata.count': 0, value: [] });
+      expect(emitted).toBe(false);
+    });
+
+    it('excludes the edited record via Id ne inside the composed filter', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate('Cross', undefined, 7).subscribe((v) => (emitted = v));
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+      // `and Id ne 7` binds INSIDE fetchBooks' wrapper alongside the OR group, never
+      // after an ungrouped OR (which would let the excluded row slip through).
+      expect(req.request.params.get('$filter')).toEqual(
+        `HomeID eq ${fakeData.chosedHome.ID} and ((tolower(NativeName) eq 'cross' or tolower(ChineseName) eq 'cross') and Id ne 7)`,
+      );
+
+      req.flush({ '@odata.count': 0, value: [] });
+      expect(emitted).toBe(false);
+    });
+  });
+
   describe('readBoook', () => {
     let objdata: Book;
     beforeEach(() => {

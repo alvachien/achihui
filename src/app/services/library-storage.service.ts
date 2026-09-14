@@ -1116,6 +1116,38 @@ export class LibraryStorageService {
         }),
       );
   }
+  /// Pre-flight duplicate check mirroring the BooksController POST/PUT guard: trimmed,
+  /// case-insensitive match of {NativeName | non-empty ChineseName} against existing
+  /// records' NativeName/ChineseName within the chosen home (fetchBooks scopes HomeID
+  /// itself). tolower() folds ASCII case BOTH sides so 'Cross' matches 'cross' - like
+  /// the server guard (a stored name carrying stray surrounding spaces is caught by the
+  /// authoritative API 400 instead). excludeId (update mode) is ANDed into the SAME
+  /// filter group before $top=1 is applied, so the excluded record can never consume
+  /// the single returned slot and @odata.count remains the authoritative verdict.
+  /// NOTE: this is a heuristic (TOCTOU) - the API duplicate guard is authoritative.
+  public checkBookDuplicate(nativeName: string, chineseName?: string, excludeId?: number): Observable<boolean> {
+    const nn = nativeName?.trim();
+    if (!nn) {
+      return of(false); // blank native name: nothing to match, ModelState remains the gate
+    }
+    // OData string literals escape ' by doubling it (same convention as fetchBooks' search).
+    const esc = (s: string): string => s.replace(/'/g, "''");
+    const lower = (s: string): string => s.trim().toLowerCase();
+    const orClauses = [`tolower(NativeName) eq '${esc(lower(nn))}'`, `tolower(ChineseName) eq '${esc(lower(nn))}'`];
+    const cn = chineseName?.trim();
+    if (cn) {
+      orClauses.push(`tolower(NativeName) eq '${esc(lower(cn))}'`, `tolower(ChineseName) eq '${esc(lower(cn))}'`);
+    }
+    // Self-group: fetchBooks wraps the fragment as (...) and ANDs it after the home
+    // scope - without the outer group, `or ChineseName eq 'X' and Id ne N` would bind
+    // the AND tighter and silently return the excluded record itself.
+    let structured = `(${orClauses.join(' or ')})`;
+    if (excludeId && excludeId > 0) {
+      structured += ` and Id ne ${excludeId}`;
+    }
+    return this.fetchBooks(1, 0, undefined, undefined, structured).pipe(map((r) => (r.totalCount ?? 0) > 0));
+  }
+
   public readBook(bid: number): Observable<Book> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers

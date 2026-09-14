@@ -1,10 +1,34 @@
+<!-- Greeting band: the one personal moment on the launcher. Greeting is by local
+     hour, home chip shows the currently chosen home, date is static (yyyy-MM-dd,
+     identical idiom in en/zh). -->
+<section class="welcome-hero">
+  <h2 class="hero-greeting">{{ greetingKey | transloco }}</h2>
+  <div class="hero-meta">
+    @if (currentHomeName) {
+      <span class="hero-chip">
+        <span nz-icon nzType="home"></span>
+        {{ currentHomeName }}
+      </span>
+    }
+    <span class="hero-chip hero-chip-plain">
+      <span nz-icon nzType="calendar"></span>
+      {{ today | date: 'yyyy-MM-dd' }}
+    </span>
+  </div>
+</section>
+
+<nz-divider></nz-divider>
 <h3 nz-typography class="center-text">{{ 'Nav.HomeList' | transloco }}</h3>
 <div nz-row class="welcome-content-row" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToHomeList()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Nav.HomeList' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="homeImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="home"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Nav.HomeList' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.HomeListDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
@@ -17,63 +41,91 @@
 <div nz-row class="welcome-content-row" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToOverview()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Common.Overview' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="overviewImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="dashboard"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Common.Overview' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.OverviewDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToAccount()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Finance.Accounts' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="accountImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="account-book"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Finance.Accounts' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.AccountsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToDocument()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Finance.Documents' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="documentImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="file"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Finance.Documents' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.DocumentsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToReport()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Finance.Reports' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="reportImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="bar-chart"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Finance.Reports' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.ReportsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToPlan()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Finance.Plan' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="planImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="schedule"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Finance.Plan' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.PlanDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToConfig()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Finance.ConfigObjects' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="configImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="tool"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Finance.ConfigObjects' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.ConfigDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToFinanceSearch()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Common.Search' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="financeSearchImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="search"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Common.Search' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.FinanceSearchDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
@@ -87,67 +139,103 @@
 <div nz-row class="welcome-content-row" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibraryPerson()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Library.Person' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="personImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="idcard"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Library.Person' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.PersonsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibraryOrganization()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Library.Organizations' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="organizationImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="apartment"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Library.Organizations' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.OrganizationsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibraryLocation()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Library.Locations' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="locationImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="environment"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Library.Locations' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.LocationsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibraryBooks()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Library.Books' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="bookImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="book"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Library.Books' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.BooksDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
+  <!-- Borrow Records card temporarily hidden on Welcome (2026-09-14): it shared the
+       Borrow-records.png art with the Reading Records card and read as a duplicate.
+       Route and handler are untouched; to re-enable, uncomment this tile (the icon
+       clock-circle is already registered).
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibraryBorrowRecord()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Library.BorrowRecords' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="borrowRecordsImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="clock-circle"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Library.BorrowRecords' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.BorrowRecordsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
+  -->
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibraryReadingRecord()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Library.ReadingRecords' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="readingRecordsImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="read"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Library.ReadingRecords' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.ReadingRecordsDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
+  <!-- Search card temporarily hidden on Welcome (2026-09-14); route/handler preserved.
+       To re-enable, uncomment this block.
   <div nz-col class="inner-box" nzXs="24" nzSm="12" nzMd="12" nzLg="8" nzXl="6" nzXxl="6">
     <a (click)="onNavigateToLibrarySearch()">
-      <nz-card nzHoverable [nzBordered]="true" [nzTitle]="'Common.Search' | transloco">
-        <div class="components-overview-img">
-          <img nz-image width="200px" height="200px" [nzSrc]="bookSearchImage" nzDisablePreview="true" alt="" />
+      <nz-card class="tile-card" nzHoverable [nzBordered]="true" [nzBodyStyle]="tileBodyStyle">
+        <div class="tile">
+          <span class="tile-badge"><span nz-icon nzType="search"></span></span>
+          <div class="tile-text">
+            <div class="tile-title">{{ 'Common.Search' | transloco }}</div>
+            <div class="tile-desc">{{ 'Welcome.LibrarySearchDesc' | transloco }}</div>
+          </div>
         </div>
       </nz-card>
     </a>
   </div>
+  -->
 </div>
 
 <!-- Event Trace temporarily shut down (2026-08-02) - dashboard section removed; DB content preserved. -->

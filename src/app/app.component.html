@@ -72,9 +72,12 @@
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'book']">{{ 'Library.Books' | transloco }}</a>
           </li>
+          <!-- Borrow Records menu item temporarily hidden (2026-09-14); the library/borrowrecord
+               route and page are preserved - uncomment this item to re-enable.
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'borrowrecord']">{{ 'Library.BorrowRecords' | transloco }}</a>
           </li>
+          -->
           <li nz-menu-item nzMatchRouter>
             <a [routerLink]="['/', 'library', 'readingrecord']">{{ 'Library.ReadingRecords' | transloco }}</a>
           </li>
