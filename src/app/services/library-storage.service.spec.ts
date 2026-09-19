@@ -1878,4 +1878,68 @@ describe('LibraryStorageService', () => {
       req.flush({ '@odata.count': 0, value: [] });
     });
   });
+
+  // Library overview aggregate: ONE bound-action POST replaces the old paged
+  // $expand walks (the server caps $top at 100 and the ranking math moved to
+  // the API - covered by the server-side action tests).
+  describe('fetchLibraryOverviewKeyFigure', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('should POST the home-scoped action and map the one-element value list', () => {
+      service.fetchLibraryOverviewKeyFigure().subscribe((stats) => {
+        expect(stats.totalBooks).toEqual(7);
+        expect(stats.addedThisMonth).toEqual(2);
+        expect(stats.addedLastMonth).toEqual(1);
+        expect(stats.completedThisMonth).toEqual(3);
+        expect(stats.completedLastMonth).toEqual(0);
+        expect(stats.topCategories.length).toEqual(1);
+        expect(stats.topCategories[0]).toEqual({ key: '5', name: 'Cat', count: 4 });
+        expect(stats.topAuthors, 'absent wire arrays fold to empty lists').toEqual([]);
+        expect(stats.topPresses).toEqual([]);
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.bookAPIURL + '/GetLibraryOverviewKeyFigure';
+      });
+      // The HttpClient testing controller exposes the object body parsed.
+      const body: any = req.request.body;
+      expect(Object.keys(body)).toEqual(['HomeID']);
+
+      req.flush({
+        value: [
+          {
+            HomeID: 2,
+            TotalBooks: 7,
+            AddedThisMonth: 2,
+            AddedLastMonth: 1,
+            CompletedThisMonth: 3,
+            CompletedLastMonth: 0,
+            TopCategories: [{ Key: 5, Name: 'Cat', Count: 4 }],
+          },
+        ],
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'Error 404';
+      service.fetchLibraryOverviewKeyFigure().subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.bookAPIURL + '/GetLibraryOverviewKeyFigure';
+      });
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
+    });
+  });
 });

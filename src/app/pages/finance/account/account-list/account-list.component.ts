@@ -13,6 +13,11 @@ import { finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
+import { FilterUtility } from 'actslib';
+import { FormsModule } from '@angular/forms';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { hasActiveFilterDefinition } from '../../../../shared/filter-dialog';
+import { FilterBar, NAME_COMMENT_ID_FILTER_PROPERTIES } from '../../../../shared/filter-bar';
 
 import { FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import {
@@ -60,6 +65,8 @@ import { NgClass } from '@angular/common';
     TranslocoModule,
     NzModalModule,
     RouterModule,
+    FormsModule,
+    NzInputModule,
   ],
 })
 export class AccountListComponent implements OnInit {
@@ -70,6 +77,70 @@ export class AccountListComponent implements OnInit {
   listCategoryFilter = signal<ITableFilterValues[]>([]);
   listStatusFilter: ITableFilterValues[] = [];
   listOfColumns: UITableColumnItem<Account>[] = [];
+
+  // Filter row, per docs/filter-dialog-generic-design.md §7 (order-list twin):
+  // the shared FilterBar (src/app/shared/filter-bar) owns the free-text +
+  // structured-filter state machine; the members below ALIAS it so the template
+  // and the specs keep binding the same names. displayList and the caption
+  // counts stay component-owned.
+  private readonly bar = new FilterBar({
+    properties: NAME_COMMENT_ID_FILTER_PROPERTIES,
+    onReset: () => this.pageIndex.set(1),
+    // The column-header dropdowns are an extra narrowing the bar must see (the
+    // dialog's Clear filter leaves them alone; they carry their own controls).
+    extraActive: () => this.headerFilterActive(),
+  });
+  readonly searchText = this.bar.searchText;
+  readonly filterDef = this.bar.filterDef;
+  readonly pageIndex = signal(1);
+  readonly hasFilter = this.bar.hasFilter;
+  readonly filterMenuText = this.bar.filterMenuText;
+  readonly filterActive = this.bar.filterActive;
+  readonly onSearchInput = this.bar.onSearchInput.bind(this.bar);
+  readonly onEditFilter = this.bar.onEditFilter.bind(this.bar);
+  readonly onClearFilter = this.bar.onClearFilter.bind(this.bar);
+  // Column-header dropdown selections (Category/Status), keyed by the column's
+  // stable name key. nz-table's internal row filtering is DISABLED (no
+  // [nzFilterFn] in the template): the values fold into displayList here so
+  // the `total | filtered` caption and the highlight always agree with the
+  // rendered rows (nz-table filtered rows were invisible to component state).
+  private readonly headerFilters = signal<Record<string, unknown[]>>({});
+  readonly headerFilterActive = computed(() => Object.values(this.headerFilters()).some((values) => values.length > 0));
+  // Table caption counts: `total | filtered`.
+  readonly totalCountAll = computed(() => this.dataSet().length);
+  readonly filteredCount = computed(() => this.displayList().length);
+
+  onColumnFilterChange(colKey: string, values: unknown[] | null): void {
+    this.headerFilters.update((map) => ({ ...map, [colKey]: values ?? [] }));
+    this.pageIndex.set(1);
+  }
+
+  // The page fetches the whole list once, so search/filter are evaluated
+  // client-side over the loaded rows.
+  readonly displayList = computed<readonly Account[]>(() => {
+    const keyword = this.searchText().trim().toLowerCase();
+    let list: readonly Account[] = this.dataSet();
+    if (keyword) {
+      list = list.filter(
+        (acnt) =>
+          (acnt.Name ?? '').toLowerCase().includes(keyword) || (acnt.Comment ?? '').toLowerCase().includes(keyword),
+      );
+    }
+    const def = this.filterDef();
+    if (hasActiveFilterDefinition(def)) {
+      list = FilterUtility.FilterList(list as Account[], def);
+    }
+    const hf = this.headerFilters();
+    const catSel = (hf['Common.Category'] ?? []) as number[];
+    if (catSel.length > 0) {
+      list = list.filter((acnt) => catSel.some((ctgyid) => acnt.CategoryId === ctgyid));
+    }
+    const stsSel = (hf['Common.Status'] ?? []) as AccountStatusEnum[];
+    if (stsSel.length > 0) {
+      list = list.filter((acnt) => stsSel.some((sts) => acnt.Status === sts));
+    }
+    return list;
+  });
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly uiStatusService = inject(UIStatusService);
@@ -124,10 +195,12 @@ export class AccountListComponent implements OnInit {
         sortOrder: null,
         sortFn: null,
         sortDirections: [],
+        // Options arrive with the category fetch (see ngOnInit) - nz-table only
+        // renders what this array holds at bind time.
         listOfFilter: [],
         filterMultiple: true,
-        filterFn: (selectedCategories: number[], item: Account) =>
-          selectedCategories ? selectedCategories.some((ctgyid) => item.CategoryId === ctgyid) : false,
+        // Filtering runs in displayList() (headerFilters), not nz-table.
+        filterFn: null,
       },
       {
         name: 'Common.Status',
@@ -136,8 +209,8 @@ export class AccountListComponent implements OnInit {
         sortDirections: [],
         listOfFilter: this.listStatusFilter,
         filterMultiple: true,
-        filterFn: (selectedStatus: AccountStatusEnum[], item: Account) =>
-          selectedStatus ? selectedStatus.some((sts) => item.Status === sts) : false,
+        // Filtering runs in displayList() (headerFilters), not nz-table.
+        filterFn: null,
       },
       {
         name: 'Common.Comment',
@@ -195,6 +268,14 @@ export class AccountListComponent implements OnInit {
             });
           });
           this.listCategoryFilter.set(filters);
+          // Feed the header dropdown too: the column object is the one the
+          // template @for loop already holds (same identity), so the [nzFilters]
+          // binding picks this up on the next CD pass - which the isLoadingResults
+          // write in finalize() guarantees.
+          const catCol = this.listOfColumns.find((col) => col.name === 'Common.Category');
+          if (catCol) {
+            catCol.listOfFilter = filters;
+          }
         },
         error: (err) => {
           ModelUtility.writeConsoleLog(

@@ -8,6 +8,7 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
@@ -129,9 +130,24 @@ export class ReadingRecordListComponent implements OnInit {
   // bare condition).
   filterDef = signal<FilterRoot | undefined>(undefined);
   hasFilter = computed(() => hasActiveFilterDefinition(this.filterDef()));
-  // Any narrowing in effect (free-text pre-filter OR structured filter):
-  // drives the filter-bar highlight; resets automatically when both clear.
-  filterActive = computed(() => this.searchText().trim().length > 0 || this.hasFilter());
+  // Per-book reading-log linkage: /library/readingrecord?bookId=N pins the whole
+  // page (list AND the `N` count) to one book - the reading log of a book,
+  // linked from the book-list row menu and the book-detail header. The closeable
+  // chip in the filter bar clears it again.
+  readonly scopedBookId = signal<number | null>(null);
+  readonly scopedBookName = computed(() => {
+    const id = this.scopedBookId();
+    if (id === null) {
+      return '';
+    }
+    // Falls back to the raw id while the catalog is (or stays) unloaded.
+    return this.getBookTitle(id) || `#${id}`;
+  });
+  // Any narrowing in effect (free-text pre-filter OR structured filter OR the
+  // per-book scope): drives the filter-bar highlight; resets when all clear.
+  filterActive = computed(
+    () => this.searchText().trim().length > 0 || this.hasFilter() || this.scopedBookId() !== null,
+  );
   // Bumped on every runtime language switch so computeds below that call the
   // imperative translate() (no implicit activeLang dependency) recompute.
   private readonly langTick = signal(0);
@@ -149,6 +165,7 @@ export class ReadingRecordListComponent implements OnInit {
     sortOrder: string | null;
     search: string;
     filter: FilterRoot | undefined;
+    bookId: number | null;
   } | null = null;
   // Current table sort, kept so search/filter refetches don't silently drop it.
   private sortField: string | null = null;
@@ -165,6 +182,9 @@ export class ReadingRecordListComponent implements OnInit {
   private readonly translocoService = inject(TranslocoService);
 
   private readonly homeService = inject(HomeDefOdataService);
+
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -200,6 +220,37 @@ export class ReadingRecordListComponent implements OnInit {
     );
 
     this.loadBookCatalog();
+
+    // Deep links: ?create=1 opens the create dialog once, then the flag is
+    // stripped so a repeat click on the overview link re-triggers; ?bookId=N
+    // scopes the page to one book's reading log (arriving from the book-list
+    // row menu or the book-detail header link). The real ActivatedRoute replays
+    // the current params synchronously on subscribe, so an initial scope is in
+    // place BEFORE the first fetch below; LATER scope changes re-run both loads
+    // from page 1. (The query-param-stripping navigate for `create` re-emits -
+    // bookId unchanged, so the guard makes that a no-op here.)
+    let booted = false;
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe((params) => {
+      if (params.get('create') === '1') {
+        this.router.navigate([], { relativeTo: this.route, queryParams: { create: null } });
+        this.onCreate();
+      }
+      const raw = Number(params.get('bookId'));
+      const next = Number.isInteger(raw) && raw > 0 ? raw : null;
+      if (next === this.scopedBookId()) {
+        return;
+      }
+      this.scopedBookId.set(next);
+      if (booted) {
+        this.pageIndex.set(1);
+        this.lastQuery = null;
+        this.loadDataFromServer(1, this.pageSize(), this.sortField, this.sortOrder);
+        this.loadTotalCountAll();
+      }
+      booted = true;
+    });
+    booted = true;
+
     this.loadDataFromServer(this.pageIndex(), this.pageSize(), this.sortField, this.sortOrder);
     this.loadTotalCountAll();
     // nz-table's synthetic initial nzQueryParams emission arrives right after init;
@@ -232,10 +283,12 @@ export class ReadingRecordListComponent implements OnInit {
   }
 
   // The `N` of the `N | M` caption: unfiltered row count. Reuses the list
-  // endpoint with a 1-row page; only its @odata.count is consumed.
+  // endpoint with a 1-row page; only its @odata.count is consumed. Under a
+  // per-book scope, N is that book's record count (caption stays consistent).
   private loadTotalCountAll(): void {
+    const scopeId = this.scopedBookId();
     this.storageService
-      .fetchBookReadingRecords(1, 0)
+      .fetchBookReadingRecords(1, 0, undefined, undefined, scopeId === null ? undefined : `BookId eq ${scopeId}`)
       .pipe(takeUntilDestroyed(this.destroyedRef))
       .subscribe({
         next: (x: BaseListModel<BookReadingRecord>) => this.totalCountAll.set(x.totalCount),
@@ -292,6 +345,7 @@ export class ReadingRecordListComponent implements OnInit {
     // Dedupe against the last query actually issued (see lastQuery).
     const search = this.searchText();
     const filter = this.filterDef();
+    const scopeId = this.scopedBookId();
     const last = this.lastQuery;
     if (
       last &&
@@ -300,11 +354,12 @@ export class ReadingRecordListComponent implements OnInit {
       last.sortField === sortField &&
       last.sortOrder === sortOrder &&
       last.search === search &&
-      last.filter === filter
+      last.filter === filter &&
+      last.bookId === scopeId
     ) {
       return;
     }
-    this.lastQuery = { pageIndex, pageSize, sortField, sortOrder, search, filter };
+    this.lastQuery = { pageIndex, pageSize, sortField, sortOrder, search, filter, bookId: scopeId };
 
     // Map the table's sort key to the OData field name expected by the API.
     let orderby: { field: string; order: string } | undefined;
@@ -317,8 +372,16 @@ export class ReadingRecordListComponent implements OnInit {
     }
 
     // Derive the $filter fragment per request so paging/sorting/search all
-    // compose with the currently-active structured filter.
+    // compose with the currently-active structured filter. The per-book scope
+    // ANDs ahead of the dialog filter (the service ANDs HomeID + this fragment +
+    // the search clause, so search can only widen WITHIN the scoped book).
     const filterFragment = toODataFilter(this.filterDef(), RECORD_FILTER_PROPERTIES);
+    const scopeClause = scopeId === null ? '' : `BookId eq ${scopeId}`;
+    const effectiveFilter = scopeClause
+      ? filterFragment
+        ? `${scopeClause} and (${filterFragment})`
+        : scopeClause
+      : filterFragment;
 
     const seq = ++this.fetchSeq;
     this.isLoadingResults.set(true);
@@ -328,7 +391,7 @@ export class ReadingRecordListComponent implements OnInit {
         pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0,
         orderby,
         this.searchText(),
-        filterFragment,
+        effectiveFilter,
         this.matchedBookIds(this.searchText()),
         this.matchedUserIds(this.searchText()),
       )
@@ -412,6 +475,12 @@ export class ReadingRecordListComponent implements OnInit {
     }
     this.filterDef.set(undefined);
     this.onSearch();
+  }
+
+  // Drop the per-book scope (chip × ): navigating with the param removed makes
+  // the queryParamMap subscription re-run both loads unscoped.
+  public clearBookScope(): void {
+    this.router.navigate([], { relativeTo: this.route, queryParams: { bookId: null } });
   }
 
   onCreate(): void {

@@ -4020,8 +4020,11 @@ export class FinanceOverviewKeyfigure {
   public LastMonthOutgo = 0;
   public IncomeYTD = 0;
   public OutgoYTD = 0;
-  public CurrentMonthIncomePrecentage = 0;
-  public CurrentMonthOutgoPrecentage = 0;
+  // Month-on-month change, in percent. Null when last month was zero - the API
+  // has no base to compute a ratio against, though the change itself is still
+  // readable from the two amounts.
+  public CurrentMonthIncomePercentage: number | null = null;
+  public CurrentMonthOutgoPercentage: number | null = null;
 
   public onSetData(val: SafeAny): void {
     if (val && val.HomeID) {
@@ -4048,11 +4051,15 @@ export class FinanceOverviewKeyfigure {
     if (val && val.OutgoYTD !== undefined && val.OutgoYTD !== null) {
       this.OutgoYTD = +val.OutgoYTD;
     }
-    if (val && val.CurrentMonthIncomePrecentage !== undefined && val.CurrentMonthIncomePrecentage !== null) {
-      this.CurrentMonthIncomePrecentage = val.CurrentMonthIncomePrecentage;
+    // Null is a real value here (no base to compare against), so it must clear
+    // the field rather than be skipped: this instance is reused across fetches.
+    if (val && val.CurrentMonthIncomePercentage !== undefined) {
+      this.CurrentMonthIncomePercentage =
+        val.CurrentMonthIncomePercentage === null ? null : +val.CurrentMonthIncomePercentage;
     }
-    if (val && val.CurrentMonthOutgoPrecentage !== undefined && val.CurrentMonthOutgoPrecentage !== null) {
-      this.CurrentMonthOutgoPrecentage = val.CurrentMonthOutgoPrecentage;
+    if (val && val.CurrentMonthOutgoPercentage !== undefined) {
+      this.CurrentMonthOutgoPercentage =
+        val.CurrentMonthOutgoPercentage === null ? null : +val.CurrentMonthOutgoPercentage;
     }
   }
 }

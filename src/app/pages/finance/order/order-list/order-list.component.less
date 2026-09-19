@@ -1,4 +1,5 @@
 // Shared ID-column styling - single source in src/styles/id-cell.less.
+@import 'filter-bar';
 @import 'id-cell';
 
 nz-table {
@@ -7,4 +8,10 @@ nz-table {
 
 .closed-order {
   text-decoration: line-through;
+}
+
+// Validity switch in the shared filter bar (order-list only, so local):
+// keep its intrinsic width — the free-text input shrinks instead.
+.filter-bar-switch {
+  flex: 0 0 auto;
 }

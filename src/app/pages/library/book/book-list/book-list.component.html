@@ -90,6 +90,9 @@
                   <li nz-menu-item (click)="onCreateReadingRecord(data.ID)">
                     {{ 'Library.CreateReadingRecord' | transloco }}
                   </li>
+                  <li nz-menu-item (click)="onViewReadingRecords(data.ID)">
+                    {{ 'Library.ViewReadingRecords' | transloco }}
+                  </li>
                   <li nz-menu-divider></li>
                   <li nz-menu-item nzDanger (click)="onDelete(data.ID)">{{ 'Common.Delete' | transloco }}</li>
                 </ul>

@@ -1,0 +1,12 @@
+// The shared filter-bar partial is imported WHOLE: emulated encapsulation
+// requires `.filter-bar-active` (the bold trigger) to be declared in THIS
+// component's styles to match its own elements, and importing the source keeps
+// it - plus the dark-theme companion - in sync instead of hand-copying a rule.
+// Side effect: every filter-bar selector is duplicated into this component's
+// stylesheet; harmless, because these elements never render the other classes.
+@import 'filter-bar';
+
+:host {
+  display: inline-flex;
+  align-items: center;
+}

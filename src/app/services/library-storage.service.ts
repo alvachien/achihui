@@ -21,6 +21,27 @@ import {
 import { AuthService } from './auth.service';
 import { HomeDefOdataService } from './home-def-odata.service';
 
+/** One row of a top-3 ranking on the Library overview (server-computed,
+ *  pre-sorted count desc / name asc, max three entries). */
+export interface LibraryRankingItem {
+  key: string;
+  name: string;
+  count: number;
+}
+
+/** Client contract of the Library overview aggregate (wire DTO:
+ *  LibraryOverviewKeyFigure on the server). */
+export interface LibraryOverviewStats {
+  totalBooks: number;
+  addedThisMonth: number;
+  addedLastMonth: number;
+  completedThisMonth: number;
+  completedLastMonth: number;
+  topCategories: LibraryRankingItem[];
+  topAuthors: LibraryRankingItem[];
+  topPresses: LibraryRankingItem[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -1146,6 +1167,69 @@ export class LibraryStorageService {
       structured += ` and Id ne ${excludeId}`;
     }
     return this.fetchBooks(1, 0, undefined, undefined, structured).pipe(map((r) => (r.totalCount ?? 0) > 0));
+  }
+
+  /// Server-side aggregate behind the Library overview landing page (bound
+  /// collection action on LibraryBooks; precedents: finance
+  /// GetFinanceOverviewKeyFigure and finalizeBookReadingRecord below). ONE
+  /// request replaces the old client-side walk of the whole book collection
+  /// (100 rows/page, each with $expand=Authors,Presses,Categories); totals,
+  /// month windows and the ranking math live in the API
+  /// (LibraryBooksController.GetLibraryOverviewKeyFigure), evaluated on the
+  /// SERVER clock - same machine as the users in this deployment.
+  public fetchLibraryOverviewKeyFigure(): Observable<LibraryOverviewStats> {
+    const homeID = this._homeService.ChosedHome?.ID ?? 0;
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers = headers
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json')
+      .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
+
+    // Bound collection actions are invoked by their BARE name (no namespace
+    // prefix) - the finalizeBookReadingRecord convention.
+    return this._http
+      .post(`${this.bookAPIURL}/GetLibraryOverviewKeyFigure`, { HomeID: homeID }, { headers: headers })
+      .pipe(
+        map((response: any) => {
+          ModelUtility.writeConsoleLog(
+            'AC_HIH_UI [Debug]: Entering LibraryStorageService, fetchLibraryOverviewKeyFigure, map.',
+            ConsoleLogTypeEnum.debug,
+          );
+
+          // The action returns a one-element list (finance keyfigure precedent)
+          // -> OData wraps it in a `value` array; fold the PascalCase wire
+          // shape into the camelCase client contract defensively.
+          const rjs: any = <any>response;
+          const raw: any = rjs.value instanceof Array && rjs.value.length > 0 ? rjs.value[0] : {};
+          const toRanking = (rows: any): LibraryRankingItem[] =>
+            (rows instanceof Array ? rows : []).map((r: any) => ({
+              key: String(r?.Key ?? ''),
+              name: String(r?.Name ?? ''),
+              count: Number(r?.Count ?? 0),
+            }));
+
+          const stats: LibraryOverviewStats = {
+            totalBooks: Number(raw.TotalBooks ?? 0),
+            addedThisMonth: Number(raw.AddedThisMonth ?? 0),
+            addedLastMonth: Number(raw.AddedLastMonth ?? 0),
+            completedThisMonth: Number(raw.CompletedThisMonth ?? 0),
+            completedLastMonth: Number(raw.CompletedLastMonth ?? 0),
+            topCategories: toRanking(raw.TopCategories),
+            topAuthors: toRanking(raw.TopAuthors),
+            topPresses: toRanking(raw.TopPresses),
+          };
+          return stats;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering LibraryStorageService fetchLibraryOverviewKeyFigure failed ${error}`,
+            ConsoleLogTypeEnum.error,
+          );
+
+          return throwError(() => new Error(this._buildHttpErrorMessage(error)));
+        }),
+      );
   }
 
   public readBook(bid: number): Observable<Book> {

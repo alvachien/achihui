@@ -1621,12 +1621,23 @@ describe('FinanceOverviewKeyfigure', () => {
       LastMonthOutgo: 50,
       IncomeYTD: 1500,
       OutgoYTD: 300,
-      CurrentMonthIncomePrecentage: 0.3,
-      CurrentMonthOutgoPrecentage: 0.2,
+      CurrentMonthIncomePercentage: 0.3,
+      CurrentMonthOutgoPercentage: 0.2,
     });
     expect(objtbt.BaseCurrency).toEqual('CNY');
     expect(objtbt.CurrentMonthOutgo).toEqual(20);
     expect(objtbt.OutgoYTD).toEqual(300);
+    expect(objtbt.CurrentMonthIncomePercentage).toEqual(0.3);
+    expect(objtbt.CurrentMonthOutgoPercentage).toEqual(0.2);
+  });
+  it('#2. onSetData clears the ratio when the API reports no base', () => {
+    // The instance is reused across fetches, so a null has to overwrite a
+    // previously loaded ratio instead of being skipped as "no value".
+    objtbt.onSetData({ HomeID: 1, CurrentMonthIncomePercentage: 12.5 });
+    expect(objtbt.CurrentMonthIncomePercentage).toEqual(12.5);
+
+    objtbt.onSetData({ HomeID: 1, CurrentMonthIncomePercentage: null });
+    expect(objtbt.CurrentMonthIncomePercentage).toBeNull();
   });
 });
 

@@ -37,6 +37,12 @@
           </li>
         </ul>
       </nz-dropdown-menu>
+      <!-- Per-book reading-log scope chip: closeable, drops ?bookId= via
+           clearBookScope; dialog filters still AND within the scope. -->
+      @if (scopedBookId() !== null) {
+        <nz-divider nzType="vertical"></nz-divider>
+        <nz-tag nzMode="closeable" (nzOnClose)="clearBookScope()">{{ scopedBookName() }}</nz-tag>
+      }
     </div>
     <div class="table-count">{{ totalCountAll() }} | {{ totalCount() }}</div>
   </div>

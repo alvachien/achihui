@@ -733,3 +733,65 @@ const IS_MULTIWORD: FilterCustomOperator = {
    object `MatchFilter` receives);
 3. the property schema itself (that's the configuration);
 4. the filter menu label cap and placement.
+
+## Appendix C — adopting pages in the hih project (as-built audit, 2026-09-15; updated 2026-09-16)
+
+Project annotation, not part of the portable spec: which pages carry the
+filter bar today, and how each evaluates it. **How to tell the two modes
+apart:** a server page has `[nzFrontPagination]="false"` + `(nzQueryParams)`
++ `[nzTotal]` on its table and passes top/skip/search/`toODataFilter()`
+fragment to its service; a client page fetches once into a `dataSet`/`listAll`
+signal and derives rows through a `displayList` computed (nz-table's default
+front pagination).
+
+| Page | Evaluation | Fetch |
+|---|---|---|
+| `library/book/book-list` | **server** ✅ | `fetchBooks(top, skip, orderby, search, fragment)` — the server-page reference |
+| `library/reading-record-list` | **server** ✅ | `fetchBookReadingRecords(top, skip, …, search, fragment, …)` |
+| `finance/document/document-list` | **server** ✅ | `fetchAllDocuments(items, top, skip, orderby, search, fragment)` — the finance reference (2026-09-15 port) |
+| `finance/order/order-list` | client ❌ | `fetchAllOrders()` once; search / dialog filter / validity switch all in `displayList` |
+| `finance/account/account-list` | client ❌ | `fetchAllAccounts()` once (after categories load) → `displayList`; order-list twin, scalar dialog schema (Name/Comment/ID) — the Category/Status column-header dropdowns stay, living alongside the bar (2026-09-16 port) |
+| `finance/control-center/control-center-list` | client ❌ | `fetchAllControlCenters()` once → `displayList`; same scalar dialog schema as account-list (2026-09-16 port) |
+| `library/person/person-list` | client ❌ | `fetchAllPersons()` once → `displayList` |
+| `library/organization/organization-list` | client ❌ | `fetchAllOrganizations()` once → `displayList` |
+| `library/person-selection-dlg` | client ❌ | bounded picker |
+| `library/organization-selection-dlg` | client ❌ | bounded picker |
+| `library/config/book-category-selection-dlg` | client ❌ | bounded picker |
+
+### Default rule going forward
+
+**Unbounded-growth pages default to server pagination.** Client evaluation is
+acceptable only for selection dialogs and small reference lists (per §7). A
+new server page must carry the trio the three ✅ pages demonstrate —
+`debounceTime(300)` + `distinctUntilChanged()` on keystrokes, a request-sequence
+guard (`fetchSeq`) so stale responses never touch list/error/spinner, and a
+`lastQuery` dedupe absorbing nz-table's synthetic/echoed emissions. Document-list
+adds one more dedupe nuance: page-scope clauses belong in the dedupe key too —
+its header `nz-range-picker` was merged into the bar (2026-09-15) as the shared
+**`hih-date-scope`** segment (`src/app/shared/date-scope/`): a preset dropdown
+(Monday-start week / month / quarter / year / last-* / YTD) ending in **"No
+restriction"**, which drops the date clause entirely. There is deliberately no
+custom-picker item: a precise window is defined through the dialog's `TranDate`
+conditions instead — which is why that page keeps dates in its dialog schema
+while the scope itself remains outside the dialog contract (a guardrail with a
+default that survives Clear filter).
+
+### Open item — port `order-list` to server pagination
+
+It is finance data with the same growth profile as documents, and the last
+*unbounded-growth* finance page on client evaluation — account-list and
+control-center-list joined the client ❌ side on 2026-09-16, but those are
+home-scoped reference lists where fetch-once is their intended mode under the
+rule above, not debt. Two twists distinguish order-list's port from the
+document-list one:
+
+1. `fetchAllOrders` is a **cached service-level list** (`isOrderListLoaded`)
+   also consumed by document-create pickers — leave it untouched; add a
+   separate paged method (`$top`/`$skip`/`$count`; note the Orders query today
+   never requests `$count=true`, so the N | M caption's data is new).
+2. The **validity switch** must cross to the server side with it: it
+   translates to an Edm.Date fragment
+   `ValidFrom lt '<today>' and ValidTo gt '<today>'`, ANDed alongside the
+   dialog fragment (same parenthesization discipline). Or keep it client-side
+   per page — but then page counts (N | M) and the fetched page would disagree,
+   which breaks the §7.3 caption contract; server-side is the consistent choice.

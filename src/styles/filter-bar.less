@@ -1,8 +1,11 @@
-// Shared filter-bar styling for the library list pages and selection dialogs
-// (book-list, person-list, organization-list, person-selection-dlg,
-// organization-selection-dlg). Single source: import from each component's
-// .less via `@import 'filter-bar';` (src/styles is on stylePreprocessorOptions
-// includePaths). Changing it here updates every consumer at once.
+// Shared filter-bar styling for every page carrying the filter bar (library:
+// book-list, person-list, organization-list, reading-record-list,
+// person-selection-dlg, organization-selection-dlg,
+// book-category-selection-dlg; finance: document-list, order-list,
+// account-list, control-center-list). Single source: import from
+// each component's .less via `@import 'filter-bar';` (src/styles is on
+// stylePreprocessorOptions includePaths). Changing it here updates every
+// consumer at once.
 
 // Filter row between the page header and the table: the bar takes the
 // remaining width, the `total | filtered` count sticks to the right end.

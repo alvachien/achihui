@@ -27,10 +27,17 @@ import {
   DocumentItem,
   financeDocTypeNormal,
   BaseListModel,
+  dateFormat,
+  GeneralFilterOperatorEnum,
+  GeneralFilterValueType,
 } from '../../../../model';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { format } from 'date-fns';
+import { resolveDateScope } from '../../../../shared/date-scope';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { FilterOperation } from 'actslib';
+import { translate } from '@jsverse/transloco';
 
 describe('DocumentListComponent', () => {
   let component: DocumentListComponent;
@@ -80,7 +87,11 @@ describe('DocumentListComponent', () => {
     fetchAllAccountsSpy = storageService.fetchAllAccounts.and.returnValue(of([]));
     fetchAllControlCentersSpy = storageService.fetchAllControlCenters.and.returnValue(of([]));
     fetchAllOrdersSpy = storageService.fetchAllOrders.and.returnValue(of([]));
-    fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(of([]));
+    // ngOnInit now consumes fetchAllDocuments immediately (page fetch + the
+    // unfiltered `N` baseline) - the default must be a BaseListModel shape.
+    fetchAllDocumentsSpy = storageService.fetchAllDocuments.and.returnValue(
+      of({ totalCount: 0, contentList: [] as Document[] }),
+    );
     authServiceStub.authSubject = signal(new UserAuthInfo());
     homeServiceStub = {
       ChosedHome: fakeData.chosedHome,
@@ -121,6 +132,11 @@ describe('DocumentListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('starts the caption counts at zero (the old nzTotal placeholder 1 would flash "0 | 1")', () => {
+    expect(component.totalDocumentCount()).toBe(0);
+    expect(component.totalCountAll()).toBe(0);
   });
 
   describe('2. shall work with data', () => {
@@ -479,6 +495,225 @@ describe('DocumentListComponent', () => {
       await new Promise<void>((r) => setTimeout(r, 0));
       fixture.detectChanges();
       expect(overlayContainerElement.querySelectorAll(ElementClass_DialogContent).length).toBe(0);
+    });
+  });
+
+  describe('4. filter bar (server-paginated port)', () => {
+    // Bare-condition spelling (the dialog's case-1 Submit shape): Desp Contains
+    // 'foo' → the fragment `contains(Desp,'foo')`.
+    const DESP_CONTAINS_FOO = { property: 'Desp', operation: FilterOperation.Contains, lowValue: 'foo' };
+
+    beforeEach(() => {
+      // Spies are module-level and keep their last configuration across
+      // describes - pin clean, error-free returns for this suite.
+      fetchAllDocumentsSpy.and.returnValue(of({ totalCount: 0, contentList: [] as Document[] }));
+      fetchAllAccountCategoriesSpy.and.returnValue(of([]));
+      fetchAllCurrenciesSpy.and.returnValue(of([]));
+      fetchAllDocTypesSpy.and.returnValue(of([]));
+      fetchAllTranTypesSpy.and.returnValue(of([]));
+      fetchAllAccountsSpy.and.returnValue(of([]));
+      fetchAllControlCentersSpy.and.returnValue(of([]));
+      fetchAllOrdersSpy.and.returnValue(of([]));
+    });
+
+    // The list fetch always goes through the 6-arg overload (items, top, skip,
+    // orderby, search, fragment); the unfiltered `N` baseline fetch uses 3.
+    // (Item-count can't tell them apart under the "No restriction" scope.)
+    function listCalls(): SafeAny[][] {
+      return fetchAllDocumentsSpy.mock.calls.filter((c: SafeAny[]) => c.length > 3);
+    }
+    function lastListCall(): SafeAny[] {
+      const calls = listCalls();
+      return calls[calls.length - 1];
+    }
+
+    // Let ngOnInit's fetches AND nz-table's synthetic initial emission settle
+    // (whatever it emits is deduped or lands here, before the assertions start).
+    async function settleInit(): Promise<void> {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 100));
+      fetchAllDocumentsSpy.mockClear();
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let createSpy: any;
+    afterEach(() => {
+      createSpy?.mockRestore();
+      createSpy = undefined;
+    });
+
+    // Stub the prototype so it catches the instance the component injects
+    // (book-list pattern: openFilterDialog goes through modal.create).
+    function stubDialogClose(result: SafeAny): void {
+      createSpy = vi
+        .spyOn(NzModalService.prototype, 'create')
+        .mockReturnValue({ afterClose: of(result) } as SafeAny as NzModalRef);
+    }
+
+    it('fetches the unfiltered baseline count on init (the N of N | M)', () => {
+      fetchAllDocumentsSpy.mockClear();
+      fixture.detectChanges();
+      expect(fetchAllDocumentsSpy).toHaveBeenCalledWith([], 1, 0);
+    });
+
+    it('refetches with the search text after the live-filter debounce', async () => {
+      await settleInit();
+
+      component.onSearchInput('groceries');
+      await new Promise<void>((r) => setTimeout(r, 100)); // still inside the 300 ms window
+      expect(listCalls().length).toBe(0);
+
+      await new Promise<void>((r) => setTimeout(r, 300)); // window elapses → commit + refetch
+      expect(component.searchText()).toBe('groceries');
+      expect(listCalls().length).toBe(1);
+      expect(lastListCall()[4]).toBe('groceries'); // the search argument
+      expect(lastListCall()[1]).toBe(20); // page 1, first page size 20
+      expect(lastListCall()[2]).toBe(0);
+    });
+
+    it('translates the structured filter to a $filter fragment, separate from search', () => {
+      fetchAllDocumentsSpy.mockClear();
+      component.searchText.set('abc');
+      component.filterDef.set(DESP_CONTAINS_FOO);
+      expect(component.hasFilter()).toBe(true);
+      component.onSearch();
+      expect(lastListCall()[4]).toBe('abc');
+      expect(lastListCall()[5]).toBe(`contains(Desp,'foo')`);
+    });
+
+    it('applies the dialog result and resets to page 1 on submit', () => {
+      stubDialogClose({ root: DESP_CONTAINS_FOO });
+      component.pageIndex.set(3);
+      component.onEditFilter();
+
+      expect(component.filterDef()).toEqual(DESP_CONTAINS_FOO);
+      expect(component.pageIndex()).toBe(1);
+      expect(lastListCall()[2]).toBe(0); // skipped from page 1
+      expect(lastListCall()[5]).toBe(`contains(Desp,'foo')`);
+    });
+
+    it('keeps the previous filter when the dialog is cancelled', () => {
+      component.filterDef.set(DESP_CONTAINS_FOO);
+      stubDialogClose(undefined);
+      fetchAllDocumentsSpy.mockClear();
+      component.onEditFilter();
+
+      expect(component.filterDef()).toEqual(DESP_CONTAINS_FOO);
+      expect(listCalls().length).toBe(0);
+    });
+
+    it('clears the filter and refetches without a fragment', () => {
+      component.filterDef.set(DESP_CONTAINS_FOO);
+      fetchAllDocumentsSpy.mockClear();
+      component.onClearFilter();
+
+      expect(component.filterDef()).toBeUndefined();
+      expect(component.hasFilter()).toBe(false);
+      expect(lastListCall()[5]).toBe('');
+    });
+
+    it('sends a This-Month TranDate clause by default (legacy page-scope path)', () => {
+      fetchAllDocumentsSpy.mockClear();
+      component.onSearch();
+      const month = resolveDateScope('month');
+      expect(lastListCall()[0]).toEqual([
+        {
+          fieldName: 'TranDate',
+          operator: GeneralFilterOperatorEnum.Between,
+          lowValue: format(month!.bgn, dateFormat),
+          highValue: format(month!.end, dateFormat),
+          valueType: GeneralFilterValueType.number,
+        },
+      ]);
+    });
+
+    it("'No restriction' drops the date clause and refetches from page 1", () => {
+      component.pageIndex.set(5);
+      fetchAllDocumentsSpy.mockClear();
+      // A real dropdown click drives BOTH outputs (keyChange before rangeChange
+      // - see DateScopeComponent.select); the refetch consults the new key, so
+      // a stale default 'month' key must not be left behind here.
+      component.scopeKey.set('none');
+      component.onScopeChange(undefined);
+      expect(component.pageIndex()).toBe(1);
+      expect(lastListCall()[0]).toEqual([]); // non-child member: no scope clause left
+
+      // A dialog-side custom window is now the only date narrowing possible;
+      // picking another scope sends its exact bounds.
+      component.onScopeChange({ bgn: new Date(2026, 0, 1), end: new Date(2026, 0, 31) });
+      const items: SafeAny[] = lastListCall()[0];
+      expect(items[0].fieldName).toBe('TranDate');
+      expect(items[0].lowValue).toBe('2026-01-01');
+      expect(items[0].highValue).toBe('2026-01-31');
+    });
+
+    it('menu label falls back to "New filter" and summarizes once active', () => {
+      expect(component.filterMenuText()).toEqual(translate('Filter.NewFilter'));
+      component.filterDef.set(DESP_CONTAINS_FOO);
+      expect(component.filterMenuText()).toContain('foo');
+    });
+
+    it('flags filterActive for either mechanism and resets when both clear', () => {
+      expect(component.filterActive()).toBe(false);
+      component.searchText.set('   '); // whitespace is not a filter
+      expect(component.filterActive()).toBe(false);
+      component.searchText.set('abc');
+      expect(component.filterActive()).toBe(true);
+      component.searchText.set('');
+
+      component.filterDef.set(DESP_CONTAINS_FOO);
+      expect(component.filterActive()).toBe(true);
+      component.onClearFilter();
+      expect(component.filterActive()).toBe(false);
+    });
+
+    it('flags filterActive while the date scope deviates from the default', () => {
+      // Any scope other than This-Month changes the query - the bar highlight
+      // (like the scope trigger's own bolding) keys off the active preset.
+      expect(component.filterActive()).toBe(false);
+      component.scopeKey.set('none'); // widening is still a deviation
+      expect(component.filterActive()).toBe(true);
+      component.scopeKey.set('lastMonth');
+      expect(component.filterActive()).toBe(true);
+      component.scopeKey.set('month');
+      expect(component.filterActive()).toBe(false);
+    });
+
+    it('swallows repeated emissions of the current query and keeps sort across refetches', async () => {
+      await settleInit();
+
+      const q = (pageIndex: number): SafeAny => ({
+        pageIndex,
+        pageSize: 20,
+        sort: [{ key: 'date', value: 'descend', name: 'date' }],
+        filters: [],
+      });
+      // Real interaction: page 4, default sort retained → fetch with TranDate desc.
+      component.onQueryParamsChange(q(4));
+      expect(listCalls().length).toBe(1);
+      expect(lastListCall()[2]).toBe(60);
+      expect(lastListCall()[3]).toEqual({ field: 'TranDate', order: 'desc' });
+
+      // Same query re-emitted: deduped.
+      component.onQueryParamsChange(q(4));
+      expect(listCalls().length).toBe(1);
+
+      // A search commit bypasses the dedupe although page and sort are unchanged.
+      component.searchText.set('abc');
+      component.onSearch();
+      expect(listCalls().length).toBe(2);
+      expect(lastListCall()[4]).toBe('abc');
+    });
+
+    it('renders the filter bar and the count caption in the same filter row', async () => {
+      await settleInit();
+      fixture.detectChanges();
+      const row = fixture.nativeElement.querySelector('.filter-row') as HTMLElement | null;
+      expect(row).toBeTruthy();
+      const bar = row?.querySelector('.filter-bar');
+      expect(bar).toBeTruthy();
+      expect(bar?.querySelector('hih-date-scope')).toBeTruthy(); // merged from the header
+      expect(row?.querySelector('.table-count')).toBeTruthy();
     });
   });
 });
