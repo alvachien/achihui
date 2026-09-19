@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -32,6 +33,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NzBreadCrumbModule,
     NzSwitchModule,
     NzModalModule,
+    RouterModule,
   ],
 })
 export class LanguageComponent implements OnInit {

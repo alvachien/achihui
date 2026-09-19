@@ -52,6 +52,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzCalendarModule } from 'ng-zorro-antd/calendar';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
@@ -74,6 +75,7 @@ class DateCellData {
     NzBreadCrumbModule,
     NzSwitchModule,
     NzResultModule,
+    NzSpinModule,
     NzCardModule,
     NzStatisticModule,
     NzDividerModule,
@@ -105,6 +107,33 @@ export class FinanceComponent implements OnInit, OnDestroy {
   keyfigure: FinanceOverviewKeyfigure | null = null;
   get isChildMode(): boolean {
     return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
+  }
+
+  // Displayed in the page-header subtitle (home chip), same idiom as the library overview.
+  get homeName(): string {
+    return this.homeService.ChosedHome?.Name ?? '';
+  }
+
+  // Income minus outgo year-to-date; drives the net-up / net-down colouring.
+  ytdNet(): number {
+    return this.keyfigure ? this.keyfigure.IncomeYTD - this.keyfigure.OutgoYTD : 0;
+  }
+
+  // Month-on-month trend of a figure pair: 1 = up, -1 = down, 0 = unchanged.
+  // Taken from the amounts rather than the ratio: a rise off a zero base has no
+  // ratio, but it is still a rise.
+  monthTrend(current: number, last: number): number {
+    return Math.sign(current - last);
+  }
+
+  // Percent shown in the month-on-month pill. The API sends null when last month
+  // was zero; when both months are zero that is a genuine "no change", so it
+  // reads as 0 rather than as a missing base.
+  monthRatio(current: number, last: number, apiRatio: number | null): number | null {
+    if (apiRatio !== null) {
+      return apiRatio;
+    }
+    return current === last ? 0 : null;
   }
 
   get ExcludeTransfer(): boolean {
@@ -388,6 +417,9 @@ export class FinanceComponent implements OnInit, OnDestroy {
             nzContent: err.toString(),
             nzClosable: true,
           });
+          // finalize() cleared the spinner flag but nothing else schedules CD
+          // (zoneless + OnPush) - re-check now so the nz-spin binding unwinds.
+          this.changeDetectRef.markForCheck();
         },
       });
   }

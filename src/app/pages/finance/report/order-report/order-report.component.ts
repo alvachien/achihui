@@ -2,10 +2,10 @@ import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy 
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { isBefore, isAfter } from 'date-fns';
 
 import {
@@ -45,6 +45,9 @@ import { DecimalPipe } from '@angular/common';
     FormsModule,
     NzButtonModule,
     DecimalPipe,
+    NzModalModule,
+    NzDrawerModule,
+    RouterModule,
     TranslocoModule,
   ],
 })

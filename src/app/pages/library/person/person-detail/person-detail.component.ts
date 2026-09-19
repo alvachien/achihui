@@ -240,6 +240,42 @@ export class PersonDetailComponent implements OnInit {
     // would serialize as RoleId 0, which the API rejects — drop them before submitting.
     objtbo.Roles = this.listRoles().filter((p) => p.ID > 0);
 
+    // Duplicate pre-check against the (cached, home-scoped) person list, using the same
+    // rule as the API guard: {NativeName | non-empty ChineseName} of the input matching
+    // any OTHER row's NativeName/ChineseName, compared trimmed and case-insensitively.
+    // In create mode routerID() is -1, so the self-exclusion is inert. This is a heuristic
+    // (TOCTOU) - the API guard is authoritative: on a pre-check FETCH failure we still
+    // submit and surface the server's 400 through the regular error modal.
+    this.storageService
+      .fetchAllPersons()
+      .pipe(takeUntilDestroyed(this.destroyedRef))
+      .subscribe({
+        next: (persons) => {
+          const norm = (s?: string | null): string => (s ?? '').trim().toLowerCase();
+          const nn = norm(objtbo.NativeName);
+          const cn = norm(objtbo.ChineseName);
+          const dup = persons.some(
+            (p) =>
+              p.ID !== this.routerID() &&
+              ((!!nn && (norm(p.NativeName) === nn || norm(p.ChineseName) === nn)) ||
+                (!!cn && (norm(p.NativeName) === cn || norm(p.ChineseName) === cn))),
+          );
+          if (dup) {
+            this.isSubmitting.set(false);
+            this.modalService.warning({
+              nzTitle: translate('Common.Warning'),
+              nzContent: translate('Library.DuplicatedNameWarning'),
+              nzClosable: true,
+            });
+            return;
+          }
+          this.submitPerson(objtbo);
+        },
+        error: () => this.submitPerson(objtbo),
+      });
+  }
+
+  private submitPerson(objtbo: Person): void {
     if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createPerson(objtbo)

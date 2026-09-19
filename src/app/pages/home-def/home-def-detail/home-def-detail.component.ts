@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -49,6 +49,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzCheckboxModule,
     NzModalModule,
     NzButtonModule,
+    RouterModule,
   ],
 })
 export class HomeDefDetailComponent implements OnInit {

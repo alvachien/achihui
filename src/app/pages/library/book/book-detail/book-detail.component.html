@@ -6,6 +6,12 @@
     <nz-page-header-title>{{ 'Library.Book' | transloco }}</nz-page-header-title>
     <nz-page-header-subtitle>{{ currentMode() | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
+      @if (routerID() > 0) {
+        <!-- Per-book reading log (?bookId= deep link, display and edit alike). -->
+        <a nz-button nzType="link" [routerLink]="['/library/readingrecord']" [queryParams]="{ bookId: routerID() }">
+          {{ 'Library.ViewReadingRecords' | transloco }}
+        </a>
+      }
       <a nz-button nzType="link" [disabled]="!isEditable || isSubmitting()" (click)="onSave()">{{
         'Common.Save' | transloco
       }}</a>

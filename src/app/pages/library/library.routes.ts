@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 
 export const LIBRARY_ROUTES: Routes = [
   {
+    path: 'overview',
+    loadComponent: () => import('./overview/').then((m) => m.LibraryOverviewComponent),
+  },
+  {
     path: 'book',
     loadChildren: () => import('./book/book.routes').then((m) => m.BOOK_ROUTES),
   },

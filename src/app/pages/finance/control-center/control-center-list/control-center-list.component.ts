@@ -4,6 +4,12 @@ import { finalize } from 'rxjs/operators';
 import { Router, RouterModule } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
+import { FilterUtility } from 'actslib';
+import { FormsModule } from '@angular/forms';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { hasActiveFilterDefinition } from '../../../../shared/filter-dialog';
+import { FilterBar, NAME_COMMENT_ID_FILTER_PROPERTIES } from '../../../../shared/filter-bar';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -35,11 +41,53 @@ import { ControlCenter, ModelUtility, ConsoleLogTypeEnum } from '@model/index';
     TranslocoModule,
     NzModalModule,
     RouterModule,
+    NzDividerModule,
+    FormsModule,
+    NzInputModule,
   ],
 })
 export class ControlCenterListComponent implements OnInit {
   isLoadingResults = signal(false);
   dataSet = signal<ControlCenter[]>([]);
+
+  // Filter row, per docs/filter-dialog-generic-design.md §7 (order-list twin):
+  // the shared FilterBar (src/app/shared/filter-bar) owns the free-text +
+  // structured-filter state machine; the members below ALIAS it so the template
+  // and the specs keep binding the same names. displayList and the caption
+  // counts stay component-owned.
+  private readonly bar = new FilterBar({
+    properties: NAME_COMMENT_ID_FILTER_PROPERTIES,
+    onReset: () => this.pageIndex.set(1),
+  });
+  readonly searchText = this.bar.searchText;
+  readonly filterDef = this.bar.filterDef;
+  readonly pageIndex = signal(1);
+  readonly hasFilter = this.bar.hasFilter;
+  readonly filterMenuText = this.bar.filterMenuText;
+  readonly filterActive = this.bar.filterActive;
+  readonly onSearchInput = this.bar.onSearchInput.bind(this.bar);
+  readonly onEditFilter = this.bar.onEditFilter.bind(this.bar);
+  readonly onClearFilter = this.bar.onClearFilter.bind(this.bar);
+  // Table caption counts: `total | filtered`.
+  readonly totalCountAll = computed(() => this.dataSet().length);
+  readonly filteredCount = computed(() => this.displayList().length);
+
+  // The page fetches the whole list once, so search/filter are evaluated
+  // client-side over the loaded rows.
+  readonly displayList = computed<readonly ControlCenter[]>(() => {
+    const keyword = this.searchText().trim().toLowerCase();
+    let list: readonly ControlCenter[] = this.dataSet();
+    if (keyword) {
+      list = list.filter(
+        (cc) => (cc.Name ?? '').toLowerCase().includes(keyword) || (cc.Comment ?? '').toLowerCase().includes(keyword),
+      );
+    }
+    const def = this.filterDef();
+    if (hasActiveFilterDefinition(def)) {
+      list = FilterUtility.FilterList(list as ControlCenter[], def);
+    }
+    return list;
+  });
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly router = inject(Router);

@@ -11,16 +11,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 import { format, subMonths } from 'date-fns';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
+import { RouterModule } from '@angular/router';
 
 import {
   ConsoleLogTypeEnum,
@@ -39,6 +40,7 @@ import { SafeAny } from '@common/any';
   templateUrl: './control-center-month-on-month-report.component.html',
   styleUrls: ['./control-center-month-on-month-report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideEchartsCore({ echarts })],
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -48,6 +50,8 @@ import { SafeAny } from '@common/any';
     NzGridModule,
     NgxEchartsModule,
     NzButtonModule,
+    NzModalModule,
+    RouterModule,
     TranslocoModule,
   ],
 })
@@ -67,7 +71,7 @@ export class ControlCenterMonthOnMonthReportComponent implements OnInit {
   availableControlCenters = signal<NzCascaderOption[]>([]);
   selectedControlCenters: number[] | null = null;
   selectedPeriod = financePeriodLast3Months;
-  chartOption: EChartsOption | null = null;
+  chartOption: echarts.EChartsOption | null = null;
 
   get isGoButtonDisabled(): boolean {
     if (this.selectedControlCenters === null) {

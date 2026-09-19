@@ -11,20 +11,10 @@
     <button nz-button nzType="primary" [disabled]="isChildMode()" (click)="onCreate()">
       {{ 'Common.Create' | transloco }}
     </button>
-    <nz-divider nzType="vertical"></nz-divider>
     <!-- <nz-radio-group [(ngModel)]="selectedYTD" nzButtonStyle="solid" (ngModelChange)="onLoadData()">
       <label nz-radio-button nzValue="1">{{'Common.PreviousYear' | transloco}}</label>
       <label nz-radio-button nzValue="2">{{'Common.CurrentYear' | transloco}}</label>
     </nz-radio-group> -->
-
-    @if (!isChildMode()) {
-      <nz-switch
-        [(ngModel)]="validOrderOnly"
-        [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco"
-        [nzUnCheckedChildren]="'Common.All' | transloco"
-        (ngModelChange)="onOrderValidityChanged()"
-      ></nz-switch>
-    }
   </nz-page-header-extra>
 </nz-page-header>
 
@@ -39,8 +29,60 @@
 }
 @if (!isChildMode()) {
   <div>
+    <!-- Filter row: the bar (live free-text pre-filter + validity switch +
+         structured-filter menu, highlighted while any narrowing is in effect)
+         takes the remaining width; the `total | filtered` count sticks to the
+         right end of the row. -->
+    <div class="filter-row">
+      <div class="filter-bar" [class.filter-bar-on]="filterActive()">
+        <input
+          type="text"
+          nz-input
+          class="filter-bar-input"
+          [ngModel]="searchText()"
+          (ngModelChange)="onSearchInput($event)"
+          placeholder="{{ 'Common.Search' | transloco }}"
+        />
+        <nz-divider nzType="vertical"></nz-divider>
+        <!-- Validity narrowing, merged from the page header into the bar;
+             evaluated last in displayList, ANDed with the dialog filter. -->
+        <nz-switch
+          class="filter-bar-switch"
+          [ngModel]="validOrderOnly()"
+          (ngModelChange)="onOrderValidityChanged($event)"
+          [nzCheckedChildren]="'Common.OnlyValidOnes' | transloco"
+          [nzUnCheckedChildren]="'Common.All' | transloco"
+        ></nz-switch>
+        <nz-divider nzType="vertical"></nz-divider>
+        <button
+          nz-button
+          nzType="link"
+          nz-dropdown
+          [nzDropdownMenu]="menuFilter"
+          [class.filter-bar-active]="hasFilter()"
+        >
+          {{ 'Common.Filter' | transloco }}
+          <i nz-icon nzType="down"></i>
+        </button>
+        <nz-dropdown-menu #menuFilter="nzDropdownMenu">
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item (click)="onEditFilter()">{{ filterMenuText() }}</li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item [nzDisabled]="!hasFilter()" (click)="onClearFilter()">
+              {{ 'Filter.ClearFilter' | transloco }}
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+      <div class="table-count">{{ totalCountAll() }} | {{ filteredCount() }}</div>
+    </div>
     <nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
-      <nz-table #basicTable [nzData]="dataSet() | orderValidityFilter: validOrderOnly">
+      <nz-table
+        #basicTable
+        [nzData]="displayList()"
+        [nzPageIndex]="pageIndex()"
+        (nzPageIndexChange)="pageIndex.set($event)"
+      >
         <thead>
           <tr>
             <th>ID</th>

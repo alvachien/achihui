@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { FilterOperation } from 'actslib';
 
 import { ControlCenterListComponent } from './control-center-list.component';
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData, asyncError } from '../../../../../testing';
 import { AuthService, UIStatusService, FinanceOdataService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, HomeMember } from '../../../../model';
+import { UserAuthInfo, HomeMember, ControlCenter } from '../../../../model';
 import { SafeAny } from '@common/any';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
@@ -137,6 +138,110 @@ describe('ControlCenterListComponent', () => {
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(0);
 
       await new Promise<void>((r) => setTimeout(r, 0));
+    });
+  });
+
+  describe('filter bar (client-side search / filter)', () => {
+    // Real ControlCenter instances: FilterUtility.FilterList reads the schema
+    // keys off the runtime object, so plain-object casts would not prove the
+    // getter mapping.
+    const rows: ControlCenter[] = [];
+    {
+      const mk = (id: number, name: string, comment: string): ControlCenter => {
+        const c = new ControlCenter();
+        c.Id = id;
+        c.Name = name;
+        c.Comment = comment;
+        return c;
+      };
+      rows.push(mk(1, 'Kitchen', 'cooking'));
+      rows.push(mk(2, 'garden', ''));
+      rows.push(mk(3, 'Garage', 'storage'));
+    }
+
+    beforeEach(() => {
+      fetchAllControlCentersSpy.and.returnValue(new Subject()); // never emits: fixture rows survive ngOnInit
+      component.dataSet.set(rows);
+    });
+
+    it('pre-filters live on every keystroke, matching Name and Comment case-insensitively', () => {
+      component.onSearchInput('KIT');
+      expect(component.searchText()).toBe('KIT');
+      expect(component.displayList().map((c) => c.Id)).toEqual([1]);
+
+      component.onSearchInput('DEN');
+      expect(component.displayList().map((c) => c.Id)).toEqual([2]); // Name match, lowercase row
+
+      component.onSearchInput('STORAGE');
+      expect(component.displayList().map((c) => c.Id)).toEqual([3]); // Comment match
+
+      component.onSearchInput('');
+      expect(component.displayList().map((c) => c.Id)).toEqual([1, 2, 3]);
+    });
+
+    it('returns to page 1 when the search text changes', () => {
+      component.pageIndex.set(5);
+      component.onSearchInput('Garage');
+      expect(component.pageIndex()).toBe(1);
+    });
+
+    it('applies a structured filter via actslib (number key reads the client property)', () => {
+      component.filterDef.set({
+        conditions: [{ property: 'Id', operation: FilterOperation.Equal, lowValue: 2 }],
+      });
+      expect(component.hasFilter()).toBe(true);
+      expect(component.displayList().map((c) => c.Id)).toEqual([2]);
+    });
+
+    it('flags filterActive for any mechanism and resets when each clears', () => {
+      expect(component.filterActive()).toBe(false);
+      component.onSearchInput('garden');
+      expect(component.filterActive()).toBe(true);
+      component.onSearchInput('');
+      expect(component.filterActive()).toBe(false);
+
+      component.filterDef.set({
+        conditions: [{ property: 'Id', operation: FilterOperation.Equal, lowValue: 2 }],
+      });
+      expect(component.filterActive()).toBe(true);
+      component.onClearFilter();
+      expect(component.filterActive()).toBe(false);
+
+      // Clear filter drops only the structured filter — the text stays.
+      component.onSearchInput('garden');
+      component.filterDef.set({
+        conditions: [{ property: 'Id', operation: FilterOperation.Equal, lowValue: 2 }],
+      });
+      component.onClearFilter();
+      expect(component.hasFilter()).toBe(false);
+      expect(component.filterActive()).toBe(true);
+      component.onSearchInput('');
+      expect(component.filterActive()).toBe(false);
+    });
+
+    it('reports total | filtered counts', () => {
+      expect(component.totalCountAll()).toBe(3);
+      expect(component.filteredCount()).toBe(3);
+      component.onSearchInput('S'); // only 'storage' carries an 's'
+      expect(component.totalCountAll()).toBe(3); // total is never narrowed
+      expect(component.filteredCount()).toBe(1);
+    });
+
+    it('shows "New filter" as the menu label until a structured filter is active', () => {
+      expect(component.filterMenuText().length).toBeGreaterThan(0);
+      component.filterDef.set({
+        conditions: [{ property: 'Id', operation: FilterOperation.GreaterThan, lowValue: 2 }],
+      });
+      expect(component.filterMenuText()).toContain('2');
+    });
+
+    it('renders the filter bar and the count caption in the same filter row', () => {
+      fixture.detectChanges();
+      const row = fixture.nativeElement.querySelector('.filter-row') as HTMLElement | null;
+      expect(row).toBeTruthy();
+      expect(row?.querySelector('.filter-bar')).toBeTruthy();
+      expect(row?.querySelector('.table-count')).toBeTruthy();
+      expect(row?.querySelector('.table-count')?.textContent).toContain('3 | 3');
     });
   });
 });

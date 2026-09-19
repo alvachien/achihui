@@ -181,16 +181,20 @@ describe('BookListComponent', () => {
     fixture.detectChanges();
 
     const items = overlayContainerElement.querySelectorAll('.ant-dropdown-menu-item');
-    expect(items.length, 'Edit / Borrow / Reading / Delete — Display moved onto the ID link').toBe(4);
+    expect(
+      items.length,
+      'Edit / Borrow / Reading-create / Reading-view / Delete — Display moved onto the ID link',
+    ).toBe(5);
     const itemTexts = Array.from(items).map((li) => li.textContent?.trim() ?? '');
     expect(itemTexts[0]).toContain('Edit');
+    expect(itemTexts[3]).toContain('View Reading Records');
     expect(itemTexts.some((t) => t === 'Display')).toBe(false);
-    // Dividers: one between Edit and the record-creation actions, one before Delete.
+    // Dividers: one between Edit and the record actions, one before Delete.
     const dividers = overlayContainerElement.querySelectorAll('.ant-dropdown-menu-item-divider');
     expect(dividers.length).toBe(2);
     // The Delete entry is the dangerous one.
-    expect(itemTexts[3]).toContain('Delete');
-    expect(items[3].className).toContain('ant-dropdown-menu-item-danger');
+    expect(itemTexts[4]).toContain('Delete');
+    expect(items[4].className).toContain('ant-dropdown-menu-item-danger');
   });
 
   describe('fetch error', () => {

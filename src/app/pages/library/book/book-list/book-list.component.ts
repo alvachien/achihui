@@ -334,6 +334,13 @@ export class BookListComponent implements OnInit {
       this.router.navigate(['/library/book/edit/' + bid.toString()]);
     }
   }
+  // Per-book reading log: open the reading-records page scoped to this book
+  // (?bookId=, handled by ReadingRecordListComponent's queryParamMap link).
+  onViewReadingRecords(bid: number): void {
+    if (bid) {
+      this.router.navigate(['/library/readingrecord'], { queryParams: { bookId: bid } });
+    }
+  }
   onCreateBorrowRecord(bid: number): void {
     const bkobj = this.listData().find((bk) => bk.ID === bid) ?? null;
     const modal: NzModalRef = this.modalService.create({

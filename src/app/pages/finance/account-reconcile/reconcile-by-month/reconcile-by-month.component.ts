@@ -10,7 +10,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { endOfMonth, parse } from 'date-fns';
 import { dateFormat } from '@model/index';
@@ -76,6 +76,7 @@ interface FastInputExpectedResult {
     CurrencyPipe,
     NzInputNumberModule,
     NgIf,
+    RouterModule,
   ],
 })
 export class ReconcileByMonthComponent implements OnInit, AfterViewInit {

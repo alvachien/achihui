@@ -9,11 +9,11 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 import { format, subMonths, parse } from 'date-fns';
 import { NzCascaderModule, NzCascaderOption } from 'ng-zorro-antd/cascader';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from '@services/index';
 import { SafeAny } from '@common/any';
@@ -37,13 +37,15 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { FormsModule } from '@angular/forms';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-tran-type-month-on-month-report',
   templateUrl: './tran-type-month-on-month-report.component.html',
   styleUrls: ['./tran-type-month-on-month-report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideEchartsCore({ echarts })],
   imports: [
     NzButtonModule,
     NzPageHeaderModule,
@@ -53,6 +55,9 @@ import { NgxEchartsModule } from 'ngx-echarts';
     FormsModule,
     NzGridModule,
     NgxEchartsModule,
+    NzModalModule,
+    NzDrawerModule,
+    RouterModule,
     TranslocoModule,
   ],
 })
@@ -73,7 +78,7 @@ export class TranTypeMonthOnMonthReportComponent implements OnInit {
   selectedTranTypes: number[] | null = null;
   arTranType: TranType[] = [];
   selectedPeriod = financePeriodLast3Months;
-  chartOption: EChartsOption | null = null;
+  chartOption: echarts.EChartsOption | null = null;
 
   get isGoButtonDisabled(): boolean {
     if (this.selectedTranTypes === null) {

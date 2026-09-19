@@ -2,10 +2,13 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject } from 'rxjs';
+import { vi } from 'vitest';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { FilterOperation } from 'actslib';
 
 import { createSpyObj, getTranslocoModule, FakeDataHelper, asyncData } from '../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../services';
@@ -23,6 +26,9 @@ describe('ReadingRecordListComponent', () => {
   let fetchBooksSpy: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let fetchBookReadingRecordsSpy: any;
+  // Controllable query-param stream: the deep-link test pushes ?create=1.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const queryParams$ = new Subject<any>();
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -56,6 +62,7 @@ describe('ReadingRecordListComponent', () => {
         { provide: UIStatusService, useValue: uiServiceStub },
         { provide: LibraryStorageService, useValue: storageService },
         { provide: HomeDefOdataService, useValue: homeService },
+        { provide: ActivatedRoute, useValue: { queryParamMap: queryParams$ } },
         NzModalService,
         provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -202,6 +209,97 @@ describe('ReadingRecordListComponent', () => {
 
       // Clean up the overlay (same pattern as the create-dlg error test).
       overlayContainerElement.parentElement?.removeChild(overlayContainerElement);
+    });
+
+    it('opens the create dialog on the ?create=1 deep link and strips the flag', async () => {
+      // Spy on the RouterTestingModule Router instance the component already holds.
+      const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+
+      // Emitted after fixture creation + ngOnInit subscribed to the param map.
+      queryParams$.next({ get: (key: string) => (key === 'create' ? '1' : null) });
+      fixture.detectChanges();
+
+      expect(navigateSpy).toHaveBeenCalled();
+
+      // The create dialog renders in the CDK overlay (modal creation is async).
+      await new Promise<void>((r) => setTimeout(r, 0));
+      const overlayContainerElement = TestBed.inject(OverlayContainer).getContainerElement();
+      expect(overlayContainerElement.querySelector('hih-reading-record-create-dlg')).toBeTruthy();
+
+      overlayContainerElement.parentElement?.removeChild(overlayContainerElement);
+    });
+  });
+
+  // Per-book reading-log linkage: the book-list row menu and the book-detail
+  // header navigate here with ?bookId=N; the page ANDs a BookId clause into
+  // every query (list AND the `N` count) until the scope chip clears it.
+  describe('per-book reading-log linkage (?bookId=)', () => {
+    const USER_CONTAINS_BOB = { property: 'User', operation: FilterOperation.Contains, lowValue: 'bob' };
+
+    const nextBookId = (id: string | null): void => {
+      queryParams$.next({ get: (key: string) => (key === 'bookId' ? id : null) });
+    };
+
+    it('applies a BookId clause to the list AND the unfiltered count refetch', () => {
+      fetchBookReadingRecordsSpy.mockClear();
+      nextBookId('42');
+
+      expect(component.scopedBookId()).toBe(42);
+      const calls = fetchBookReadingRecordsSpy.mock.calls as unknown[][];
+      expect(calls.length).toBeGreaterThan(1); // list + `N` count
+      for (const c of calls) {
+        expect(c[4]).toBe('BookId eq 42'); // odataFilter argument
+      }
+      nextBookId(null);
+    });
+
+    it('ANDs the scope ahead of the structured filter (parenthesized)', () => {
+      component.filterDef.set(USER_CONTAINS_BOB);
+      fetchBookReadingRecordsSpy.mockClear();
+      nextBookId('42');
+
+      const calls = fetchBookReadingRecordsSpy.mock.calls as unknown[][];
+      expect(calls[0][4]).toBe(`BookId eq 42 and (contains(User,'bob'))`); // the list call
+      nextBookId(null);
+      component.filterDef.set(undefined);
+    });
+
+    it('clearing the scope refetches unscoped', () => {
+      nextBookId('42');
+      fetchBookReadingRecordsSpy.mockClear();
+      nextBookId(null);
+
+      expect(component.scopedBookId()).toBeNull();
+      const calls = fetchBookReadingRecordsSpy.mock.calls as unknown[][];
+      expect(calls.length).toBeGreaterThan(1);
+      for (const c of calls) {
+        expect(c[4] || '').toBe(''); // list: '' from toODataFilter; count: undefined
+      }
+    });
+
+    it('lights filterActive while scoped (and only then)', () => {
+      expect(component.filterActive()).toBe(false);
+      nextBookId('42');
+      expect(component.filterActive()).toBe(true);
+      nextBookId(null);
+      expect(component.filterActive()).toBe(false);
+    });
+
+    it('clearBookScope drops the bookId query param', () => {
+      nextBookId('42');
+      const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      component.clearBookScope();
+      expect(navigateSpy).toHaveBeenCalledWith([], {
+        relativeTo: expect.anything(),
+        queryParams: { bookId: null },
+      });
+      nextBookId(null); // the real router replays params; drive it manually here
+    });
+
+    it('chip label falls back to #id while the catalog does not know the book', () => {
+      nextBookId('42');
+      expect(component.scopedBookName()).toBe('#42');
+      nextBookId(null);
     });
   });
 

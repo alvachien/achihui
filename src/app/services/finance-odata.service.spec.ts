@@ -2360,6 +2360,22 @@ describe('FinanceOdataService', () => {
       });
     });
 
+    it('ANDs in the dialog $filter fragment and the case-insensitive search', () => {
+      service.fetchAllDocuments([], 20, 0, undefined, "O'Brien", `contains(Desp,'foo') or ID gt 7`).subscribe();
+
+      const req: SafeAny = httpTestingController.expectOne(
+        (requrl: SafeAny) => requrl.method === 'GET' && requrl.url === service.documentAPIUrl,
+      );
+      const f: string = req.request.params.get('$filter');
+      expect(f).toContain(`HomeID eq ${fakeData.chosedHome.ID}`);
+      // structured fragment is parenthesized so an inner OR cannot leak
+      expect(f).toContain(`and (contains(Desp,'foo') or ID gt 7)`);
+      // search: single quotes doubled, tolower on both sides (book-list rule)
+      expect(f).toContain(`contains(tolower(Desp),tolower('O''Brien'))`);
+      expect(f).toContain(`contains(tolower(TranCurr),tolower('O''Brien'))`);
+      req.flush({ value: [] });
+    });
+
     it('should return error in case error appear', () => {
       const msg = 'server failed';
       const filterDocItem = [];

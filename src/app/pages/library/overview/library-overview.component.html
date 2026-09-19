@@ -1,0 +1,210 @@
+<nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'" [nzTip]="'Common.Loading' | transloco">
+  <nz-page-header nzBackIcon>
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>{{ 'Nav.LibraryTrace' | transloco }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-title>{{ 'Common.Overview' | transloco }}</nz-page-header-title>
+    <nz-page-header-subtitle>
+      <span class="home-chip"><i nz-icon nzType="apartment"></i>{{ homeName() }}</span>
+    </nz-page-header-subtitle>
+    <nz-page-header-extra>
+      <a nz-button nzType="link" (click)="fetchData()">
+        <i nz-icon nzType="redo"></i>{{ 'Common.Refresh' | transloco }}
+      </a>
+    </nz-page-header-extra>
+  </nz-page-header>
+
+  <div class="overview-body">
+    <!-- Frequently used entries, kept at the top so they are reachable without scrolling. -->
+    <div class="quick-links">
+      <a nz-button nzType="primary" [routerLink]="['/', 'library', 'book', 'create']">
+        <i nz-icon nzType="plus"></i>{{ 'Library.AddBook' | transloco }}
+      </a>
+      <a nz-button nzType="default" [routerLink]="['/', 'library', 'book']">
+        <i nz-icon nzType="book"></i>{{ 'Library.Books' | transloco }}
+      </a>
+      <!-- Deep link: the reading list strips ?create=1 after opening the dialog. -->
+      <a
+        nz-button
+        nzType="primary"
+        nzGhost
+        [routerLink]="['/', 'library', 'readingrecord']"
+        [queryParams]="{ create: 1 }"
+      >
+        <i nz-icon nzType="plus"></i>{{ 'Library.CreateReadingRecord' | transloco }}
+      </a>
+      <a nz-button nzType="default" [routerLink]="['/', 'library', 'readingrecord']">
+        <i nz-icon nzType="read"></i>{{ 'Library.ReadingRecords' | transloco }}
+      </a>
+      <a nz-button nzType="default" [routerLink]="['/', 'library', 'config']">
+        <i nz-icon nzType="tool"></i>{{ 'Finance.ConfigObjects' | transloco }}
+      </a>
+    </div>
+
+    <!-- Key figures: collection size and the month-over-month add / finish flow. -->
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 24 }" class="stat-row">
+      <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+        <a class="stat-link" [routerLink]="['/', 'library', 'book']">
+          <nz-card class="stat-card" nzHoverable>
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-book"><i nz-icon nzType="book"></i></span>
+              <nz-statistic
+                [nzTitle]="'Library.TotalBooks' | transloco"
+                [nzValue]="totalBooks()"
+                [nzSuffix]="'Library.UnitBooks' | transloco"
+              ></nz-statistic>
+            </div>
+          </nz-card>
+        </a>
+      </div>
+      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+        <nz-card class="stat-card">
+          <div class="stat-flex">
+            <span class="stat-badge stat-badge-add"><i nz-icon nzType="calendar"></i></span>
+            <nz-statistic
+              [nzTitle]="'Library.AddedThisMonth' | transloco"
+              [nzValue]="addedThisMonth()"
+              [nzSuffix]="'Library.UnitBooks' | transloco"
+            ></nz-statistic>
+          </div>
+        </nz-card>
+      </div>
+      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="4" nzXl="4" nzXxl="4">
+        <nz-card class="stat-card">
+          <div class="stat-flex">
+            <span class="stat-badge stat-badge-muted"><i nz-icon nzType="calendar"></i></span>
+            <nz-statistic
+              [nzTitle]="'Library.AddedLastMonth' | transloco"
+              [nzValue]="addedLastMonth()"
+              [nzSuffix]="'Library.UnitBooks' | transloco"
+            ></nz-statistic>
+          </div>
+        </nz-card>
+      </div>
+      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+        <a class="stat-link" [routerLink]="['/', 'library', 'readingrecord']">
+          <nz-card class="stat-card" nzHoverable>
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-read"><i nz-icon nzType="read"></i></span>
+              <nz-statistic
+                [nzTitle]="'Library.CompletedThisMonth' | transloco"
+                [nzValue]="completedThisMonth()"
+                [nzSuffix]="'Library.UnitBooks' | transloco"
+              ></nz-statistic>
+            </div>
+          </nz-card>
+        </a>
+      </div>
+      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+        <a class="stat-link" [routerLink]="['/', 'library', 'readingrecord']">
+          <nz-card class="stat-card" nzHoverable>
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-muted"><i nz-icon nzType="read"></i></span>
+              <nz-statistic
+                [nzTitle]="'Library.CompletedLastMonth' | transloco"
+                [nzValue]="completedLastMonth()"
+                [nzSuffix]="'Library.UnitBooks' | transloco"
+              ></nz-statistic>
+            </div>
+          </nz-card>
+        </a>
+      </div>
+    </div>
+
+    @if (totalBooks() === 0 && !isLoadingResults()) {
+      <nz-card class="empty-card">
+        <nz-empty [nzNotFoundContent]="'Library.EmptyOverview' | transloco"></nz-empty>
+      </nz-card>
+    }
+
+    <!-- Top-3 rankings for the selected home, each with a bar relative to its leader. -->
+    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 24 }" class="rank-row">
+      <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="8" nzXl="8" nzXxl="8">
+        <nz-card class="rank-card" [nzTitle]="titleCategories">
+          <ng-template #titleCategories>
+            <span class="rank-card-title"><i nz-icon nzType="tag"></i>{{ 'Library.TopCategories' | transloco }}</span>
+          </ng-template>
+          @for (item of topCategories(); track item.key; let idx = $index) {
+            <div class="rank-line">
+              <span
+                class="rank-no"
+                [class.rank-no-1]="idx === 0"
+                [class.rank-no-2]="idx === 1"
+                [class.rank-no-3]="idx === 2"
+                >{{ idx + 1 }}</span
+              >
+              <span class="rank-name" [title]="item.name">{{ item.name }}</span>
+              <span class="rank-count">{{ item.count }}</span>
+            </div>
+            <nz-progress
+              class="rank-bar"
+              [nzPercent]="rankingPercent(item, topCategories())"
+              [nzShowInfo]="false"
+              [nzStrokeWidth]="6"
+            ></nz-progress>
+          } @empty {
+            <div class="rank-empty">{{ 'Library.EmptyOverview' | transloco }}</div>
+          }
+        </nz-card>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="8" nzXl="8" nzXxl="8">
+        <nz-card class="rank-card" [nzTitle]="titleAuthors">
+          <ng-template #titleAuthors>
+            <span class="rank-card-title"><i nz-icon nzType="user"></i>{{ 'Library.TopAuthors' | transloco }}</span>
+          </ng-template>
+          @for (item of topAuthors(); track item.key; let idx = $index) {
+            <div class="rank-line">
+              <span
+                class="rank-no"
+                [class.rank-no-1]="idx === 0"
+                [class.rank-no-2]="idx === 1"
+                [class.rank-no-3]="idx === 2"
+                >{{ idx + 1 }}</span
+              >
+              <span class="rank-name" [title]="item.name">{{ item.name }}</span>
+              <span class="rank-count">{{ item.count }}</span>
+            </div>
+            <nz-progress
+              class="rank-bar"
+              [nzPercent]="rankingPercent(item, topAuthors())"
+              [nzShowInfo]="false"
+              [nzStrokeWidth]="6"
+            ></nz-progress>
+          } @empty {
+            <div class="rank-empty">{{ 'Library.EmptyOverview' | transloco }}</div>
+          }
+        </nz-card>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="8" nzXl="8" nzXxl="8">
+        <nz-card class="rank-card" [nzTitle]="titlePresses">
+          <ng-template #titlePresses>
+            <span class="rank-card-title">
+              <i nz-icon nzType="printer"></i>{{ 'Library.TopPresses' | transloco }}
+            </span>
+          </ng-template>
+          @for (item of topPresses(); track item.key; let idx = $index) {
+            <div class="rank-line">
+              <span
+                class="rank-no"
+                [class.rank-no-1]="idx === 0"
+                [class.rank-no-2]="idx === 1"
+                [class.rank-no-3]="idx === 2"
+                >{{ idx + 1 }}</span
+              >
+              <span class="rank-name" [title]="item.name">{{ item.name }}</span>
+              <span class="rank-count">{{ item.count }}</span>
+            </div>
+            <nz-progress
+              class="rank-bar"
+              [nzPercent]="rankingPercent(item, topPresses())"
+              [nzShowInfo]="false"
+              [nzStrokeWidth]="6"
+            ></nz-progress>
+          } @empty {
+            <div class="rank-empty">{{ 'Library.EmptyOverview' | transloco }}</div>
+          }
+        </nz-card>
+      </div>
+    </div>
+  </div>
+</nz-spin>

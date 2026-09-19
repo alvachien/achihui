@@ -9,12 +9,11 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 import { format, subMonths, endOfMonth, parse } from 'date-fns';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import {
   ConsoleLogTypeEnum,
@@ -33,7 +32,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { FormsModule } from '@angular/forms';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 
 @Component({
@@ -41,6 +40,7 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
   templateUrl: './statement-of-income-expense-month-on-month.component.html',
   styleUrls: ['./statement-of-income-expense-month-on-month.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideEchartsCore({ echarts })],
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -49,6 +49,8 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
     NzRadioModule,
     NzGridModule,
     NgxEchartsModule,
+    NzModalModule,
+    RouterModule,
     TranslocoModule,
   ],
 })
@@ -57,13 +59,11 @@ export class StatementOfIncomeExpenseMonthOnMonthComponent implements OnInit {
   excludeTransfer = false;
   selectedPeriod = financePeriodLast3Months;
   reportData: FinanceReportEntryMoM[] = [];
-  chartOption: EChartsOption | null = null;
+  chartOption: echarts.EChartsOption | null = null;
 
   private readonly odataService = inject(FinanceOdataService);
 
   private readonly modalService = inject(NzModalService);
-
-  private readonly drawerService = inject(NzDrawerService);
 
   private readonly uiStatusService = inject(UIStatusService);
 

@@ -1735,16 +1735,22 @@ export class FinanceOdataService {
 
   /**
    * Read all documents
-   * @param dtbgn Begin date
-   * @param dtend End Date
+   * @param filters Legacy flat filter items (date range, child-mode author scope)
    * @param top The maximum returned amount
    * @param skip Skip the amount
+   * @param orderby Optional sort clause
+   * @param search Optional free-text pre-filter, matched case-insensitively against
+   * Desp or TranCurr (the filter bar's live search — see docs §7.1)
+   * @param odataFilter Optional OData `$filter` fragment translated from the shared
+   * filter dialog's condition tree via toODataFilter() (parenthesized on AND-in)
    */
   public fetchAllDocuments(
     filters: GeneralFilterItem[],
     top?: number,
     skip?: number,
     orderby?: { field: string; order: string },
+    search?: string,
+    odataFilter?: string,
   ): Observable<BaseListModel<Document>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -1752,10 +1758,24 @@ export class FinanceOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
     const hid = this.homeService.ChosedHome?.ID ?? 0;
-    let filterstr = `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0}`;
+    let filterstr = `HomeID eq ${hid}`;
     const subfilter = getFilterString(filters);
     if (subfilter) {
       filterstr += ` and ${subfilter}`;
+    }
+    // Structured filter from the shared dialog: wrap so an inner OR cannot leak
+    // into the surrounding AND chain.
+    const structured = odataFilter?.trim();
+    if (structured) {
+      filterstr += ` and (${structured})`;
+    }
+    // Live free-text pre-filter. tolower() on BOTH sides: SQLite translates
+    // contains() to instr(), which is case-sensitive (same rule as fetchBooks).
+    const trimmedSearch = search?.trim();
+    if (trimmedSearch) {
+      const escaped = trimmedSearch.replace(/'/g, "''");
+      const searchClause = `(contains(tolower(Desp),tolower('${escaped}')) or contains(tolower(TranCurr),tolower('${escaped}')))`;
+      filterstr += ` and ${searchClause}`;
     }
 
     let params: HttpParams = new HttpParams();

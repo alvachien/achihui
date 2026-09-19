@@ -11,9 +11,9 @@ import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NumberUtility } from 'actslib';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 import { format, subMonths } from 'date-fns';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 
 import { FinanceOdataService } from '@services/index';
 import { SafeAny } from '@common/any';
@@ -36,13 +36,15 @@ import { NzRadioGroupComponent, NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FormsModule } from '@angular/forms';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'hih-account-month-on-month-report',
   templateUrl: './account-month-on-month-report.component.html',
   styleUrls: ['./account-month-on-month-report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideEchartsCore({ echarts })],
   imports: [
     NzRadioModule,
     NzButtonModule,
@@ -53,6 +55,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NzGridModule,
     FormsModule,
     NgxEchartsModule,
+    NzModalModule,
+    RouterModule,
     TranslocoModule,
   ],
 })
@@ -71,7 +75,7 @@ export class AccountMonthOnMonthReportComponent implements OnInit {
   arUIAccounts = signal<UIAccountForSelection[]>([]);
   selectedAccountID: number | null = null;
   selectedPeriod = financePeriodLast3Months;
-  chartOption: EChartsOption | null = null;
+  chartOption: echarts.EChartsOption | null = null;
 
   get isGoButtonDisabled(): boolean {
     if (this.selectedAccountID === null) {

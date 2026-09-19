@@ -34,6 +34,8 @@ describe('OrganizationDetailComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let readOrganizationSpy: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let fetchAllOrganizationsSpy: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let createOrganizationSpy: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateOrganizationSpy: any;
@@ -52,11 +54,14 @@ describe('OrganizationDetailComponent', () => {
     storageService = createSpyObj('LibraryStorageService', [
       'readOrganization',
       'fetchAllOrganizationTypes',
+      'fetchAllOrganizations',
       'createOrganization',
       'updateOrganization',
     ]);
     readOrganizationSpy = storageService.readOrganization.and.returnValue(of({}));
     storageService.fetchAllOrganizationTypes.and.returnValue(of([]));
+    // Duplicate pre-check: default to an empty home list so unrelated saves pass.
+    fetchAllOrganizationsSpy = storageService.fetchAllOrganizations.and.returnValue(of([]));
     createOrganizationSpy = storageService.createOrganization.and.returnValue(of({}));
     updateOrganizationSpy = storageService.updateOrganization.and.returnValue(of({}));
     homeService = {
@@ -375,6 +380,140 @@ describe('OrganizationDetailComponent', () => {
       fixture.detectChanges();
 
       expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+    });
+  });
+
+  describe('duplicate pre-check', () => {
+    let overlayContainer: OverlayContainer;
+    let overlayContainerElement: HTMLElement;
+
+    const mkOrg = (id: number, nn: string, cn = ''): Organization => {
+      const p = new Organization();
+      p.ID = id;
+      p.NativeName = nn;
+      p.ChineseName = cn;
+      return p;
+    };
+
+    beforeEach(() => {
+      const oc: OverlayContainer = TestBed.inject(OverlayContainer);
+      overlayContainer = oc;
+      overlayContainerElement = oc.getContainerElement();
+      // Spies are built in the shared beforeAll and keep their call records across
+      // describes - clear so not.toHaveBeenCalled()/toHaveBeenCalled() are meaningful
+      // here (mockClear keeps the configured return values).
+      createOrganizationSpy.mockClear();
+      updateOrganizationSpy.mockClear();
+    });
+
+    afterEach(() => {
+      overlayContainer.ngOnDestroy();
+    });
+
+    it('blocks create when a cached organization has the same NativeName', async () => {
+      fetchAllOrganizationsSpy.and.returnValue(of([mkOrg(5, 'Test org')]));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test org');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(createOrganizationSpy).not.toHaveBeenCalled();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+    });
+
+    it('blocks create when the input NativeName hits a cached ChineseName (cross-match)', async () => {
+      fetchAllOrganizationsSpy.and.returnValue(of([mkOrg(5, 'Other', 'Test org')]));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test org');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(createOrganizationSpy).not.toHaveBeenCalled();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+    });
+
+    it('blocks create on case and whitespace variation of a cached name', async () => {
+      fetchAllOrganizationsSpy.and.returnValue(of([mkOrg(5, '  test org ')]));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test org');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(createOrganizationSpy).not.toHaveBeenCalled();
+      expect(overlayContainerElement.querySelectorAll('.ant-modal-body').length).toBe(1);
+    });
+
+    it('allows create when ChineseNames are both empty and NativeNames differ', async () => {
+      fetchAllOrganizationsSpy.and.returnValue(of([mkOrg(5, 'Other', '')]));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test org');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+
+      expect(createOrganizationSpy).toHaveBeenCalled();
+    });
+
+    it('still submits when the pre-check fetch fails (API guard is authoritative)', async () => {
+      fetchAllOrganizationsSpy.and.returnValue(asyncError<string>('Service failed'));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.get('nnameControl')?.setValue('Test org');
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+
+      // asyncError rejects on a macrotask; the error handler must fall through to submit.
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(createOrganizationSpy).toHaveBeenCalled();
+    });
+
+    it('edit mode: saving the record with its own name unchanged is not blocked', async () => {
+      activatedRouteStub.setURL([new UrlSegment('edit', {}), new UrlSegment('122', {})] as UrlSegment[]);
+      const self = mkOrg(122, 'Test org');
+      storageService.fetchAllOrganizationTypes.and.returnValue(asyncData([]));
+      readOrganizationSpy.and.returnValue(asyncData(self));
+      updateOrganizationSpy.and.returnValue(asyncData(self));
+      // The home list contains the edited record itself - self-exclusion must kick in.
+      fetchAllOrganizationsSpy.and.returnValue(of([self]));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.detailFormGroup.markAsDirty();
+      component.onSave();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(updateOrganizationSpy).toHaveBeenCalled();
     });
   });
 });

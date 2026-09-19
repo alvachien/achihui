@@ -318,6 +318,36 @@ export class BookDetailComponent implements OnInit {
     objtbo.Locations = this.listLocations().slice();
     objtbo.Presses = this.listPresses().slice();
 
+    // Duplicate pre-check: books have no local cache, so the check goes through the
+    // service's dedicated method (exact-match $filter, self-excluded in update mode),
+    // mirroring the API guard's rule. This is a heuristic (TOCTOU) - the API guard is
+    // authoritative: on a pre-check FETCH failure we still submit and surface the
+    // server's 400 through the regular error modal.
+    this.storageService
+      .checkBookDuplicate(
+        objtbo.NativeName,
+        objtbo.ChineseName,
+        this.uiMode() === UIMode.Update ? this.routerID() : undefined,
+      )
+      .pipe(takeUntilDestroyed(this.destroyedRef))
+      .subscribe({
+        next: (dup) => {
+          if (dup) {
+            this.isSubmitting.set(false);
+            this.modal.warning({
+              nzTitle: translate('Common.Warning'),
+              nzContent: translate('Library.DuplicatedNameWarning'),
+              nzClosable: true,
+            });
+            return;
+          }
+          this.submitBook(objtbo);
+        },
+        error: () => this.submitBook(objtbo),
+      });
+  }
+
+  private submitBook(objtbo: Book): void {
     if (this.uiMode() === UIMode.Create) {
       this.storageService
         .createBook(objtbo)

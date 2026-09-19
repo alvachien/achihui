@@ -1,4 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzResultModule } from 'ng-zorro-antd/result';
@@ -32,6 +33,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     TranTypeListComponent,
     TranslocoModule,
     NzModalModule,
+    RouterModule,
   ],
 })
 export class ConfigComponent {

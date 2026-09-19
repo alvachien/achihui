@@ -1503,6 +1503,76 @@ describe('LibraryStorageService', () => {
     });
   });
 
+  describe('checkBookDuplicate', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('emits false without any request for a blank native name', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate('   ').subscribe((v) => (emitted = v));
+      expect(emitted).toBe(false);
+      // No request asserted by afterEach verify() - nothing must be on the wire.
+    });
+
+    it('composes exact-match clauses for both names and reports count > 0 as duplicate', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate('Cross', 'C&J').subscribe((v) => (emitted = v));
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+      // OR-list self-grouped: fetchBooks adds its own (...) around the fragment, and
+      // the whole thing is ANDed after the home scope - precedence must not leak.
+      // tolower() both sides mirrors the API guard's case-folded comparison.
+      expect(req.request.params.get('$filter')).toEqual(
+        `HomeID eq ${fakeData.chosedHome.ID} and ((tolower(NativeName) eq 'cross' or tolower(ChineseName) eq 'cross' ` +
+          `or tolower(NativeName) eq 'c&j' or tolower(ChineseName) eq 'c&j'))`,
+      );
+      expect(req.request.params.get('$top')).toEqual('1');
+      expect(req.request.params.get('search')).toBeNull();
+
+      req.flush({ '@odata.count': 1, value: [] });
+      expect(emitted).toBe(true);
+    });
+
+    it('escapes single quotes in names (OData doubles them)', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate("O'Brien").subscribe((v) => (emitted = v));
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+      expect(req.request.params.get('$filter')).toEqual(
+        `HomeID eq ${fakeData.chosedHome.ID} and ((tolower(NativeName) eq 'o''brien' or tolower(ChineseName) eq 'o''brien'))`,
+      );
+
+      req.flush({ '@odata.count': 0, value: [] });
+      expect(emitted).toBe(false);
+    });
+
+    it('excludes the edited record via Id ne inside the composed filter', () => {
+      let emitted: boolean | null = null;
+      service.checkBookDuplicate('Cross', undefined, 7).subscribe((v) => (emitted = v));
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'GET' && requrl.url === service.bookAPIURL;
+      });
+      // `and Id ne 7` binds INSIDE fetchBooks' wrapper alongside the OR group, never
+      // after an ungrouped OR (which would let the excluded row slip through).
+      expect(req.request.params.get('$filter')).toEqual(
+        `HomeID eq ${fakeData.chosedHome.ID} and ((tolower(NativeName) eq 'cross' or tolower(ChineseName) eq 'cross') and Id ne 7)`,
+      );
+
+      req.flush({ '@odata.count': 0, value: [] });
+      expect(emitted).toBe(false);
+    });
+  });
+
   describe('readBoook', () => {
     let objdata: Book;
     beforeEach(() => {
@@ -1806,6 +1876,70 @@ describe('LibraryStorageService', () => {
       expect(filter).toContain("contains(tolower(User),tolower('creator'))");
 
       req.flush({ '@odata.count': 0, value: [] });
+    });
+  });
+
+  // Library overview aggregate: ONE bound-action POST replaces the old paged
+  // $expand walks (the server caps $top at 100 and the ranking math moved to
+  // the API - covered by the server-side action tests).
+  describe('fetchLibraryOverviewKeyFigure', () => {
+    beforeEach(() => {
+      service = TestBed.inject(LibraryStorageService);
+    });
+    afterEach(() => {
+      httpTestingController.verify();
+    });
+
+    it('should POST the home-scoped action and map the one-element value list', () => {
+      service.fetchLibraryOverviewKeyFigure().subscribe((stats) => {
+        expect(stats.totalBooks).toEqual(7);
+        expect(stats.addedThisMonth).toEqual(2);
+        expect(stats.addedLastMonth).toEqual(1);
+        expect(stats.completedThisMonth).toEqual(3);
+        expect(stats.completedLastMonth).toEqual(0);
+        expect(stats.topCategories.length).toEqual(1);
+        expect(stats.topCategories[0]).toEqual({ key: '5', name: 'Cat', count: 4 });
+        expect(stats.topAuthors, 'absent wire arrays fold to empty lists').toEqual([]);
+        expect(stats.topPresses).toEqual([]);
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.bookAPIURL + '/GetLibraryOverviewKeyFigure';
+      });
+      // The HttpClient testing controller exposes the object body parsed.
+      const body: any = req.request.body;
+      expect(Object.keys(body)).toEqual(['HomeID']);
+
+      req.flush({
+        value: [
+          {
+            HomeID: 2,
+            TotalBooks: 7,
+            AddedThisMonth: 2,
+            AddedLastMonth: 1,
+            CompletedThisMonth: 3,
+            CompletedLastMonth: 0,
+            TopCategories: [{ Key: 5, Name: 'Cat', Count: 4 }],
+          },
+        ],
+      });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'Error 404';
+      service.fetchLibraryOverviewKeyFigure().subscribe({
+        next: () => {
+          throw new Error('expected to fail');
+        },
+        error: (err) => {
+          expect(err.toString()).toContain(msg);
+        },
+      });
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'POST' && requrl.url === service.bookAPIURL + '/GetLibraryOverviewKeyFigure';
+      });
+      req.flush(msg, { status: 404, statusText: 'Not Found' });
     });
   });
 });

@@ -9,7 +9,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { UntypedFormGroup, Validators, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -107,6 +107,7 @@ interface PayingAccountItem {
     UIAccountStatusFilterPipe,
     UIAccountCtgyFilterExPipe,
     NgIf,
+    RouterModule,
   ],
 })
 export class DocumentLoanRepayCreateComponent implements OnInit {

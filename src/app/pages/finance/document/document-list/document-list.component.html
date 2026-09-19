@@ -76,10 +76,43 @@
           </li>
         </ul>
       </nz-dropdown-menu>
-      <nz-divider nzType="vertical"></nz-divider>
-      <nz-range-picker [(ngModel)]="selectedRange" (ngModelChange)="onRangeChange($event)"></nz-range-picker>
     </nz-page-header-extra>
   </nz-page-header>
+  <!-- Filter row: the bar (live free-text pre-filter, debounced refetch per
+       keystroke + date-scope segment + structured-filter menu, highlighted
+       while any narrowing is in effect) takes the remaining width; the
+       `total | filtered` count sticks to the right end of the row. -->
+  <div class="filter-row">
+    <div class="filter-bar" [class.filter-bar-on]="filterActive()">
+      <input
+        type="text"
+        nz-input
+        class="filter-bar-input"
+        [ngModel]="searchText()"
+        (ngModelChange)="onSearchInput($event)"
+        placeholder="{{ 'Common.Search' | transloco }}"
+      />
+      <nz-divider nzType="vertical"></nz-divider>
+      <!-- Merged from the header nz-range-picker: presets + "No restriction";
+           a precise/custom window is defined in the filter dialog instead. -->
+      <hih-date-scope (rangeChange)="onScopeChange($event)" (keyChange)="scopeKey.set($event)"></hih-date-scope>
+      <nz-divider nzType="vertical"></nz-divider>
+      <button nz-button nzType="link" nz-dropdown [nzDropdownMenu]="menuFilter" [class.filter-bar-active]="hasFilter()">
+        {{ 'Common.Filter' | transloco }}
+        <i nz-icon nzType="down"></i>
+      </button>
+      <nz-dropdown-menu #menuFilter="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="onEditFilter()">{{ filterMenuText() }}</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item [nzDisabled]="!hasFilter()" (click)="onClearFilter()">
+            {{ 'Filter.ClearFilter' | transloco }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <div class="table-count">{{ totalCountAll() }} | {{ totalDocumentCount() }}</div>
+  </div>
   <div nz-row>
     <nz-table
       #docTable

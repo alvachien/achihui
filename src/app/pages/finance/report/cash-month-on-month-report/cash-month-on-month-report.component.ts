@@ -9,13 +9,12 @@ import {
 } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Router } from '@angular/router';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { Router, RouterModule } from '@angular/router';
 import { translate, TranslocoModule } from '@jsverse/transloco';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 import { format, subMonths, endOfMonth, parse } from 'date-fns';
 import { NumberUtility } from 'actslib';
-import { NzDrawerService } from 'ng-zorro-antd/drawer';
 
 import {
   ConsoleLogTypeEnum,
@@ -33,13 +32,14 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { FormsModule } from '@angular/forms';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsModule, provideEchartsCore } from 'ngx-echarts';
 
 @Component({
   selector: 'hih-cash-month-on-month-report',
   templateUrl: './cash-month-on-month-report.component.html',
   styleUrls: ['./cash-month-on-month-report.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideEchartsCore({ echarts })],
   imports: [
     NzPageHeaderModule,
     NzBreadCrumbModule,
@@ -47,6 +47,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NzGridModule,
     FormsModule,
     NgxEchartsModule,
+    NzModalModule,
+    RouterModule,
     TranslocoModule,
   ],
 })
@@ -54,13 +56,11 @@ export class CashMonthOnMonthReportComponent implements OnInit {
   isLoadingResults = signal(false);
   selectedPeriod = financePeriodLast3Months;
   reportData: FinanceReportEntryMoM[] = [];
-  chartOption: EChartsOption | null = null;
+  chartOption: echarts.EChartsOption | null = null;
 
   private readonly odataService = inject(FinanceOdataService);
 
   private readonly modalService = inject(NzModalService);
-
-  public readonly drawerService = inject(NzDrawerService);
 
   private readonly uiStatusService = inject(UIStatusService);
 

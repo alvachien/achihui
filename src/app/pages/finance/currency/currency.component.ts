@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
@@ -25,6 +26,7 @@ import { FinanceOdataService } from '@services/index';
     NzModalModule,
     TranslocoModule,
     NzTypographyModule,
+    RouterModule,
   ],
 })
 export class CurrencyComponent implements OnInit {

@@ -4,6 +4,127 @@
   padding: 0;
 }
 
+/* --- Modern key-figure cards (same visual language as the library overview) --- */
+
+.home-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.12);
+  font-size: 13px;
+}
+
+.kfig-row {
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.stat-flex {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #fff;
+  flex: 0 0 auto;
+}
+
+.stat-badge-in {
+  background: linear-gradient(135deg, #52c41a, #237804);
+}
+
+.stat-badge-out {
+  background: linear-gradient(135deg, #ff4d4f, #cf1322);
+}
+
+.stat-badge-ytdin {
+  background: linear-gradient(135deg, #1890ff, #0050b3);
+}
+
+.stat-badge-ytdout {
+  background: linear-gradient(135deg, #722ed1, #391085);
+}
+
+.stat-value-link {
+  color: inherit;
+}
+
+.stat-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  min-height: 22px;
+}
+
+.stat-foot-label {
+  opacity: 0.65;
+}
+
+.ratio-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Named for the outcome, not the arrow: on the outgo card a rise is the bad
+   one, so the same arrow colour means the opposite thing on each card. */
+.ratio-good {
+  color: #3f8600;
+  background: rgba(63, 134, 0, 0.1);
+}
+
+.ratio-bad {
+  color: #cf1322;
+  background: rgba(207, 19, 34, 0.08);
+}
+
+.net-up {
+  color: #3f8600;
+  font-weight: 600;
+}
+
+.net-down {
+  color: #cf1322;
+  font-weight: 600;
+}
+
+.calendar-card {
+  border-radius: 12px;
+}
+
+.card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
 .events .ant-badge-status {
   overflow: hidden;
   white-space: nowrap;
@@ -20,4 +141,3 @@
 .notes-month section {
   font-size: 28px;
 }
-  
