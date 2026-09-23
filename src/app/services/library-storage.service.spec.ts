@@ -1483,6 +1483,10 @@ describe('LibraryStorageService', () => {
           expect(data.contentList.length).toEqual(1);
           expect(data.contentList[0].CreatedatFormatString).toEqual('2026-09-01');
           expect(data.contentList[0].UpdatedatFormatString).toEqual('2026-09-12');
+          expect(data.contentList[0].ISBN).toEqual('978-0-00-000000-0');
+          expect(data.contentList[0].PublishedYear).toBe(2001);
+          expect(data.contentList[0].PageCount).toBe(300);
+          expect(data.contentList[0].CopyCount).toBe(0);
         },
         error: () => {
           // Empty
@@ -1495,10 +1499,31 @@ describe('LibraryStorageService', () => {
       const sel: string | null = req.request.params.get('$select');
       expect(sel).toContain('CreatedAt');
       expect(sel).toContain('UpdatedAt');
+      // The bibliographic columns are rendered by the list, so they must be
+      // selected too - otherwise every row would show blank despite the value
+      // being stored (and despite the filter dialog narrowing on it).
+      expect(sel).toContain('ISBN');
+      expect(sel).toContain('PublishedYear');
+      expect(sel).toContain('PageCount');
+      // CopyCount carries a meaningful 0 (a retired book), so a row narrowed on
+      // it must be able to show the 0 it matched on.
+      expect(sel).toContain('CopyCount');
 
       req.flush({
         '@odata.count': 1,
-        value: [{ Id: 1, HomeID: 2, NativeName: 'test1', CreatedAt: '2026-09-01', UpdatedAt: '2026-09-12' }],
+        value: [
+          {
+            Id: 1,
+            HomeID: 2,
+            NativeName: 'test1',
+            ISBN: '978-0-00-000000-0',
+            PublishedYear: 2001,
+            PageCount: 300,
+            CopyCount: 0,
+            CreatedAt: '2026-09-01',
+            UpdatedAt: '2026-09-12',
+          },
+        ],
       });
     });
   });
@@ -1893,6 +1918,7 @@ describe('LibraryStorageService', () => {
     it('should POST the home-scoped action and map the one-element value list', () => {
       service.fetchLibraryOverviewKeyFigure().subscribe((stats) => {
         expect(stats.totalBooks).toEqual(7);
+        expect(stats.totalCopies).toEqual(9);
         expect(stats.addedThisMonth).toEqual(2);
         expect(stats.addedLastMonth).toEqual(1);
         expect(stats.completedThisMonth).toEqual(3);
@@ -1915,6 +1941,7 @@ describe('LibraryStorageService', () => {
           {
             HomeID: 2,
             TotalBooks: 7,
+            TotalCopies: 9,
             AddedThisMonth: 2,
             AddedLastMonth: 1,
             CompletedThisMonth: 3,

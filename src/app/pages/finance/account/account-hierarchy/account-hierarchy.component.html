@@ -176,11 +176,12 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control>
-          <nz-select [(ngModel)]="selectedAccountForSettle!.ControlCenterID">
-            @for (tt of arControlCenters(); track tt.Id) {
-              <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-            }
-          </nz-select>
+          <!-- Shared inline tree-select (hierarchy in the panel, dotted full
+               path on the trigger). -->
+          <hih-controlcenter-tree-select
+            [(ngModel)]="selectedAccountForSettle!.ControlCenterID"
+            [controlCenters]="arControlCenters()"
+          ></hih-controlcenter-tree-select>
         </nz-form-control>
       </nz-form-item>
     </ng-template>

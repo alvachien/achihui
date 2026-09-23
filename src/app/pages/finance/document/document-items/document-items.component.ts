@@ -33,6 +33,8 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { RouterModule } from '@angular/router';
+import { TranTypeTreeSelectComponent } from '../../../../shared/trantype-tree-select';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-fin-document-items',
@@ -59,6 +61,8 @@ import { RouterModule } from '@angular/router';
     NzDividerModule,
     NzFormModule,
     NzSelectModule,
+    TranTypeTreeSelectComponent,
+    ControlCenterTreeSelectComponent,
     FormsModule,
     ReactiveFormsModule,
     NzInputNumberModule,

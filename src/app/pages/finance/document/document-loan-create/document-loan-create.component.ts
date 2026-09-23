@@ -74,6 +74,7 @@ import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-document-loan-create',
@@ -96,6 +97,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     NzInputNumberModule,
     NzCheckboxModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzAlertModule,
     NzSpinModule,
     NzResultModule,

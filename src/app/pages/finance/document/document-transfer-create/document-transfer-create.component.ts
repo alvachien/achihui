@@ -61,6 +61,7 @@ import { DecimalPipe } from '@angular/common';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-document-transfer-create',
@@ -77,6 +78,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     DocumentHeaderComponent,
     NzInputNumberModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzInputNumberModule,
     NzSpinModule,
     NzResultModule,

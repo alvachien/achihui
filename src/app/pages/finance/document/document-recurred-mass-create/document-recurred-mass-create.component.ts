@@ -73,6 +73,8 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { TranTypeTreeSelectComponent } from '../../../../shared/trantype-tree-select';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 class DocumentCountByDateRange {
   StartDate: Date | null = null;
@@ -99,6 +101,8 @@ class DocumentCountByDateRange {
     NzButtonModule,
     NzIconModule,
     NzPageHeaderModule,
+    TranTypeTreeSelectComponent,
+    ControlCenterTreeSelectComponent,
     NzBreadCrumbModule,
     NzStepsModule,
     FormsModule,

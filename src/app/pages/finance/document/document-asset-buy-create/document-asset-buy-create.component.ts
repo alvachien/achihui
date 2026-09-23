@@ -60,6 +60,7 @@ import { DocumentItemsComponent } from '../document-items';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-fin-document-asset-buy-create',
@@ -80,6 +81,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     NzDividerModule,
     AccountExtraAssetComponent,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzInputNumberModule,
     NzCheckboxModule,
     DocumentItemsComponent,

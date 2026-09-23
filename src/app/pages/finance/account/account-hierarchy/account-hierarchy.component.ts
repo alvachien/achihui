@@ -51,6 +51,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 import { DocumentItemViewComponent } from '../../document/document-item-view';
 import { DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -79,6 +80,7 @@ interface ISettleAccountDetail {
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzSpinModule,
     NzTreeModule,
     NzResizableModule,

@@ -33,6 +33,11 @@ export interface LibraryRankingItem {
  *  LibraryOverviewKeyFigure on the server). */
 export interface LibraryOverviewStats {
   totalBooks: number;
+  // Physical books on the shelf: SUM of each book's CopyCount, an unrecorded
+  // count reading as one copy and a retired book (0) adding none. Distinct from
+  // totalBooks, which counts rows - this one is larger whenever a title is held
+  // in several copies, smaller once books are retired.
+  totalCopies: number;
   addedThisMonth: number;
   addedLastMonth: number;
   completedThisMonth: number;
@@ -1065,7 +1070,14 @@ export class LibraryStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'Id,HomeID,NativeName,ChineseName,Detail,CreatedAt,UpdatedAt');
+    // Exactly the columns the list renders. Each of them is also a filter-dialog
+    // property, so a narrowed row can always show the value it matched on:
+    // filtering on a field missing from $select would still return the right rows
+    // (the server applies $filter before projecting) but they would look unfiltered.
+    params = params.append(
+      '$select',
+      'Id,HomeID,NativeName,ChineseName,ISBN,PublishedYear,PageCount,CopyCount,Detail,CreatedAt,UpdatedAt',
+    );
     if (orderby) {
       params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
@@ -1211,6 +1223,7 @@ export class LibraryStorageService {
 
           const stats: LibraryOverviewStats = {
             totalBooks: Number(raw.TotalBooks ?? 0),
+            totalCopies: Number(raw.TotalCopies ?? 0),
             addedThisMonth: Number(raw.AddedThisMonth ?? 0),
             addedLastMonth: Number(raw.AddedLastMonth ?? 0),
             completedThisMonth: Number(raw.CompletedThisMonth ?? 0),

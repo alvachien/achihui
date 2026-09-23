@@ -71,6 +71,7 @@ import { popupDialog } from '../../../message-dialog';
 import { AccountExtraDownpaymentComponent } from '../account-extra-downpayment';
 import { AccountExtraLoanComponent } from '../account-extra-loan';
 import { AccountExtraAssetComponent } from '../account-extra-asset';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-fin-account-detail',
@@ -86,6 +87,7 @@ import { AccountExtraAssetComponent } from '../account-extra-asset';
     ReactiveFormsModule,
     NzInputModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzDividerModule,
     NzInputNumberModule,
     NzDatePickerModule,

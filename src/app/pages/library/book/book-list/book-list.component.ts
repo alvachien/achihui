@@ -39,6 +39,20 @@ import {
 import { BorrowRecordCreateDlgComponent } from '../../borrow-record-create-dlg';
 import { ReadingRecordCreateDlgComponent } from '../../reading-record-create-dlg';
 
+// nz-table sort key (the nzSortKey on a column header) → OData field name.
+// A key missing here is simply not sortable.
+const BOOK_SORT_FIELDS: Record<string, string> = {
+  id: 'Id',
+  cname: 'ChineseName',
+  nname: 'NativeName',
+  isbn: 'ISBN',
+  pyear: 'PublishedYear',
+  pgcnt: 'PageCount',
+  ccnt: 'CopyCount',
+  createdat: 'CreatedAt',
+  updatedat: 'UpdatedAt',
+};
+
 // Filterable scalar Book fields, keyed by the OData entity field names.
 // HomeID is excluded (implicit scope, enforced by the service); language FKs
 // need a dictionary to be usable; navigation collections are out of scope.
@@ -60,6 +74,8 @@ const BOOK_FILTER_PROPERTIES: FilterableProperty[] = [
   },
   { key: 'PublishedYear', labelKey: 'Library.PublishedYear', kind: 'number', numberRange: { min: 1000, max: 9999 } },
   { key: 'PageCount', labelKey: 'Library.PageCount', kind: 'number', numberRange: { min: 1 } },
+  // min is 0, not 1: filtering for copies = 0 is how the retired books are listed.
+  { key: 'CopyCount', labelKey: 'Library.CopyCount', kind: 'number', numberRange: { min: 0 } },
   {
     key: 'Id',
     labelKey: 'Common.ID',
@@ -222,18 +238,7 @@ export class BookListComponent implements OnInit {
     // Map the table's sort key to the OData field name expected by the API.
     let orderby: { field: string; order: string } | undefined;
     if (sortField && sortOrder) {
-      const fieldName =
-        sortField === 'nname'
-          ? 'NativeName'
-          : sortField === 'cname'
-            ? 'ChineseName'
-            : sortField === 'id'
-              ? 'Id'
-              : sortField === 'createdat'
-                ? 'CreatedAt'
-                : sortField === 'updatedat'
-                  ? 'UpdatedAt'
-                  : '';
+      const fieldName = BOOK_SORT_FIELDS[sortField] ?? '';
       const fieldOrder = sortOrder === 'ascend' ? 'asc' : sortOrder === 'descend' ? 'desc' : '';
       if (fieldName && fieldOrder) {
         orderby = { field: fieldName, order: fieldOrder };

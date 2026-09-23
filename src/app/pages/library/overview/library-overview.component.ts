@@ -56,6 +56,10 @@ export class LibraryOverviewComponent implements OnInit {
 
   readonly homeName = computed(() => this.homeService.ChosedHome?.Name ?? '');
   readonly totalBooks = computed(() => this.stats()?.totalBooks ?? 0);
+  // The shelf, as opposed to the catalogue: same rows, but each contributing its
+  // copy count. Shown next to totalBooks because the pair is the interesting
+  // fact (titles held, physical books) - neither number alone says it.
+  readonly totalCopies = computed(() => this.stats()?.totalCopies ?? 0);
   readonly addedThisMonth = computed(() => this.stats()?.addedThisMonth ?? 0);
   readonly addedLastMonth = computed(() => this.stats()?.addedLastMonth ?? 0);
   readonly completedThisMonth = computed(() => this.stats()?.completedThisMonth ?? 0);

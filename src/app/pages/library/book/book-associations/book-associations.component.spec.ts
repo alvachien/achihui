@@ -42,23 +42,51 @@ describe('BookAssociationsComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it('emits removeCategory with the row id', () => {
+  it('emits removeCategory with the row object (identity, not id)', () => {
     const spy = vi.fn();
+    const row = new BookCategory();
+    row.ID = 42;
     component.removeCategory.subscribe(spy);
-    component.removeCategory.emit(42);
-    expect(spy).toHaveBeenCalledWith(42);
+    component.removeCategory.emit(row);
+    expect(spy).toHaveBeenCalledWith(row);
   });
 
-  it('renders assigned category names translated (Name stores a Sys.BkCtgy.* key)', () => {
-    // 'Computers & Technology' differs clearly from the key itself, so this
-    // fails if the table ever drops the `| transloco` pipe (or vice versa).
-    const categories = [{ ID: 21, Name: 'Sys.BkCtgy.Computer' }] as unknown as BookCategory[];
-    fixture.componentRef.setInput('categories', categories);
+  it('onCategoryPick emits the picked key together with its row', () => {
+    const spy = vi.fn();
+    const row = new BookCategory();
+    component.categoryPicked.subscribe(spy);
+    component.onCategoryPick('7', row);
+    expect(spy).toHaveBeenCalledWith({ key: '7', row });
+    component.onCategoryPick(null, row);
+    expect(spy).toHaveBeenCalledWith({ key: null, row });
+  });
+
+  it('renders one inline tree-select per category row (no selection dialog)', () => {
+    fixture.componentRef.setInput('categories', [
+      { ID: 5, Name: 'Sys.BkCtgy.Science' },
+      { ID: 6, Name: 'Sys.BkCtgy.Art' },
+    ] as unknown as BookCategory[]);
     fixture.detectChanges();
 
-    const cells = fixture.nativeElement.querySelectorAll('td') as NodeListOf<Element>;
-    const cellTexts: string[] = Array.from(cells).map((td) => td.textContent?.trim() ?? '');
-    expect(cellTexts.some((t) => t.includes('Computers & Technology'))).toBe(true);
-    expect(cellTexts.some((t) => t.includes('Sys.BkCtgy'))).toBe(false);
+    const selects = fixture.nativeElement.querySelectorAll('nz-tree-select') as NodeListOf<Element>;
+    expect(selects.length).toBe(2);
+  });
+
+  it('category row has no redundant Name column and never leaks the raw Sys.BkCtgy.* key', () => {
+    // The Name (a transloco KEY) must not be rendered next to the tree-select:
+    // the select shows the host-translated title, so any raw-key text in the
+    // row means the removed Name column came back (or leaked elsewhere).
+    const categories = [{ ID: 21, Name: 'Sys.BkCtgy.Computer' }] as unknown as BookCategory[];
+    fixture.componentRef.setInput('categories', categories);
+    fixture.componentRef.setInput('categoryTree', [{ key: '21', title: 'Computers & Technology(21)' }]);
+    fixture.detectChanges();
+
+    // The category row is the only place this component renders tree-selects,
+    // so anchor on one - a plain `tbody tr` would hit an empty Authors row.
+    const select = fixture.nativeElement.querySelector('nz-tree-select') as HTMLElement;
+    expect(select).toBeTruthy();
+    const row = select.closest('tr') as HTMLElement;
+    expect(row.textContent).toContain('21');
+    expect(row.textContent).not.toContain('Sys.BkCtgy');
   });
 });

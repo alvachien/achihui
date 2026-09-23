@@ -57,6 +57,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { ControlCenterTreeSelectComponent } from '../../shared/controlcenter-tree-select';
 
 class DateCellData {
   public CurrentDate: Date | null = null;
@@ -541,6 +542,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
     NzIconModule,
     NzModalModule,
     TranslocoModule,
+    ControlCenterTreeSelectComponent,
   ],
 })
 export class FinanceAssetDepreciationDlgComponent {

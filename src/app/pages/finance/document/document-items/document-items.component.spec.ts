@@ -4,6 +4,7 @@ import { signal, DebugElement } from '@angular/core';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
+import { NzTreeSelectComponent } from 'ng-zorro-antd/tree-select';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { Router } from '@angular/router';
@@ -306,23 +307,29 @@ describe('DocumentItemsComponent', () => {
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 2) {
-          // Tran type
+          // Tran type: inline tree-select. Nodes only exist in the overlay
+          // while the dropdown is open; the node wrapper span carries the
+          // click handler that drives the CVA -> (ngModelChange) path.
           const dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          const select = dbgelem.query(By.directive(NzSelectComponent));
-          expect(select).toBeTruthy();
-          const selectComponent = select.injector.get(NzSelectComponent);
-          expect(selectComponent).toBeTruthy();
-          select.nativeElement.click();
+          const tselect = dbgelem.query(By.directive(NzTreeSelectComponent));
+          expect(tselect).toBeTruthy();
+          // Unlike nz-select, the tree-select host carries no click listener
+          // (it lives on an inner div), so open the dropdown via its API.
+          (tselect.componentInstance as NzTreeSelectComponent).openDropdown();
           fixture.detectChanges();
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
-          const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-          // overlayContainerElement.querySelector('li')!.click();
+          const firstNode = overlayContainerElement.querySelector(
+            'nz-tree-node-title.ant-select-tree-node-content-wrapper',
+          ) as HTMLElement;
+          expect(firstNode).toBeTruthy();
+          firstNode.dispatchEvent(new MouseEvent('click', { bubbles: true }));
           fixture.detectChanges();
 
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
+          // Fake dictionary's first root is ID 1 (初始资金, income).
+          expect(component.listItems()[0].TranType).toEqual(1);
         } else if (i === 3) {
           // Amount
           const dbgelem = tablerows[0].childNodes[i] as DebugElement;
@@ -355,23 +362,27 @@ describe('DocumentItemsComponent', () => {
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
         } else if (i === 6) {
-          // Control center
+          // Control center: inline tree-select, same drill-down as the tran type.
           const dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          const select = dbgelem.query(By.directive(NzSelectComponent));
-          expect(select).toBeTruthy();
-          const selectComponent = select.injector.get(NzSelectComponent);
-          expect(selectComponent).toBeTruthy();
-          select.nativeElement.click();
+          const ctselect = dbgelem.query(By.directive(NzTreeSelectComponent));
+          expect(ctselect).toBeTruthy();
+          // Unlike nz-select, the tree-select host carries no click listener
+          // (it lives on an inner div), so open the dropdown via its API.
+          (ctselect.componentInstance as NzTreeSelectComponent).openDropdown();
           fixture.detectChanges();
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
-          const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-          // overlayContainerElement.querySelector('li')!.click();
+          const firstCcNode = overlayContainerElement.querySelector(
+            'nz-tree-node-title.ant-select-tree-node-content-wrapper',
+          ) as HTMLElement;
+          expect(firstCcNode).toBeTruthy();
+          firstCcNode.dispatchEvent(new MouseEvent('click', { bubbles: true }));
           fixture.detectChanges();
 
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
+          // Fake dictionary's first root is ID 1 (Control Center 1).
+          expect(component.listItems()[0].ControlCenterId).toEqual(1);
         } else if (i === 7) {
           // Order
           // Just skip it
@@ -433,19 +444,19 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(2);
         } else if (i === 2) {
-          // Tran type
+          // Tran type: tree-select now - one onChange per picked node.
           const dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          const select = dbgelem.query(By.directive(NzSelectComponent));
-          expect(select).toBeTruthy();
-          const selectComponent = select.injector.get(NzSelectComponent);
-          expect(selectComponent).toBeTruthy();
-          select.nativeElement.click();
+          const tselect = dbgelem.query(By.directive(NzTreeSelectComponent));
+          expect(tselect).toBeTruthy();
+          (tselect.componentInstance as NzTreeSelectComponent).openDropdown();
           fixture.detectChanges();
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
-          const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-          // overlayContainerElement.querySelector('li')!.click();
+          const firstNode = overlayContainerElement.querySelector(
+            'nz-tree-node-title.ant-select-tree-node-content-wrapper',
+          ) as HTMLElement;
+          expect(firstNode).toBeTruthy();
+          firstNode.dispatchEvent(new MouseEvent('click', { bubbles: true }));
           fixture.detectChanges();
 
           await new Promise<void>((r) => setTimeout(r, 0));
@@ -485,23 +496,24 @@ describe('DocumentItemsComponent', () => {
           fixture.detectChanges();
           expect(component.onChange).toHaveBeenCalledTimes(5);
         } else if (i === 6) {
-          // Control center
+          // Control center: inline tree-select, same drill-down as the tran type.
           const dbgelem = tablerows[0].childNodes[i] as DebugElement;
-          const select = dbgelem.query(By.directive(NzSelectComponent));
-          expect(select).toBeTruthy();
-          const selectComponent = select.injector.get(NzSelectComponent);
-          expect(selectComponent).toBeTruthy();
-          select.nativeElement.click();
+          const ctselect = dbgelem.query(By.directive(NzTreeSelectComponent));
+          expect(ctselect).toBeTruthy();
+          (ctselect.componentInstance as NzTreeSelectComponent).openDropdown();
           fixture.detectChanges(); // open the dropdown BEFORE ticking (as in the other branches)
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
-          const listOfContainerItem = overlayContainerElement.querySelectorAll('nz-option-item');
-          listOfContainerItem[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-          // overlayContainerElement.querySelector('li')!.click();
+          const firstCcNode = overlayContainerElement.querySelector(
+            'nz-tree-node-title.ant-select-tree-node-content-wrapper',
+          ) as HTMLElement;
+          expect(firstCcNode).toBeTruthy();
+          firstCcNode.dispatchEvent(new MouseEvent('click', { bubbles: true }));
           fixture.detectChanges();
 
           await new Promise<void>((r) => setTimeout(r, 0));
           fixture.detectChanges();
+          expect(component.listItems()[0].ControlCenterId).toEqual(1);
           expect(component.onChange).toHaveBeenCalledTimes(6);
         } else if (i === 7) {
           // Order

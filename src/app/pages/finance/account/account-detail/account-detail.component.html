@@ -155,11 +155,12 @@
         <nz-form-item>
           <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountTpl">
-            <nz-select nzAllowClear formControlName="ccControl">
-              @for (tt of arControlCenters; track tt.Id) {
-                <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-              }
-            </nz-select>
+            <!-- Shared inline tree-select (hierarchy in the panel, dotted full
+                 path on the trigger). -->
+            <hih-controlcenter-tree-select
+              formControlName="ccControl"
+              [controlCenters]="arControlCenters"
+            ></hih-controlcenter-tree-select>
           </nz-form-control>
         </nz-form-item>
 

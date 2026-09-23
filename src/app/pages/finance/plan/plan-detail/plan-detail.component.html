@@ -132,11 +132,10 @@
         <nz-form-item>
           <nz-form-label [nzSpan]="7">{{ 'Finance.TransactionType' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="trantypeTpl">
-            <nz-select formControlName="tranTypeControl">
-              @for (tt of arTranType(); track tt.Id) {
-                <nz-option [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
-              }
-            </nz-select>
+            <hih-trantype-tree-select
+              formControlName="tranTypeControl"
+              [tranTypes]="arTranType()"
+            ></hih-trantype-tree-select>
             <ng-template #trantypeTpl let-control>
               @if (control.hasError('required')) {
                 <ng-container>
@@ -151,11 +150,10 @@
         <nz-form-item>
           <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
           <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="controlCenterTpl">
-            <nz-select formControlName="controlCenterControl">
-              @for (tt of arControlCenters(); track tt.Id) {
-                <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-              }
-            </nz-select>
+            <hih-controlcenter-tree-select
+              formControlName="controlCenterControl"
+              [controlCenters]="arControlCenters()"
+            ></hih-controlcenter-tree-select>
             <ng-template #controlCenterTpl let-control>
               @if (control.hasError('required')) {
                 <ng-container>

@@ -756,7 +756,10 @@ front pagination).
 | `library/organization/organization-list` | client ❌ | `fetchAllOrganizations()` once → `displayList` |
 | `library/person-selection-dlg` | client ❌ | bounded picker |
 | `library/organization-selection-dlg` | client ❌ | bounded picker |
-| `library/config/book-category-selection-dlg` | client ❌ | bounded picker |
+
+> `library/config/book-category-selection-dlg` was a bounded picker in this table until
+> 2026-09-20, when it was deleted: `book-detail`/`book-associations` assign book categories
+> through inline tree-select rows instead (the rows' tree assembly is `@common/flat-tree`).
 
 ### Default rule going forward
 

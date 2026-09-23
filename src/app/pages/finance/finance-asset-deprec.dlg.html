@@ -50,11 +50,10 @@
             </nz-form-item>
           </td>
           <td>
-            <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
-              @for (tt of arControlCenters; track tt.Id) {
-                <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"> </nz-option>
-              }
-            </nz-select>
+            <hih-controlcenter-tree-select
+              [(ngModel)]="data.ControlCenterId"
+              [controlCenters]="arControlCenters"
+            ></hih-controlcenter-tree-select>
           </td>
           <td>
             <nz-select [(ngModel)]="data.OrderId" nzAllowClear>

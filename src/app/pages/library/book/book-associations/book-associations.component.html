@@ -74,31 +74,46 @@
   </tbody>
 </nz-table>
 
-<!-- Categories -->
+<!-- Categories: inline rows with a tree-select per row (no selection dialog). -->
 <nz-divider [nzText]="'Common.Categories' | transloco"></nz-divider>
 <div class="toolbar_buttons">
   <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignCategory.emit()">
-    {{ 'Library.SelectCategory' | transloco }}
+    {{ 'Library.AddRow' | transloco }}
   </button>
 </div>
 <nz-table #ctgyTable [nzData]="categories()">
   <thead>
     <tr>
+      <th>{{ 'Library.BookCategory' | transloco }}</th>
       <th>ID</th>
-      <th>{{ 'Common.Name' | transloco }}</th>
       @if (!disabled()) {
         <th>{{ 'Common.Remove' | transloco }}</th>
       }
     </tr>
   </thead>
   <tbody>
-    @for (data of ctgyTable.data; track data.ID) {
+    <!-- track $index: blank rows added via assignCategory all carry ID 0.
+         Removal/pick actions address the row object, not the index.
+         No Name column: the row's tree-select already shows the translated
+         category title, so a second name display would be redundant. -->
+    @for (data of ctgyTable.data; track $index) {
       <tr>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.Name | transloco }}</td>
+        <td>
+          <nz-tree-select
+            style="width: 100%"
+            [nzNodes]="categoryTree()"
+            [ngModel]="data.ID > 0 ? data.ID.toString() : null"
+            [nzDisabled]="disabled()"
+            [nzPlaceHolder]="'Library.SelectCategory' | transloco"
+            [nzDropdownStyle]="categoryDropdownStyle"
+            nzShowSearch
+            (ngModelChange)="onCategoryPick($event, data)"
+          ></nz-tree-select>
+        </td>
+        <td>{{ data.ID > 0 ? data.ID : '' }}</td>
         @if (!disabled()) {
           <td>
-            <a nz-button nzType="link" nzDanger (click)="removeCategory.emit(data.ID)">
+            <a nz-button nzType="link" nzDanger (click)="removeCategory.emit(data)">
               {{ 'Common.Remove' | transloco }}
             </a>
           </td>

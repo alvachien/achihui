@@ -40,8 +40,14 @@
     </div>
     <div class="table-count">{{ totalCountAll() }} | {{ totalCount() }}</div>
   </div>
+  <!-- nzTableLayout="fixed": required by .detail-cell (book-list.component.less). Under
+       the default auto layout a cell's max-width/overflow are not honoured - the column
+       grows to the note's full width and the ellipsis never appears - so the clamp only
+       works because the columns are pinned to the table width here. Same layout the
+       finance account list uses. -->
   <nz-table
     #basicTable
+    nzTableLayout="fixed"
     nzShowSizeChanger
     [nzData]="listData()"
     [nzFrontPagination]="false"
@@ -55,6 +61,15 @@
         <th nzShowSort nzSortKey="id">ID</th>
         <th nzShowSort nzSortKey="cname">{{ 'Common.ChineseName' | transloco }}</th>
         <th nzShowSort nzSortKey="nname">{{ 'Common.NativeName' | transloco }}</th>
+        <!-- The four bibliographic fields plus the inventory count, grouped after
+             the names and before the audit dates. Detail is free text (200 chars),
+             so it is placed last in the group, is not sortable, and is clamped by
+             .detail-cell in the stylesheet. -->
+        <th nzShowSort nzSortKey="isbn">{{ 'Library.ISBN' | transloco }}</th>
+        <th nzShowSort nzSortKey="pyear">{{ 'Library.PublishedYear' | transloco }}</th>
+        <th nzShowSort nzSortKey="pgcnt">{{ 'Library.PageCount' | transloco }}</th>
+        <th nzShowSort nzSortKey="ccnt">{{ 'Library.CopyCount' | transloco }}</th>
+        <th>{{ 'Common.Detail' | transloco }}</th>
         <th nzShowSort nzSortKey="createdat">{{ 'Common.CreatedAt' | transloco }}</th>
         <th nzShowSort nzSortKey="updatedat">{{ 'Common.LastChangedAt' | transloco }}</th>
       </tr>
@@ -101,6 +116,20 @@
           </td>
           <td>{{ data.ChineseName }}</td>
           <td>{{ data.NativeName }}</td>
+          <td>{{ data.ISBN }}</td>
+          <td>{{ data.PublishedYear }}</td>
+          <td>{{ data.PageCount }}</td>
+          <!-- 0 = the book is gone (kept for its reading history), so it is
+               dimmed and titled rather than hidden: the row must stay visible
+               and editable, and 0 is the only value that means retired. -->
+          <td
+            class="ccnt-cell"
+            [class.ccnt-gone]="data.CopyCount === 0"
+            [title]="data.CopyCount === 0 ? ('Library.NoCopies' | transloco) : ''"
+          >
+            {{ data.CopyCount }}
+          </td>
+          <td class="detail-cell" [title]="data.Detail ?? ''">{{ data.Detail }}</td>
           <td>{{ data.CreatedatFormatString }}</td>
           <td>{{ data.UpdatedatFormatString }}</td>
         </tr>

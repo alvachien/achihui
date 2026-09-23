@@ -2,6 +2,7 @@ import {
   Component,
   OnInit,
   ViewContainerRef,
+  computed,
   inject,
   signal,
   DestroyRef,
@@ -10,9 +11,10 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { translate, TranslocoModule } from '@jsverse/transloco';
+import { translate, TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { UIMode, isUIEditable } from 'actslib';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -22,6 +24,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 import {
@@ -35,10 +38,10 @@ import {
   Location,
 } from '@model/index';
 import { HomeDefOdataService, LibraryStorageService } from '@services/index';
+import { FlatTreeNode, buildFlatTree } from '@common/flat-tree';
 import { BookAssociationsComponent } from '../book-associations';
 import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
 import { OrganizationSelectionDlgComponent } from '../../organization-selection-dlg';
-import { BookCategorySelectionDlgComponent } from '../../config/book-category-selection-dlg';
 import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
 
 @Component({
@@ -57,6 +60,7 @@ import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
     NzButtonModule,
     NzDividerModule,
     NzInputModule,
+    NzInputNumberModule,
     NzCheckboxModule,
     RouterModule,
     NzModalModule,
@@ -75,11 +79,37 @@ export class BookDetailComponent implements OnInit {
   listPresses = signal<Organization[]>([]);
   listCategories = signal<BookCategory[]>([]);
   listLocations = signal<Location[]>([]);
+  // Categories as loaded. The tree and the id snapshot are both DERIVED from this
+  // one array (not built once and stored), because node titles come from the
+  // imperative translate() - which carries no implicit active-language dependency -
+  // so a language switch has to rebuild them (see langTick).
+  private readonly categories = signal<BookCategory[]>([]);
+  // Bumped on every runtime language switch (see the constructor) so the computeds
+  // below, which call the imperative translate(), recompute. Same idiom as
+  // book-list/document-list/reading-record-list.
+  private readonly langTick = signal(0);
+  // Selectable category tree feeding the inline tree-select rows rendered by
+  // BookAssociationsComponent (the old category-selection dialog is gone).
+  readonly categoryTree = computed(() => {
+    this.langTick();
+    return this._buildCategoryTree(this.categories());
+  });
+  // id -> category, from the same array the tree is built from. Resolving a pick
+  // against this snapshot is what keeps the rendered value and the row's model in
+  // step: the service's cached dictionary can belong to another home by the time the
+  // pick arrives (fetchAllBookCategories only writes its cache while the home still
+  // matches), and a lookup that missed there left the tree-select showing a category
+  // the row never carried — which onSave then dropped, with nothing shown to the user.
+  private readonly categoryById = computed(() => {
+    const map = new Map<number, BookCategory>();
+    this.categories().forEach((c) => map.set(c.ID, c));
+    return map;
+  });
   // The record as loaded from the server. Update-mode saves patch THIS object
   // instead of a fresh one: the backend PUT applies every column of the body
-  // (SetValues), so any field the edit form does not expose (ISBN, Detail,
-  // PublishedYear, PageCount, OriginLangID, BookLangID) must still carry its
-  // loaded value, or it gets nulled on save.
+  // (SetValues), so any field the edit form does not expose (OriginLangID,
+  // BookLangID — the only two left) must still carry its loaded value, or it
+  // gets nulled on save.
   private originalBook: Book | null = null;
 
   private readonly storageService = inject(LibraryStorageService);
@@ -89,6 +119,7 @@ export class BookDetailComponent implements OnInit {
   private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly destroyedRef = inject(DestroyRef);
+  private readonly translocoService = inject(TranslocoService);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -101,7 +132,29 @@ export class BookDetailComponent implements OnInit {
       nnameControl: new UntypedFormControl('', [Validators.required, Validators.maxLength(100)]),
       cnameControl: new UntypedFormControl('', [Validators.maxLength(100)]),
       chnIsNativeControl: new UntypedFormControl(false),
+      // Bibliographic fields. Lengths mirror the entity's StringLength
+      // attributes (ISBN 50, Detail 200); both are optional, so a blank input
+      // must stay submittable.
+      isbnControl: new UntypedFormControl('', [Validators.maxLength(50)]),
+      // No min/max validators: the API column carries no range constraint, and a
+      // validation rule here would lock a legacy row out of any edit. nzMin/nzMax
+      // on the input are the UI guard only (see the template).
+      pyearControl: new UntypedFormControl(null),
+      pgcntControl: new UntypedFormControl(null),
+      // Copies held. Seeded to 1 rather than null: cataloguing a book means the
+      // home has it, and 0 is the "gone" state, so a blank create form must not
+      // imply removal. Edit mode overwrites this from the loaded record.
+      ccntControl: new UntypedFormControl(1),
+      detailControl: new UntypedFormControl('', [Validators.maxLength(200)]),
     });
+
+    // categoryTree's node titles come from the imperative translate(), which carries
+    // no implicit active-language dependency of its own - bump langTick on every
+    // runtime switch so that computed rebuilds them (and its own error modal text
+    // stays the only other baked string, which is read at open time).
+    this.translocoService.langChanges$
+      .pipe(takeUntilDestroyed(this.destroyedRef))
+      .subscribe(() => this.langTick.update((n) => n + 1));
   }
 
   get isEditable(): boolean {
@@ -139,24 +192,37 @@ export class BookDetailComponent implements OnInit {
         case UIMode.Update:
         case UIMode.Display: {
           this.isLoadingResults.set(true);
-          this.storageService
-            .readBook(this.routerID())
+          // Categories feed the inline tree-select rows, so they load up-front
+          // now that the selection dialog is gone (the dictionary is cached by
+          // the service; this only builds the tree once).
+          forkJoin([this.storageService.fetchAllBookCategories(), this.storageService.readBook(this.routerID())])
             .pipe(
               finalize(() => this.isLoadingResults.set(false)),
               takeUntilDestroyed(this.destroyedRef),
             )
             .subscribe({
-              next: (e: Book) => {
-                this.originalBook = e;
-                this.detailFormGroup.get('idControl')?.setValue(e.ID);
-                this.detailFormGroup.get('nnameControl')?.setValue(e.NativeName);
-                this.detailFormGroup.get('cnameControl')?.setValue(e.ChineseName);
-                this.detailFormGroup.get('chnIsNativeControl')?.setValue(e.ChineseIsNative);
-                this.listAuthors.set(e.Authors);
-                this.listCategories.set(e.Categories);
-                this.listLocations.set(e.Locations);
-                this.listPresses.set(e.Presses);
-                this.listTranslators.set(e.Translators);
+              next: (e) => {
+                // The tree and the pick handler's id snapshot are derived from this
+                // one array (see categoryTree / categoryById), so a displayed node can
+                // always be resolved back to the category it stands for.
+                this.categories.set(e[0]);
+
+                const bk: Book = e[1];
+                this.originalBook = bk;
+                this.detailFormGroup.get('idControl')?.setValue(bk.ID);
+                this.detailFormGroup.get('nnameControl')?.setValue(bk.NativeName);
+                this.detailFormGroup.get('cnameControl')?.setValue(bk.ChineseName);
+                this.detailFormGroup.get('chnIsNativeControl')?.setValue(bk.ChineseIsNative);
+                this.detailFormGroup.get('isbnControl')?.setValue(bk.ISBN);
+                this.detailFormGroup.get('pyearControl')?.setValue(bk.PublishedYear);
+                this.detailFormGroup.get('pgcntControl')?.setValue(bk.PageCount);
+                this.detailFormGroup.get('ccntControl')?.setValue(bk.CopyCount);
+                this.detailFormGroup.get('detailControl')?.setValue(bk.Detail);
+                this.listAuthors.set(bk.Authors);
+                this.listCategories.set(bk.Categories);
+                this.listLocations.set(bk.Locations);
+                this.listPresses.set(bk.Presses);
+                this.listTranslators.set(bk.Translators);
 
                 if (this.uiMode() === UIMode.Display) {
                   this.detailFormGroup.disable();
@@ -167,7 +233,7 @@ export class BookDetailComponent implements OnInit {
               },
               error: (err) => {
                 ModelUtility.writeConsoleLog(
-                  `AC_HIH_UI [Error]: Entering BookDetailComponent ngOnInit readBook failed ${err}...`,
+                  `AC_HIH_UI [Error]: Entering BookDetailComponent ngOnInit forkJoin failed ${err}...`,
                   ConsoleLogTypeEnum.error,
                 );
                 this.modal.error({
@@ -182,8 +248,24 @@ export class BookDetailComponent implements OnInit {
 
         case UIMode.Create:
         default: {
-          // Do nothing
           this.detailFormGroup.get('idControl')?.setValue('NEW OBJECT');
+          this.storageService
+            .fetchAllBookCategories()
+            .pipe(takeUntilDestroyed(this.destroyedRef))
+            .subscribe({
+              next: (cts: BookCategory[]) => this.categories.set(cts),
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering BookDetailComponent ngOnInit fetchAllBookCategories failed ${err}...`,
+                  ConsoleLogTypeEnum.error,
+                );
+                this.modal.error({
+                  nzTitle: translate('Common.Error'),
+                  nzContent: err.toString(),
+                  nzClosable: true,
+                });
+              },
+            });
           break;
         }
       }
@@ -256,13 +338,72 @@ export class BookDetailComponent implements OnInit {
       (checked) => this.listPresses.set(this.storageService.Organizations.filter((org) => checked.has(org.ID))),
     );
   }
+  // Categories are assigned inline (no dialog): append a blank row and let its
+  // tree-select fill the category in. Blank rows carry ID 0 and are dropped on save.
   onAssignCategory(): void {
-    this.openSelectionDlg(
-      translate('Library.SelectCategory'),
-      BookCategorySelectionDlgComponent,
-      new Set<number>(this.listCategories().map((ctg) => ctg.ID)),
-      {},
-      (checked) => this.listCategories.set(this.storageService.BookCategories.filter((ctgy) => checked.has(ctgy.ID))),
+    this.listCategories.update((arr) => [...arr, new BookCategory()]);
+  }
+
+  // Node keys are stringified category IDs (see _buildCategoryTree).
+  onCategoryPicked(evt: { key: string | null; row: BookCategory }): void {
+    if (evt.key === null) {
+      // The row's tree-select was cleared (its built-in clear button): reset the
+      // row to blank so the data matches the now-empty select. Doing nothing
+      // would keep the old assignment visible nowhere but saved anyway.
+      this.listCategories.update((arr) => arr.map((c) => (c === evt.row ? new BookCategory() : c)));
+      return;
+    }
+    const id = +String(evt.key ?? 0);
+    if (!(id > 0)) {
+      return;
+    }
+    const ctgy = this.categoryById().get(id);
+    if (!ctgy) {
+      // Unreachable while the tree and this snapshot are built from one array: a node
+      // can only be picked if it came from it. Kept loud rather than silent because the
+      // tree-select has already rendered the pick — returning quietly here would leave
+      // the row showing a category it does not carry, which onSave discards without a
+      // word. Reset the row so what is displayed and what is stored agree again.
+      ModelUtility.writeConsoleLog(
+        `AC_HIH_UI [Error]: BookDetailComponent.onCategoryPicked cannot resolve category ${id} from the tree snapshot...`,
+        ConsoleLogTypeEnum.error,
+      );
+      this.modal.error({
+        nzTitle: translate('Common.Error'),
+        nzContent: translate('Library.CategorySelectionFailed'),
+        nzClosable: true,
+      });
+      this.listCategories.update((arr) => arr.map((c) => (c === evt.row ? new BookCategory() : c)));
+      return;
+    }
+    // Store a COPY, never the shared service-cached dictionary entry — rows are
+    // mutable data (person-detail idiom).
+    const copy = new BookCategory();
+    copy.ID = ctgy.ID;
+    copy.HID = ctgy.HID;
+    copy.Name = ctgy.Name;
+    copy.ParentID = ctgy.ParentID;
+    copy.Comment = ctgy.Comment;
+    // Picking a category that another row already carries MOVES the assignment:
+    // drop that other row so the book never holds duplicate relation rows.
+    this.listCategories.update((arr) =>
+      arr.map((c) => (c === evt.row ? copy : c)).filter((c) => c.ID !== id || c === copy),
+    );
+  }
+
+  // Same node shape as BookCategoryHierarchyComponent (translated title + id), built
+  // by the shared assembly so this tree, the transaction-type picker and the
+  // control-center picker can no longer disagree about what a root is (see
+  // @common/flat-tree). Rows the walk cannot reach are attached as top-level roots
+  // rather than an "uncategorized" bucket: in a selection tree every node must be a
+  // real, selectable category.
+  private _buildCategoryTree(value: BookCategory[]): FlatTreeNode[] {
+    return buildFlatTree(
+      value.map((val) => ({
+        id: val.ID,
+        parentId: val.ParentID,
+        title: translate(val.Name) + '(' + val.ID.toString() + ')',
+      })),
     );
   }
   onAssignLocation(): void {
@@ -283,8 +424,10 @@ export class BookDetailComponent implements OnInit {
     this.listTranslators.update((arr) => arr.filter((p) => p.ID !== id));
   }
 
-  onRemoveCategory(id: number): void {
-    this.listCategories.update((arr) => arr.filter((c) => c.ID !== id));
+  // By ROW IDENTITY, not ID: blank (not-yet-picked) rows all share ID 0, so an
+  // id-based filter would remove the wrong row(s) — or none.
+  onRemoveCategory(row: BookCategory): void {
+    this.listCategories.update((arr) => arr.filter((c) => c !== row));
   }
 
   onRemovePress(id: number): void {
@@ -311,10 +454,18 @@ export class BookDetailComponent implements OnInit {
     objtbo.ChineseName = this.detailFormGroup.get('cnameControl')?.value;
     objtbo.NativeName = this.detailFormGroup.get('nnameControl')?.value;
     objtbo.ChineseIsNative = this.detailFormGroup.get('chnIsNativeControl')?.value;
+    objtbo.ISBN = this.detailFormGroup.get('isbnControl')?.value;
+    objtbo.PublishedYear = this.detailFormGroup.get('pyearControl')?.value;
+    objtbo.PageCount = this.detailFormGroup.get('pgcntControl')?.value;
+    objtbo.CopyCount = this.detailFormGroup.get('ccntControl')?.value;
+    objtbo.Detail = this.detailFormGroup.get('detailControl')?.value;
     objtbo.HID = this.homeService.ChosedHome?.ID ?? 0;
     objtbo.Authors = this.listAuthors().slice();
     objtbo.Translators = this.listTranslators().slice();
-    objtbo.Categories = this.listCategories().slice();
+    // Drop blank inline rows (added via onAssignCategory but never picked): they
+    // carry ID 0 and would serialize as CategoryId 0, which the API rejects
+    // (person-detail guard).
+    objtbo.Categories = this.listCategories().filter((c) => c.ID > 0);
     objtbo.Locations = this.listLocations().slice();
     objtbo.Presses = this.listPresses().slice();
 

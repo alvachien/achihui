@@ -86,11 +86,10 @@
             <nz-form-item>
               <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
               <nz-form-control [nzSpan]="12">
-                <nz-select formControlName="ccControl">
-                  @for (tt of arControlCenters(); track tt.Id) {
-                    <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-                  }
-                </nz-select>
+                <hih-controlcenter-tree-select
+                  formControlName="ccControl"
+                  [controlCenters]="arControlCenters()"
+                ></hih-controlcenter-tree-select>
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -250,11 +249,10 @@
                 </nz-form-item>
               </td>
               <td>
-                <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
-                  @for (tt of arControlCenters(); track tt.Id) {
-                    <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-                  }
-                </nz-select>
+                <hih-controlcenter-tree-select
+                  [(ngModel)]="data.ControlCenterId"
+                  [controlCenters]="arControlCenters()"
+                ></hih-controlcenter-tree-select>
               </td>
               <td>
                 <nz-select [(ngModel)]="data.OrderId" nzAllowClear>
@@ -361,11 +359,10 @@
                 </nz-form-item>
               </td>
               <td>
-                <nz-select [(ngModel)]="data.ControlCenterId" nzAllowClear>
-                  @for (tt of arControlCenters(); track tt.Id) {
-                    <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-                  }
-                </nz-select>
+                <hih-controlcenter-tree-select
+                  [(ngModel)]="data.ControlCenterId"
+                  [controlCenters]="arControlCenters()"
+                ></hih-controlcenter-tree-select>
               </td>
               <td>
                 <nz-select [(ngModel)]="data.OrderId" nzAllowClear>

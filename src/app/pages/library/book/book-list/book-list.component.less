@@ -4,3 +4,27 @@
 
 // Shared ID-column styling - single source in src/styles/id-cell.less.
 @import 'id-cell';
+
+// Detail is free text up to 200 chars: clamp the cell so one long note cannot
+// stretch the table. The full value stays reachable through the title tooltip.
+// Depends on the host table's nzTableLayout="fixed" (book-list.component.html):
+// under auto layout a column is sized to its widest cell and the cell's
+// max-width/overflow are ignored, so the ellipsis would never appear.
+.detail-cell {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Copy count: 0 is the "gone" state, so a retired book is dimmed rather than
+// hidden - the row stays visible and editable, and the tooltip spells the 0 out.
+// opacity (not a theme variable) matches how finance.component.less mutes text.
+.ccnt-cell {
+  white-space: nowrap;
+
+  &.ccnt-gone {
+    font-style: italic;
+    opacity: 0.65;
+  }
+}

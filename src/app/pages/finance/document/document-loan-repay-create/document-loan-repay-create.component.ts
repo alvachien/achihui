@@ -63,6 +63,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { UIAccountCtgyFilterExPipe, UIAccountStatusFilterPipe } from '../../pipes';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 enum BorrowFromRepayType {
   Principal = 0,
@@ -96,6 +97,7 @@ interface PayingAccountItem {
     NzButtonModule,
     NzStepsModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzTableModule,
     NzDescriptionsModule,
     NzDividerComponent,

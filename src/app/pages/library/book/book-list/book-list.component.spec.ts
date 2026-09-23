@@ -108,12 +108,17 @@ describe('BookListComponent', () => {
     expect(component.listData()[0].NativeName).toEqual('Book A');
   });
 
-  it('renders the five columns with the formatted audit dates', async () => {
+  it('renders the ten columns with the bibliographic values and formatted audit dates', async () => {
     const b1 = new Book();
     b1.onSetData({
       Id: 1,
       NativeName: 'Book A',
       ChineseName: '书A',
+      ISBN: '978-0-00-000000-0',
+      PublishedYear: 2001,
+      PageCount: 300,
+      CopyCount: 2,
+      Detail: 'a book detail',
       CreatedAt: '2026-09-01',
       UpdatedAt: '2026-09-12',
     });
@@ -124,15 +129,65 @@ describe('BookListComponent', () => {
     fixture.detectChanges();
 
     const headers = fixture.nativeElement.querySelectorAll('thead th');
-    expect(headers.length, 'ID / Chinese / Native / Created / Last changed').toBe(5);
+    expect(
+      headers.length,
+      'ID / Chinese / Native / ISBN / Year / Pages / Copies / Detail / Created / Last changed',
+    ).toBe(10);
 
     const cells = fixture.nativeElement.querySelectorAll('tbody tr td');
-    expect(cells.length).toBe(5);
+    expect(cells.length).toBe(10);
     expect(cells[0].textContent).toContain('1');
     expect(cells[1].textContent).toContain('书A');
     expect(cells[2].textContent).toContain('Book A');
-    expect(cells[3].textContent).toContain('2026-09-01');
-    expect(cells[4].textContent).toContain('2026-09-12');
+    expect(cells[3].textContent).toContain('978-0-00-000000-0');
+    expect(cells[4].textContent).toContain('2001');
+    expect(cells[5].textContent).toContain('300');
+    expect(cells[6].textContent).toContain('2');
+    expect(cells[6].classList).not.toContain('ccnt-gone');
+    expect(cells[7].textContent).toContain('a book detail');
+    // Detail is clamped by .detail-cell, so the full text must stay reachable
+    // through the tooltip.
+    expect((cells[7] as HTMLElement).getAttribute('title')).toEqual('a book detail');
+    expect(cells[8].textContent).toContain('2026-09-01');
+    expect(cells[9].textContent).toContain('2026-09-12');
+  });
+
+  // The .detail-cell clamp is only honoured under a fixed table layout: with the
+  // browser's default auto layout the column is sized to its widest cell and the
+  // cell's max-width/overflow are ignored, so a 200-character note stretched the
+  // whole table and the ellipsis never appeared. This asserts the precondition the
+  // stylesheet depends on (the case itself cannot be measured in jsdom, which has
+  // no layout engine).
+  it('pins the table layout so the Detail clamp can take effect', async () => {
+    fetchBooksSpy.and.returnValue(asyncData({ totalCount: 0, contentList: [] }));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const table = fixture.nativeElement.querySelector('table') as HTMLTableElement;
+    expect(table, 'nz-table renders an inner <table>').toBeTruthy();
+    expect(table.style.tableLayout).toEqual('fixed');
+  });
+
+  // A book with no copies left is retired, not deleted: the row stays visible and
+  // editable, and only the cell carries the flag (with the tooltip explaining it).
+  it('marks a book with no copies left as gone without hiding the row', async () => {
+    const b1 = new Book();
+    b1.onSetData({ Id: 1, NativeName: 'Retired Book', CopyCount: 0 });
+    fetchBooksSpy.and.returnValue(asyncData({ totalCount: 1, contentList: [b1] }));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    const rows = fixture.nativeElement.querySelectorAll('tbody tr');
+    expect(rows.length).toBe(1);
+
+    const cell = rows[0].querySelectorAll('td')[6] as HTMLElement;
+    expect(cell.textContent).toContain('0');
+    expect(cell.classList).toContain('ccnt-gone');
+    expect(cell.getAttribute('title')).toEqual('No copies left - kept for the reading history');
   });
 
   it('renders the ID as a link to the display page', async () => {
@@ -397,6 +452,33 @@ describe('BookListComponent', () => {
 
       emitQuery(1, 'updatedat', 'descend');
       expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'UpdatedAt', order: 'desc' }, '', '');
+    });
+
+    it('maps the bibliographic sort keys to the OData field names', () => {
+      fixture.detectChanges(); // ngOnInit fetch (page 1, no sort)
+      fetchBooksSpy.mockClear();
+
+      emitQuery(1, 'isbn', 'ascend');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'ISBN', order: 'asc' }, '', '');
+
+      emitQuery(1, 'pyear', 'descend');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'PublishedYear', order: 'desc' }, '', '');
+
+      emitQuery(1, 'pgcnt', 'ascend');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'PageCount', order: 'asc' }, '', '');
+
+      emitQuery(1, 'ccnt', 'ascend');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'CopyCount', order: 'asc' }, '', '');
+    });
+
+    it('ignores a sort key that has no OData field', () => {
+      fixture.detectChanges(); // ngOnInit fetch (page 1, no sort)
+      fetchBooksSpy.mockClear();
+
+      // Detail is deliberately unsortable (free text): an unrecognised key must
+      // drop the orderby rather than send a bogus field name to the API.
+      emitQuery(1, 'detail', 'ascend');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', '');
     });
 
     it('a repeated emission of the current query is swallowed, but a changed one is not', () => {
