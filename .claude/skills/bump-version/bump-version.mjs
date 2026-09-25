@@ -19,6 +19,26 @@ const oldVersion = pkg.version;
 pkg.version = newVersion;
 writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
 
+// 1b. package-lock.json - npm mirrors the root package version in TWO places:
+// the top-level "version" and packages[""].version. Keep them in sync at bump
+// time (npm ci tolerates drift, but the next `npm install` would rewrite these
+// lines anyway - own the diff at bump time instead of surprising someone later).
+// The JSON round-trip byte-matches npm's own lock serialization (2-space, and
+// the repo's Windows CRLF endings, detected from the file being rewritten).
+const lockPath = 'package-lock.json';
+if (existsSync(lockPath)) {
+  const rawLock = readFileSync(lockPath, 'utf8');
+  const lock = JSON.parse(rawLock);
+  lock.version = newVersion;
+  if (lock.packages && lock.packages['']) {
+    lock.packages[''].version = newVersion;
+  }
+  const eol = rawLock.includes('\r\n') ? '\r\n' : '\n';
+  writeFileSync(lockPath, JSON.stringify(lock, null, 2).replace(/\r?\n/g, eol) + eol);
+} else {
+  console.log('Skipped (not present): package-lock.json');
+}
+
 // 2-4. environment files - update CurrentVersion + ReleasedDate (PascalCase fields)
 const envFiles = [
   'src/environments/environment.ts',
@@ -35,10 +55,18 @@ for (const p of envFiles) {
   txt = txt.replace(/(CurrentVersion\s*:\s*)'[^']*'/, `$1'${newVersion}'`);
   txt = txt.replace(/(ReleasedDate\s*:\s*)'[^']*'/, `$1'${today}'`);
   if (txt === before) {
-    console.error(`WARNING: ${p} was not updated - field names not found`);
+    // Unchanged after the substitutions: either an idempotent re-run (values
+    // already correct) or the fields genuinely missing - tell them apart.
+    if (txt.includes(newVersion) && txt.includes(today)) {
+      console.log(`Already at target: ${p}`);
+    } else {
+      console.error(`WARNING: ${p} was not updated - field names not found`);
+    }
   }
   writeFileSync(p, txt);
 }
 
 console.log(`Bumped ${oldVersion} -> ${newVersion} (releasedate ${today})`);
-console.log('Updated: package.json, environment.ts, environment.prod.ts, environment.azureprod.ts');
+console.log(
+  'Updated: package.json, package-lock.json (root version fields), environment.ts, environment.prod.ts, environment.azureprod.ts',
+);
