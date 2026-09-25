@@ -5,6 +5,14 @@
   min-height: 200px;
   text-align: center;
   padding-top: 16px;
+
+  // The review step is a read-only layout (cards, descriptions, table), not
+  // a form - left-align it like the dashboard pages it borrows its language
+  // from, and give the stack some breathing room.
+  .review-step {
+    text-align: left;
+    padding: 8px 16px 16px;
+  }
 }
 
 .steps-action {
@@ -13,4 +21,87 @@
 
 button {
   margin-right: 8px;
+}
+
+// Duplicate-day guardrail alert on the Items step.
+.same-day-alert {
+  margin: 0 16px 16px;
+  text-align: left;
+}
+
+.same-day-docs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .same-day-doc {
+    i {
+      margin-right: 4px;
+    }
+  }
+}
+
+// Review step: the finance dashboard's stat-card language, scoped down.
+.review-stat-row {
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.stat-flex {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.stat-badge-in {
+  background: linear-gradient(135deg, #52c41a, #237804);
+}
+
+.stat-badge-out {
+  background: linear-gradient(135deg, #ff4d4f, #cf1322);
+}
+
+// Document facts + itemized preview.
+nz-descriptions {
+  text-align: left;
+}
+
+.review-items-table {
+  margin-top: 16px;
+
+  .col-amount {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  // Direction by tran type (amounts are always positive here - the sign
+  // convention lives in the Expense flag of the tran type).
+  .amt-in {
+    color: #389e0d;
+  }
+  .amt-out {
+    color: #cf1322;
+  }
+}
+
+.dup-items-list {
+  margin-top: 8px;
+  text-align: left;
 }

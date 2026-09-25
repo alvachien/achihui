@@ -12,6 +12,7 @@ import { UIMode } from 'actslib';
 import {
   financeDocTypeNormal,
   Account,
+  BaseListModel,
   Document,
   DocumentItem,
   ModelUtility,
@@ -48,6 +49,11 @@ import { DecimalPipe } from '@angular/common';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzStatisticModule } from 'ng-zorro-antd/statistic';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'hih-fin-document-normal-create',
@@ -71,6 +77,11 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzDividerModule,
     NzResultModule,
     NzSpinModule,
+    NzCardModule,
+    NzDescriptionsModule,
+    NzGridModule,
+    NzStatisticModule,
+    NzTableModule,
     RouterModule,
     TranslocoModule,
   ],
@@ -95,6 +106,11 @@ export class DocumentNormalCreateComponent implements OnInit {
   // Step: Item
   public doccur = '';
   public doccur2?: string = '';
+  // Normal documents already posted on the header's TranDate - fetched when
+  // moving to the Items step so the user is warned about a possible duplicate
+  // day posting while there is still room to adjust (best-effort: a failed
+  // check simply shows no warning).
+  public readonly sameDayDocs = signal<Document[]>([]);
   public itemsForm: UntypedFormGroup;
   // Step: Confirm
   public confirmInfo: SafeAny = {};
@@ -135,6 +151,31 @@ export class DocumentNormalCreateComponent implements OnInit {
 
   get curDocDate(): Date {
     return new Date();
+  }
+
+  // Label lookups for the review step's items table - the dictionary arrays
+  // are already loaded for the Items editor, so the names come for free.
+  public getAccountName(acntid: number | undefined): string {
+    const acntObj = this.arAccounts().find((acnt) => acnt.Id === acntid);
+    return acntObj && acntObj.Name ? acntObj.Name : '';
+  }
+  public getTranTypeName(ttid: number | undefined): string {
+    const tranTypeObj = this.arTranType().find((tt) => tt.Id === ttid);
+    return tranTypeObj ? tranTypeObj.Name : '';
+  }
+  public getControlCenterName(ccid: number | undefined): string {
+    const ccObj = this.arControlCenters().find((cc) => cc.Id === ccid);
+    return ccObj ? ccObj.Name : '';
+  }
+  public getOrderName(ordid: number | undefined): string {
+    const orderObj = this.arOrders().find((ord) => ord.Id === ordid);
+    return orderObj ? orderObj.Name : '';
+  }
+  // Amount bucket for the row coloring: expense tran types render red,
+  // income ones green (system types default to neutral).
+  public isOutgoingTranType(ttid: number | undefined): boolean {
+    const tranTypeObj = this.arTranType().find((tt) => tt.Id === ttid);
+    return tranTypeObj?.Expense ?? false;
   }
 
   ngOnInit() {
@@ -274,6 +315,7 @@ export class DocumentNormalCreateComponent implements OnInit {
         const detailObject: Document = this.headerForm.get('headerControl')?.value as Document;
         this.doccur = detailObject.TranCurr;
         this.doccur2 = detailObject.TranCurr2;
+        this._checkSameDayNormalDocs(detailObject);
         break;
       }
       case 1: {
@@ -300,11 +342,49 @@ export class DocumentNormalCreateComponent implements OnInit {
     }
   }
 
+  // Duplicate-day guardrail: normal documents already posted on the doc's date.
+  // Runs when the Items step opens (the header's TranDate is settled there);
+  // results land in sameDayDocs, rendered as a warning alert on that step.
+  private _checkSameDayNormalDocs(doc: Document): void {
+    this.sameDayDocs.set([]);
+    const filters: GeneralFilterItem[] = [
+      {
+        fieldName: 'TranDate',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: format(doc.TranDate, dateFormat),
+        highValue: '',
+        valueType: GeneralFilterValueType.date,
+      },
+      {
+        fieldName: 'DocType',
+        operator: GeneralFilterOperatorEnum.Equal,
+        lowValue: this.curDocType,
+        highValue: 0,
+        valueType: GeneralFilterValueType.number,
+      },
+    ];
+    this.odataService
+      .fetchAllDocuments(filters, 20, 0)
+      .pipe(takeUntilDestroyed(this.destroyedRef))
+      .subscribe({
+        next: (rst: BaseListModel<Document>) => {
+          this.sameDayDocs.set(rst?.contentList ?? []);
+        },
+        error: () => {
+          // Best-effort guardrail: a failed check shows no warning.
+          this.sameDayDocs.set([]);
+        },
+      });
+  }
+
   private _updateConfirmInfo(): void {
     const doc = this._generateDocObject();
     this.confirmInfo.tranDateString = doc.TranDateFormatString;
     this.confirmInfo.tranDesp = doc.Desp;
     this.confirmInfo.tranCurrency = doc.TranCurr;
+    // Snapshot for the review step's items table (the form itself stays live).
+    this.confirmInfo.items = doc.Items ? doc.Items.slice() : [];
+    this.confirmInfo.exgRate = doc.ExgRate;
     this.confirmInfo.inAmount = 0;
     this.confirmInfo.outAmount = 0;
     const filters: GeneralFilterItem[] = [];

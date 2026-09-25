@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
+import { SafeAny } from '@common/any';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { FilterJoinType, FilterOperation, IFilterDefinition } from 'actslib';
 import { translate, TranslocoService } from '@jsverse/transloco';
@@ -24,6 +25,10 @@ describe('BookListComponent', () => {
   let storageService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let fetchBooksSpy: any;
+  // The default $select (Home key + three locked columns + the default-visible
+  // optionals) the component now passes as fetchBooks' 6th argument - the
+  // Fiori-style server-side projection follows the column picker.
+  const DEFAULT_SELECT = ['HomeID', 'Id', 'ChineseName', 'NativeName', 'CopyCount', 'CreatedAt', 'UpdatedAt'];
   const authServiceStub: Partial<AuthService> = {};
   const uiServiceStub: Partial<UIStatusService> = {};
   let homeService: Partial<HomeDefOdataService> = {};
@@ -87,7 +92,7 @@ describe('BookListComponent', () => {
     await new Promise<void>((r) => setTimeout(r, 300)); // window elapses → commit + refetch
     expect(component.searchText()).toBe('tolkien');
     expect(fetchBooksSpy).toHaveBeenCalledTimes(1);
-    expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, 'tolkien', '');
+    expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, 'tolkien', '', DEFAULT_SELECT);
   });
 
   it('renders fetched books into the table', async () => {
@@ -108,6 +113,69 @@ describe('BookListComponent', () => {
     expect(component.listData()[0].NativeName).toEqual('Book A');
   });
 
+  // The default column set: the three locked identity columns plus copy count and
+  // the audit dates; ISBN / year / pages / detail start hidden (the "Columns"
+  // picker re-enables them - see the dedicated tests below).
+  const DEFAULT_VISIBLE_HEADERS = 6;
+
+  it('shows only the default columns before any picker interaction', async () => {
+    fetchBooksSpy.and.returnValue(asyncData({ totalCount: 0, contentList: [] }));
+
+    fixture.detectChanges(); // ngOnInit
+    await new Promise<void>((r) => setTimeout(r, 0));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('thead th').length).toBe(DEFAULT_VISIBLE_HEADERS);
+    // Locked columns report visible even though they are not in the signal.
+    expect(component.isColumnVisible('id')).toBe(true);
+    expect(component.isColumnVisible('isbn')).toBe(false);
+    // A locked column cannot be toggled off.
+    component.setColumnVisible('cname', false);
+    expect(component.isColumnVisible('cname')).toBe(true);
+
+    // Server-side projection (Fiori-style): the default list request carries
+    // exactly the Home key, the three locked columns and the default-visible
+    // ones. The 6-arg lookup tolerates the extra calls the lifecycle produces
+    // (count-only fetch with 2 args, synthetic nz-table emissions).
+    const listCall = fetchBooksSpy.mock.calls.find((c: SafeAny[]) => c.length === 6) as SafeAny[];
+    expect(listCall[5]).toEqual(DEFAULT_SELECT);
+  });
+
+  // The picker changes the $select and re-requests the current page (arg[0]/[1]
+  // unchanged) - hidden fields never travel over the wire.
+  it('re-requests the page with the widened $select when a column is toggled on', async () => {
+    fetchBooksSpy.mockClear();
+    component.setColumnVisible('isbn', true);
+
+    expect(fetchBooksSpy).toHaveBeenCalledTimes(1);
+    const args = fetchBooksSpy.mock.lastCall as SafeAny[];
+    expect(args[0]).toBe(30); // same page size...
+    expect(args[1]).toBe(0); // ...same page
+    expect(args[5]).toContain('ISBN');
+
+    // A toggle that changes nothing (checkbox echo of the current state) does
+    // not refetch.
+    fetchBooksSpy.mockClear();
+    component.setColumnVisible('isbn', true);
+    expect(fetchBooksSpy).not.toHaveBeenCalled();
+  });
+
+  it('clears the sort when its column is hidden and refetches unsorted', async () => {
+    component.setColumnVisible('isbn', true);
+    component.onQueryParamsChange({
+      pageIndex: 1,
+      pageSize: 30,
+      sort: [{ key: 'isbn', value: 'ascend' }],
+    } as SafeAny);
+    fetchBooksSpy.mockClear();
+
+    component.setColumnVisible('isbn', false);
+
+    const args = fetchBooksSpy.mock.lastCall as SafeAny[];
+    expect(args[2], 'orderby must be dropped together with the sorted column').toBeUndefined();
+    expect(args[5]).not.toContain('ISBN');
+  });
+
   it('renders the ten columns with the bibliographic values and formatted audit dates', async () => {
     const b1 = new Book();
     b1.onSetData({
@@ -123,6 +191,12 @@ describe('BookListComponent', () => {
       UpdatedAt: '2026-09-12',
     });
     fetchBooksSpy.and.returnValue(asyncData({ totalCount: 1, contentList: [b1] }));
+
+    // The picker re-enables the optional columns that are hidden by default.
+    component.setColumnVisible('isbn', true);
+    component.setColumnVisible('pyear', true);
+    component.setColumnVisible('pgcnt', true);
+    component.setColumnVisible('detail', true);
 
     fixture.detectChanges(); // ngOnInit
     await new Promise<void>((r) => setTimeout(r, 0));
@@ -184,7 +258,10 @@ describe('BookListComponent', () => {
     const rows = fixture.nativeElement.querySelectorAll('tbody tr');
     expect(rows.length).toBe(1);
 
-    const cell = rows[0].querySelectorAll('td')[6] as HTMLElement;
+    // Default visible columns: ID / Chinese / Native / Copies / Created / Last
+    // changed - the copy count cell sits at index 3 when the optional
+    // bibliographic columns are hidden (the picker state is per-visit).
+    const cell = rows[0].querySelectorAll('td')[3] as HTMLElement;
     expect(cell.textContent).toContain('0');
     expect(cell.classList).toContain('ccnt-gone');
     expect(cell.getAttribute('title')).toEqual('No copies left - kept for the reading history');
@@ -302,7 +379,7 @@ describe('BookListComponent', () => {
     it('passes the translated $filter fragment to fetchBooks', () => {
       component.filterDef.set(PAGE_COUNT_GT_300);
       component.onSearch();
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300', DEFAULT_SELECT);
     });
 
     it('accepts a BARE condition (the case-1 Submit shape) and still translates it', () => {
@@ -310,14 +387,14 @@ describe('BookListComponent', () => {
       component.filterDef.set(bare);
       expect(component.hasFilter()).toBe(true);
       component.onSearch();
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300', DEFAULT_SELECT);
     });
 
     it('keeps search text and structured filter as separate arguments', () => {
       component.searchText.set('abc');
       component.filterDef.set(PAGE_COUNT_GT_300);
       component.onSearch();
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, 'abc', 'PageCount gt 300');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, 'abc', 'PageCount gt 300', DEFAULT_SELECT);
     });
 
     it('applies the dialog result and resets to page 1 on submit', () => {
@@ -329,7 +406,7 @@ describe('BookListComponent', () => {
       expect(component.filterDef()).toEqual(PAGE_COUNT_GT_300);
       expect(component.hasFilter()).toBe(true);
       expect(component.pageIndex()).toBe(1);
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300', DEFAULT_SELECT);
     });
 
     it('keeps the previous filter when the dialog is cancelled', () => {
@@ -348,7 +425,7 @@ describe('BookListComponent', () => {
 
       expect(component.filterDef()).toBeUndefined();
       expect(component.hasFilter()).toBe(false);
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', '', DEFAULT_SELECT);
     });
 
     it('menu label falls back to "New filter" and shows a summary once active', () => {
@@ -424,18 +501,39 @@ describe('BookListComponent', () => {
       // User sorts by NativeName desc.
       emitQuery(1, 'nname', 'descend');
       expect(fetchBooksSpy).toHaveBeenCalledTimes(1);
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'NativeName', order: 'desc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        0,
+        { field: 'NativeName', order: 'desc' },
+        '',
+        '',
+        DEFAULT_SELECT,
+      );
 
       // User pages to 4 (still sorted).
       emitQuery(4, 'nname', 'descend');
       expect(fetchBooksSpy).toHaveBeenCalledTimes(2);
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 90, { field: 'NativeName', order: 'desc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        90,
+        { field: 'NativeName', order: 'desc' },
+        '',
+        '',
+        DEFAULT_SELECT,
+      );
 
       // Search: refetch page 1 ONCE, WITH the retained sort.
       component.searchText.set('abc');
       component.onSearch();
       expect(fetchBooksSpy).toHaveBeenCalledTimes(3);
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'NativeName', order: 'desc' }, 'abc', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        0,
+        { field: 'NativeName', order: 'desc' },
+        'abc',
+        '',
+        DEFAULT_SELECT,
+      );
 
       // nz-table echoes the pageIndex signal write as a query-param emission -
       // identical to what was just loaded, so it must NOT hit the network again.
@@ -448,10 +546,24 @@ describe('BookListComponent', () => {
       fetchBooksSpy.mockClear();
 
       emitQuery(1, 'createdat', 'ascend');
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'CreatedAt', order: 'asc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        0,
+        { field: 'CreatedAt', order: 'asc' },
+        '',
+        '',
+        DEFAULT_SELECT,
+      );
 
       emitQuery(1, 'updatedat', 'descend');
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'UpdatedAt', order: 'desc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        0,
+        { field: 'UpdatedAt', order: 'desc' },
+        '',
+        '',
+        DEFAULT_SELECT,
+      );
     });
 
     it('maps the bibliographic sort keys to the OData field names', () => {
@@ -459,16 +571,37 @@ describe('BookListComponent', () => {
       fetchBooksSpy.mockClear();
 
       emitQuery(1, 'isbn', 'ascend');
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'ISBN', order: 'asc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'ISBN', order: 'asc' }, '', '', DEFAULT_SELECT);
 
       emitQuery(1, 'pyear', 'descend');
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'PublishedYear', order: 'desc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        0,
+        { field: 'PublishedYear', order: 'desc' },
+        '',
+        '',
+        DEFAULT_SELECT,
+      );
 
       emitQuery(1, 'pgcnt', 'ascend');
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'PageCount', order: 'asc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        0,
+        { field: 'PageCount', order: 'asc' },
+        '',
+        '',
+        DEFAULT_SELECT,
+      );
 
       emitQuery(1, 'ccnt', 'ascend');
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, { field: 'CopyCount', order: 'asc' }, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(
+        30,
+        0,
+        { field: 'CopyCount', order: 'asc' },
+        '',
+        '',
+        DEFAULT_SELECT,
+      );
     });
 
     it('ignores a sort key that has no OData field', () => {
@@ -478,7 +611,7 @@ describe('BookListComponent', () => {
       // Detail is deliberately unsortable (free text): an unrecognised key must
       // drop the orderby rather than send a bogus field name to the API.
       emitQuery(1, 'detail', 'ascend');
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', '');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', '', DEFAULT_SELECT);
     });
 
     it('a repeated emission of the current query is swallowed, but a changed one is not', () => {
@@ -505,13 +638,13 @@ describe('BookListComponent', () => {
       });
       component.onSearch();
       expect(fetchBooksSpy).toHaveBeenCalledTimes(1);
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, '', 'PageCount gt 300', DEFAULT_SELECT);
 
       // And again with a new search text on top of the same filter.
       component.searchText.set('abc');
       component.onSearch();
       expect(fetchBooksSpy).toHaveBeenCalledTimes(2);
-      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, 'abc', 'PageCount gt 300');
+      expect(fetchBooksSpy).toHaveBeenLastCalledWith(30, 0, undefined, 'abc', 'PageCount gt 300', DEFAULT_SELECT);
     });
 
     it('filterMenuText recomputes when the language changes at runtime', () => {

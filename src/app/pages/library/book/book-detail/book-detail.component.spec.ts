@@ -20,7 +20,14 @@ import {
   ActivatedRouteUrlStub,
 } from '../../../../../testing';
 import { AuthService, UIStatusService, LibraryStorageService, HomeDefOdataService } from '../../../../services';
-import { UserAuthInfo, Book, BookCategory } from '../../../../model';
+import {
+  UserAuthInfo,
+  Book,
+  BookCategory,
+  BookReadingRecord,
+  BookReadingStatus,
+  BaseListModel,
+} from '../../../../model';
 import { TranslocoService } from '@jsverse/transloco';
 import { BookDetailComponent } from './book-detail.component';
 import { PersonSelectionDlgComponent } from '../../person-selection-dlg';
@@ -36,6 +43,7 @@ describe('BookDetailComponent', () => {
   let createBookSpy: SafeAny;
   let updateBookSpy: SafeAny;
   let checkBookDuplicateSpy: SafeAny;
+  let fetchBookReadingRecordsSpy: SafeAny;
   let _fetchAllPersonsSpy: SafeAny;
   let activatedRouteStub: SafeAny;
   const authServiceStub: Partial<AuthService> = {};
@@ -56,10 +64,17 @@ describe('BookDetailComponent', () => {
       'checkBookDuplicate',
       'createBook',
       'updateBook',
+      'fetchBookReadingRecords',
     ]);
     readBookSpy = storageService.readBook.and.returnValue(of({}));
     createBookSpy = storageService.createBook.and.returnValue(of({}));
     updateBookSpy = storageService.updateBook.and.returnValue(of({}));
+    // Inline reading log (Display mode): default to an empty list so unrelated
+    // display-mode tests are unaffected.
+    const emptyRecordList = new BaseListModel<BookReadingRecord>();
+    emptyRecordList.contentList = [];
+    emptyRecordList.totalCount = 0;
+    fetchBookReadingRecordsSpy = storageService.fetchBookReadingRecords.and.returnValue(of(emptyRecordList));
     // Duplicate pre-check: default to "no duplicate" so unrelated saves pass.
     checkBookDuplicateSpy = storageService.checkBookDuplicate.and.returnValue(of(false));
     _fetchAllPersonsSpy = storageService.fetchAllPersons.and.returnValue(of([]));
@@ -509,6 +524,10 @@ describe('BookDetailComponent', () => {
       nbook.NativeName = 'test';
 
       readBookSpy.and.returnValue(asyncData(nbook));
+      // Reset the shared reading-records spy to empty per test (the default set
+      // in beforeAll is overwritten by the "loads records" test below).
+      const empty = new BaseListModel<BookReadingRecord>();
+      fetchBookReadingRecordsSpy.and.returnValue(of(empty));
     });
 
     it('display mode init without error', async () => {
@@ -523,6 +542,52 @@ describe('BookDetailComponent', () => {
       expect(component.isEditable).toBe(false);
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nbook.NativeName);
+    });
+
+    it('display mode loads and renders the book reading records inline', async () => {
+      const rec = new BookReadingRecord();
+      rec.ID = 7;
+      rec.BookID = 122;
+      rec.User = 'reader1';
+      rec.FromDate = new Date(2026, 0, 10);
+      rec.ToDate = new Date(2026, 0, 20);
+      rec.Comment = 'Great read';
+      rec.Status = BookReadingStatus.Completed;
+      const list = new BaseListModel<BookReadingRecord>();
+      list.contentList = [rec];
+      list.totalCount = 1;
+      fetchBookReadingRecordsSpy.and.returnValue(asyncData(list));
+
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      // Fetched, scoped to the route's book id (122, not the loaded book's 2)
+      expect(fetchBookReadingRecordsSpy).toHaveBeenCalled();
+      const filterArg = fetchBookReadingRecordsSpy.mock.calls.at(-1)![4];
+      expect(filterArg).toEqual('BookId eq 122');
+
+      expect(component.readingRecords().length).toEqual(1);
+      expect(component.readingRecords()[0].ID).toEqual(7);
+
+      // Rendered in the inline table
+      const tableEl = fixture.nativeElement.querySelector('.reading-records-table');
+      expect(tableEl).toBeTruthy();
+      expect(tableEl.textContent).toContain('Great read');
+    });
+
+    it('display mode shows the empty hint when the book has no reading records', async () => {
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(component.readingRecords().length).toEqual(0);
+      expect(fixture.nativeElement.querySelector('.reading-records-table')).toBeFalsy();
+      expect(fixture.nativeElement.querySelector('.reading-records-empty')).toBeTruthy();
     });
   });
 
@@ -563,6 +628,20 @@ describe('BookDetailComponent', () => {
       expect(component.isEditable).toBe(true);
       const nname = component.detailFormGroup.get('nnameControl')?.value;
       expect(nname).toEqual(nbook.NativeName);
+    });
+
+    it('edit mode does not load or render the inline reading records', async () => {
+      fetchBookReadingRecordsSpy.mockClear();
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      // The inline log is Display-mode only.
+      expect(fetchBookReadingRecordsSpy).not.toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('.reading-records-table')).toBeFalsy();
+      expect(fixture.nativeElement.querySelector('.reading-records-empty')).toBeFalsy();
     });
 
     it('edit mode with valid data calls updateBook', async () => {

@@ -16,6 +16,7 @@ describe('date-scope presets', () => {
   };
 
   it('resolves every preset to its exact inclusive window', () => {
+    expect(bounds('today')).toBe('2026-09-16 .. 2026-09-16'); // one-day window
     expect(bounds('week')).toBe('2026-09-14 .. 2026-09-20'); // Monday-start weeks
     expect(bounds('month')).toBe('2026-09-01 .. 2026-09-30');
     expect(bounds('quarter')).toBe('2026-07-01 .. 2026-09-30'); // Q3

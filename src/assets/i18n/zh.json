@@ -137,6 +137,8 @@
     "Start": "启动",
     "Stop": "停止",
     "Filter": "过滤",
+    "Columns": "显示列",
+    "ColumnCannotHide": "该列不可隐藏",
     "Messages": "消息",
     "Message": "消息",
     "Members": "成员",
@@ -233,6 +235,7 @@
     "No": "否"
   },
   "DateScope": {
+    "Today": "今天",
     "ThisWeek": "本周",
     "ThisMonth": "本月",
     "ThisQuarter": "本季度",
@@ -567,6 +570,8 @@
     "Transactions": "交易",
     "Incoming": "收入",
     "Outgoing": "支出",
+    "SameDayNormalDocWarning": "当日已创建过普通文档",
+    "SameDayNormalDocHint": "请仔细核对，避免重复记账：",
     "Borrow": "借入",
     "Lend": "借出",
     "Assets": "资产",
@@ -721,7 +726,10 @@
     "CompareResultsDesp": "对比预期账户余额与实际的账户余额",
     "Difference": "差额",
     "BackToDocumentListView": "返回凭证列表",
-    "Analysis": "分析"
+    "Analysis": "分析",
+    "InsightOptions": "选项",
+    "InsightAvailable": "可选",
+    "InsightSelected": "已选"
   },
   "Library": {
     "BookCategories": "图书种类",
@@ -783,6 +791,7 @@
     "ReadingRecord": "阅读记录",
     "CreateReadingRecord": "新建阅读记录",
     "ViewReadingRecords": "查看阅读记录",
+    "NoReadingRecords": "本书暂无阅读记录。",
     "StillReading": "仍在阅读",
     "CompleteReading": "完成阅读",
     "AbortReading": "中止阅读",

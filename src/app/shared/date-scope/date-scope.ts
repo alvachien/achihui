@@ -15,6 +15,7 @@ import {
   endOfQuarter,
   endOfWeek,
   endOfYear,
+  startOfDay,
   startOfMonth,
   startOfQuarter,
   startOfWeek,
@@ -25,7 +26,7 @@ import {
 } from 'date-fns';
 
 export type DateScopeKey =
-  'week' | 'month' | 'quarter' | 'year' | 'lastMonth' | 'lastQuarter' | 'lastYear' | 'ytd' | 'none';
+  'today' | 'week' | 'month' | 'quarter' | 'year' | 'lastMonth' | 'lastQuarter' | 'lastYear' | 'ytd' | 'none';
 
 /** Inclusive window; the page formats the bounds into its date clause. */
 export interface DateScopeRange {
@@ -35,6 +36,7 @@ export interface DateScopeRange {
 
 /** Menu contents and order; labels are i18n keys under the DateScope group. */
 export const DATE_SCOPES: ReadonlyArray<{ key: DateScopeKey; labelKey: string }> = [
+  { key: 'today', labelKey: 'DateScope.Today' },
   { key: 'week', labelKey: 'DateScope.ThisWeek' },
   { key: 'month', labelKey: 'DateScope.ThisMonth' },
   { key: 'quarter', labelKey: 'DateScope.ThisQuarter' },
@@ -55,6 +57,8 @@ const WEEK_OPTIONS = { weekStartsOn: 1 as const };
 /** The active window for `key`; `undefined` = no restriction (no date clause). */
 export function resolveDateScope(key: DateScopeKey, now: Date = new Date()): DateScopeRange | undefined {
   switch (key) {
+    case 'today':
+      return { bgn: startOfDay(now), end: endOfDay(now) };
     case 'week':
       return { bgn: startOfWeek(now, WEEK_OPTIONS), end: endOfWeek(now, WEEK_OPTIONS) };
     case 'month':

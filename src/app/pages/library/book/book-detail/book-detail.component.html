@@ -161,4 +161,50 @@
     (removePress)="onRemovePress($event)"
     (removeLocation)="onRemoveLocation($event)"
   ></hih-book-associations>
+
+  <!-- Reading log, inline in Display mode: the records are visible without the
+       extra click through the header link (which still leads to the full list
+       for create/finalize/delete management). -->
+  @if (isDisplayMode && routerID() > 0) {
+    <nz-divider nzText="{{ 'Library.ReadingRecords' | transloco }}" nzOrientation="left"></nz-divider>
+    <nz-spin [nzSpinning]="isLoadingReadingRecords()">
+      @if (readingRecords().length > 0) {
+        <nz-table
+          #rrTable
+          class="reading-records-table"
+          nzSize="small"
+          [nzData]="readingRecords()"
+          [nzFrontPagination]="false"
+          [nzShowPagination]="false"
+        >
+          <thead>
+            <tr>
+              <th>{{ 'Common.ID' | transloco }}</th>
+              <th>{{ 'Library.Reader' | transloco }}</th>
+              <th>{{ 'Common.StartDate' | transloco }}</th>
+              <th>{{ 'Common.EndDate' | transloco }}</th>
+              <th>{{ 'Common.Status' | transloco }}</th>
+              <th>{{ 'Common.Comment' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of rrTable.data; track data.ID) {
+              <tr>
+                <td>{{ data.ID }}</td>
+                <td>{{ getReaderName(data.User) }}</td>
+                <td>{{ data.FromDateString }}</td>
+                <td>{{ data.ToDateString }}</td>
+                <td>
+                  <nz-tag [nzColor]="statusColor(data.Status)">{{ statusLabelKey(data.Status) | transloco }}</nz-tag>
+                </td>
+                <td>{{ data.Comment }}</td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      } @else {
+        <p class="reading-records-empty">{{ 'Library.NoReadingRecords' | transloco }}</p>
+      }
+    </nz-spin>
+  }
 </nz-spin>

@@ -26,11 +26,16 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 
 import {
+  BaseListModel,
   ModelUtility,
   ConsoleLogTypeEnum,
   Book,
+  BookReadingRecord,
+  BookReadingStatus,
   getUIModeString,
   Person,
   Organization,
@@ -62,6 +67,8 @@ import { LocationSelectionDlgComponent } from '../../location-selection-dlg';
     NzInputModule,
     NzInputNumberModule,
     NzCheckboxModule,
+    NzTableModule,
+    NzTagModule,
     RouterModule,
     NzModalModule,
     BookAssociationsComponent,
@@ -79,6 +86,11 @@ export class BookDetailComponent implements OnInit {
   listPresses = signal<Organization[]>([]);
   listCategories = signal<BookCategory[]>([]);
   listLocations = signal<Location[]>([]);
+  // Per-book reading log, shown inline in Display mode so the records are
+  // visible without navigating to the reading-record list (the header link
+  // still leads there for create/finalize/delete management).
+  readingRecords = signal<BookReadingRecord[]>([]);
+  isLoadingReadingRecords = signal(false);
   // Categories as loaded. The tree and the id snapshot are both DERIVED from this
   // one array (not built once and stored), because node titles come from the
   // imperative translate() - which carries no implicit active-language dependency -
@@ -159,6 +171,12 @@ export class BookDetailComponent implements OnInit {
 
   get isEditable(): boolean {
     return isUIEditable(this.uiMode());
+  }
+
+  // The inline reading-log section renders only in Display mode (per the
+  // request): Create has no book id yet, and Edit keeps the form focused.
+  get isDisplayMode(): boolean {
+    return this.uiMode() === UIMode.Display;
   }
 
   ngOnInit() {
@@ -243,6 +261,12 @@ export class BookDetailComponent implements OnInit {
                 });
               },
             });
+
+          // Display mode only: load the book's reading log inline (independent
+          // of the book fetch above - it only needs the route id).
+          if (this.uiMode() === UIMode.Display) {
+            this.loadReadingRecords(this.routerID());
+          }
           break;
         }
 
@@ -436,6 +460,54 @@ export class BookDetailComponent implements OnInit {
 
   onRemoveLocation(id: number): void {
     this.listLocations.update((arr) => arr.filter((l) => l.ID !== id));
+  }
+
+  // Fetch this book's reading log (newest first). Best-effort: a failure leaves
+  // the section empty rather than raising a modal - the book itself is the
+  // primary content, and the header link still reaches the full list.
+  private loadReadingRecords(bookId: number): void {
+    if (!(bookId > 0)) {
+      return;
+    }
+    this.isLoadingReadingRecords.set(true);
+    this.storageService
+      .fetchBookReadingRecords(100, 0, { field: 'FromDate', order: 'desc' }, undefined, `BookId eq ${bookId}`)
+      .pipe(
+        finalize(() => this.isLoadingReadingRecords.set(false)),
+        takeUntilDestroyed(this.destroyedRef),
+      )
+      .subscribe({
+        next: (x: BaseListModel<BookReadingRecord>) => this.readingRecords.set(x.contentList ?? []),
+        error: () => this.readingRecords.set([]),
+      });
+  }
+
+  // Reader display name: the record stores the token's User id, while the home
+  // member list carries the DisplayAs (same resolution as reading-record-list).
+  getReaderName(user: string): string {
+    const member = (this.homeService.MembersInChosedHome ?? []).find(
+      (m: { User: string; DisplayAs: string }) => m.User === user,
+    );
+    return member?.DisplayAs || user;
+  }
+
+  // nz-tag color per lifecycle state (mirrors reading-record-list): Reading is
+  // in flight (blue), Completed terminal-good (green), Aborted terminal-neutral.
+  statusColor(status: BookReadingStatus): string {
+    switch (status) {
+      case BookReadingStatus.Reading:
+        return 'processing';
+      case BookReadingStatus.Completed:
+        return 'success';
+      case BookReadingStatus.Aborted:
+      default:
+        return 'default';
+    }
+  }
+
+  // The enum member names double as the translation keys.
+  statusLabelKey(status: BookReadingStatus): string {
+    return `Library.ReadingStatus.${status}`;
   }
 
   onSave(): void {

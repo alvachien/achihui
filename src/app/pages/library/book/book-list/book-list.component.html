@@ -37,6 +37,35 @@
           </li>
         </ul>
       </nz-dropdown-menu>
+      <!-- Column picker: a display control (not a narrowing), so it lives in the
+           bar but never contributes to the filter-bar-on highlight. -->
+      <nz-divider nzType="vertical"></nz-divider>
+      <button
+        nz-button
+        nzType="link"
+        nz-popover
+        nzPopoverTrigger="click"
+        nzPopoverPlacement="bottomLeft"
+        [nzPopoverContent]="columnsPopover"
+      >
+        {{ 'Common.Columns' | transloco }}
+        <i nz-icon nzType="down"></i>
+      </button>
+      <ng-template #columnsPopover>
+        <div class="column-picker">
+          @for (col of bookColumns; track col.key) {
+            <label
+              nz-checkbox
+              [nzChecked]="isColumnVisible(col.key)"
+              [nzDisabled]="!!col.locked"
+              [title]="col.locked ? ('Common.ColumnCannotHide' | transloco) : ''"
+              (nzCheckedChange)="setColumnVisible(col.key, $event)"
+            >
+              {{ col.labelKey | transloco }}
+            </label>
+          }
+        </div>
+      </ng-template>
     </div>
     <div class="table-count">{{ totalCountAll() }} | {{ totalCount() }}</div>
   </div>
@@ -64,14 +93,29 @@
         <!-- The four bibliographic fields plus the inventory count, grouped after
              the names and before the audit dates. Detail is free text (200 chars),
              so it is placed last in the group, is not sortable, and is clamped by
-             .detail-cell in the stylesheet. -->
-        <th nzShowSort nzSortKey="isbn">{{ 'Library.ISBN' | transloco }}</th>
-        <th nzShowSort nzSortKey="pyear">{{ 'Library.PublishedYear' | transloco }}</th>
-        <th nzShowSort nzSortKey="pgcnt">{{ 'Library.PageCount' | transloco }}</th>
-        <th nzShowSort nzSortKey="ccnt">{{ 'Library.CopyCount' | transloco }}</th>
-        <th>{{ 'Common.Detail' | transloco }}</th>
-        <th nzShowSort nzSortKey="createdat">{{ 'Common.CreatedAt' | transloco }}</th>
-        <th nzShowSort nzSortKey="updatedat">{{ 'Common.LastChangedAt' | transloco }}</th>
+             .detail-cell in the stylesheet. Everything outside the three locked
+             leading columns can be toggled via the "Columns" picker above. -->
+        @if (isColumnVisible('isbn')) {
+          <th nzShowSort nzSortKey="isbn">{{ 'Library.ISBN' | transloco }}</th>
+        }
+        @if (isColumnVisible('pyear')) {
+          <th nzShowSort nzSortKey="pyear">{{ 'Library.PublishedYear' | transloco }}</th>
+        }
+        @if (isColumnVisible('pgcnt')) {
+          <th nzShowSort nzSortKey="pgcnt">{{ 'Library.PageCount' | transloco }}</th>
+        }
+        @if (isColumnVisible('ccnt')) {
+          <th nzShowSort nzSortKey="ccnt">{{ 'Library.CopyCount' | transloco }}</th>
+        }
+        @if (isColumnVisible('detail')) {
+          <th>{{ 'Common.Detail' | transloco }}</th>
+        }
+        @if (isColumnVisible('createdat')) {
+          <th nzShowSort nzSortKey="createdat">{{ 'Common.CreatedAt' | transloco }}</th>
+        }
+        @if (isColumnVisible('updatedat')) {
+          <th nzShowSort nzSortKey="updatedat">{{ 'Common.LastChangedAt' | transloco }}</th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -116,22 +160,36 @@
           </td>
           <td>{{ data.ChineseName }}</td>
           <td>{{ data.NativeName }}</td>
-          <td>{{ data.ISBN }}</td>
-          <td>{{ data.PublishedYear }}</td>
-          <td>{{ data.PageCount }}</td>
-          <!-- 0 = the book is gone (kept for its reading history), so it is
-               dimmed and titled rather than hidden: the row must stay visible
-               and editable, and 0 is the only value that means retired. -->
-          <td
-            class="ccnt-cell"
-            [class.ccnt-gone]="data.CopyCount === 0"
-            [title]="data.CopyCount === 0 ? ('Library.NoCopies' | transloco) : ''"
-          >
-            {{ data.CopyCount }}
-          </td>
-          <td class="detail-cell" [title]="data.Detail ?? ''">{{ data.Detail }}</td>
-          <td>{{ data.CreatedatFormatString }}</td>
-          <td>{{ data.UpdatedatFormatString }}</td>
+          @if (isColumnVisible('isbn')) {
+            <td>{{ data.ISBN }}</td>
+          }
+          @if (isColumnVisible('pyear')) {
+            <td>{{ data.PublishedYear }}</td>
+          }
+          @if (isColumnVisible('pgcnt')) {
+            <td>{{ data.PageCount }}</td>
+          }
+          @if (isColumnVisible('ccnt')) {
+            <!-- 0 = the book is gone (kept for its reading history), so it is
+                 dimmed and titled rather than hidden: the row must stay visible
+                 and editable, and 0 is the only value that means retired. -->
+            <td
+              class="ccnt-cell"
+              [class.ccnt-gone]="data.CopyCount === 0"
+              [title]="data.CopyCount === 0 ? ('Library.NoCopies' | transloco) : ''"
+            >
+              {{ data.CopyCount }}
+            </td>
+          }
+          @if (isColumnVisible('detail')) {
+            <td class="detail-cell" [title]="data.Detail ?? ''">{{ data.Detail }}</td>
+          }
+          @if (isColumnVisible('createdat')) {
+            <td>{{ data.CreatedatFormatString }}</td>
+          }
+          @if (isColumnVisible('updatedat')) {
+            <td>{{ data.UpdatedatFormatString }}</td>
+          }
         </tr>
       }
     </tbody>

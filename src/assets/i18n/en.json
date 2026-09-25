@@ -137,6 +137,8 @@
     "Start": "Start",
     "Stop": "Stop",
     "Filter": "Filter",
+    "Columns": "Columns",
+    "ColumnCannotHide": "This column cannot be hidden",
     "Messages": "Messages",
     "Message": "Message",
     "Members": "Members",
@@ -233,6 +235,7 @@
     "No": "No"
   },
   "DateScope": {
+    "Today": "Today",
     "ThisWeek": "This Week",
     "ThisMonth": "This Month",
     "ThisQuarter": "This Quarter",
@@ -567,6 +570,8 @@
     "Transactions": "Transactions",
     "Incoming": "Incoming",
     "Outgoing": "Outgoing",
+    "SameDayNormalDocWarning": "A normal document has already been created on this date",
+    "SameDayNormalDocHint": "Please double-check the items to avoid a duplicate posting:",
     "Borrow": "Borrow",
     "Lend": "Lend",
     "Assets": "Assets",
@@ -721,7 +726,10 @@
     "CompareResultsDesp": "Compare result between inputted one with actual ones",
     "Difference": "Difference",
     "BackToDocumentListView": "Back to Document List",
-    "Analysis": "Analysis"
+    "Analysis": "Analysis",
+    "InsightOptions": "Options",
+    "InsightAvailable": "Available",
+    "InsightSelected": "Selected"
   },
   "Library": {
     "BookCategories": "Book Categories",
@@ -783,6 +791,7 @@
     "ReadingRecord": "Reading Record",
     "CreateReadingRecord": "Create Reading Record",
     "ViewReadingRecords": "View Reading Records",
+    "NoReadingRecords": "No reading records for this book yet.",
     "StillReading": "Still reading",
     "CompleteReading": "Complete Reading",
     "AbortReading": "Abort Reading",

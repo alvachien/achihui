@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzTreeSelectModule } from 'ng-zorro-antd/tree-select';
 import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { Person, Organization, BookCategory, Location } from '@model/index';
@@ -13,8 +14,9 @@ import { SafeAny } from '@common/any';
  * Presentational view of a book's many-to-many associations.
  *
  * Renders the five association lists (authors, translators, categories, presses,
- * locations) as stacked sections rather than tabs, so every assignment is visible
- * at once during create/edit. Inputs are read-only lists plus a `disabled` flag;
+ * locations) in a two-column responsive grid (single column below md) rather than
+ * tabs, so every assignment is visible at once during create/edit without the
+ * stacked sections eating the whole page. Inputs are read-only lists plus a `disabled` flag;
  * the host owns the selection dialogs (authors/translators/presses/locations) and
  * the row data, and reacts to the `assignX` / `removeX` events emitted here.
  * Categories are the exception: no dialog — `assignCategory` asks the host to
@@ -26,7 +28,15 @@ import { SafeAny } from '@common/any';
   templateUrl: './book-associations.component.html',
   styleUrls: ['./book-associations.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, NzButtonModule, NzTableModule, NzDividerModule, NzTreeSelectModule, FormsModule],
+  imports: [
+    TranslocoModule,
+    NzButtonModule,
+    NzTableModule,
+    NzDividerModule,
+    NzGridModule,
+    NzTreeSelectModule,
+    FormsModule,
+  ],
 })
 export class BookAssociationsComponent {
   /** True when the host form is not editable (e.g. Display mode). */

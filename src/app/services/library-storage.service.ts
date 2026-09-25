@@ -1056,12 +1056,24 @@ export class LibraryStorageService {
   }
 
   // Book
+  // Full projection - the shape every caller used before the list page's
+  // column picker; also the fallback when `select` is omitted/empty.
+  static readonly BOOK_FULL_SELECT =
+    'Id,HomeID,NativeName,ChineseName,ISBN,PublishedYear,PageCount,CopyCount,Detail,CreatedAt,UpdatedAt';
+
   public fetchBooks(
     top?: number,
     skip?: number,
     orderby?: { field: string; order: string },
     search?: string,
     odataFilter?: string,
+    // Fiori-style view settings: the book list passes the visible columns so the
+    // server projects exactly what the table renders. Omitted = full projection.
+    // The caller keeps this a superset of the visible columns PLUS the current
+    // sort field; $filter/$orderby apply to the row set regardless, so narrowing
+    // the projection never changes WHICH rows match - only the values returned
+    // (fields left out come back null in the mapped Book).
+    select?: readonly string[],
   ): Observable<BaseListModel<Book>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -1070,13 +1082,9 @@ export class LibraryStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    // Exactly the columns the list renders. Each of them is also a filter-dialog
-    // property, so a narrowed row can always show the value it matched on:
-    // filtering on a field missing from $select would still return the right rows
-    // (the server applies $filter before projecting) but they would look unfiltered.
     params = params.append(
       '$select',
-      'Id,HomeID,NativeName,ChineseName,ISBN,PublishedYear,PageCount,CopyCount,Detail,CreatedAt,UpdatedAt',
+      select && select.length > 0 ? select.join(',') : LibraryStorageService.BOOK_FULL_SELECT,
     );
     if (orderby) {
       params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
