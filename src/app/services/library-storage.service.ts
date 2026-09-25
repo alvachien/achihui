@@ -33,6 +33,11 @@ export interface LibraryRankingItem {
  *  LibraryOverviewKeyFigure on the server). */
 export interface LibraryOverviewStats {
   totalBooks: number;
+  // Physical books on the shelf: SUM of each book's CopyCount, an unrecorded
+  // count reading as one copy and a retired book (0) adding none. Distinct from
+  // totalBooks, which counts rows - this one is larger whenever a title is held
+  // in several copies, smaller once books are retired.
+  totalCopies: number;
   addedThisMonth: number;
   addedLastMonth: number;
   completedThisMonth: number;
@@ -1051,12 +1056,24 @@ export class LibraryStorageService {
   }
 
   // Book
+  // Full projection - the shape every caller used before the list page's
+  // column picker; also the fallback when `select` is omitted/empty.
+  static readonly BOOK_FULL_SELECT =
+    'Id,HomeID,NativeName,ChineseName,ISBN,PublishedYear,PageCount,CopyCount,Detail,CreatedAt,UpdatedAt';
+
   public fetchBooks(
     top?: number,
     skip?: number,
     orderby?: { field: string; order: string },
     search?: string,
     odataFilter?: string,
+    // Fiori-style view settings: the book list passes the visible columns so the
+    // server projects exactly what the table renders. Omitted = full projection.
+    // The caller keeps this a superset of the visible columns PLUS the current
+    // sort field; $filter/$orderby apply to the row set regardless, so narrowing
+    // the projection never changes WHICH rows match - only the values returned
+    // (fields left out come back null in the mapped Book).
+    select?: readonly string[],
   ): Observable<BaseListModel<Book>> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers
@@ -1065,7 +1082,10 @@ export class LibraryStorageService {
       .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
-    params = params.append('$select', 'Id,HomeID,NativeName,ChineseName,Detail,CreatedAt,UpdatedAt');
+    params = params.append(
+      '$select',
+      select && select.length > 0 ? select.join(',') : LibraryStorageService.BOOK_FULL_SELECT,
+    );
     if (orderby) {
       params = params.append('$orderby', `${orderby.field} ${orderby.order}`);
     }
@@ -1211,6 +1231,7 @@ export class LibraryStorageService {
 
           const stats: LibraryOverviewStats = {
             totalBooks: Number(raw.TotalBooks ?? 0),
+            totalCopies: Number(raw.TotalCopies ?? 0),
             addedThisMonth: Number(raw.AddedThisMonth ?? 0),
             addedLastMonth: Number(raw.AddedLastMonth ?? 0),
             completedThisMonth: Number(raw.CompletedThisMonth ?? 0),

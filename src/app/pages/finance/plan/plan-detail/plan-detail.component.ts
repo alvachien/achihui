@@ -49,6 +49,8 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { UIAccountStatusFilterPipe } from '../../pipes';
+import { TranTypeTreeSelectComponent } from '../../../../shared/trantype-tree-select';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-plan-detail',
@@ -59,6 +61,8 @@ import { UIAccountStatusFilterPipe } from '../../pipes';
     NzTypographyModule,
     NzIconModule,
     NzPageHeaderModule,
+    TranTypeTreeSelectComponent,
+    ControlCenterTreeSelectComponent,
     NzBreadCrumbModule,
     NzSpinModule,
     NzButtonModule,

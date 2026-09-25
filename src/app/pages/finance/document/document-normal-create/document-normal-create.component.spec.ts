@@ -42,6 +42,7 @@ describe('DocumentNormalCreateComponent', () => {
   let fetchAllOrdersSpy: SafeAny;
   let createDocumentSpy: SafeAny;
   let searchDocItemSpy: SafeAny;
+  let fetchAllDocumentsSpy: SafeAny;
   const modalClassName = '.ant-modal-body';
   const nextButtonId = '#button_next_step';
 
@@ -72,6 +73,7 @@ describe('DocumentNormalCreateComponent', () => {
       'fetchAllOrders',
       'createDocument',
       'searchDocItem',
+      'fetchAllDocuments',
     ]);
     fetchAllCurrenciesSpy = odataService.fetchAllCurrencies.and.returnValue(of([]));
     fetchAllDocTypesSpy = odataService.fetchAllDocTypes.and.returnValue(of([]));
@@ -82,6 +84,8 @@ describe('DocumentNormalCreateComponent', () => {
     fetchAllOrdersSpy = odataService.fetchAllOrders.and.returnValue(of([]));
     createDocumentSpy = odataService.createDocument.and.returnValue(of({}));
     searchDocItemSpy = odataService.searchDocItem.and.returnValue(of({ contentList: [] }));
+    // Same-day guardrail fetch (fires when the Items step opens)
+    fetchAllDocumentsSpy = odataService.fetchAllDocuments.and.returnValue(of({ contentList: [], totalCount: 0 }));
 
     TestBed.configureTestingModule({
       // declarations moved to imports
@@ -153,6 +157,8 @@ describe('DocumentNormalCreateComponent', () => {
       fetchAllOrdersSpy.and.returnValue(asyncData(fakeData.finOrders));
       // Search doc item
       searchDocItemSpy.and.returnValue(asyncData({ contentList: [] }));
+      // Same-day guardrail fetch (fires when the Items step opens)
+      fetchAllDocumentsSpy.and.returnValue(asyncData({ contentList: [], totalCount: 0 }));
     });
 
     beforeEach(() => {
@@ -214,6 +220,70 @@ describe('DocumentNormalCreateComponent', () => {
       expect(component.currentStep()).toEqual(1);
 
       await new Promise<void>((r) => setTimeout(r, 0));
+    });
+
+    it('step 0 -> 1: warns when a normal document already exists on the same day', async () => {
+      const existing = new Document();
+      existing.Id = 42;
+      existing.Desp = 'Breakfast';
+      fetchAllDocumentsSpy.and.returnValue(asyncData({ contentList: [existing], totalCount: 1 }));
+
+      fixture.detectChanges(); // ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      const docheader = new Document();
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.next();
+      expect(component.currentStep()).toEqual(1);
+
+      // The guardrail queried by date + normal doc type
+      expect(fetchAllDocumentsSpy).toHaveBeenCalled();
+      const argFilters: SafeAny[] = fetchAllDocumentsSpy.mock.calls.at(-1)![0];
+      expect(argFilters.map((f: SafeAny) => f.fieldName)).toEqual(['TranDate', 'DocType']);
+
+      await new Promise<void>((r) => setTimeout(r, 0)); // asyncData completes the fetch
+      fixture.detectChanges();
+
+      expect(component.sameDayDocs().length).toEqual(1);
+      expect(component.sameDayDocs()[0].Id).toEqual(42);
+
+      // The warning alert is rendered on the Items step
+      const alertEl = fixture.nativeElement.querySelector('nz-alert.same-day-alert');
+      expect(alertEl).toBeTruthy();
+      expect(alertEl!.textContent).toContain('#42');
+      expect(alertEl!.textContent).toContain('Breakfast');
+    });
+
+    it('step 0 -> 1: stays quiet when no normal document exists on the same day', async () => {
+      fixture.detectChanges(); // ngOnInit
+      await new Promise<void>((r) => setTimeout(r, 0)); // Complete the Observables in ngOnInit
+      fixture.detectChanges();
+
+      const docheader = new Document();
+      docheader.TranDate = parse('2020-02-02', dateFormat, new Date());
+      docheader.Desp = 'Test on 2nd May, 2020';
+      docheader.TranCurr = fakeData.chosedHome.BaseCurrency;
+      component.headerForm.get('headerControl')?.setValue(docheader);
+      component.headerForm.get('headerControl')?.markAsDirty();
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      component.next();
+      expect(component.currentStep()).toEqual(1);
+
+      await new Promise<void>((r) => setTimeout(r, 0));
+      fixture.detectChanges();
+
+      expect(component.sameDayDocs().length).toEqual(0);
+      expect(fixture.nativeElement.querySelector('nz-alert.same-day-alert')).toBeFalsy();
     });
 
     it('step 0: should go to next page if header is valid for document with foreign currency', async () => {

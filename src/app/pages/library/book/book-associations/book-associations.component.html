@@ -1,181 +1,213 @@
-<!-- Authors -->
-<nz-divider [nzText]="'Library.Authors' | transloco"></nz-divider>
-<div class="toolbar_buttons">
-  <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignAuthor.emit()">
-    {{ 'Library.SelectAuthor' | transloco }}
-  </button>
-</div>
-<nz-table #authorTable [nzData]="authors()">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>{{ 'Common.NativeName' | transloco }}</th>
-      <th>{{ 'Common.ChineseName' | transloco }}</th>
-      <th>{{ 'Common.Detail' | transloco }}</th>
-      @if (!disabled()) {
-        <th>{{ 'Common.Remove' | transloco }}</th>
-      }
-    </tr>
-  </thead>
-  <tbody>
-    @for (data of authorTable.data; track data.ID) {
-      <tr>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.NativeName }}</td>
-        <td>{{ data.ChineseName }}</td>
-        <td>{{ data.Detail }}</td>
-        @if (!disabled()) {
-          <td>
-            <a nz-button nzType="link" nzDanger (click)="removeAuthor.emit(data.ID)">
-              {{ 'Common.Remove' | transloco }}
-            </a>
-          </td>
+<!-- Two-column grid from md (768px) up, single column below: the five association
+     blocks only ever hold a handful of short rows each, and stacked at full width
+     they dominated the detail page. Translators rides along in the grid (it is the
+     same kind of block), so on wide screens the five blocks land 2+2+1. Tables use
+     nzSize="small" so the name columns stay readable in a half-width column. -->
+<div nz-row [nzGutter]="16">
+  <!-- Authors -->
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" class="assoc-block">
+    <nz-divider [nzText]="'Library.Authors' | transloco"></nz-divider>
+    <div class="toolbar_buttons">
+      <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignAuthor.emit()">
+        {{ 'Library.SelectAuthor' | transloco }}
+      </button>
+    </div>
+    <nz-table #authorTable nzSize="small" [nzData]="authors()">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>{{ 'Common.NativeName' | transloco }}</th>
+          <th>{{ 'Common.ChineseName' | transloco }}</th>
+          <th>{{ 'Common.Detail' | transloco }}</th>
+          @if (!disabled()) {
+            <th>{{ 'Common.Remove' | transloco }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of authorTable.data; track data.ID) {
+          <tr>
+            <td>{{ data.ID }}</td>
+            <td>{{ data.NativeName }}</td>
+            <td>{{ data.ChineseName }}</td>
+            <td>{{ data.Detail }}</td>
+            @if (!disabled()) {
+              <td>
+                <a nz-button nzType="link" nzDanger (click)="removeAuthor.emit(data.ID)">
+                  {{ 'Common.Remove' | transloco }}
+                </a>
+              </td>
+            }
+          </tr>
         }
-      </tr>
-    }
-  </tbody>
-</nz-table>
+      </tbody>
+    </nz-table>
+  </div>
 
-<!-- Translators -->
-<nz-divider [nzText]="'Library.Translators' | transloco"></nz-divider>
-<div class="toolbar_buttons">
-  <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignTranslator.emit()">
-    {{ 'Library.SelectTranslator' | transloco }}
-  </button>
-</div>
-<nz-table #tranTable [nzData]="translators()">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>{{ 'Common.NativeName' | transloco }}</th>
-      <th>{{ 'Common.ChineseName' | transloco }}</th>
-      <th>{{ 'Common.Detail' | transloco }}</th>
-      @if (!disabled()) {
-        <th>{{ 'Common.Remove' | transloco }}</th>
-      }
-    </tr>
-  </thead>
-  <tbody>
-    @for (data of tranTable.data; track data.ID) {
-      <tr>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.NativeName }}</td>
-        <td>{{ data.ChineseName }}</td>
-        <td>{{ data.Detail }}</td>
-        @if (!disabled()) {
-          <td>
-            <a nz-button nzType="link" nzDanger (click)="removeTranslator.emit(data.ID)">
-              {{ 'Common.Remove' | transloco }}
-            </a>
-          </td>
+  <!-- Translators -->
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" class="assoc-block">
+    <nz-divider [nzText]="'Library.Translators' | transloco"></nz-divider>
+    <div class="toolbar_buttons">
+      <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignTranslator.emit()">
+        {{ 'Library.SelectTranslator' | transloco }}
+      </button>
+    </div>
+    <nz-table #tranTable nzSize="small" [nzData]="translators()">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>{{ 'Common.NativeName' | transloco }}</th>
+          <th>{{ 'Common.ChineseName' | transloco }}</th>
+          <th>{{ 'Common.Detail' | transloco }}</th>
+          @if (!disabled()) {
+            <th>{{ 'Common.Remove' | transloco }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of tranTable.data; track data.ID) {
+          <tr>
+            <td>{{ data.ID }}</td>
+            <td>{{ data.NativeName }}</td>
+            <td>{{ data.ChineseName }}</td>
+            <td>{{ data.Detail }}</td>
+            @if (!disabled()) {
+              <td>
+                <a nz-button nzType="link" nzDanger (click)="removeTranslator.emit(data.ID)">
+                  {{ 'Common.Remove' | transloco }}
+                </a>
+              </td>
+            }
+          </tr>
         }
-      </tr>
-    }
-  </tbody>
-</nz-table>
+      </tbody>
+    </nz-table>
+  </div>
 
-<!-- Categories -->
-<nz-divider [nzText]="'Common.Categories' | transloco"></nz-divider>
-<div class="toolbar_buttons">
-  <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignCategory.emit()">
-    {{ 'Library.SelectCategory' | transloco }}
-  </button>
-</div>
-<nz-table #ctgyTable [nzData]="categories()">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>{{ 'Common.Name' | transloco }}</th>
-      @if (!disabled()) {
-        <th>{{ 'Common.Remove' | transloco }}</th>
-      }
-    </tr>
-  </thead>
-  <tbody>
-    @for (data of ctgyTable.data; track data.ID) {
-      <tr>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.Name | transloco }}</td>
-        @if (!disabled()) {
-          <td>
-            <a nz-button nzType="link" nzDanger (click)="removeCategory.emit(data.ID)">
-              {{ 'Common.Remove' | transloco }}
-            </a>
-          </td>
+  <!-- Categories: inline rows with a tree-select per row (no selection dialog). -->
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" class="assoc-block">
+    <nz-divider [nzText]="'Common.Categories' | transloco"></nz-divider>
+    <div class="toolbar_buttons">
+      <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignCategory.emit()">
+        {{ 'Library.AddRow' | transloco }}
+      </button>
+    </div>
+    <nz-table #ctgyTable nzSize="small" [nzData]="categories()">
+      <thead>
+        <tr>
+          <th>{{ 'Library.BookCategory' | transloco }}</th>
+          <th>ID</th>
+          @if (!disabled()) {
+            <th>{{ 'Common.Remove' | transloco }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        <!-- track $index: blank rows added via assignCategory all carry ID 0.
+             Removal/pick actions address the row object, not the index.
+             No Name column: the row's tree-select already shows the translated
+             category title, so a second name display would be redundant. -->
+        @for (data of ctgyTable.data; track $index) {
+          <tr>
+            <td>
+              <nz-tree-select
+                style="width: 100%"
+                [nzNodes]="categoryTree()"
+                [ngModel]="data.ID > 0 ? data.ID.toString() : null"
+                [nzDisabled]="disabled()"
+                [nzPlaceHolder]="'Library.SelectCategory' | transloco"
+                [nzDropdownStyle]="categoryDropdownStyle"
+                nzShowSearch
+                (ngModelChange)="onCategoryPick($event, data)"
+              ></nz-tree-select>
+            </td>
+            <td>{{ data.ID > 0 ? data.ID : '' }}</td>
+            @if (!disabled()) {
+              <td>
+                <a nz-button nzType="link" nzDanger (click)="removeCategory.emit(data)">
+                  {{ 'Common.Remove' | transloco }}
+                </a>
+              </td>
+            }
+          </tr>
         }
-      </tr>
-    }
-  </tbody>
-</nz-table>
+      </tbody>
+    </nz-table>
+  </div>
 
-<!-- Presses -->
-<nz-divider [nzText]="'Library.Presses' | transloco"></nz-divider>
-<div class="toolbar_buttons">
-  <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignPress.emit()">
-    {{ 'Library.SelectPress' | transloco }}
-  </button>
-</div>
-<nz-table #pressTable [nzData]="presses()">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>{{ 'Common.NativeName' | transloco }}</th>
-      <th>{{ 'Common.ChineseName' | transloco }}</th>
-      <th>{{ 'Common.Detail' | transloco }}</th>
-      @if (!disabled()) {
-        <th>{{ 'Common.Remove' | transloco }}</th>
-      }
-    </tr>
-  </thead>
-  <tbody>
-    @for (data of pressTable.data; track data.ID) {
-      <tr>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.NativeName }}</td>
-        <td>{{ data.ChineseName }}</td>
-        <td>{{ data.Detail }}</td>
-        @if (!disabled()) {
-          <td>
-            <a nz-button nzType="link" nzDanger (click)="removePress.emit(data.ID)">
-              {{ 'Common.Remove' | transloco }}
-            </a>
-          </td>
+  <!-- Presses -->
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" class="assoc-block">
+    <nz-divider [nzText]="'Library.Presses' | transloco"></nz-divider>
+    <div class="toolbar_buttons">
+      <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignPress.emit()">
+        {{ 'Library.SelectPress' | transloco }}
+      </button>
+    </div>
+    <nz-table #pressTable nzSize="small" [nzData]="presses()">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>{{ 'Common.NativeName' | transloco }}</th>
+          <th>{{ 'Common.ChineseName' | transloco }}</th>
+          <th>{{ 'Common.Detail' | transloco }}</th>
+          @if (!disabled()) {
+            <th>{{ 'Common.Remove' | transloco }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of pressTable.data; track data.ID) {
+          <tr>
+            <td>{{ data.ID }}</td>
+            <td>{{ data.NativeName }}</td>
+            <td>{{ data.ChineseName }}</td>
+            <td>{{ data.Detail }}</td>
+            @if (!disabled()) {
+              <td>
+                <a nz-button nzType="link" nzDanger (click)="removePress.emit(data.ID)">
+                  {{ 'Common.Remove' | transloco }}
+                </a>
+              </td>
+            }
+          </tr>
         }
-      </tr>
-    }
-  </tbody>
-</nz-table>
+      </tbody>
+    </nz-table>
+  </div>
 
-<!-- Locations -->
-<nz-divider [nzText]="'Library.Locations' | transloco"></nz-divider>
-<div class="toolbar_buttons">
-  <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignLocation.emit()">
-    {{ 'Library.SelectLocation' | transloco }}
-  </button>
-</div>
-<nz-table #locTable [nzData]="locations()">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>{{ 'Common.Name' | transloco }}</th>
-      @if (!disabled()) {
-        <th>{{ 'Common.Remove' | transloco }}</th>
-      }
-    </tr>
-  </thead>
-  <tbody>
-    @for (data of locTable.data; track data.ID) {
-      <tr>
-        <td>{{ data.ID }}</td>
-        <td>{{ data.Name }}</td>
-        @if (!disabled()) {
-          <td>
-            <a nz-button nzType="link" nzDanger (click)="removeLocation.emit(data.ID)">
-              {{ 'Common.Remove' | transloco }}
-            </a>
-          </td>
+  <!-- Locations -->
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" class="assoc-block">
+    <nz-divider [nzText]="'Library.Locations' | transloco"></nz-divider>
+    <div class="toolbar_buttons">
+      <button nz-button nzType="primary" [disabled]="disabled()" (click)="assignLocation.emit()">
+        {{ 'Library.SelectLocation' | transloco }}
+      </button>
+    </div>
+    <nz-table #locTable nzSize="small" [nzData]="locations()">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>{{ 'Common.Name' | transloco }}</th>
+          @if (!disabled()) {
+            <th>{{ 'Common.Remove' | transloco }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of locTable.data; track data.ID) {
+          <tr>
+            <td>{{ data.ID }}</td>
+            <td>{{ data.Name }}</td>
+            @if (!disabled()) {
+              <td>
+                <a nz-button nzType="link" nzDanger (click)="removeLocation.emit(data.ID)">
+                  {{ 'Common.Remove' | transloco }}
+                </a>
+              </td>
+            }
+          </tr>
         }
-      </tr>
-    }
-  </tbody>
-</nz-table>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

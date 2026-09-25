@@ -41,6 +41,7 @@ import {
 import { dateRangeValidator } from '../../../../uimodel';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-fin-order-detail',
@@ -59,6 +60,7 @@ import { SafeAny } from '@common/any';
     ReactiveFormsModule,
     NzTableModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzResultModule,
     NzDatePickerModule,
     NzButtonModule,

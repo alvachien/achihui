@@ -581,6 +581,34 @@ describe('Book', () => {
     expect(objdata.BookPresses[0].PressId).toEqual(1);
   });
 
+  // CopyCount 0 means "the book is gone but kept for its reading history", so it
+  // is the one numeric field on Book whose 0 must survive both directions: the
+  // `> 0` guard its siblings use in writeJSONObject and the truthiness check they
+  // use in onSetData would each drop it, silently turning a retired book back
+  // into an unrecorded (i.e. still owned) one.
+  it('carries CopyCount 0 through writeJSONObject and onSetData', () => {
+    objtbt.HID = 2;
+    objtbt.NativeName = 'Retired Book';
+    objtbt.CopyCount = 0;
+
+    const objdata = objtbt.writeJSONObject();
+    expect(objdata.CopyCount).toEqual(0);
+
+    const read = new Book();
+    read.onSetData({ Id: 3, HomeID: 2, NativeName: 'Retired Book', CopyCount: 0 });
+    expect(read.CopyCount).toEqual(0);
+  });
+
+  it('omits CopyCount when it was never set', () => {
+    objtbt.HID = 2;
+    objtbt.NativeName = 'Book with no count';
+
+    // The counterpart of the test above: "unset" is omission, not a 0, so a book
+    // whose count was never recorded cannot be mistaken for a retired one.
+    expect(objtbt.CopyCount).toBeNull();
+    expect(objtbt.writeJSONObject().CopyCount).toBeUndefined();
+  });
+
   it('onSetData', () => {
     const objdata = {
       Id: 2,

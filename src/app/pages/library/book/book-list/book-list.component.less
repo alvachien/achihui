@@ -4,3 +4,45 @@
 
 // Shared ID-column styling - single source in src/styles/id-cell.less.
 @import 'id-cell';
+
+// Detail is free text up to 200 chars: clamp the cell so one long note cannot
+// stretch the table. The full value stays reachable through the title tooltip.
+// Depends on the host table's nzTableLayout="fixed" (book-list.component.html):
+// under auto layout a column is sized to its widest cell and the cell's
+// max-width/overflow are ignored, so the ellipsis would never appear.
+.detail-cell {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// "Columns" picker (nz-popover content): a compact vertical checkbox list, one
+// row per table column. Works under the overlay because emulated encapsulation
+// carries the component attribute onto the template's elements.
+.column-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+
+  // NG-ZORRO ships `.ant-checkbox-wrapper + .ant-checkbox-wrapper { margin-left: 8px }`
+  // for side-by-side inline checkboxes. Our picker stacks the wrappers, so that rule
+  // would indent every row except the first (ID) - cancel it; vertical `gap` already
+  // owns the spacing here.
+  label + label {
+    margin-left: 0;
+  }
+}
+
+// Copy count: 0 is the "gone" state, so a retired book is dimmed rather than
+// hidden - the row stays visible and editable, and the tooltip spells the 0 out.
+// opacity (not a theme variable) matches how finance.component.less mutes text.
+.ccnt-cell {
+  white-space: nowrap;
+
+  &.ccnt-gone {
+    font-style: italic;
+    opacity: 0.65;
+  }
+}

@@ -41,9 +41,11 @@
       </a>
     </div>
 
-    <!-- Key figures: collection size and the month-over-month add / finish flow. -->
+    <!-- Key figures: the collection's size and the month-over-month add / finish
+         flow. Six cards now, so lg and up split the row into sixths while sm/md
+         take thirds and xs halves (the row wraps onto more lines there). -->
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 24 }" class="stat-row">
-      <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="4" nzXl="4" nzXxl="4">
         <a class="stat-link" [routerLink]="['/', 'library', 'book']">
           <nz-card class="stat-card" nzHoverable>
             <div class="stat-flex">
@@ -57,7 +59,25 @@
           </nz-card>
         </a>
       </div>
-      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+      <!-- The shelf behind the catalogue: same rows, each contributing its copy
+           count. Deliberately NOT a link - the book list shows titles, not
+           copies, and there is no filtered view for "books held in 3+ copies".
+           Nor is it a second way to read TotalBooks: a home with 4 titles, one of
+           them in three copies, reads 4 books / 6 copies, and a retired book
+           widens the two figures in the opposite direction. -->
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="4" nzXl="4" nzXxl="4">
+        <nz-card class="stat-card">
+          <div class="stat-flex">
+            <span class="stat-badge stat-badge-copy"><i nz-icon nzType="copy"></i></span>
+            <nz-statistic
+              [nzTitle]="'Library.TotalCopies' | transloco"
+              [nzValue]="totalCopies()"
+              [nzSuffix]="'Library.UnitCopies' | transloco"
+            ></nz-statistic>
+          </div>
+        </nz-card>
+      </div>
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="4" nzXl="4" nzXxl="4">
         <nz-card class="stat-card">
           <div class="stat-flex">
             <span class="stat-badge stat-badge-add"><i nz-icon nzType="calendar"></i></span>
@@ -69,7 +89,7 @@
           </div>
         </nz-card>
       </div>
-      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="4" nzXl="4" nzXxl="4">
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="4" nzXl="4" nzXxl="4">
         <nz-card class="stat-card">
           <div class="stat-flex">
             <span class="stat-badge stat-badge-muted"><i nz-icon nzType="calendar"></i></span>
@@ -81,7 +101,7 @@
           </div>
         </nz-card>
       </div>
-      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="4" nzXl="4" nzXxl="4">
         <a class="stat-link" [routerLink]="['/', 'library', 'readingrecord']">
           <nz-card class="stat-card" nzHoverable>
             <div class="stat-flex">
@@ -95,7 +115,7 @@
           </nz-card>
         </a>
       </div>
-      <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="5" nzXl="5" nzXxl="5">
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="4" nzXl="4" nzXxl="4">
         <a class="stat-link" [routerLink]="['/', 'library', 'readingrecord']">
           <nz-card class="stat-card" nzHoverable>
             <div class="stat-flex">
@@ -133,7 +153,11 @@
                 [class.rank-no-3]="idx === 2"
                 >{{ idx + 1 }}</span
               >
-              <span class="rank-name" [title]="item.name">{{ item.name }}</span>
+              <!-- Categories only: a system category's Name is a transloco key
+                   (Sys.BkCtgy.*), so it must go through the pipe or the raw key
+                   leaks. Author/press ranks carry real names, and the same pipe
+                   would just echo them back. -->
+              <span class="rank-name" [title]="item.name | transloco">{{ item.name | transloco }}</span>
               <span class="rank-count">{{ item.count }}</span>
             </div>
             <nz-progress

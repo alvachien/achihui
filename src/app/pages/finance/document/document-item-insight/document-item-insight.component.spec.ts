@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
+import { TranslocoService } from '@jsverse/transloco';
 import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -90,6 +91,29 @@ describe('DocumentItemInsightComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  // The transfer captions come from imperative translate() calls, which a
+  // runtime language switch does not re-run on its own — they used to stay in
+  // the previous language while the rest of the page re-translated.
+  it('re-translates the group-field transfer on runtime language switch', () => {
+    const transloco = TestBed.inject(TranslocoService);
+
+    try {
+      expect(component.transferTitles()).toEqual(['Available', 'Selected']);
+      expect(component.listGroupFields().map((f) => f.title)).toEqual(['Date', 'Transaction Type', 'Account']);
+
+      transloco.setActiveLang('zh');
+      fixture.detectChanges();
+
+      expect(component.transferTitles()).toEqual(['可选', '已选']);
+      expect(component.listGroupFields().map((f) => f.title)).toEqual(['日期', '交易类型', '账户']);
+      // The rebuild reuses the same item objects, so nz-transfer's split
+      // (date starts on the right) survives the language switch.
+      expect(component.listGroupFields().find((f) => f.key === 'date')?.direction).toEqual('right');
+    } finally {
+      transloco.setActiveLang('en'); // leave the global service as others expect it
+    }
   });
 
   describe('work with data with empty result', () => {

@@ -50,6 +50,8 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { AccountExtraDownpaymentComponent } from '../../account/account-extra-downpayment';
+import { TranTypeTreeSelectComponent } from '../../../../shared/trantype-tree-select';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-fin-document-downpayment-create',
@@ -60,6 +62,8 @@ import { AccountExtraDownpaymentComponent } from '../../account/account-extra-do
     NzTypographyModule,
     NzIconModule,
     NzPageHeaderModule,
+    TranTypeTreeSelectComponent,
+    ControlCenterTreeSelectComponent,
     NzBreadCrumbModule,
     NzStepsModule,
     FormsModule,

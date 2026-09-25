@@ -69,16 +69,14 @@
           <td>
             <nz-form-item>
               <nz-form-control nzHasFeedback [nzErrorTip]="trantypeTpl">
-                <nz-select
-                  style="width: 100%"
-                  [nzDisabled]="!isTranTypeEditable"
+                <!-- Shared inline tree-select (hierarchy in the panel, dotted
+                     full path on the trigger, income/outgoing node styling). -->
+                <hih-trantype-tree-select
+                  [tranTypes]="arTranType"
+                  [disabled]="!isTranTypeEditable"
                   [(ngModel)]="data.TranType"
                   (ngModelChange)="onChange()"
-                >
-                  @for (tt of arTranType; track tt.Id) {
-                    <nz-option [nzValue]="tt.Id" [nzLabel]="tt.FullDisplayText"></nz-option>
-                  }
-                </nz-select>
+                ></hih-trantype-tree-select>
                 <ng-template #trantypeTpl let-control>
                   @if (control.hasError('required')) {
                     <ng-container>
@@ -134,16 +132,12 @@
             </nz-form-item>
           </td>
           <td>
-            <nz-select
+            <hih-controlcenter-tree-select
               [(ngModel)]="data.ControlCenterId"
-              (ngModelChange)="data.ControlCenterId = $event === null ? undefined : $event; onChange()"
-              [nzDisabled]="!isFieldChangable"
-              nzAllowClear
-            >
-              @for (tt of arControlCenters; track tt.Id) {
-                <nz-option [nzValue]="tt.Id" [nzLabel]="tt.Name"></nz-option>
-              }
-            </nz-select>
+              (ngModelChange)="onChange()"
+              [controlCenters]="arControlCenters"
+              [disabled]="!isFieldChangable"
+            ></hih-controlcenter-tree-select>
           </td>
           <td>
             <nz-select

@@ -72,6 +72,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { UIAccountCtgyFilterExPipe } from '../../pipes';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 // Assistant class
 class DocItemWithBlance {
@@ -108,6 +109,7 @@ class DocItemWithBlance {
     NzFormModule,
     NzInputModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     DocumentHeaderComponent,
     NzDividerModule,
     NzInputNumberModule,

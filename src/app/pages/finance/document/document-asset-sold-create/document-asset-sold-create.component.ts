@@ -59,6 +59,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { UIAccountCtgyFilterExPipe } from '../../pipes';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-fin-document-asset-sold-create',
@@ -79,6 +80,7 @@ import { UIAccountCtgyFilterExPipe } from '../../pipes';
     ReactiveFormsModule,
     NzFormModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     NzInputNumberModule,
     NzSpinModule,
     NzResultModule,

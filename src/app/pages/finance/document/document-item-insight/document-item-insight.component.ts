@@ -1,14 +1,14 @@
 import { DecimalPipe, NgIf } from '@angular/common';
 import { SafeAny } from '@common/any';
-import { Component, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
-import { translate, TranslocoModule } from '@jsverse/transloco';
+import { Component, inject, OnInit, signal, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { translate, TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
-import { NzTransferModule, TransferItem } from 'ng-zorro-antd/transfer';
+import { NzTransferModule, TransferDirection, TransferItem } from 'ng-zorro-antd/transfer';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -35,6 +35,21 @@ import {
 } from '@model/index';
 import { DocInsightOption, FinanceOdataService, HomeDefOdataService, UIStatusService } from '@services/index';
 import { RouterModule } from '@angular/router';
+
+// nz-transfer mutates the items it is given (it owns `direction`/`checked`),
+// so they stay plain objects; only the ARRAY reference changes when the
+// language switches, which re-triggers the transfer's ngOnChanges re-split.
+interface GroupTransferItem extends TransferItem {
+  key: string;
+  titleKey: string;
+}
+
+const GROUP_FIELD_DEFS: ReadonlyArray<Pick<GroupTransferItem, 'key' | 'titleKey'> & { direction?: TransferDirection }> =
+  [
+    { key: 'date', titleKey: 'Common.Date', direction: 'right' },
+    { key: 'trantype', titleKey: 'Finance.TransactionType' },
+    { key: 'account', titleKey: 'Finance.Account' },
+  ];
 
 interface InsightRecord {
   TransactionDate?: string;
@@ -65,7 +80,12 @@ interface InsightRecord {
   ],
 })
 export class DocumentItemInsightComponent implements OnInit {
-  listGroupFields: TransferItem[] = [];
+  // Group-field transfer items. `title` carries the imperative translate()
+  // result, so — same langTick contract as document-list's filter labels — it
+  // is re-applied on every runtime language switch; the array lives in a
+  // signal (zoneless CD) so handing nz-transfer a fresh reference triggers its
+  // ngOnChanges re-split of both panels.
+  listGroupFields = signal<GroupTransferItem[]>(GROUP_FIELD_DEFS.map((f) => ({ ...f, title: translate(f.titleKey) })));
   isLoadingData = signal(false);
   arTranType = signal<TranType[]>([]);
   arAccounts = signal<Account[]>([]);
@@ -83,12 +103,36 @@ export class DocumentItemInsightComponent implements OnInit {
   outgoAmount = signal(0);
   // Display
   listDisplayData = signal<InsightRecord[]>([]);
+  // Amount column sort (client-side: the rows are aggregates built here, not a
+  // query page, so there is no server orderby to send). null = keep the
+  // grouped date/account/type ordering produced by buildDisplayList.
+  amountSortOrder = signal<'ascend' | 'descend' | null>(null);
+  // Bumped on every runtime language switch so the computeds below that call
+  // the imperative translate() (no implicit active-lang dependency) recompute —
+  // same contract as document-list's filter labels.
+  private readonly langTick = signal(0);
+  // Transfer panel captions, re-translated on language switch (see langTick).
+  readonly transferTitles = computed(() => {
+    this.langTick();
+    return [translate('Finance.InsightAvailable'), translate('Finance.InsightSelected')];
+  });
+  // The table's bound view of listDisplayData, ordered by the amount sort.
+  listSortedDisplayData = computed(() => {
+    const order = this.amountSortOrder();
+    const data = this.listDisplayData();
+    if (order === null) {
+      return data;
+    }
+    const dir = order === 'ascend' ? 1 : -1;
+    return [...data].sort((a, b) => (a.Amount - b.Amount) * dir);
+  });
 
   private readonly odataService = inject(FinanceOdataService);
   private readonly uiStatusService = inject(UIStatusService);
   private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
   private readonly destroyedRef = inject(DestroyRef);
+  private readonly translocoService = inject(TranslocoService);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -96,20 +140,33 @@ export class DocumentItemInsightComponent implements OnInit {
       ConsoleLogTypeEnum.debug,
     );
 
-    this.listGroupFields.push({
-      key: 'date',
-      title: translate(`Common.Date`),
-      direction: 'right',
-    });
-    this.listGroupFields.push({
-      key: 'trantype',
-      title: translate(`Finance.TransactionType`),
-    });
-    this.listGroupFields.push({
-      key: 'account',
-      title: translate(`Finance.Account`),
-    });
     this.baseCurrency = this.homeService.ChosedHome?.BaseCurrency ?? '';
+
+    // The transfer's item/panel captions come from imperative translate()
+    // calls, which the runtime language switch does not re-run on its own:
+    // bump langTick (recomputes transferTitles), re-translate each item's
+    // title in place (nz-transfer owns `direction` on these objects, so they
+    // must be kept), and hand back a NEW array reference so the transfer's
+    // ngOnChanges re-splits both panels with the fresh captions.
+    this.translocoService.langChanges$.pipe(takeUntilDestroyed(this.destroyedRef)).subscribe(() => {
+      this.langTick.update((n) => n + 1);
+      this.listGroupFields.update((items) => {
+        items.forEach((item) => (item.title = translate(item.titleKey)));
+        return [...items];
+      });
+    });
+  }
+
+  // Header option values as translated Yes/No (Common.Yes / Common.No) instead
+  // of the raw `true`/`false` string. The template only calls this when the
+  // value is defined (the @if/ngIf guards); the empty branch just keeps the
+  // binding total. Language switches re-run this through the sibling translate
+  // pipes' change detection.
+  public boolText(value: boolean | undefined | null): string {
+    if (value === undefined || value === null) {
+      return '';
+    }
+    return translate(value ? 'Common.Yes' : 'Common.No');
   }
 
   public getAccountName(acntid: number): string {
@@ -126,13 +183,13 @@ export class DocumentItemInsightComponent implements OnInit {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
   get isTranDateVisible(): boolean {
-    return this.listGroupFields.findIndex((p) => p['key'] === 'date' && p.direction === 'right') !== -1;
+    return this.listGroupFields().findIndex((p) => p['key'] === 'date' && p.direction === 'right') !== -1;
   }
   get isAccountVisible(): boolean {
-    return this.listGroupFields.findIndex((p) => p['key'] === 'account' && p.direction === 'right') !== -1;
+    return this.listGroupFields().findIndex((p) => p['key'] === 'account' && p.direction === 'right') !== -1;
   }
   get isTranTypeVisible(): boolean {
-    return this.listGroupFields.findIndex((p) => p['key'] === 'trantype' && p.direction === 'right') !== -1;
+    return this.listGroupFields().findIndex((p) => p['key'] === 'trantype' && p.direction === 'right') !== -1;
   }
   get insideDateRangeString(): string {
     if (this.insightOption !== null) {
@@ -189,6 +246,12 @@ export class DocumentItemInsightComponent implements OnInit {
 
     // Need refresh data!
     this.buildDisplayList();
+  }
+
+  onAmountSortChange(order: string | null): void {
+    // nzSortOrderChange emits a plain string union - narrow it to ours (same
+    // contract as the person/organization selection dialogs).
+    this.amountSortOrder.set(order === 'ascend' || order === 'descend' ? order : null);
   }
 
   fetchData(): void {

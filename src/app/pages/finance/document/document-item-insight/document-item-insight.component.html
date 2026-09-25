@@ -15,22 +15,22 @@
 <div>
   <div>{{ 'Common.DateRange' | transloco }}: {{ insideDateRangeString }}</div>
   @if ($safeNavigationMigration(insightOption?.TransactionDirection) !== undefined) {
-    <div>{{ 'Finance.Income' | transloco }}: {{ insightOption?.TransactionDirection }}</div>
+    <div>{{ 'Finance.Income' | transloco }}: {{ boolText(insightOption?.TransactionDirection) }}</div>
   }
   <div
     [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco"
     nz-tooltip
     *ngIf="$safeNavigationMigration(insightOption?.ExcludeTransfer) !== undefined"
   >
-    {{ 'Finance.ExcludeTransfer' | transloco }}: {{ insightOption?.ExcludeTransfer }}
+    {{ 'Finance.ExcludeTransfer' | transloco }}: {{ boolText(insightOption?.ExcludeTransfer) }}
   </div>
 </div>
 
-<nz-divider nzText="Options"></nz-divider>
+<nz-divider nzText="{{ 'Finance.InsightOptions' | transloco }}"></nz-divider>
 
 <nz-transfer
-  [nzDataSource]="listGroupFields"
-  [nzTitles]="['Available', 'Target']"
+  [nzDataSource]="listGroupFields()"
+  [nzTitles]="transferTitles()"
   [nzTargetKeys]="selectedGroupFieldKeys"
   (nzChange)="onTransferChanged($event)"
 >
@@ -42,7 +42,7 @@
   #resultTable
   nzBordered
   nzShowSizeChanger
-  [nzData]="listDisplayData()"
+  [nzData]="listSortedDisplayData()"
   [nzLoading]="isLoadingData()"
   [nzFooter]="footerTpl"
 >
@@ -51,7 +51,9 @@
       <th nzColumnKey="date" *ngIf="isTranDateVisible">{{ 'Common.Date' | transloco }}</th>
       <th nzColumnKey="trantype" *ngIf="isTranTypeVisible">{{ 'Finance.TransactionType' | transloco }}</th>
       <th nzColumnKey="account" *ngIf="isAccountVisible">{{ 'Finance.Account' | transloco }}</th>
-      <th nzColumnKey="amount">{{ 'Finance.Amount' | transloco }}</th>
+      <th nzColumnKey="amount" nzShowSort (nzSortOrderChange)="onAmountSortChange($event)">
+        {{ 'Finance.Amount' | transloco }}
+      </th>
     </tr>
   </thead>
   <tbody>

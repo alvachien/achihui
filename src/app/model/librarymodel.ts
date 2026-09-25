@@ -659,6 +659,7 @@ export class Book extends hih.MultipleNamesObject {
   private _orgLangID: number | null = null;
   private _bookLangID: number | null = null;
   private _pageCount: number | null = null;
+  private _copyCount: number | null = null;
 
   public Authors: Person[] = [];
   public Translators: Person[] = [];
@@ -714,6 +715,16 @@ export class Book extends hih.MultipleNamesObject {
   set PageCount(pcnt: number | null) {
     this._pageCount = pcnt;
   }
+  // Physical copies held. 0 is a MEANINGFUL value (the book is gone but kept for
+  // its reading/borrow history), so this pair must never be folded with the
+  // `> 0` / truthiness guards the sibling numeric fields use - those would drop a
+  // 0 from the payload and read it back as "not recorded".
+  get CopyCount(): number | null {
+    return this._copyCount;
+  }
+  set CopyCount(ccnt: number | null) {
+    this._copyCount = ccnt;
+  }
 
   constructor() {
     super();
@@ -731,6 +742,7 @@ export class Book extends hih.MultipleNamesObject {
     this._orgLangID = null;
     this._bookLangID = null;
     this._pageCount = null;
+    this._copyCount = null;
     this.Authors = [];
     this.Translators = [];
     this.Categories = [];
@@ -771,6 +783,12 @@ export class Book extends hih.MultipleNamesObject {
     }
     if (this._pageCount !== null && this._pageCount > 0) {
       rstobj.PageCount = this._pageCount;
+    }
+    // No `> 0` here, unlike the fields around it: 0 is how a book is marked gone,
+    // and dropping it from the payload would leave the server's value untouched
+    // (PUT) or unset (POST) instead of recording the removal.
+    if (this._copyCount !== null) {
+      rstobj.CopyCount = this._copyCount;
     }
     if (this.Authors.length > 0) {
       rstobj.BookAuthors = [];
@@ -854,6 +872,11 @@ export class Book extends hih.MultipleNamesObject {
     }
     if (data && data.PageCount) {
       this._pageCount = data.PageCount;
+    }
+    // Explicit null/undefined test, not truthiness: CopyCount 0 is a real state
+    // (the book is gone) and must survive the round trip.
+    if (data && data.CopyCount !== null && data.CopyCount !== undefined) {
+      this._copyCount = data.CopyCount;
     }
     this.Authors = [];
     if (data && data.Authors instanceof Array && data.Authors.length > 0) {

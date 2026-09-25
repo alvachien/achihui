@@ -19,6 +19,7 @@ import { FinanceOdataService, HomeDefOdataService } from '@services/index';
 import { ControlCenter, ModelUtility, ConsoleLogTypeEnum, getUIModeString, HomeMember } from '@model/index';
 import { popupDialog } from '../../../message-dialog';
 import { SafeAny } from '@common/any';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-fin-control-center-detail',
@@ -35,6 +36,7 @@ import { SafeAny } from '@common/any';
     ReactiveFormsModule,
     NzInputModule,
     NzSelectModule,
+    ControlCenterTreeSelectComponent,
     TranslocoModule,
     RouterModule,
     NzModalModule,

@@ -70,6 +70,73 @@
         </label>
       </nz-form-control>
     </nz-form-item>
+
+    <!-- Bibliographic fields. All optional, and all of them are filterable from
+         the list page's filter dialog — they were filterable before but had no
+         input here, so nothing ever wrote them (see BOOK_FILTER_PROPERTIES). The
+         copy count below is not bibliographic but shares the group: it is the
+         one number here whose 0 means something (the book is gone). -->
+    <nz-divider nzText="{{ 'Library.PublicationInfo' | transloco }}" nzOrientation="left"></nz-divider>
+
+    <!-- ISBN -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{ 'Library.ISBN' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="isbnTpl">
+        <input nz-input formControlName="isbnControl" maxlength="50" />
+        <ng-template #isbnTpl let-control>
+          @if (control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Published year -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{ 'Library.PublishedYear' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <!-- nzMin/nzMax clamp the typed value only; the control itself carries no
+             validator, so a row outside the range can still be re-saved. -->
+        <nz-input-number formControlName="pyearControl" [nzMin]="1" [nzMax]="9999" [nzStep]="1" style="width: 100%" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Page count -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{ 'Library.PageCount' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12">
+        <nz-input-number formControlName="pgcntControl" [nzMin]="1" [nzStep]="1" style="width: 100%" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Copy count -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{ 'Library.CopyCount' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" [nzExtra]="copiesHint">
+        <!-- 0 is a real value here - unlike the two numbers above, where 0 is
+             meaningless - so nzMin is 0. Dropping to 0 retires the book without
+             deleting it, which is what keeps its reading/borrow records valid. -->
+        <nz-input-number formControlName="ccntControl" [nzMin]="0" [nzStep]="1" style="width: 100%" />
+        <ng-template #copiesHint>{{ 'Library.CopyCountHint' | transloco }}</ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Detail -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7">{{ 'Common.Detail' | transloco }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="detailTpl">
+        <textarea rows="2" nz-input formControlName="detailControl" maxlength="200"></textarea>
+        <ng-template #detailTpl let-control>
+          @if (control.hasError('maxlength')) {
+            <ng-container>
+              {{ 'Common.FieldMaxLength' | transloco }}
+            </ng-container>
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
   </form>
 
   <nz-divider></nz-divider>
@@ -81,15 +148,63 @@
     [categories]="listCategories()"
     [presses]="listPresses()"
     [locations]="listLocations()"
+    [categoryTree]="categoryTree()"
     (assignAuthor)="onAssignAuthor()"
     (assignTranslator)="onAssignTranslator()"
     (assignCategory)="onAssignCategory()"
     (assignPress)="onAssignPress()"
     (assignLocation)="onAssignLocation()"
+    (categoryPicked)="onCategoryPicked($event)"
     (removeAuthor)="onRemoveAuthor($event)"
     (removeTranslator)="onRemoveTranslator($event)"
     (removeCategory)="onRemoveCategory($event)"
     (removePress)="onRemovePress($event)"
     (removeLocation)="onRemoveLocation($event)"
   ></hih-book-associations>
+
+  <!-- Reading log, inline in Display mode: the records are visible without the
+       extra click through the header link (which still leads to the full list
+       for create/finalize/delete management). -->
+  @if (isDisplayMode && routerID() > 0) {
+    <nz-divider nzText="{{ 'Library.ReadingRecords' | transloco }}" nzOrientation="left"></nz-divider>
+    <nz-spin [nzSpinning]="isLoadingReadingRecords()">
+      @if (readingRecords().length > 0) {
+        <nz-table
+          #rrTable
+          class="reading-records-table"
+          nzSize="small"
+          [nzData]="readingRecords()"
+          [nzFrontPagination]="false"
+          [nzShowPagination]="false"
+        >
+          <thead>
+            <tr>
+              <th>{{ 'Common.ID' | transloco }}</th>
+              <th>{{ 'Library.Reader' | transloco }}</th>
+              <th>{{ 'Common.StartDate' | transloco }}</th>
+              <th>{{ 'Common.EndDate' | transloco }}</th>
+              <th>{{ 'Common.Status' | transloco }}</th>
+              <th>{{ 'Common.Comment' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (data of rrTable.data; track data.ID) {
+              <tr>
+                <td>{{ data.ID }}</td>
+                <td>{{ getReaderName(data.User) }}</td>
+                <td>{{ data.FromDateString }}</td>
+                <td>{{ data.ToDateString }}</td>
+                <td>
+                  <nz-tag [nzColor]="statusColor(data.Status)">{{ statusLabelKey(data.Status) | transloco }}</nz-tag>
+                </td>
+                <td>{{ data.Comment }}</td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      } @else {
+        <p class="reading-records-empty">{{ 'Library.NoReadingRecords' | transloco }}</p>
+      }
+    </nz-spin>
+  }
 </nz-spin>

@@ -5,11 +5,12 @@ description: Bump the achihui app version across package.json and the environmen
 
 # Bump Version
 
-The version string lives in **three** places that must stay in sync, plus a `ReleasedDate` field in the environment files:
+The version string lives in **four** places that must stay in sync, plus a `ReleasedDate` field in the environment files:
 
 | File | Field(s) |
 |---|---|
 | `package.json` | `version` |
+| `package-lock.json` | top-level `version` + `packages[""].version` (npm mirrors the root package version twice) |
 | `src/environments/environment.ts` | `CurrentVersion`, `ReleasedDate` |
 | `src/environments/environment.prod.ts` | `CurrentVersion`, `ReleasedDate` |
 
@@ -29,11 +30,12 @@ Semver `MAJOR.MINOR.PATCH` (e.g. `1.8.419`). PATCH is a running number, not stri
    ```bash
    node .claude/skills/bump-version/bump-version.mjs <X.Y.Z>
    ```
-   This updates `package.json` and every present environment file, and sets `ReleasedDate` to today's date (`YYYY.MM.DD`, matching the format already used in those files).
+   This updates `package.json`, both root version fields in `package-lock.json`, and every present environment file, and sets `ReleasedDate` to today's date (`YYYY.MM.DD`, matching the format already used in those files).
 3. **Verify sync** - confirm all files report the same version:
    ```bash
-   grep -nE "CurrentVersion|ReleasedDate" src/environments/environment.ts src/environments/environment.prod.ts && grep -nE '"version"' package.json
+   grep -nE "CurrentVersion|ReleasedDate" src/environments/environment.ts src/environments/environment.prod.ts && grep -nE '"version"' package.json && grep -nE '"version"' package-lock.json | head -2
    ```
+   (In the lock file only the FIRST two `"version"` matches are the root package - later ones are dependency versions and will not match.)
 4. **Verify the build** (recommended):
    ```bash
    ng build --configuration development
@@ -42,7 +44,7 @@ Semver `MAJOR.MINOR.PATCH` (e.g. `1.8.419`). PATCH is a running number, not stri
    ```
    chore: bump version to <X.Y.Z>
    ```
-   Stage `package.json` and the environment files. Per project rules, never commit unless requested.
+   Stage `package.json`, `package-lock.json`, and the environment files. Per project rules, never commit unless requested.
 
 ## Notes
 

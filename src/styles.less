@@ -1,0 +1,34 @@
+// App-wide styles injected outside component scoping (angular.json first
+// styles entry). Keep this file to rules that must reach DOM the components
+// do not own - overlay containers, primarily.
+
+// Transaction-type nodes inside the document-items tree-select. The dropdown
+// renders into a body-level CDK overlay, so component-scoped styles cannot
+// reach them (:host-context(html.dark) resolves against the component's own
+// _nghost, never the <html> element from an overlay) - hence these global
+// classes, paired with the #tranTypeNodeTpl template.
+// Green/red mirror the finance overview's in/out badges; darker mid-tones on
+// light, brighter on dark (html class toggled by ThemeService).
+.hih-trantype-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hih-trantype-node-income {
+  color: #389e0d;
+}
+
+.hih-trantype-node-outgoing {
+  color: #cf1322;
+}
+
+html.dark {
+  .hih-trantype-node-income {
+    color: #73d13d;
+  }
+
+  .hih-trantype-node-outgoing {
+    color: #ff7875;
+  }
+}

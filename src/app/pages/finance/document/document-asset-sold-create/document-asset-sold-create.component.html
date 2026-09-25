@@ -76,11 +76,10 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7">{{ 'Finance.ControlCenter' | transloco }}</nz-form-label>
         <nz-form-control [nzSpan]="12">
-          <nz-select formControlName="ccControl" nzAllowClear>
-            @for (cc of arControlCenters(); track cc.Id) {
-              <nz-option [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
-            }
-          </nz-select>
+          <hih-controlcenter-tree-select
+            formControlName="ccControl"
+            [controlCenters]="arControlCenters()"
+          ></hih-controlcenter-tree-select>
         </nz-form-control>
       </nz-form-item>
 

@@ -230,7 +230,7 @@ Blog/Event 已于 2026-08-02 临时关闭（UI 菜单/路由移除、API 端点 
 | Tier B 批次 5a（4 个 Library 列表） | `book-list` / `book-category-list` / `organization-type-list` / `person-role-list` | ✅ | 4/4 测试 + lint exit 0 |
 | Tier B 批次 5b（5 个 Library 列表） | `location-list` / `organization-list` / `person-list` / `borrow-record-list`（`library/borrow-record-list/`）/ `borrow-record-list`（`library/borrow-record/borrow-record-list/`） | ✅ | 5/5 文件 / 7 测试通过 + lint exit 0 |
 | Tier B 批次 6（5 个 Tier B 收尾） | `home-def-list` / `language` / `account-hierarchy` / `control-center-hierarchy` / `tran-type-hierarchy` | ✅ | 5/5 文件 / 22 测试通过 + lint exit 0 |
-| Phase 4 / Tier C 选择对话框（5 个 live） | `person-selection-dlg` / `organization-selection-dlg` / `location-selection-dlg` / `book-category-selection-dlg` / `borrow-record-create-dlg` | ✅ | 5/5 文件 / 11 测试通过 + lint exit 0 |
+| Phase 4 / Tier C 选择对话框（5 个 live） | `person-selection-dlg` / `organization-selection-dlg` / `location-selection-dlg` / `book-category-selection-dlg` / `borrow-record-create-dlg` | ✅ | 5/5 文件 / 11 测试通过 + lint exit 0（`book-category-selection-dlg` 已于 2026-09-20 删除，见文末备注） |
 | Phase 2 / Tier A（7 个琐碎组件） | `signin-callback`（Subscription->takeUntilDestroyed）/ `message-dialog`（@Input->input()）；`not-found`/`version`/`credits`/`fatal-error`/`welcome` 纯模板或静态常量，无需 signal 化 | ✅ | ng test 1/1 + build exit 0 + lint exit 0 |
 | Tier C 主体批次 1（4 个视图/报表组件） | `document-item-view` / `document-item-search` / `document-item-insight` / `reconcile-by-month` | ✅ | build exit 0 + 11 测试通过（1 预存 skip）+ lint exit 0 |
 | Tier C 主体批次 2（2 个 Library 详情表单） | `book-detail` / `location-detail` | ✅ | build exit 0 + 7 测试通过 + lint exit 0 |
@@ -513,3 +513,9 @@ Blog/Event 已于 2026-08-02 临时关闭（UI 菜单/路由移除、API 端点 
 - **验证**：全量 `ng build` exit 0 + 全量 `ng test` 1097/0/54（零回归）+ 全量 `ng lint` exit 0（auto-fix 了 `app.component.html` 4 个遗留 prettier 尾随空格，非 Phase 8 引入）。
 - **人工验证项（测试无法覆盖，部署前/后需手测）**：Monaco 编辑器（markdown-editor，输入->预览更新--已有 detectChanges）；ECharts 图表（5 MOM 报表 + report 仪表盘 + account/control-center/order 报表，渲染 + 周期切换更新）；finance 仪表盘（keyfigure + 文档列表）；report 仪表盘（收支列表）；user-detail（userName/userMail）；创建表单（提交 spinner/成功/错误面板）；层级（account/control-center 窗口 resize `col` 更新 + 节点点击余额更新）。
 - **教训**：zoneless 前，凡 async 回调写模板绑定 plain 字段必须有 CD 触发（signal 写 / markForCheck / detectChanges / event）。迁移的"safety valve plain 字段"在 zone 模式靠 zone auto-CD，zoneless 须显式补 markForCheck。
+
+**后续变更备注（2026-09-20，`chroe/keepimprv-4` 工作树）**：
+- **`book-category-selection-dlg` 删除**（Tier C 选择对话框批次中的 1 个）：`book-detail`/`book-associations` 改为内联 tree-select 行直接指派图书种类，选择对话框不再有调用方，故连同 `index.ts` 一并删除（Phase 4 表内的"5 个 live"为迁移当时的事实，此处仅作后续变更记录）。
+- **`book-detail.categoryTree` 由 plain signal 改为 `computed`**：原为 `ngOnInit` 一次性 `set` 的 signal（语言快照），现从 `categories` signal 派生，并由 `langTick`（订阅 `translocoService.langChanges$`）驱动重建 —— 因为节点标题走的是命令式 `translate()`，不带隐式语言依赖。同 idiom 见 `book-list`/`document-list`/`reading-record-list`/`filter-bar`/`filter-dialog`。配套 `categoryById` computed 让 pick 始终能解析回同一个数组（见 `docs/ui-review-2026-09-20.md`）。
+- **新增 2 个 CVA 包装组件**（Tier D 家族的补充，非迁移对象）：`shared/trantype-tree-select`、`shared/controlcenter-tree-select`，包装 `nz-tree-select` 并把值暴露为数字 ID。二者自建即 signal 化（`input()`/`signal()`/`computed()` + `host` 监听替代 `@HostListener`），未走 Tier D 的"保留 CVA 外壳 + 内部 signal"桥接改造。二者与 `book-detail` 的三份树装配已抽取到 `src/common/flat-tree.ts`（`buildFlatTree`/`dottedPathTitle`，不依赖 ng-zorro）。
+- **验证**：全量 `ng test` 147 文件 / 1515 通过 + `ng lint` exit 0。

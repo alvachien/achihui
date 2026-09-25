@@ -24,6 +24,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { FormsModule } from '@angular/forms';
 import { FilterOperation, FilterRoot } from 'actslib';
 
@@ -38,6 +40,54 @@ import {
 } from '../../../../shared/filter-dialog';
 import { BorrowRecordCreateDlgComponent } from '../../borrow-record-create-dlg';
 import { ReadingRecordCreateDlgComponent } from '../../reading-record-create-dlg';
+
+// nz-table sort key (the nzSortKey on a column header) → OData field name.
+// A key missing here is simply not sortable.
+const BOOK_SORT_FIELDS: Record<string, string> = {
+  id: 'Id',
+  cname: 'ChineseName',
+  nname: 'NativeName',
+  isbn: 'ISBN',
+  pyear: 'PublishedYear',
+  pgcnt: 'PageCount',
+  ccnt: 'CopyCount',
+  createdat: 'CreatedAt',
+  updatedat: 'UpdatedAt',
+};
+
+// Table columns offered by the "Columns" picker. The keys match the nzSortKey
+// values above; `field` is the OData name requested via $select. ID / Chinese
+// name / native name are locked (locked: true) - they identify the row and can
+// never be hidden. The picker drives a SERVER-side projection (Fiori view
+// settings style): toggling a column re-requests the page with the narrowed or
+// widened $select, so hidden fields never travel over the wire.
+type BookColumnKey =
+  'id' | 'cname' | 'nname' | 'isbn' | 'pyear' | 'pgcnt' | 'ccnt' | 'detail' | 'createdat' | 'updatedat';
+interface BookColumn {
+  key: BookColumnKey;
+  labelKey: string;
+  field: string;
+  locked?: boolean;
+}
+const BOOK_COLUMNS: readonly BookColumn[] = [
+  { key: 'id', labelKey: 'Common.ID', field: 'Id', locked: true },
+  { key: 'cname', labelKey: 'Common.ChineseName', field: 'ChineseName', locked: true },
+  { key: 'nname', labelKey: 'Common.NativeName', field: 'NativeName', locked: true },
+  { key: 'isbn', labelKey: 'Library.ISBN', field: 'ISBN' },
+  { key: 'pyear', labelKey: 'Library.PublishedYear', field: 'PublishedYear' },
+  { key: 'pgcnt', labelKey: 'Library.PageCount', field: 'PageCount' },
+  { key: 'ccnt', labelKey: 'Library.CopyCount', field: 'CopyCount' },
+  { key: 'detail', labelKey: 'Common.Detail', field: 'Detail' },
+  { key: 'createdat', labelKey: 'Common.CreatedAt', field: 'CreatedAt' },
+  { key: 'updatedat', labelKey: 'Common.LastChangedAt', field: 'UpdatedAt' },
+];
+// Home scoping key: never rendered, but always projected (the Book model and the
+// service's $filter rely on it; kept consistent with the full-projection default).
+// 'Id' itself comes from the locked id column row below, so it is not listed here.
+const BOOK_SELECT_BASE: readonly string[] = ['HomeID'];
+// Visible-by-default optional columns (the locked three are always visible):
+// the inventory count plus the audit dates, per the product decision on 2026-09-24.
+const DEFAULT_VISIBLE_COLUMNS: readonly BookColumnKey[] = ['ccnt', 'createdat', 'updatedat'];
 
 // Filterable scalar Book fields, keyed by the OData entity field names.
 // HomeID is excluded (implicit scope, enforced by the service); language FKs
@@ -60,6 +110,8 @@ const BOOK_FILTER_PROPERTIES: FilterableProperty[] = [
   },
   { key: 'PublishedYear', labelKey: 'Library.PublishedYear', kind: 'number', numberRange: { min: 1000, max: 9999 } },
   { key: 'PageCount', labelKey: 'Library.PageCount', kind: 'number', numberRange: { min: 1 } },
+  // min is 0, not 1: filtering for copies = 0 is how the retired books are listed.
+  { key: 'CopyCount', labelKey: 'Library.CopyCount', kind: 'number', numberRange: { min: 0 } },
   {
     key: 'Id',
     labelKey: 'Common.ID',
@@ -86,6 +138,8 @@ const BOOK_FILTER_PROPERTIES: FilterableProperty[] = [
     NzDropdownModule,
     NzMenuModule,
     NzIconModule,
+    NzPopoverModule,
+    NzCheckboxModule,
     FormsModule,
     RouterModule,
   ],
@@ -100,6 +154,13 @@ export class BookListComponent implements OnInit {
   // per visit and adjusted on local deletes.
   totalCountAll = signal(0);
   listData = signal<Book[]>([]);
+  // Column picker: the column list (static) plus the currently-visible OPTIONAL
+  // columns. Locked columns are not tracked here - isColumnVisible() always
+  // returns true for them. The set drives the server-side $select (Fiori-style:
+  // a toggle re-requests the current page with the new projection), and is kept
+  // per-visit only (no persistence of view settings yet).
+  readonly bookColumns = BOOK_COLUMNS;
+  visibleColumns = signal<Set<BookColumnKey>>(new Set(DEFAULT_VISIBLE_COLUMNS));
   // Committed free-text search: the input is a live pre-filter — every
   // keystroke feeds `searchInput$`, which commits here (debounced) and refetches.
   searchText = signal('');
@@ -137,6 +198,9 @@ export class BookListComponent implements OnInit {
     sortOrder: string | null;
     search: string;
     filter: FilterRoot | undefined;
+    // Joined $select so a column toggle is recognized as a new query (and an
+    // nzQueryParams echo that only repeats the same projection stays a no-op).
+    select: string;
   } | null = null;
   // Current table sort, kept so search/filter refetches don't silently drop it.
   private sortField: string | null = null;
@@ -176,6 +240,54 @@ export class BookListComponent implements OnInit {
     this.searchInput$.next(value);
   }
 
+  // Column picker helpers. A locked column reports visible no matter what the
+  // signal holds, and refuses to be toggled off (the checkbox is also disabled).
+  isColumnVisible(key: BookColumnKey): boolean {
+    return BOOK_COLUMNS.some((c) => c.key === key && c.locked) || this.visibleColumns().has(key);
+  }
+  // The Fiori-style $select for the current picker state: the Home scoping key,
+  // the three locked columns, and every visible optional column (column order).
+  // The sort field is always inside this set: sorting starts on a visible header
+  // and hiding the sorted column clears the sort below, so $orderby can never
+  // reference an unprojected field.
+  private buildSelect(): string[] {
+    const select = [...BOOK_SELECT_BASE];
+    for (const col of BOOK_COLUMNS) {
+      if (col.locked || this.visibleColumns().has(col.key)) {
+        select.push(col.field);
+      }
+    }
+    return select;
+  }
+
+  setColumnVisible(key: BookColumnKey, visible: boolean): void {
+    if (BOOK_COLUMNS.some((c) => c.key === key && c.locked)) {
+      return;
+    }
+    if (this.visibleColumns().has(key) === visible) {
+      return; // no projection change - skip the refetch (checkbox echo guard)
+    }
+    this.visibleColumns.update((set) => {
+      const next = new Set(set);
+      if (visible) {
+        next.add(key);
+      } else {
+        next.delete(key);
+      }
+      return next;
+    });
+    // Sorting by a column that just disappeared would leave an invisible orderby
+    // (the header carrying the indicator is gone) - drop it like Fiori does.
+    if (!visible && this.sortField === key) {
+      this.sortField = null;
+      this.sortOrder = null;
+    }
+    // Server-side projection: re-request the SAME page (page/size/sort/search/
+    // filter kept) with the new $select. fetchSeq + lastQuery dedupe make rapid
+    // toggling safe - only the newest response lands.
+    this.loadDataFromServer(this.pageIndex(), this.pageSize(), this.sortField, this.sortOrder);
+  }
+
   ngOnInit() {
     ModelUtility.writeConsoleLog('AC_HIH_UI [Debug]: Entering BookListComponent OnInit...', ConsoleLogTypeEnum.debug);
     this.loadDataFromServer(this.pageIndex(), this.pageSize(), this.sortField, this.sortOrder);
@@ -205,6 +317,8 @@ export class BookListComponent implements OnInit {
     // ever swallowing a real interaction that happens to arrive early.
     const search = this.searchText();
     const filter = this.filterDef();
+    const select = this.buildSelect();
+    const selectKey = select.join(',');
     const last = this.lastQuery;
     if (
       last &&
@@ -213,27 +327,17 @@ export class BookListComponent implements OnInit {
       last.sortField === sortField &&
       last.sortOrder === sortOrder &&
       last.search === search &&
-      last.filter === filter
+      last.filter === filter &&
+      last.select === selectKey
     ) {
       return;
     }
-    this.lastQuery = { pageIndex, pageSize, sortField, sortOrder, search, filter };
+    this.lastQuery = { pageIndex, pageSize, sortField, sortOrder, search, filter, select: selectKey };
 
     // Map the table's sort key to the OData field name expected by the API.
     let orderby: { field: string; order: string } | undefined;
     if (sortField && sortOrder) {
-      const fieldName =
-        sortField === 'nname'
-          ? 'NativeName'
-          : sortField === 'cname'
-            ? 'ChineseName'
-            : sortField === 'id'
-              ? 'Id'
-              : sortField === 'createdat'
-                ? 'CreatedAt'
-                : sortField === 'updatedat'
-                  ? 'UpdatedAt'
-                  : '';
+      const fieldName = BOOK_SORT_FIELDS[sortField] ?? '';
       const fieldOrder = sortOrder === 'ascend' ? 'asc' : sortOrder === 'descend' ? 'desc' : '';
       if (fieldName && fieldOrder) {
         orderby = { field: fieldName, order: fieldOrder };
@@ -247,7 +351,14 @@ export class BookListComponent implements OnInit {
     const seq = ++this.fetchSeq;
     this.isLoadingResults.set(true);
     this.odataService
-      .fetchBooks(pageSize, pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0, orderby, this.searchText(), filterFragment)
+      .fetchBooks(
+        pageSize,
+        pageIndex >= 1 ? (pageIndex - 1) * pageSize : 0,
+        orderby,
+        this.searchText(),
+        filterFragment,
+        select,
+      )
       .pipe(
         takeUntilDestroyed(this.destroyedRef),
         finalize(() => {

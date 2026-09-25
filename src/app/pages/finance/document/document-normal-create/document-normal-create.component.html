@@ -35,61 +35,171 @@
     </form>
 
     <!-- Items -->
-    <form nz-form [formGroup]="itemsForm" [hidden]="currentStep() !== 1">
-      <hih-fin-document-items
-        formControlName="itemControl"
-        [currentUIMode]="curMode"
-        [docDate]="curDocDate"
-        [arCurrencies]="arCurrencies()"
-        [tranCurr]="doccur"
-        [tranCurr2]="doccur2"
-        [arUIAccounts]="arUIAccounts()"
-        [arControlCenters]="arControlCenters()"
-        [arTranType]="arTranType()"
-        [arUIOrders]="arUIOrders()"
-        [docType]="curDocType"
-      >
-      </hih-fin-document-items>
-    </form>
-
-    <!-- Review and Confirm -->
-    <div [hidden]="currentStep() !== 2">
-      <div>
-        @if (confirmInfo?.warningExist) {
-          <nz-alert
-            nzType="warning"
-            [nzMessage]="'Common.Warning' | transloco"
-            nzDescription="{{
-              confirmInfo?.duplicatedItems.length
-            }} items found same amount and same tran. type posted to same account on same date."
-            nzShowIcon
-          >
-          </nz-alert>
-        }
-        <h3 nz-title>{{ 'Common.Date' | transloco }}: {{ confirmInfo?.tranDateString }}</h3>
-        <h2 nz-title>{{ 'Common.Description' | transloco }}: {{ confirmInfo?.tranDesp }}</h2>
-        <h2 nz-title>
-          {{ 'Finance.Incoming' | transloco }}:
-          {{ $safeNavigationMigration(confirmInfo?.inAmount) | number: '1.2-2' }}
-          {{ confirmInfo?.tranCurrency }}
-        </h2>
-        <h2 nz-title>
-          {{ 'Finance.Outgoing' | transloco }}:
-          {{ $safeNavigationMigration(confirmInfo?.outAmount) | number: '1.2-2' }}
-          {{ confirmInfo?.tranCurrency }}
-        </h2>
-        @if (confirmInfo?.warningExist) {
-          <div>
-            <nz-divider></nz-divider>
-            @for (item of confirmInfo?.duplicatedItems; track item) {
-              <p nz-paragraph>
-                <i nz-icon nzType="right-circle" nzTheme="outline"></i>
-                <span nz-typography nzType="warning">{{ item }}</span>
-              </p>
+    <div [hidden]="currentStep() !== 1">
+      <!-- Duplicate-day guardrail: checked when this step opens (see
+           _checkSameDayNormalDocs). Best-effort - a failed check stays silent. -->
+      @if (sameDayDocs().length > 0) {
+        <nz-alert
+          class="same-day-alert"
+          nzType="warning"
+          nzShowIcon
+          [nzMessage]="'Finance.SameDayNormalDocWarning' | transloco"
+          [nzDescription]="tplSameDayDocs"
+        >
+        </nz-alert>
+        <ng-template #tplSameDayDocs>
+          <div class="same-day-docs">
+            <span>{{ 'Finance.SameDayNormalDocHint' | transloco }}</span>
+            @for (doc of sameDayDocs(); track doc.Id) {
+              <a class="same-day-doc" [routerLink]="['/finance/document/display', doc.Id]">
+                <i nz-icon nzType="file"></i>
+                #{{ doc.Id }} {{ doc.Desp }}
+              </a>
             }
           </div>
-        }
+        </ng-template>
+      }
+      <form nz-form [formGroup]="itemsForm">
+        <hih-fin-document-items
+          formControlName="itemControl"
+          [currentUIMode]="curMode"
+          [docDate]="curDocDate"
+          [arCurrencies]="arCurrencies()"
+          [tranCurr]="doccur"
+          [tranCurr2]="doccur2"
+          [arUIAccounts]="arUIAccounts()"
+          [arControlCenters]="arControlCenters()"
+          [arTranType]="arTranType()"
+          [arUIOrders]="arUIOrders()"
+          [docType]="curDocType"
+        >
+        </hih-fin-document-items>
+      </form>
+    </div>
+
+    <!-- Review and Confirm -->
+    <div [hidden]="currentStep() !== 2" class="review-step">
+      @if (confirmInfo?.warningExist) {
+        <nz-alert nzType="warning" nzShowIcon [nzMessage]="'Common.Warning' | transloco" [nzDescription]="tplDupItems">
+        </nz-alert>
+        <ng-template #tplDupItems>
+          {{ confirmInfo?.duplicatedItems.length }} items found same amount and same tran. type posted to same account
+          on same date.
+        </ng-template>
+      }
+
+      <!-- Amount key figures: the finance dashboard's stat-card language -->
+      <div class="review-stat-row" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 24 }">
+        <div nz-col nzXs="24" nzSm="12">
+          <nz-card class="stat-card">
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-in"><i nz-icon nzType="arrow-down"></i></span>
+              <nz-statistic
+                [nzTitle]="'Finance.Incoming' | transloco"
+                [nzValueTemplate]="tmplValueIn"
+                [nzSuffix]="confirmInfo?.tranCurrency"
+              >
+              </nz-statistic>
+              <ng-template #tmplValueIn>{{
+                $safeNavigationMigration(confirmInfo?.inAmount) | number: '1.2-2'
+              }}</ng-template>
+            </div>
+          </nz-card>
+        </div>
+        <div nz-col nzXs="24" nzSm="12">
+          <nz-card class="stat-card">
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-out"><i nz-icon nzType="arrow-up"></i></span>
+              <nz-statistic
+                [nzTitle]="'Finance.Outgoing' | transloco"
+                [nzValueTemplate]="tmplValueOut"
+                [nzSuffix]="confirmInfo?.tranCurrency"
+              >
+              </nz-statistic>
+              <ng-template #tmplValueOut>{{
+                $safeNavigationMigration(confirmInfo?.outAmount) | number: '1.2-2'
+              }}</ng-template>
+            </div>
+          </nz-card>
+        </div>
       </div>
+
+      <!-- Document header facts -->
+      <nz-descriptions
+        nzBordered
+        nzSize="small"
+        [nzColumn]="{ xs: 1, sm: 2, md: 3 }"
+        [nzTitle]="'Finance.Document' | transloco"
+      >
+        <nz-descriptions-item [nzTitle]="'Common.Date' | transloco">
+          {{ confirmInfo?.tranDateString }}
+        </nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="'Common.Description' | transloco">
+          {{ confirmInfo?.tranDesp }}
+        </nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="'Finance.Currency' | transloco">
+          {{ confirmInfo?.tranCurrency }}
+        </nz-descriptions-item>
+        @if (confirmInfo?.exgRate) {
+          <nz-descriptions-item [nzTitle]="'Finance.ExchangeRate' | transloco">
+            {{ confirmInfo?.exgRate }}
+          </nz-descriptions-item>
+        }
+      </nz-descriptions>
+
+      <!-- Itemized preview of what will be posted -->
+      <nz-table
+        #reviewTable
+        class="review-items-table"
+        nzSize="small"
+        [nzData]="$safeNavigationMigration(confirmInfo?.items) || []"
+        [nzShowPagination]="false"
+        [nzTitle]="'Finance.Items' | transloco"
+      >
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ 'Finance.Account' | transloco }}</th>
+            <th>{{ 'Finance.TransactionType' | transloco }}</th>
+            <th class="col-amount">{{ 'Finance.Amount' | transloco }}</th>
+            <th>{{ 'Finance.ControlCenter' | transloco }}</th>
+            <th>{{ 'Finance.Activity' | transloco }}</th>
+            <th>{{ 'Common.Description' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of reviewTable.data; track $index) {
+            <tr>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ getAccountName(item.AccountId) }}</td>
+              <td>{{ getTranTypeName(item.TranType) }}</td>
+              <td class="col-amount">
+                <span
+                  [class.amt-out]="isOutgoingTranType(item.TranType)"
+                  [class.amt-in]="!isOutgoingTranType(item.TranType)"
+                >
+                  {{ item.TranAmount | number: '1.2-2' }}
+                </span>
+              </td>
+              <td>{{ getControlCenterName(item.ControlCenterId) }}</td>
+              <td>{{ getOrderName(item.OrderId) }}</td>
+              <td>{{ item.Desp }}</td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+
+      @if (confirmInfo?.warningExist) {
+        <div class="dup-items-list">
+          <nz-divider></nz-divider>
+          @for (item of confirmInfo?.duplicatedItems; track item) {
+            <p nz-paragraph>
+              <i nz-icon nzType="right-circle" nzTheme="outline"></i>
+              <span nz-typography nzType="warning">{{ item }}</span>
+            </p>
+          }
+        </div>
+      }
     </div>
 
     <!-- Result -->

@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+
+import { UserPreferencesService } from './user-preferences.service';
 
 enum ThemeType {
   dark = 'dark',
@@ -9,7 +11,10 @@ enum ThemeType {
   providedIn: 'root',
 })
 export class ThemeService {
-  currentTheme = ThemeType.default;
+  private readonly prefs = inject(UserPreferencesService);
+  // Seeded from the persisted preference; APP_INITIALIZER's loadTheme(true)
+  // applies whatever the user last chose (fallback: 'default').
+  currentTheme: ThemeType = this.prefs.theme() === 'dark' ? ThemeType.dark : ThemeType.default;
 
   private reverseTheme(theme: string): ThemeType {
     return theme === ThemeType.dark ? ThemeType.default : ThemeType.dark;
@@ -61,6 +66,7 @@ export class ThemeService {
 
   public toggleTheme(): Promise<Event> {
     this.currentTheme = this.reverseTheme(this.currentTheme);
+    this.prefs.setTheme(this.currentTheme === ThemeType.dark ? 'dark' : 'default');
     return this.loadTheme(false);
   }
 }

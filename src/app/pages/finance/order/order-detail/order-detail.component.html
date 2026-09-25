@@ -103,11 +103,11 @@
               {{ data.RuleId }}
             </td>
             <td>
-              <nz-select [(ngModel)]="data.ControlCenterId" [disabled]="!isFieldChangable" style="width: 100%">
-                @for (cc of arControlCenters(); track cc.Id) {
-                  <nz-option [nzValue]="cc.Id" [nzLabel]="cc.Name"></nz-option>
-                }
-              </nz-select>
+              <hih-controlcenter-tree-select
+                [(ngModel)]="data.ControlCenterId"
+                [controlCenters]="arControlCenters()"
+                [disabled]="!isFieldChangable"
+              ></hih-controlcenter-tree-select>
               <ng-template #parentTpl let-control>
                 @if (control.hasError('required')) {
                   <ng-container>{{ 'Common.FieldIsMandatory' | transloco }}</ng-container>

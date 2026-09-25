@@ -8,6 +8,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { TranTypeTreeSelectComponent } from '../../../../shared/trantype-tree-select';
+import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcenter-tree-select';
 
 @Component({
   selector: 'hih-document-normal-mass-create-item',
@@ -18,6 +20,8 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     FormsModule,
     ReactiveFormsModule,
     NzFormModule,
+    TranTypeTreeSelectComponent,
+    ControlCenterTreeSelectComponent,
     NzInputModule,
     NzDatePickerModule,
     NzSelectModule,

@@ -2,8 +2,8 @@ export const environment = {
   production: true,
 
   LoginRequired: true,
-  CurrentVersion: '1.8.534',
-  ReleasedDate: '2026.09.16',
+  CurrentVersion: '1.8.557',
+  ReleasedDate: '2026.09.25',
   DefaultLanguage: 'zh',
 
   DebugLogging: false,
