@@ -7,6 +7,21 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script>
+      // Pre-Angular theme class: the key/allowed values mirror the single source
+      // of truth in services/user-preferences.service.ts (THEME_KEY / 'dark' |
+      // 'default'). Keep them in sync. Setting html.dark (or .default) before the
+      // bundle parses lets the first paint use the right base chrome instead of
+      // flashing the other theme; ThemeService.loadTheme re-adds the same class
+      // (classList.add is idempotent) once the theme stylesheet has finished
+      // loading. Wrapped in try/catch: private-browsing storage access can throw.
+      try {
+        var hihTheme = localStorage.getItem('hih.pref.theme');
+        document.documentElement.classList.add(hihTheme === 'dark' ? 'dark' : 'default');
+      } catch (hihErr) {
+        document.documentElement.classList.add('default');
+      }
+    </script>
   </head>
   <body>
     <hih-root></hih-root>

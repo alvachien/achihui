@@ -15,3 +15,4 @@ export * from './finance-odata.service';
 export * from './blog-odata.service';
 
 export * from './theme.service';
+export * from './user-preferences.service';

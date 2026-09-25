@@ -25,6 +25,7 @@ import { firstValueFrom } from 'rxjs';
 import { LogLevel, provideAuth } from 'angular-auth-oidc-client';
 import { environment } from '@environments/environment';
 import { ThemeService } from '@services/theme.service';
+import { storedLang } from '@services/user-preferences.service';
 import { provideNzDateFnsAdapter } from 'ng-zorro-antd/core/time';
 
 registerLocaleData(en);
@@ -35,8 +36,11 @@ registerLocaleData(en);
 // lookups still resolve via Angular's parent-locale fallback.
 registerLocaleData(zh);
 
-// Default language is driven by environment.DefaultLanguage ('en' | 'zh').
-const defaultLang = environment.DefaultLanguage === 'zh' ? 'zh' : 'en';
+// Startup language: the persisted user preference (localStorage) wins;
+// environment.DefaultLanguage ('en' | 'zh') is only the first-run fallback.
+// LOCALE_ID / provideNzI18n / transloco below all derive from this single
+// value, so the whole app agrees on the locale before the first render.
+const defaultLang = storedLang();
 const isZhDefault = defaultLang === 'zh';
 
 export const appConfig: ApplicationConfig = {
