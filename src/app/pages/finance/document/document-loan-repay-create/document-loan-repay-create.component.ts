@@ -13,7 +13,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 
 import {
@@ -86,6 +86,7 @@ interface PayingAccountItem {
   styleUrls: ['./document-loan-repay-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzModalModule,
     NzTypographyModule,
     NzIconModule,
     NzPageHeaderModule,
@@ -341,6 +342,11 @@ export class DocumentLoanRepayCreateComponent implements OnInit {
     });
 
     return tranTypeObj ? tranTypeObj.Name : '';
+  }
+
+  // Summary for the confirm step
+  public getDocumentTotalAmount(doc: Document): number {
+    return (doc.Items ?? []).reduce((sum, item) => sum + (item.TranAmount ?? 0), 0);
   }
 
   // Step 0: Search items

@@ -36,7 +36,6 @@ import { SafeAny } from '@common/any';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -75,7 +74,6 @@ class DateCellData {
     NzPageHeaderModule,
     NzBreadCrumbModule,
     NzSwitchModule,
-    NzResultModule,
     NzSpinModule,
     NzCardModule,
     NzStatisticModule,
@@ -106,8 +104,11 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
   listDate: DateCellData[] = [];
   keyfigure: FinanceOverviewKeyfigure | null = null;
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
+  // Lite mode: balances of the member's own accounts (the account list and the
+  // balance lookups are both scoped to them by the server).
+  ownBalances: { name: string; balance: number }[] = [];
+  get isLiteMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome?.IsLite ?? false;
   }
 
   // Displayed in the page-header subtitle (home chip), same idiom as the library overview.
@@ -168,16 +169,15 @@ export class FinanceComponent implements OnInit, OnDestroy {
 
     this._destroyed$ = new ReplaySubject(1);
 
-    if (this.isChildMode) {
-      // Child mode, do nothing.
-    } else {
-      // Selected date
-      this.selectedDate = new Date();
+    // Selected date: initialised in both modes (the key-figure insight ranges
+    // read it); the calendar that drives it is a full-mode feature.
+    this.selectedDate = new Date();
+    if (!this.isLiteMode) {
       this._updateSelectedDate();
-
-      // Fetch docs
-      this.fetchData();
     }
+
+    // Fetch docs / key figures
+    this.fetchData();
   }
 
   ngOnDestroy() {
@@ -340,6 +340,41 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
   fetchData(forceReload = false): void {
+    if (this.isLiteMode) {
+      // Lite mode: no household templates, no asset depreciation - only the key
+      // figures (computed server-side from the accounts this member owns) and
+      // their own account balances.
+      this.isLoadingResults = true;
+      this.odataService
+        .fetchOverviewKeyfigure(this.ExcludeTransfer, forceReload)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .pipe(
+          takeUntil(this._destroyed$!),
+          finalize(() => (this.isLoadingResults = false)),
+        )
+        .subscribe({
+          next: (rst) => {
+            this.keyfigure = rst;
+            this.loadOwnBalances();
+            this.changeDetectRef.markForCheck();
+          },
+          error: (err) => {
+            ModelUtility.writeConsoleLog(
+              `AC_HIH_UI [Error]: Entering FinanceComponent fetchData (lite mode) failed ${err}...`,
+              ConsoleLogTypeEnum.error,
+            );
+
+            this.modalService.error({
+              nzTitle: translate('Common.Error'),
+              nzContent: err.toString(),
+              nzClosable: true,
+            });
+            this.changeDetectRef.markForCheck();
+          },
+        });
+      return;
+    }
+
     const dtbgn: Date = startOfMonth(this.selectedDate as Date);
     const dtend: Date = endOfMonth(this.selectedDate as Date);
 
@@ -424,6 +459,56 @@ export class FinanceComponent implements OnInit, OnDestroy {
         },
       });
   }
+  // Lite mode: list the balances of the accounts this member owns. fetchAllAccounts
+  // already returns only the owned accounts (server-side scope), and the balance
+  // action refuses foreign accounts for restricted members.
+  private loadOwnBalances(): void {
+    this.odataService
+      .fetchAllAccounts()
+      .pipe(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        takeUntil(this._destroyed$!),
+      )
+      .subscribe({
+        next: (accounts: Account[]) => {
+          if (accounts.length === 0) {
+            this.ownBalances = [];
+            this.changeDetectRef.markForCheck();
+            return;
+          }
+
+          forkJoin(accounts.map((acnt) => this.odataService.fetchAccountBalance(acnt.Id ?? 0)))
+            .pipe(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              takeUntil(this._destroyed$!),
+            )
+            .subscribe({
+              next: (balances: SafeAny[]) => {
+                this.ownBalances = accounts.map((acnt, idx) => {
+                  return {
+                    name: acnt.Name ?? '',
+                    balance: +balances[idx],
+                  };
+                });
+                this.changeDetectRef.markForCheck();
+              },
+              error: (err) => {
+                ModelUtility.writeConsoleLog(
+                  `AC_HIH_UI [Error]: Entering FinanceComponent loadOwnBalances balances failed ${err}...`,
+                  ConsoleLogTypeEnum.error,
+                );
+              },
+            });
+        },
+        error: (err) => {
+          ModelUtility.writeConsoleLog(
+            `AC_HIH_UI [Error]: Entering FinanceComponent loadOwnBalances accounts failed ${err}...`,
+            ConsoleLogTypeEnum.error,
+          );
+        },
+      });
+  }
+
   doPostDPDoc(dpdoc: TemplateDocADP) {
     this.odataService
       .createDocumentFromDPTemplate(dpdoc)

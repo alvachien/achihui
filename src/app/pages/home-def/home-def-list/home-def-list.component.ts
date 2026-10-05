@@ -7,11 +7,9 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropdownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
@@ -32,11 +30,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NzBreadCrumbModule,
     NzTableModule,
     TranslocoModule,
-    NzDividerModule,
     NzDropdownModule,
     NzMenuModule,
     NzIconModule,
-    NzTooltipModule,
     NzModalModule,
     RouterModule,
   ],
@@ -48,7 +44,7 @@ export class HomeDefListComponent implements OnInit {
   readonly currentHome = computed(() => this.homeService.curHomeSelected());
   readonly currentMember = computed(() => this.homeService.curHomeMember());
   readonly IsCurrentHomeChosed = computed(() => !!this.currentHome());
-  readonly IsChildMode = computed(() => !!this.currentHome() && (this.currentMember()?.IsChild ?? false));
+  readonly isLiteMode = computed(() => !!this.currentHome() && (this.currentMember()?.IsLite ?? false));
 
   private readonly router = inject(Router);
   private readonly modalService = inject(NzModalService);

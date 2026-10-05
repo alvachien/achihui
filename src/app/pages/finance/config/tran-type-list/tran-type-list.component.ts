@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -16,7 +16,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './tran-type-list.component.html',
   styleUrls: ['./tran-type-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzSpinModule, NzTableModule, NzSwitchModule, FormsModule, ReactiveFormsModule, TranslocoModule],
+  imports: [
+    NzModalModule,
+    NzSpinModule,
+    NzTableModule,
+    NzSwitchModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslocoModule,
+  ],
 })
 export class TranTypeListComponent implements OnInit {
   isLoadingResults = signal(false);

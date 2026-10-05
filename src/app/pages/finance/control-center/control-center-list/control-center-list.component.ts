@@ -96,9 +96,9 @@ export class ControlCenterListComponent implements OnInit {
   private readonly destroyedRef = inject(DestroyRef);
 
   // Read the service's curHomeMember signal directly (Tier F route (b)):
-  // isChildMode updates reactively without manual subscriptions.
+  // isLiteMode updates reactively without manual subscriptions.
   private readonly currentMember = computed(() => this.homeService.curHomeMember());
-  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
+  readonly isLiteMode = computed(() => this.currentMember()?.IsLite ?? false);
 
   ngOnInit() {
     ModelUtility.writeConsoleLog(

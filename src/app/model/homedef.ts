@@ -22,7 +22,10 @@ export interface IHomeMemberJson {
   User: string;
   DisplayAs: string;
   Relation: SafeAny;
-  IsChild?: boolean;
+  // WIRE CONTRACT: matches the achihapi OData EDM property `IsLite`
+  // (renamed from IsChild 2026-10-05; the SQLite column is still ISCHILD — deploy
+  // API and UI together, an old UI's `IsChild` payload will not bind on the new API).
+  IsLite?: boolean;
 }
 
 /**
@@ -33,7 +36,7 @@ export class HomeMember {
   private _user = '';
   private _displayas = '';
   private _relation: HomeMemberRelationEnum | null = null;
-  private _ischild: boolean | null = null;
+  private _islite: boolean | null = null;
 
   get HomeID(): number {
     return this._hid;
@@ -59,11 +62,11 @@ export class HomeMember {
   set Relation(rel: HomeMemberRelationEnum | null) {
     this._relation = rel;
   }
-  get IsChild(): boolean | null {
-    return this._ischild;
+  get IsLite(): boolean | null {
+    return this._islite;
   }
-  set IsChild(cld: boolean | null) {
-    this._ischild = cld;
+  set IsLite(lit: boolean | null) {
+    this._islite = lit;
   }
 
   get isValid(): boolean {
@@ -90,8 +93,8 @@ export class HomeMember {
     } else {
       this._relation = null;
     }
-    if (data.IsChild) {
-      this._ischild = data.IsChild;
+    if (data.IsLite) {
+      this._islite = data.IsLite;
     }
   }
   public generateJSONData(): IHomeMemberJson {
@@ -102,8 +105,8 @@ export class HomeMember {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       Relation: HomeMemberRelationEnum[this._relation!],
     };
-    if (this._ischild !== null) {
-      jdata.IsChild = this._ischild;
+    if (this._islite !== null) {
+      jdata.IsLite = this._islite;
     }
     return jdata;
   }
@@ -209,13 +212,13 @@ export class HomeDef extends hih.BaseModel {
 
       if (mem.Relation === HomeMemberRelationEnum.Self) {
         selfcnt++;
-        if (mem.IsChild) {
+        if (mem.IsLite) {
           invalidself = true;
         }
       }
     });
     if (invalidself) {
-      return false; // Self must not a child!
+      return false; // Self must not be a Lite-mode member!
     }
     if (invalidmem > 0) {
       return false;

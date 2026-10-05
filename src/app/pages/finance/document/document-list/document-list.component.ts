@@ -215,7 +215,7 @@ export class DocumentListComponent implements OnInit {
   private readonly destroyedRef = inject(DestroyRef);
   private readonly translocoService = inject(TranslocoService);
   private readonly currentMember = computed(() => this.homeService.curHomeMember());
-  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
+  readonly isLiteMode = computed(() => this.currentMember()?.IsLite ?? false);
 
   constructor() {
     ModelUtility.writeConsoleLog(
@@ -422,7 +422,7 @@ export class DocumentListComponent implements OnInit {
   // the user toggles). Shared by the list fetch and the baseline count fetch.
   private childScopeFilter(): GeneralFilterItem | undefined {
     const member = this.homeService.CurrentMemberInChosedHome;
-    return member?.IsChild
+    return member?.IsLite
       ? {
           fieldName: 'Createdby',
           operator: GeneralFilterOperatorEnum.Equal,

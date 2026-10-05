@@ -352,6 +352,24 @@ describe('DocumentNormalMassCreateComponent', () => {
       expect(component.currentStep()).toEqual(1);
       expect(component.confirmInfo.length).toBeGreaterThan(0);
 
+      // Regression guard: the item detail rows must actually render in the confirm
+      // step. NzDescriptionsComponent collects its items with @ContentChildren
+      // (without `descendants: true`), so a nz-descriptions-item nested inside a
+      // wrapper <div> is silently dropped — previously only the Date row showed up.
+      const labelCells: HTMLElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('td.ant-descriptions-item-label'),
+      );
+      // Date row + one full item block (Description/Account/TranType/Amount/CC/Activity)
+      // + the per-document Total row
+      expect(labelCells.length).toEqual(8);
+
+      const contentCells: HTMLElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('td.ant-descriptions-item-content'),
+      );
+      const renderedText = contentCells.map((cell) => cell.textContent?.trim() ?? '').join('|');
+      expect(renderedText).toContain('test'); // item description entered above
+      expect(renderedText).toContain('100'); // transaction amount entered above
+
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 

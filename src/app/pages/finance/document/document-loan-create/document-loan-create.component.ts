@@ -23,7 +23,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
@@ -82,6 +82,7 @@ import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcent
   styleUrls: ['./document-loan-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzModalModule,
     NzTypographyModule,
     NzButtonModule,
     NzIconModule,

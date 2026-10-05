@@ -12,7 +12,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { addYears } from 'date-fns';
 import { UIMode, isUIEditable } from 'actslib';
@@ -58,6 +58,7 @@ import { ControlCenterTreeSelectComponent } from '../../../../shared/controlcent
   styleUrls: ['./plan-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzModalModule,
     NzTypographyModule,
     NzIconModule,
     NzPageHeaderModule,

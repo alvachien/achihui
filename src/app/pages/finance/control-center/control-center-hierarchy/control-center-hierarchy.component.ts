@@ -68,7 +68,7 @@ export class ControlCenterHierarchyComponent implements OnInit {
   private readonly _uiStatusService = inject(UIStatusService);
   private readonly homeService = inject(HomeDefOdataService);
   readonly currentMember = computed(() => this.homeService.curHomeMember());
-  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
+  readonly isLiteMode = computed(() => this.currentMember()?.IsLite ?? false);
   private readonly modalService = inject(NzModalService);
   private readonly destroyedRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);

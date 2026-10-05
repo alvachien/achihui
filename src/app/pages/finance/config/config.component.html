@@ -6,16 +6,16 @@
     <nz-breadcrumb-item>{{ 'Finance.ConfigObjects' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-content>
-    @if (isChildMode) {
+    @if (isLiteMode) {
       <div>
-        <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+        <nz-result [nzIcon]="'skin'" [nzTitle]="'Common.LiteModeDetail' | transloco">
           <div nz-result-extra>
             <button nz-button nzType="primary">OK</button>
           </div>
         </nz-result>
       </div>
     }
-    @if (!isChildMode) {
+    @if (!isLiteMode) {
       <div>
         <nz-tabs>
           <nz-tab [nzTitle]="t('Finance.AccountCategories')">

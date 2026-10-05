@@ -11,7 +11,7 @@
     <nz-page-header-extra>
       <a nz-button nzType="link" (click)="onRefresh(true)">{{ 'Common.Refresh' | transloco }}</a>
       <nz-divider nzType="vertical"></nz-divider>
-      <a nz-button nzType="link" [disabled]="isChildMode()" routerLink="/finance/account/create">{{
+      <a nz-button nzType="link" [disabled]="isLiteMode()" routerLink="/finance/account/create">{{
         'Common.Create' | transloco
       }}</a>
       <a nz-button nzType="link" routerLink="/finance/account/hierarchy">{{ 'Common.HierarchyView' | transloco }}</a>
@@ -111,7 +111,7 @@
                     <li nz-menu-item (click)="onAccountReconcile(data.Id!)">
                       {{ 'Finance.AccountReconcile' | transloco }}
                     </li>
-                    @if (!isChildMode()) {
+                    @if (!isLiteMode()) {
                       <li nz-menu-divider></li>
                       <li nz-menu-item nzDanger (click)="onDelete(data.Id!)">{{ 'Common.Delete' | transloco }}</li>
                     }

@@ -84,14 +84,14 @@ describe('PlanListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return false for isChildMode when member is not a child', () => {
-    expect(component.isChildMode()).toBe(false);
+  it('should return false for isLiteMode when member is not a Lite member', () => {
+    expect(component.isLiteMode()).toBe(false);
   });
 
-  it('should return true for isChildMode when member is a child', () => {
-    homeService.CurrentMemberInChosedHome!['IsChild'] = true;
-    expect(component.isChildMode()).toBe(true);
-    homeService.CurrentMemberInChosedHome!['IsChild'] = false;
+  it('should return true for isLiteMode when member is a Lite member', () => {
+    homeService.CurrentMemberInChosedHome!.IsLite = true;
+    expect(component.isLiteMode()).toBe(true);
+    homeService.CurrentMemberInChosedHome!.IsLite = false;
   });
 
   it('should return account name for valid id', () => {

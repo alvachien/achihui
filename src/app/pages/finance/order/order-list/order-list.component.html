@@ -8,7 +8,7 @@
   <nz-page-header-title>{{ 'Finance.Activities' | transloco }}</nz-page-header-title>
   <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
   <nz-page-header-extra>
-    <button nz-button nzType="primary" [disabled]="isChildMode()" (click)="onCreate()">
+    <button nz-button nzType="primary" [disabled]="isLiteMode()" (click)="onCreate()">
       {{ 'Common.Create' | transloco }}
     </button>
     <!-- <nz-radio-group [(ngModel)]="selectedYTD" nzButtonStyle="solid" (ngModelChange)="onLoadData()">
@@ -18,16 +18,16 @@
   </nz-page-header-extra>
 </nz-page-header>
 
-@if (isChildMode()) {
+@if (isLiteMode()) {
   <div>
-    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+    <nz-result [nzIcon]="'skin'" [nzTitle]="'Common.LiteModeDetail' | transloco">
       <div nz-result-extra>
         <button nz-button nzType="primary">OK</button>
       </div>
     </nz-result>
   </div>
 }
-@if (!isChildMode()) {
+@if (!isLiteMode()) {
   <div>
     <!-- Filter row: the bar (live free-text pre-filter + validity switch +
          structured-filter menu, highlighted while any narrowing is in effect)

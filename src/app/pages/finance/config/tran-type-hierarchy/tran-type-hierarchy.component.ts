@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzTreeModule, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -14,7 +14,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './tran-type-hierarchy.component.html',
   styleUrls: ['./tran-type-hierarchy.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzSpinModule, NzTreeModule, TranslocoModule],
+  imports: [NzModalModule, NzSpinModule, NzTreeModule, TranslocoModule],
 })
 export class TranTypeHierarchyComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match

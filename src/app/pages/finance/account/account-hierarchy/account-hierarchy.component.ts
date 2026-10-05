@@ -128,7 +128,7 @@ export class AccountHierarchyComponent implements OnInit {
   private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
   readonly currentMember = computed(() => this.homeService.curHomeMember());
-  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
+  readonly isLiteMode = computed(() => this.currentMember()?.IsLite ?? false);
   private readonly router = inject(Router);
   private readonly nzContextMenuService = inject(NzContextMenuService);
   private readonly viewContainerRef = inject(ViewContainerRef);

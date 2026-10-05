@@ -56,32 +56,42 @@
 
     <!-- Step 1: Confirm -->
     <div nz-row [hidden]="currentStep() !== 1">
+      <div style="width: 100%; padding: 8px 4px; text-align: right; font-weight: bold">
+        {{ 'Common.Total' | transloco }}: {{ confirmInfo.length }} × {{ 'Finance.Document' | transloco }} ·
+        {{ confirmTotalItems }} × {{ 'Finance.Items' | transloco }} · {{ confirmTotalAmount.toFixed(2) }}
+        {{ baseCurrency }}
+      </div>
       @for (docinfo of confirmInfo; track docinfo; let isConfirmLast = $last, confirmIndex = $index) {
         <div style="width: 100%">
           <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + (confirmIndex + 1)" nzBordered [nzColumn]="4">
             <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
               {{ docinfo.TranDateFormatString }}
             </nz-descriptions-item>
-            @for (iteminfo of docinfo.Items; track iteminfo) {
-              <div>
-                <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
-                  {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
-                </nz-descriptions-item>
-                <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
-                  {{ getTranTypeName(iteminfo.TranType!) }} ({{ iteminfo.TranType }})
-                </nz-descriptions-item>
-                <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
-                  {{ iteminfo.TranAmount }}
-                  <span style="margin-left: 3px">{{ baseCurrency }}</span>
-                </nz-descriptions-item>
-                <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
-                  {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{ iteminfo.ControlCenterId }})
-                </nz-descriptions-item>
-                <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
-                  {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId }})
-                </nz-descriptions-item>
-              </div>
+            @for (iteminfo of docinfo.Items; track iteminfo; let itemIndex = $index) {
+              <nz-descriptions-item [nzTitle]="'Common.Description' | transloco" [nzSpan]="4">
+                {{ itemIndex + 1 + '. ' + iteminfo.Desp }}
+              </nz-descriptions-item>
+              <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
+                {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
+              </nz-descriptions-item>
+              <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
+                {{ getTranTypeName(iteminfo.TranType!) }} ({{ iteminfo.TranType }})
+              </nz-descriptions-item>
+              <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
+                {{ iteminfo.TranAmount }}
+                <span style="margin-left: 3px">{{ baseCurrency }}</span>
+              </nz-descriptions-item>
+              <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
+                {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{ iteminfo.ControlCenterId }})
+              </nz-descriptions-item>
+              <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
+                {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId }})
+              </nz-descriptions-item>
             }
+            <nz-descriptions-item [nzTitle]="'Common.Total' | transloco" [nzSpan]="4">
+              {{ getDocumentTotalAmount(docinfo).toFixed(2) }}
+              <span style="margin-left: 3px">{{ baseCurrency }}</span>
+            </nz-descriptions-item>
           </nz-descriptions>
           @if (!isConfirmLast) {
             <nz-divider></nz-divider>
@@ -119,7 +129,7 @@
               }
             </div>
             <div nz-result-extra>
-              <button nz-button (click)="onBackToListView()">Back to List View</button>
+              <button nz-button (click)="onBackToListView()">{{ 'Finance.BackToDocumentListView' | transloco }}</button>
             </div>
           </nz-result>
         </div>
@@ -152,9 +162,38 @@
               <nz-divider></nz-divider>
               @for (fdocinfo of docIdFailed; track fdocinfo; let isFailedDocLast = $last, failDocIndex = $index) {
                 <div>
-                  <nz-descriptions [nzTitle]="t('Finance.Document') + ' #' + failDocIndex" nzBordered [nzColumn]="4">
+                  <nz-descriptions
+                    [nzTitle]="t('Finance.Document') + ' #' + (failDocIndex + 1)"
+                    nzBordered
+                    [nzColumn]="4"
+                  >
                     <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
                       {{ fdocinfo.TranDateFormatString }}
+                    </nz-descriptions-item>
+                    @for (iteminfo of fdocinfo.Items; track iteminfo; let itemIndex = $index) {
+                      <nz-descriptions-item [nzTitle]="'Common.Description' | transloco" [nzSpan]="4">
+                        {{ itemIndex + 1 + '. ' + iteminfo.Desp }}
+                      </nz-descriptions-item>
+                      <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
+                        {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
+                      </nz-descriptions-item>
+                      <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
+                        {{ getTranTypeName(iteminfo.TranType!) }} ({{ iteminfo.TranType }})
+                      </nz-descriptions-item>
+                      <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
+                        {{ iteminfo.TranAmount }}
+                        <span style="margin-left: 3px">{{ baseCurrency }}</span>
+                      </nz-descriptions-item>
+                      <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
+                        {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{ iteminfo.ControlCenterId }})
+                      </nz-descriptions-item>
+                      <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
+                        {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId }})
+                      </nz-descriptions-item>
+                    }
+                    <nz-descriptions-item [nzTitle]="'Common.Total' | transloco" [nzSpan]="4">
+                      {{ getDocumentTotalAmount(fdocinfo).toFixed(2) }}
+                      <span style="margin-left: 3px">{{ baseCurrency }}</span>
                     </nz-descriptions-item>
                   </nz-descriptions>
                   @if (!isFailedDocLast) {
@@ -164,8 +203,10 @@
               }
             </div>
             <div nz-result-extra>
-              <button nz-button nzType="primary" (click)="onResubmitFailedItems()">Resent Failed Items</button>
-              <button nz-button (click)="onBackToListView()">Back to List View</button>
+              <button nz-button nzType="primary" (click)="onResubmitFailedItems()">
+                {{ 'Common.ResendFailedItems' | transloco }}
+              </button>
+              <button nz-button (click)="onBackToListView()">{{ 'Finance.BackToDocumentListView' | transloco }}</button>
             </div>
           </nz-result>
         </div>

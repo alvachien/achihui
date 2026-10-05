@@ -6,83 +6,82 @@
     <nz-breadcrumb-item>{{ 'Common.Plan' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Common.Plan' | transloco }}</nz-page-header-title>
-  <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
+  <nz-page-header-subtitle>
+    {{ 'Common.ListView' | transloco }}
+    @if (isLiteMode()) {
+      <span class="lite-hint">· {{ 'Common.LiteMode' | transloco }}</span>
+    }
+  </nz-page-header-subtitle>
   <nz-page-header-extra>
     <a nz-button nzType="link" (click)="onRefresh(true)">{{ 'Common.Refresh' | transloco }}</a>
     <nz-divider nzType="vertical"></nz-divider>
-    <button nz-button nzType="primary" [disabled]="isChildMode()" (click)="onCreate()">
+    <button nz-button nzType="primary" [disabled]="isLiteMode()" (click)="onCreate()">
       {{ 'Common.Create' | transloco }}
     </button>
   </nz-page-header-extra>
 </nz-page-header>
 
-@if (isChildMode()) {
-  <div>
-    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
-      <div nz-result-extra>
-        <button nz-button nzType="primary">OK</button>
-      </div>
-    </nz-result>
-  </div>
-}
-
-@if (!isChildMode()) {
-  <div>
-    <nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
-      <nz-table #basicTable [nzData]="dataSet()">
-        <thead>
+<div>
+  <!-- Lite members get the same list: the server already hides plans whose
+       target is not one of their own accounts / control centers. -->
+  <nz-spin [nzSpinning]="isLoadingResults()" [nzSize]="'large'">
+    <nz-table #basicTable [nzData]="dataSet()">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>{{ 'Common.Type' | transloco }}</th>
+          <th>{{ 'Common.Start' | transloco }}</th>
+          <th>{{ 'Common.Stop' | transloco }}</th>
+          <th>{{ 'Common.Description' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of basicTable.data; track data.ID) {
           <tr>
-            <th>ID</th>
-            <th>{{ 'Common.Type' | transloco }}</th>
-            <th>{{ 'Common.Start' | transloco }}</th>
-            <th>{{ 'Common.Stop' | transloco }}</th>
-            <th>{{ 'Common.Description' | transloco }}</th>
+            <td>
+              <div class="id-cell">
+                <!-- The ID itself links to the display page -->
+                <a [routerLink]="['/finance/plan/display', data.ID!]">{{ data.ID }}</a>
+                <!-- Row actions: the former inline links live in a three-dot menu -->
+                <button
+                  nz-button
+                  nzType="text"
+                  nzSize="small"
+                  nz-dropdown
+                  [nzDropdownMenu]="rowActionMenu"
+                  nzTrigger="click"
+                  nzPlacement="bottomRight"
+                  [attr.aria-label]="'Common.Actions' | transloco"
+                  class="id-cell-action"
+                >
+                  <i nz-icon nzType="more" nzTheme="outline"></i>
+                </button>
+                <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item (click)="onCheckProgress(data)">
+                      {{ 'Common.Progress' | transloco }}
+                    </li>
+                    <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onEdit(data.ID!)">
+                      {{ 'Common.Edit' | transloco }}
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item nzDanger [nzDisabled]="isLiteMode()" (click)="onDelete(data.ID!)">
+                      {{ 'Common.Delete' | transloco }}
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+            <td>{{ getPlanTypeDisplayString(data.PlanType) | transloco }}</td>
+            <td>{{ getDateDisplayString(data.StartDate!) }}</td>
+            <td>{{ getDateDisplayString(data.TargetDate!) }}</td>
+            <td>{{ data.Description }}</td>
           </tr>
-        </thead>
-        <tbody>
-          @for (data of basicTable.data; track data.ID) {
-            <tr>
-              <td>
-                <div class="id-cell">
-                  <!-- The ID itself links to the display page -->
-                  <a [routerLink]="['/finance/plan/display', data.ID!]">{{ data.ID }}</a>
-                  <!-- Row actions: the former inline links live in a three-dot menu -->
-                  <button
-                    nz-button
-                    nzType="text"
-                    nzSize="small"
-                    nz-dropdown
-                    [nzDropdownMenu]="rowActionMenu"
-                    nzTrigger="click"
-                    nzPlacement="bottomRight"
-                    [attr.aria-label]="'Common.Actions' | transloco"
-                    class="id-cell-action"
-                  >
-                    <i nz-icon nzType="more" nzTheme="outline"></i>
-                  </button>
-                  <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item (click)="onCheckProgress(data)">
-                        {{ 'Common.Progress' | transloco }}
-                      </li>
-                      <li nz-menu-item (click)="onEdit(data.ID!)">{{ 'Common.Edit' | transloco }}</li>
-                      <li nz-menu-divider></li>
-                      <li nz-menu-item nzDanger (click)="onDelete(data.ID!)">{{ 'Common.Delete' | transloco }}</li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-              </td>
-              <td>{{ getPlanTypeDisplayString(data.PlanType) | transloco }}</td>
-              <td>{{ getDateDisplayString(data.StartDate!) }}</td>
-              <td>{{ getDateDisplayString(data.TargetDate!) }}</td>
-              <td>{{ data.Description }}</td>
-            </tr>
-          }
-        </tbody>
-      </nz-table>
-    </nz-spin>
-  </div>
-}
+        }
+      </tbody>
+    </nz-table>
+  </nz-spin>
+</div>
 
 <nz-modal
   [(nzVisible)]="isProgressDlgVisible"

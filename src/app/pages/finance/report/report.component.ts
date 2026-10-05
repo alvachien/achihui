@@ -95,8 +95,8 @@ export class ReportComponent implements OnInit, OnDestroy {
   // Card: Order
   chartOrderOption?: EChartsOption;
 
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
+  get isLiteMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome?.IsLite ?? false;
   }
 
   private readonly router = inject(Router);
@@ -122,7 +122,7 @@ export class ReportComponent implements OnInit, OnDestroy {
     // Load data
     this._destroyed$ = new ReplaySubject(1);
 
-    if (!this.isChildMode) {
+    if (!this.isLiteMode) {
       this.buildData();
     }
   }

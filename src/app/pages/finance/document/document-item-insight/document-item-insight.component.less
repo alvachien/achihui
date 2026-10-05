@@ -1,0 +1,90 @@
+/* Key-figure cards reuse the finance-overview visual language (see
+   finance.component.less): same badges, radii and trend colours. */
+
+.criteria-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  .ant-tag {
+    margin-inline-end: 0;
+  }
+}
+
+.kfig-row {
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.stat-flex {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #fff;
+  flex: 0 0 auto;
+}
+
+.stat-badge-in {
+  background: linear-gradient(135deg, #52c41a, #237804);
+}
+
+.stat-badge-out {
+  background: linear-gradient(135deg, #ff4d4f, #cf1322);
+}
+
+.stat-badge-net {
+  background: linear-gradient(135deg, #1890ff, #0050b3);
+}
+
+.stat-badge-count {
+  background: linear-gradient(135deg, #8c8c8c, #434343);
+}
+
+.net-up {
+  color: #3f8600;
+  font-weight: 600;
+}
+
+.net-down {
+  color: #cf1322;
+  font-weight: 600;
+}
+
+.chart-row {
+  margin-bottom: 16px;
+}
+
+.chart-card {
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.chart-box {
+  height: 320px;
+}
+
+.amount-cell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-empty {
+  padding: 8px 0;
+  opacity: 0.65;
+}

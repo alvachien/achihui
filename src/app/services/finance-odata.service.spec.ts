@@ -3500,7 +3500,7 @@ describe('FinanceOdataService', () => {
     beforeAll(() => {
       objrst = {
         '@odata.context':
-          'http://localhost:25688/$metadata#FinanceDocumentItemViews(DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp)',
+          'http://localhost:25688/$metadata#FinanceDocumentItemViews(DocumentID,ItemID,TransactionDate,AccountID,TransactionType,IsExpense,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp)',
         '@odata.count': 2,
         value: [
           {
@@ -3509,6 +3509,7 @@ describe('FinanceOdataService', () => {
             TransactionDate: '2018-03-27',
             AccountID: 8,
             TransactionType: 3,
+            IsExpense: false,
             Currency: 'CNY',
             OriginAmount: 30.0,
             Amount: 30.0,
@@ -3522,6 +3523,7 @@ describe('FinanceOdataService', () => {
             TransactionDate: '2018-04-26',
             AccountID: 8,
             TransactionType: 3,
+            IsExpense: false,
             Currency: 'CNY',
             OriginAmount: 254.22,
             Amount: 254.22,
@@ -3565,6 +3567,11 @@ describe('FinanceOdataService', () => {
           requrl.params.has('$filter')
         );
       });
+
+      // The insight page splits income/outgo on IsExpense; OData omits
+      // unselected properties, so a dropped field silently books every row
+      // as income. Guard the select list itself.
+      expect(req.request.params.get('$select')).toContain('IsExpense');
 
       // Respond with the mock data
       req.flush(objrst);
