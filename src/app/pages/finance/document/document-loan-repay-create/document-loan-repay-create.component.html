@@ -397,26 +397,31 @@
         <nz-descriptions-item [nzTitle]="'Common.Date' | transloco" [nzSpan]="4">
           {{ confirmInfo.TranDateFormatString }}
         </nz-descriptions-item>
-        @for (iteminfo of confirmInfo.Items; track iteminfo) {
-          <div>
-            <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
-              {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
-            </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
-              {{ getTranTypeName(iteminfo.TranType!) }} ({{ iteminfo.TranType }})
-            </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
-              {{ iteminfo.TranAmount }}
-              <span style="margin-left: 3px">{{ baseCurrency }}</span>
-            </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
-              {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{ iteminfo.ControlCenterId }})
-            </nz-descriptions-item>
-            <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
-              {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId! }})
-            </nz-descriptions-item>
-          </div>
+        @for (iteminfo of confirmInfo.Items; track iteminfo; let itemIndex = $index) {
+          <nz-descriptions-item [nzTitle]="'Common.Description' | transloco" [nzSpan]="4">
+            {{ itemIndex + 1 + '. ' + iteminfo.Desp }}
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.Account' | transloco">
+            {{ getAccountName(iteminfo.AccountId!) }} ({{ iteminfo.AccountId }})
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.TransactionType' | transloco">
+            {{ getTranTypeName(iteminfo.TranType!) }} ({{ iteminfo.TranType }})
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.Amount' | transloco" [nzSpan]="2">
+            {{ iteminfo.TranAmount }}
+            <span style="margin-left: 3px">{{ baseCurrency }}</span>
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.ControlCenter' | transloco">
+            {{ getControlCenterName(iteminfo.ControlCenterId!) }} ({{ iteminfo.ControlCenterId }})
+          </nz-descriptions-item>
+          <nz-descriptions-item [nzTitle]="'Finance.Activity' | transloco" [nzSpan]="3">
+            {{ getOrderName(iteminfo.OrderId!) }} ({{ iteminfo.OrderId! }})
+          </nz-descriptions-item>
         }
+        <nz-descriptions-item [nzTitle]="'Common.Total' | transloco" [nzSpan]="4">
+          {{ getDocumentTotalAmount(confirmInfo).toFixed(2) }}
+          <span style="margin-left: 3px">{{ baseCurrency }}</span>
+        </nz-descriptions-item>
       </nz-descriptions>
     </div>
 

@@ -39,7 +39,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 export class ConfigComponent {
   private readonly homeService = inject(HomeDefOdataService);
 
-  get isChildMode(): boolean {
-    return this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
+  get isLiteMode(): boolean {
+    return this.homeService.CurrentMemberInChosedHome?.IsLite ?? false;
   }
 }

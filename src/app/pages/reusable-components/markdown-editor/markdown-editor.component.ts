@@ -22,7 +22,7 @@ import {
 } from '@angular/forms';
 import { MarkedKatexOptions, MarkdownModule } from 'ngx-markdown';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { format } from 'date-fns';
 import { Observable, Observer } from 'rxjs';
@@ -62,6 +62,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzModalModule,
     NzButtonModule,
     NzDividerModule,
     NzCodeEditorModule,

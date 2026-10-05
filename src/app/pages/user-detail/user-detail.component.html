@@ -11,6 +11,7 @@
   </nz-page-header-extra>
   <nz-page-header-content>
     <nz-descriptions nzSize="small" [nzColumn]="2">
+      <nz-descriptions-item [nzTitle]="'Login.UserId' | transloco" [nzSpan]="2">{{ userID }}</nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="'Common.Name' | transloco" [nzSpan]="1">{{ userName }}</nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="'Login.Email' | transloco" [nzSpan]="1">{{ userMail }}</nz-descriptions-item>
       <nz-descriptions-item [nzTitle]="'Nav.Home' | transloco" [nzSpan]="2">{{ currentHomeName }}</nz-descriptions-item>
@@ -20,7 +21,7 @@
       <nz-descriptions-item [nzTitle]="'Common.Relationship' | transloco" [nzSpan]="1">{{
         currentHomeMemRelI18n | transloco
       }}</nz-descriptions-item>
-      <label nz-checkbox nzDisabled [ngModel]="currentHomeMemIsChild">{{ 'Sys.MemRel.Children' | transloco }}</label>
+      <label nz-checkbox nzDisabled [ngModel]="currentHomeMemIsLite">{{ 'Common.LiteMode' | transloco }}</label>
     </nz-descriptions>
   </nz-page-header-content>
 </nz-page-header>

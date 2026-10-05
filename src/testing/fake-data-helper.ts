@@ -331,7 +331,7 @@ export class FakeDataHelper {
     hmem.User = this._chosedHome.Host;
     hmem.Relation = HomeMemberRelationEnum.Self;
     hmem.DisplayAs = 'Creator in Home';
-    hmem.IsChild = false;
+    hmem.IsLite = false;
     this._chosedHome.Members.push(hmem);
   }
   public buildHomeDefs(): void {

@@ -16,6 +16,47 @@
   font-size: 13px;
 }
 
+.home-chip-lite {
+  margin-left: 8px;
+}
+
+/* Lite mode: the member's own accounts replace the household balance sheet. */
+.own-balances {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.own-balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 4px;
+  border-bottom: 1px dashed rgba(128, 128, 128, 0.25);
+}
+
+.own-balance-row:last-child {
+  border-bottom: none;
+}
+
+.own-balance-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.own-balance-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.own-balance-empty {
+  padding: 12px 4px;
+  text-align: center;
+  opacity: 0.65;
+}
+
 .kfig-row {
   margin-bottom: 16px;
 }

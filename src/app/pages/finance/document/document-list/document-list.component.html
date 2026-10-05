@@ -28,35 +28,35 @@
           <li nz-menu-item (click)="onCreateNormalDocument()">
             {{ 'Finance.Document' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateTransferDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateTransferDocument()">
             {{ 'Finance.TransferDocument' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateExgDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateExgDocument()">
             {{ 'Finance.CurrencyExchange' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateADPDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateADPDocument()">
             {{ 'Finance.AdvancePayment' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateADRDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateADRDocument()">
             {{ 'Sys.DocTy.AdvancedRecv' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateBorrowFromDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateBorrowFromDocument()">
             {{ 'Sys.DocTy.BorrowFrom' | transloco }}
           </li>
-          <!-- <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | transloco}}</li> -->
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateRepayDocument()">
+          <!-- <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateLendToDocument()">{{'Sys.DocTy.LendTo' | transloco}}</li> -->
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateRepayDocument()">
             {{ 'Sys.DocTy.Repay' | transloco }}
           </li>
           <li nz-menu-divider></li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateAssetBuyInDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateAssetBuyInDocument()">
             {{ 'Sys.DocTy.AssetBuyIn' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateAssetSoldOutDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateAssetSoldOutDocument()">
             {{ 'Sys.DocTy.AssetSoldOut' | transloco }}
           </li>
-          <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onCreateAssetValChgDocument()">
+          <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onCreateAssetValChgDocument()">
             {{ 'Sys.DocTy.AssetValChg' | transloco }}
           </li>
         </ul>

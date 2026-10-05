@@ -3,7 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, Reactive
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -61,6 +61,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
   styleUrls: ['./document-normal-create.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzModalModule,
     NzButtonModule,
     NzIconModule,
     NzPageHeaderModule,

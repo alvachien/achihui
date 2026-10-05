@@ -18,7 +18,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -78,6 +78,7 @@ import { DocumentNormalMassCreateItemComponent } from '../document-normal-mass-c
     NzDescriptionsModule,
     NzDividerModule,
     NzResultModule,
+    NzModalModule,
     DocumentNormalMassCreateItemComponent,
     TranslocoModule,
     RouterModule,
@@ -276,6 +277,32 @@ export class DocumentNormalMassCreateComponent implements OnInit {
     return tranTypeObj ? tranTypeObj.Name : '';
   }
 
+  // Summaries for the confirm / result steps
+  public getDocumentItemCount(doc: Document): number {
+    return doc.Items?.length ?? 0;
+  }
+  public getDocumentTotalAmount(doc: Document): number {
+    return (doc.Items ?? []).reduce((sum, item) => sum + (item.TranAmount ?? 0), 0);
+  }
+  public get confirmTotalItems(): number {
+    return this.confirmInfo.reduce((sum, doc) => sum + this.getDocumentItemCount(doc), 0);
+  }
+  public get confirmTotalAmount(): number {
+    return this.confirmInfo.reduce((sum, doc) => sum + this.getDocumentTotalAmount(doc), 0);
+  }
+
+  // Documents coming back from the API are plain JSON: make sure Items is always
+  // an array before the result step iterates over it
+  private ensureItems(docs: Document[] | undefined): Document[] {
+    const list = docs ?? [];
+    list.forEach((doc) => {
+      if (!Array.isArray(doc.Items)) {
+        doc.Items = [];
+      }
+    });
+    return list;
+  }
+
   // Step 0: Items
   private initItem(): UntypedFormGroup {
     return this.fb.group(
@@ -453,8 +480,8 @@ export class DocumentNormalMassCreateComponent implements OnInit {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.docIdCreated = rsts.PostedDocuments;
-          this.docIdFailed = rsts.FailedDocuments;
+          this.docIdCreated = this.ensureItems(rsts.PostedDocuments);
+          this.docIdFailed = this.ensureItems(rsts.FailedDocuments);
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -484,8 +511,8 @@ export class DocumentNormalMassCreateComponent implements OnInit {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.docIdCreated.push(...rsts.PostedDocuments);
-          this.docIdFailed = rsts.FailedDocuments;
+          this.docIdCreated.push(...this.ensureItems(rsts.PostedDocuments));
+          this.docIdFailed = this.ensureItems(rsts.FailedDocuments);
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -498,7 +525,7 @@ export class DocumentNormalMassCreateComponent implements OnInit {
   }
   public onDisplayCreatedDoc(docid: number): void {
     if (docid) {
-      // TBD.
+      this.router.navigate(['/finance/document/display', docid]);
     }
   }
 }

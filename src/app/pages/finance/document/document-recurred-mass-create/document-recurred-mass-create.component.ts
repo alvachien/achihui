@@ -20,7 +20,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { format, isWithinInterval, addDays } from 'date-fns';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { translate, TranslocoModule } from '@jsverse/transloco';
@@ -116,6 +116,7 @@ class DocumentCountByDateRange {
     NzInputNumberModule,
     NzDescriptionsModule,
     NzResultModule,
+    NzModalModule,
     NzDividerModule,
     NzDatePickerModule,
     NzCheckboxModule,
@@ -309,6 +310,32 @@ export class DocumentRecurredMassCreateComponent implements OnInit {
   }
   public getConfirmDocumentTitle(idx: number): string {
     return translate('Finance.Document') + ' #' + (idx + 1);
+  }
+
+  // Summaries for the confirm / result steps
+  public getDocumentItemCount(doc: Document): number {
+    return doc.Items?.length ?? 0;
+  }
+  public getDocumentTotalAmount(doc: Document): number {
+    return (doc.Items ?? []).reduce((sum, item) => sum + (item.TranAmount ?? 0), 0);
+  }
+  public get confirmTotalItems(): number {
+    return this.confirmInfo.reduce((sum, doc) => sum + this.getDocumentItemCount(doc), 0);
+  }
+  public get confirmTotalAmount(): number {
+    return this.confirmInfo.reduce((sum, doc) => sum + this.getDocumentTotalAmount(doc), 0);
+  }
+
+  // Documents coming back from the API are plain JSON: make sure Items is always
+  // an array before the result step iterates over it
+  private ensureItems(docs: Document[] | undefined): Document[] {
+    const list = docs ?? [];
+    list.forEach((doc) => {
+      if (!Array.isArray(doc.Items)) {
+        doc.Items = [];
+      }
+    });
+    return list;
   }
   public getAccountName(acntid: number): string {
     const acntObj = this.arAccounts().find((acnt) => {
@@ -698,8 +725,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.docIdCreated = rsts.PostedDocuments;
-          this.docIdFailed = rsts.FailedDocuments;
+          this.docIdCreated = this.ensureItems(rsts.PostedDocuments);
+          this.docIdFailed = this.ensureItems(rsts.FailedDocuments);
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -729,8 +756,8 @@ export class DocumentRecurredMassCreateComponent implements OnInit {
             ConsoleLogTypeEnum.debug,
           );
 
-          this.docIdCreated.push(...rsts.PostedDocuments);
-          this.docIdFailed = rsts.FailedDocuments;
+          this.docIdCreated.push(...this.ensureItems(rsts.PostedDocuments));
+          this.docIdFailed = this.ensureItems(rsts.FailedDocuments);
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -743,7 +770,7 @@ export class DocumentRecurredMassCreateComponent implements OnInit {
   }
   public onDisplayCreatedDoc(did: number) {
     if (did) {
-      // TBD.
+      this.router.navigate(['/finance/document/display', did]);
     }
   }
 }

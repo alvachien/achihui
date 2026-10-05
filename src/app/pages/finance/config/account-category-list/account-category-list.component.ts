@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './account-category-list.component.html',
   styleUrls: ['./account-category-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzSpinModule, NzTableModule, NzSwitchModule, FormsModule, TranslocoModule],
+  imports: [NzModalModule, NzSpinModule, NzTableModule, NzSwitchModule, FormsModule, TranslocoModule],
 })
 export class AccountCategoryListComponent implements OnInit {
   isLoadingResults = signal(false);

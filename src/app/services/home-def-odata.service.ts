@@ -270,7 +270,11 @@ export class HomeDefOdataService {
       .append('Accept', 'application/json')
       .append('Authorization', 'Bearer ' + this._authService.authSubject().getAccessToken());
 
-    const data: HomeDefJson = objhd.generateJSONData(true);
+    // PUT body MUST carry the entity ID: HomeDefinesController.Put rejects the
+    // request with "Inputted ID mismatched" when the payload has no ID (it
+    // compares key != update.ID). generateJSONData(true) is CREATE mode and
+    // deliberately strips ID — edit/update must use createmode=false.
+    const data: HomeDefJson = objhd.generateJSONData(false);
     const apipath = `${this.apiUrl}(${objhd.ID})`;
     const jdata: any = JSON && JSON.stringify(data);
     return this._http

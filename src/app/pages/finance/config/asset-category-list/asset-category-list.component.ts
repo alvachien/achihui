@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -14,7 +14,7 @@ import { FinanceOdataService, UIStatusService } from '@services/index';
   templateUrl: './asset-category-list.component.html',
   styleUrls: ['./asset-category-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NzSpinModule, NzTableModule, TranslocoModule],
+  imports: [NzModalModule, NzSpinModule, NzTableModule, TranslocoModule],
 })
 export class AssetCategoryListComponent implements OnInit {
   dataSet = signal<AssetCategory[]>([]);

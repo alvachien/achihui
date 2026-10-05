@@ -9,7 +9,7 @@
     <nz-page-header-title>{{ 'Finance.ControlCenter' | transloco }}</nz-page-header-title>
     <nz-page-header-subtitle>{{ 'Common.ListView' | transloco }}</nz-page-header-subtitle>
     <nz-page-header-extra>
-      <a nz-button nzType="link" [disabled]="isChildMode()" routerLink="/finance/controlcenter/create">{{
+      <a nz-button nzType="link" [disabled]="isLiteMode()" routerLink="/finance/controlcenter/create">{{
         'Common.Create' | transloco
       }}</a>
       <a nz-button nzType="link" routerLink="/finance/controlcenter/hierarchy">{{
@@ -85,10 +85,10 @@
                 </button>
                 <nz-dropdown-menu #rowActionMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li nz-menu-item [nzDisabled]="isChildMode()" (click)="onEdit(data.Id!)">
+                    <li nz-menu-item [nzDisabled]="isLiteMode()" (click)="onEdit(data.Id!)">
                       {{ 'Common.Edit' | transloco }}
                     </li>
-                    @if (!isChildMode()) {
+                    @if (!isLiteMode()) {
                       <li nz-menu-divider></li>
                       <li nz-menu-item nzDanger (click)="onDelete(data.Id!)">{{ 'Common.Delete' | transloco }}</li>
                     }

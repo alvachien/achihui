@@ -592,7 +592,7 @@ export class FinanceOdataService {
 
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,CategoryID,Status,Comment');
-      if (this.homeService.CurrentMemberInChosedHome?.IsChild ?? false) {
+      if (this.homeService.CurrentMemberInChosedHome?.IsLite ?? false) {
         params = params.append(
           '$filter',
           `HomeID eq ${hid} and Owner eq '${this.homeService.CurrentMemberInChosedHome?.User}'`,
@@ -988,7 +988,7 @@ export class FinanceOdataService {
         .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
       let params: HttpParams = new HttpParams();
       params = params.append('$select', 'ID,HomeID,Name,ParentID,Comment');
-      if (this.homeService.CurrentMemberInChosedHome?.IsChild ?? false) {
+      if (this.homeService.CurrentMemberInChosedHome?.IsLite ?? false) {
         params = params.append(
           '$filter',
           `HomeID eq ${hid} and Owner eq '${this.homeService.CurrentMemberInChosedHome?.User}'`,
@@ -4011,9 +4011,12 @@ export class FinanceOdataService {
       .append('Authorization', 'Bearer ' + this.authService.authSubject().getAccessToken());
 
     let params: HttpParams = new HttpParams();
+    // IsExpense must stay in the select: OData omits unselected properties, and
+    // the insight page splits income/outgo on this field (a row that arrives
+    // without it silently books as income).
     params = params.append(
       '$select',
-      'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp',
+      'DocumentID,ItemID,TransactionDate,AccountID,TransactionType,IsExpense,Currency,OriginAmount,Amount,ControlCenterID,OrderID,ItemDesp',
     );
     let filterstr = `HomeID eq ${this.homeService.ChosedHome?.ID ?? 0}`;
     const subfilter = getFilterString(filters);

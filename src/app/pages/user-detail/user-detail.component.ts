@@ -37,7 +37,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   currentHomeName: string | null = null;
   currentHomeMemDisplayAs: string | null = null;
-  currentHomeMemIsChild: boolean | null = null;
+  currentHomeMemIsLite: boolean | null = null;
   currentHomeMemRelI18n: string | null = null;
 
   private readonly authService = inject(AuthService);
@@ -62,7 +62,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     if (this.homeService && this.homeService.ChosedHome) {
       this.currentHomeName = this.homeService.ChosedHome.Name;
       this.currentHomeMemDisplayAs = this.homeService.CurrentMemberInChosedHome?.DisplayAs ?? '';
-      this.currentHomeMemIsChild = this.homeService.CurrentMemberInChosedHome?.IsChild ?? false;
+      this.currentHomeMemIsLite = this.homeService.CurrentMemberInChosedHome?.IsLite ?? false;
 
       const arrels = UIDisplayStringUtil.getHomeMemberRelationEnumStrings();
       arrels.forEach((val) => {

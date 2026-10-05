@@ -11,7 +11,6 @@ import { translate, TranslocoModule } from '@jsverse/transloco';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -33,7 +32,6 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzBreadCrumbModule,
     NzButtonModule,
     NzDividerModule,
-    NzResultModule,
     NzInputModule,
     NzTableModule,
     NzInputNumberModule,
@@ -72,9 +70,9 @@ export class PlanListComponent implements OnInit {
   private readonly homeService = inject(HomeDefOdataService);
 
   // Read the service's curHomeMember signal directly (Tier F route (b)):
-  // isChildMode updates reactively without manual subscriptions.
+  // isLiteMode updates reactively without manual subscriptions.
   private readonly currentMember = computed(() => this.homeService.curHomeMember());
-  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
+  readonly isLiteMode = computed(() => this.currentMember()?.IsLite ?? false);
 
   public readonly modalService = inject(NzModalService);
 

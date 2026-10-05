@@ -3,7 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, Reactive
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { translate, TranslocoModule } from '@jsverse/transloco';
 import { UIMode } from 'actslib';
 
@@ -37,6 +37,7 @@ import { MarkdownEditorComponent } from '../../reusable-components/markdown-edit
   styleUrls: ['./post-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NzModalModule,
     NzPageHeaderModule,
     NzSpinModule,
     NzInputModule,

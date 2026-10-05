@@ -6,7 +6,7 @@
     <nz-breadcrumb-item>{{ 'Finance.Reports' | transloco }}</nz-breadcrumb-item>
   </nz-breadcrumb>
   <nz-page-header-title>{{ 'Finance.Reports' | transloco }}</nz-page-header-title>
-  @if (!isChildMode) {
+  @if (!isLiteMode) {
     <nz-page-header-extra>
       <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="detailReports">
         {{ 'Finance.DetailReport' | transloco }}
@@ -52,16 +52,16 @@
   }
 </nz-page-header>
 
-@if (isChildMode) {
+@if (isLiteMode) {
   <div>
-    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
+    <nz-result [nzIcon]="'skin'" [nzTitle]="'Common.LiteModeDetail' | transloco">
       <div nz-result-extra>
         <button nz-button nzType="primary">OK</button>
       </div>
     </nz-result>
   </div>
 }
-@if (!isChildMode) {
+@if (!isLiteMode) {
   <div>
     <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'">
       <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }">

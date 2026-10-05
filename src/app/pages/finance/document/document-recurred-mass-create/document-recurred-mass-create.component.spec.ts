@@ -912,6 +912,25 @@ describe('DocumentRecurredMassCreateComponent', () => {
       // Step 4. Confirm
       expect(component.currentStep()).toEqual(4);
 
+      // Regression guard (same defect class as document-normal-mass-create):
+      // NzDescriptionsComponent collects its items with @ContentChildren
+      // (without `descendants: true`), so nz-descriptions-items nested inside a
+      // wrapper <div> are silently dropped. Per doc the fixed template renders
+      // Date + Total (2 labels) plus 6 labels per item.
+      expect(component.confirmInfo.length).toBeGreaterThan(0);
+      const labelCells: HTMLElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('td.ant-descriptions-item-label'),
+      );
+      const expectedLabels = component.confirmInfo.reduce((sum, doc) => sum + 2 + 6 * (doc.Items?.length ?? 0), 0);
+      expect(labelCells.length).toEqual(expectedLabels);
+
+      const contentCells: HTMLElement[] = Array.from(
+        fixture.nativeElement.querySelectorAll('td.ant-descriptions-item-content'),
+      );
+      const renderedText = contentCells.map((cell) => cell.textContent?.trim() ?? '').join('|');
+      expect(renderedText).toContain('test'); // item description from the defaults step
+      expect(renderedText).toContain('100'); // transaction amount from the defaults step
+
       await new Promise<void>((r) => setTimeout(r, 0));
     });
 

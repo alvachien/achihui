@@ -86,7 +86,7 @@ export class DocumentItemSearchComponent implements OnInit {
   private readonly modalService = inject(NzModalService);
   private readonly homeService = inject(HomeDefOdataService);
   readonly currentMember = computed(() => this.homeService.curHomeMember());
-  readonly isChildMode = computed(() => this.currentMember()?.IsChild ?? false);
+  readonly isLiteMode = computed(() => this.currentMember()?.IsLite ?? false);
 
   constructor() {
     ModelUtility.writeConsoleLog(

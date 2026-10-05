@@ -254,6 +254,61 @@ describe('HomeDefOdataService', () => {
     });
   });
 
+  describe('changeHomeDef', () => {
+    beforeEach(() => {
+      service = TestBed.inject(HomeDefOdataService);
+    });
+
+    afterEach(() => {
+      // After every test, assert that there are no more pending requests.
+      httpTestingController.verify();
+    });
+
+    it('should PUT the entity with its ID present in the payload', () => {
+      service.changeHomeDef(fakeData.chosedHome).subscribe(
+        (data: any) => {
+          expect(data).toBeTruthy();
+        },
+        (fail: any) => {
+          throw new Error('expected to succeed');
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.apiUrl + '(' + fakeData.chosedHome.ID + ')';
+      });
+
+      // Regression: HomeDefinesController.Put rejects bodies without ID
+      // ("Inputted ID mismatched", update.ID deserializes to 0). The service
+      // must not reuse create-mode serialization here.
+      const body: any = JSON.parse(req.request.body);
+      expect(body.ID).toEqual(fakeData.chosedHome.ID);
+      expect(body.Name).toEqual(fakeData.chosedHome.Name);
+
+      // API answers 204 No Content on success.
+      req.flush(null, { status: 204, statusText: 'No Content' });
+    });
+
+    it('should return error in case error appear', () => {
+      const msg = 'server failed';
+      service.changeHomeDef(fakeData.chosedHome).subscribe(
+        (data: any) => {
+          throw new Error('expected to fail');
+        },
+        (error: any) => {
+          expect(error.message).toContain(msg);
+        },
+      );
+
+      const req: any = httpTestingController.expectOne((requrl: any) => {
+        return requrl.method === 'PUT' && requrl.url === service.apiUrl + '(' + fakeData.chosedHome.ID + ')';
+      });
+
+      // respond with a 500 and the error message in the body
+      req.flush(msg, { status: 500, statusText: 'server failed' });
+    });
+  });
+
   describe('getHomeKeyFigure', () => {
     const apiurl: string = environment.ApiUrl + '/HomeKeyFigure';
     beforeEach(() => {

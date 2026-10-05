@@ -7,212 +7,229 @@
   <nz-page-header-title>{{ 'Common.Overview' | transloco }}</nz-page-header-title>
   <nz-page-header-subtitle>
     <span class="home-chip"><i nz-icon nzType="apartment"></i>{{ homeName }}</span>
+    @if (isLiteMode) {
+      <span class="home-chip home-chip-lite"><i nz-icon nzType="skin"></i>{{ 'Common.LiteMode' | transloco }}</span>
+    }
   </nz-page-header-subtitle>
   <nz-page-header-extra>
-    @if (!isChildMode) {
-      <nz-switch
-        [(ngModel)]="ExcludeTransfer"
-        [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco"
-        [nzUnCheckedChildren]="'Common.All' | transloco"
-        [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco"
-        nz-tooltip
-        (ngModelChange)="fetchData(true)"
-      >
-      </nz-switch>
-    }
+    <nz-switch
+      [(ngModel)]="ExcludeTransfer"
+      [nzCheckedChildren]="'Finance.ExcludeTransfer' | transloco"
+      [nzUnCheckedChildren]="'Common.All' | transloco"
+      [nzTooltipTitle]="'Finance.ExcludeTransferHint' | transloco"
+      nz-tooltip
+      (ngModelChange)="fetchData(true)"
+    >
+    </nz-switch>
   </nz-page-header-extra>
 </nz-page-header>
 
-@if (isChildMode) {
+<!-- Lite and full mode share the shell: the figures are computed from the accounts
+     in scope, and the server scopes them to the member's own ones when restricted. -->
+<nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" [nzTip]="'Common.Loading' | transloco">
   <div>
-    <nz-result [nzIcon]="'smile-twotone'" [nzTitle]="'Common.ChildModeDetail' | transloco">
-      <div nz-result-extra>
-        <button nz-button nzType="primary">OK</button>
-      </div>
-    </nz-result>
-  </div>
-}
-
-@if (!isChildMode) {
-  <nz-spin [nzSpinning]="isLoadingResults" [nzSize]="'large'" [nzTip]="'Common.Loading' | transloco">
-    <div>
-      <!-- Frequently used entries, kept at the top so they are reachable without scrolling. -->
-      <div class="quick-links">
-        <a nz-button nzType="primary" [routerLink]="['/', 'finance', 'document', 'createnormal']">
-          <i nz-icon nzType="plus"></i>{{ 'Finance.CreateNormalDoc' | transloco }}
-        </a>
-        <a nz-button nzType="default" [routerLink]="['/', 'finance', 'document']">
-          <i nz-icon nzType="file"></i>{{ 'Finance.Documents' | transloco }}
-        </a>
-        <a nz-button nzType="default" [routerLink]="['/', 'finance', 'account']">
-          <i nz-icon nzType="account-book"></i>{{ 'Finance.Accounts' | transloco }}
-        </a>
+    <!-- Frequently used entries, kept at the top so they are reachable without scrolling. -->
+    <div class="quick-links">
+      <a nz-button nzType="primary" [routerLink]="['/', 'finance', 'document', 'createnormal']">
+        <i nz-icon nzType="plus"></i>{{ 'Finance.CreateNormalDoc' | transloco }}
+      </a>
+      <a nz-button nzType="default" [routerLink]="['/', 'finance', 'document']">
+        <i nz-icon nzType="file"></i>{{ 'Finance.Documents' | transloco }}
+      </a>
+      <a nz-button nzType="default" [routerLink]="['/', 'finance', 'account']">
+        <i nz-icon nzType="account-book"></i>{{ 'Finance.Accounts' | transloco }}
+      </a>
+      @if (!isLiteMode) {
         <a nz-button nzType="default" [routerLink]="['/', 'finance', 'report']">
           <i nz-icon nzType="bar-chart"></i>{{ 'Finance.Reports' | transloco }}
         </a>
-      </div>
-      @if (keyfigure) {
-        <div nz-row class="kfig-row" [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 24 }">
-          <!-- Current-month inflow: value opens the document insight (month, income). -->
-          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
-            <nz-card class="stat-card">
-              <div class="stat-flex">
-                <!-- Decorative chip only: it must not read as a trend, so it carries
-                     no arrow. Direction lives in the month-on-month pill below. -->
-                <span class="stat-badge stat-badge-in"><i nz-icon nzType="account-book"></i></span>
-                <nz-statistic
-                  [nzSuffix]="keyfigure!.BaseCurrency"
-                  [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"
-                  [nzValueTemplate]="tmplValueIncome"
-                >
-                </nz-statistic>
-                <ng-template #tmplValueIncome>
-                  <a class="stat-value-link" (click)="onOpenInsight(1)">{{
-                    keyfigure!.CurrentMonthIncome | number: '1.2-2'
-                  }}</a>
-                </ng-template>
-              </div>
-              <div class="stat-foot">
-                <span class="stat-foot-label">{{ 'Common.PreviousMonth' | transloco }}</span>
-                <span>{{ keyfigure!.LastMonthIncome | number: '1.2-2' }}</span>
-                <!-- Direction comes from the amounts, so a rise off a zero last
-                     month still shows as an increase; only the percentage needs
-                     a base, and it is left out when there is none. -->
-                @let incomeTrend = monthTrend(keyfigure!.CurrentMonthIncome, keyfigure!.LastMonthIncome);
-                @let incomeRatio =
-                  monthRatio(
-                    keyfigure!.CurrentMonthIncome,
-                    keyfigure!.LastMonthIncome,
-                    keyfigure!.CurrentMonthIncomePercentage
-                  );
-                <span
-                  class="ratio-pill"
-                  [class.ratio-good]="incomeTrend >= 0"
-                  [class.ratio-bad]="incomeTrend < 0"
-                  nz-tooltip
-                  [nzTooltipTitle]="'Finance.IncomeMonthOnMonthRatio' | transloco"
-                >
-                  @if (incomeTrend > 0) {
-                    <i nz-icon nzType="arrow-up"></i>
-                  } @else if (incomeTrend < 0) {
-                    <i nz-icon nzType="arrow-down"></i>
-                  } @else {
-                    <i nz-icon nzType="minus"></i>
-                  }
-                  @if (incomeRatio !== null) {
-                    {{ incomeRatio | number: '1.2-2' }}%
-                  } @else {
-                    {{ 'Finance.MonthOnMonthNoBase' | transloco }}
-                  }
-                </span>
-              </div>
-            </nz-card>
-          </div>
-          <!-- Current-month outflow. -->
-          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
-            <nz-card class="stat-card">
-              <div class="stat-flex">
-                <span class="stat-badge stat-badge-out"><i nz-icon nzType="money-collect"></i></span>
-                <nz-statistic
-                  [nzSuffix]="keyfigure!.BaseCurrency"
-                  [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"
-                  [nzValueTemplate]="tmplValueOutgo"
-                >
-                </nz-statistic>
-                <ng-template #tmplValueOutgo>
-                  <a class="stat-value-link" (click)="onOpenInsight(2)">{{
-                    keyfigure!.CurrentMonthOutgo | number: '1.2-2'
-                  }}</a>
-                </ng-template>
-              </div>
-              <div class="stat-foot">
-                <span class="stat-foot-label">{{ 'Common.PreviousMonth' | transloco }}</span>
-                <span>{{ keyfigure!.LastMonthOutgo | number: '1.2-2' }}</span>
-                <!-- Same rule as the income card, but rising spending is the
-                     unfavourable direction here, so the colours invert. -->
-                @let outgoTrend = monthTrend(keyfigure!.CurrentMonthOutgo, keyfigure!.LastMonthOutgo);
-                @let outgoRatio =
-                  monthRatio(
-                    keyfigure!.CurrentMonthOutgo,
-                    keyfigure!.LastMonthOutgo,
-                    keyfigure!.CurrentMonthOutgoPercentage
-                  );
-                <span
-                  class="ratio-pill"
-                  [class.ratio-bad]="outgoTrend > 0"
-                  [class.ratio-good]="outgoTrend <= 0"
-                  nz-tooltip
-                  [nzTooltipTitle]="'Finance.OutgoMonthOnMonthRatio' | transloco"
-                >
-                  @if (outgoTrend > 0) {
-                    <i nz-icon nzType="arrow-up"></i>
-                  } @else if (outgoTrend < 0) {
-                    <i nz-icon nzType="arrow-down"></i>
-                  } @else {
-                    <i nz-icon nzType="minus"></i>
-                  }
-                  @if (outgoRatio !== null) {
-                    {{ outgoRatio | number: '1.2-2' }}%
-                  } @else {
-                    {{ 'Finance.MonthOnMonthNoBase' | transloco }}
-                  }
-                </span>
-              </div>
-            </nz-card>
-          </div>
-          <!-- Year-to-date flows: value opens the document insight (year, income/outgo). -->
-          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
-            <nz-card class="stat-card">
-              <div class="stat-flex">
-                <span class="stat-badge stat-badge-ytdin"><i nz-icon nzType="account-book"></i></span>
-                <nz-statistic
-                  [nzSuffix]="keyfigure!.BaseCurrency"
-                  [nzTitle]="'Finance.IncomeYTD' | transloco"
-                  [nzValueTemplate]="tmplYTDValueIncome"
-                >
-                </nz-statistic>
-                <ng-template #tmplYTDValueIncome>
-                  <a class="stat-value-link" (click)="onOpenInsight(3)">{{ keyfigure!.IncomeYTD | number: '1.2-2' }}</a>
-                </ng-template>
-              </div>
-              <div class="stat-foot">
-                <span class="stat-foot-label">{{ 'Finance.NetYTD' | transloco }}</span>
-                <span class="stat-foot-value" [class.net-up]="ytdNet() >= 0" [class.net-down]="ytdNet() < 0">
-                  {{ ytdNet() | number: '1.2-2' }}
-                </span>
-              </div>
-            </nz-card>
-          </div>
-          <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
-            <nz-card class="stat-card">
-              <div class="stat-flex">
-                <span class="stat-badge stat-badge-ytdout"><i nz-icon nzType="money-collect"></i></span>
-                <nz-statistic
-                  [nzSuffix]="keyfigure!.BaseCurrency"
-                  [nzTitle]="'Finance.OutgoYTD' | transloco"
-                  [nzValueTemplate]="tmplYTDValueOutgo"
-                ></nz-statistic>
-                <ng-template #tmplYTDValueOutgo>
-                  <a class="stat-value-link" (click)="onOpenInsight(4)">{{ keyfigure!.OutgoYTD | number: '1.2-2' }}</a>
-                </ng-template>
-              </div>
-              <div class="stat-foot">
-                <span class="stat-foot-label">{{ 'Finance.NetInCurrentMonth' | transloco }}</span>
-                <span
-                  class="stat-foot-value"
-                  [class.net-up]="keyfigure!.CurrentMonthIncome - keyfigure!.CurrentMonthOutgo >= 0"
-                  [class.net-down]="keyfigure!.CurrentMonthIncome - keyfigure!.CurrentMonthOutgo < 0"
-                >
-                  {{ keyfigure!.CurrentMonthIncome - keyfigure!.CurrentMonthOutgo | number: '1.2-2' }}
-                </span>
-              </div>
-            </nz-card>
-          </div>
-        </div>
       }
+    </div>
+    @if (keyfigure) {
+      <div nz-row class="kfig-row" [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 24 }">
+        <!-- Current-month inflow: value opens the document insight (month, income). -->
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
+          <nz-card class="stat-card">
+            <div class="stat-flex">
+              <!-- Decorative chip only: it must not read as a trend, so it carries
+                   no arrow. Direction lives in the month-on-month pill below. -->
+              <span class="stat-badge stat-badge-in"><i nz-icon nzType="account-book"></i></span>
+              <nz-statistic
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.IncomeInCurrentMonth' | transloco"
+                [nzValueTemplate]="tmplValueIncome"
+              >
+              </nz-statistic>
+              <ng-template #tmplValueIncome>
+                <a class="stat-value-link" (click)="onOpenInsight(1)">{{
+                  keyfigure!.CurrentMonthIncome | number: '1.2-2'
+                }}</a>
+              </ng-template>
+            </div>
+            <div class="stat-foot">
+              <span class="stat-foot-label">{{ 'Common.PreviousMonth' | transloco }}</span>
+              <span>{{ keyfigure!.LastMonthIncome | number: '1.2-2' }}</span>
+              <!-- Direction comes from the amounts, so a rise off a zero last
+                   month still shows as an increase; only the percentage needs
+                   a base, and it is left out when there is none. -->
+              @let incomeTrend = monthTrend(keyfigure!.CurrentMonthIncome, keyfigure!.LastMonthIncome);
+              @let incomeRatio =
+                monthRatio(
+                  keyfigure!.CurrentMonthIncome,
+                  keyfigure!.LastMonthIncome,
+                  keyfigure!.CurrentMonthIncomePercentage
+                );
+              <span
+                class="ratio-pill"
+                [class.ratio-good]="incomeTrend >= 0"
+                [class.ratio-bad]="incomeTrend < 0"
+                nz-tooltip
+                [nzTooltipTitle]="'Finance.IncomeMonthOnMonthRatio' | transloco"
+              >
+                @if (incomeTrend > 0) {
+                  <i nz-icon nzType="arrow-up"></i>
+                } @else if (incomeTrend < 0) {
+                  <i nz-icon nzType="arrow-down"></i>
+                } @else {
+                  <i nz-icon nzType="minus"></i>
+                }
+                @if (incomeRatio !== null) {
+                  {{ incomeRatio | number: '1.2-2' }}%
+                } @else {
+                  {{ 'Finance.MonthOnMonthNoBase' | transloco }}
+                }
+              </span>
+            </div>
+          </nz-card>
+        </div>
+        <!-- Current-month outflow. -->
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
+          <nz-card class="stat-card">
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-out"><i nz-icon nzType="money-collect"></i></span>
+              <nz-statistic
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.OutgoInCurrentMonth' | transloco"
+                [nzValueTemplate]="tmplValueOutgo"
+              >
+              </nz-statistic>
+              <ng-template #tmplValueOutgo>
+                <a class="stat-value-link" (click)="onOpenInsight(2)">{{
+                  keyfigure!.CurrentMonthOutgo | number: '1.2-2'
+                }}</a>
+              </ng-template>
+            </div>
+            <div class="stat-foot">
+              <span class="stat-foot-label">{{ 'Common.PreviousMonth' | transloco }}</span>
+              <span>{{ keyfigure!.LastMonthOutgo | number: '1.2-2' }}</span>
+              <!-- Same rule as the income card, but rising spending is the
+                   unfavourable direction here, so the colours invert. -->
+              @let outgoTrend = monthTrend(keyfigure!.CurrentMonthOutgo, keyfigure!.LastMonthOutgo);
+              @let outgoRatio =
+                monthRatio(
+                  keyfigure!.CurrentMonthOutgo,
+                  keyfigure!.LastMonthOutgo,
+                  keyfigure!.CurrentMonthOutgoPercentage
+                );
+              <span
+                class="ratio-pill"
+                [class.ratio-bad]="outgoTrend > 0"
+                [class.ratio-good]="outgoTrend <= 0"
+                nz-tooltip
+                [nzTooltipTitle]="'Finance.OutgoMonthOnMonthRatio' | transloco"
+              >
+                @if (outgoTrend > 0) {
+                  <i nz-icon nzType="arrow-up"></i>
+                } @else if (outgoTrend < 0) {
+                  <i nz-icon nzType="arrow-down"></i>
+                } @else {
+                  <i nz-icon nzType="minus"></i>
+                }
+                @if (outgoRatio !== null) {
+                  {{ outgoRatio | number: '1.2-2' }}%
+                } @else {
+                  {{ 'Finance.MonthOnMonthNoBase' | transloco }}
+                }
+              </span>
+            </div>
+          </nz-card>
+        </div>
+        <!-- Year-to-date flows: value opens the document insight (year, income/outgo). -->
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
+          <nz-card class="stat-card">
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-ytdin"><i nz-icon nzType="account-book"></i></span>
+              <nz-statistic
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.IncomeYTD' | transloco"
+                [nzValueTemplate]="tmplYTDValueIncome"
+              >
+              </nz-statistic>
+              <ng-template #tmplYTDValueIncome>
+                <a class="stat-value-link" (click)="onOpenInsight(3)">{{ keyfigure!.IncomeYTD | number: '1.2-2' }}</a>
+              </ng-template>
+            </div>
+            <div class="stat-foot">
+              <span class="stat-foot-label">{{ 'Finance.NetYTD' | transloco }}</span>
+              <span class="stat-foot-value" [class.net-up]="ytdNet() >= 0" [class.net-down]="ytdNet() < 0">
+                {{ ytdNet() | number: '1.2-2' }}
+              </span>
+            </div>
+          </nz-card>
+        </div>
+        <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6" nzXl="6" nzXxl="6">
+          <nz-card class="stat-card">
+            <div class="stat-flex">
+              <span class="stat-badge stat-badge-ytdout"><i nz-icon nzType="money-collect"></i></span>
+              <nz-statistic
+                [nzSuffix]="keyfigure!.BaseCurrency"
+                [nzTitle]="'Finance.OutgoYTD' | transloco"
+                [nzValueTemplate]="tmplYTDValueOutgo"
+              ></nz-statistic>
+              <ng-template #tmplYTDValueOutgo>
+                <a class="stat-value-link" (click)="onOpenInsight(4)">{{ keyfigure!.OutgoYTD | number: '1.2-2' }}</a>
+              </ng-template>
+            </div>
+            <div class="stat-foot">
+              <span class="stat-foot-label">{{ 'Finance.NetInCurrentMonth' | transloco }}</span>
+              <span
+                class="stat-foot-value"
+                [class.net-up]="keyfigure!.CurrentMonthIncome - keyfigure!.CurrentMonthOutgo >= 0"
+                [class.net-down]="keyfigure!.CurrentMonthIncome - keyfigure!.CurrentMonthOutgo < 0"
+              >
+                {{ keyfigure!.CurrentMonthIncome - keyfigure!.CurrentMonthOutgo | number: '1.2-2' }}
+              </span>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+    }
 
-      <nz-divider></nz-divider>
+    <nz-divider></nz-divider>
 
+    @if (isLiteMode) {
+      <!-- Lite mode: the household balance sheet and the posting calendar are out
+           of scope - show the balances of the member's own accounts instead. -->
+      <nz-card class="calendar-card" [nzTitle]="ownAcntTitle">
+        <ng-template #ownAcntTitle>
+          <span class="card-title"><i nz-icon nzType="account-book"></i>{{ 'Finance.Accounts' | transloco }}</span>
+        </ng-template>
+        @if (ownBalances.length > 0) {
+          <div class="own-balances">
+            @for (item of ownBalances; track item.name) {
+              <div class="own-balance-row">
+                <span class="own-balance-name">{{ item.name }}</span>
+                <span class="own-balance-value" [class.net-up]="item.balance >= 0" [class.net-down]="item.balance < 0">
+                  {{ item.balance | number: '1.2-2' }}
+                </span>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="own-balance-empty">{{ 'Common.NoData' | transloco }}</div>
+        }
+      </nz-card>
+    } @else {
       <nz-card class="calendar-card" [nzTitle]="calendarTitle">
         <ng-template #calendarTitle>
           <span class="card-title"><i nz-icon nzType="schedule"></i>{{ 'Finance.PendingTemplates' | transloco }}</span>
@@ -276,6 +293,6 @@
           </ng-container>
         </nz-calendar>
       </nz-card>
-    </div>
-  </nz-spin>
-}
+    }
+  </div>
+</nz-spin>
