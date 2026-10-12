@@ -35,7 +35,7 @@
     "angular-auth-oidc-client": "^21.0.3",
     "date-fns": "^4.4.0",
     "echarts": "^6.0.0",
-    "katex": "^0.16.21",
+    "katex": "^0.18.2",
     "marked": "^18.0.0",
     "monaco-editor": "^0.52.2",
     "ng-zorro-antd": "^22.0.1",
